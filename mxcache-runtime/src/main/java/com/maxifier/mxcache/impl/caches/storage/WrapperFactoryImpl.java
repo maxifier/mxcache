@@ -1,0 +1,39 @@
+package com.maxifier.mxcache.impl.caches.storage;
+
+import com.maxifier.mxcache.caches.Cache;
+import com.maxifier.mxcache.impl.MutableStatistics;
+import com.maxifier.mxcache.storage.Storage;
+import com.maxifier.mxcache.impl.resource.DependencyNode;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+/**
+* Created by IntelliJ IDEA.
+* User: dalex
+* Date: 15.10.2010
+* Time: 9:19:17
+*/
+class WrapperFactoryImpl implements WrapperFactory {
+    private final Constructor<? extends Cache> constructor;
+
+    public WrapperFactoryImpl(Constructor<? extends Cache> constructor) {
+        this.constructor = constructor;
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    @Override
+    public Cache wrap(Object owner, Object calculable, DependencyNode dependencyNode, Storage storage, MutableStatistics statistics) {
+        try {
+            Cache cache = constructor.newInstance(owner, calculable, dependencyNode, statistics);
+            ((StorageHolder)cache).setStorage(storage);
+            return cache;
+        } catch (InstantiationException e) {
+            throw new IllegalStateException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+}

@@ -1,0 +1,42 @@
+package com.maxifier.mxcache.impl.caches.def;
+
+import gnu.trove.*;
+
+import com.maxifier.mxcache.storage.*;
+
+/**
+ * Project: Maxifier
+ * Created by: Yakoushin Andrey
+ * Date: 15.02.2010
+ * Time: 13:54:51
+ * <p/>
+ * Copyright (c) 1999-2009 Magenta Corporation Ltd. All Rights Reserved.
+ * Magenta Technology proprietary and confidential.
+ * Use is subject to license terms.
+ *
+ * @author ELectronic ENgine
+ */
+
+public class #EG##FG#TroveStorage extends T#E_TROVE##F_TROVE#HashMap implements #EG##FG#Storage {
+    public #E##F#TroveStorage() {
+    }
+
+    public #E##F#TroveStorage(T#E_TROVE#HashingStrategy strategy) {
+        super(strategy);
+    }
+
+    @Override
+    public boolean isCalculated(#eg# o) {
+        return super.contains(#E_TROVE:o#);
+    }
+
+    @Override
+    public #fg# load(#eg# o) {
+        return #F_FROM_TROVE:super.get(#E_TROVE:o#)#;
+    }
+
+    @Override
+    public void save(#eg# o, #fg# t) {
+        put(#E_TROVE:o#, #F_TROVE:t#);
+    }
+}

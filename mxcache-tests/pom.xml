@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.maxifier.mxcache</groupId>
+    <artifactId>mxcache-tests</artifactId>
+    <name>MxCache tests</name>
+    <description>MxCache tests for instrumentation</description>
+
+    <parent>
+        <groupId>com.maxifier.mxcache</groupId>
+        <artifactId>mxcache</artifactId>
+        <version>2.2.18-SNAPSHOT</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.maxifier.mxcache</groupId>
+            <artifactId>mxcache-runtime</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.maxifier.mxcache</groupId>
+            <artifactId>mxcache-guice-integration</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>2.0-m6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.aopalliance</groupId>
+            <artifactId>com.springsource.org.aopalliance</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>mxcache-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>instrument</goal>
+                            <goal>instrument-tests</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

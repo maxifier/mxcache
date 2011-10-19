@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxcache>
+    <rule>
+        <selector>
+            <tag>SomeTag</tag>
+        </selector>
+        <selector>
+            <annotated>com.maxifier.mxcache2.SomeAnnotation</annotated>
+        </selector>
+    </rule>
+
+    <resource name="testResource">
+        <!--<allowConcurrentWriting>true</allowConcurrentWriting>-->
+    </resource>
+</mxcache>

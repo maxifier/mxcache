@@ -3,3 +3,11 @@ mxcache-asm/*.iml
 mxcache-commons/*.iml
 mxcache-ds10-integration/*.iml
 mxcache-ds11-integration/*.iml
+mxcache-ehcache-integration/*.iml
+mxcache-idea-plugin/*.iml
+mxcache-instrumentator/*.iml
+mxcache-jmx/*.iml
+mxcache-legacy/*.iml
+mxcache-maven-plugin/*.iml
+mxcache-runtime/*.iml
+mxcache-tests/*.iml

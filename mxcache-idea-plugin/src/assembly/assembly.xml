@@ -1,0 +1,22 @@
+<assembly>
+    <id>idea-plugin</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <dependencySets>
+        <dependencySet>
+            <useProjectArtifact>true</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>org.apache.commons:commons-io</include>
+                <include>com.maxifier.mxcache:mxcache-asm</include>
+                <include>com.maxifier.mxcache:mxcache-commons</include>
+                <include>com.maxifier.mxcache:mxcache-runtime</include>
+                <include>com.maxifier.mxcache:mxcache-idea-plugin</include>
+                <include>com.maxifier.mxcache:mxcache-instrumentator</include>
+            </includes>
+            <useStrictFiltering>true</useStrictFiltering>
+        </dependencySet>
+    </dependencySets>
+</assembly>
