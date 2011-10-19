@@ -157,3 +157,12 @@ mxcache-ds10-integration/src/main/java/com/maxifier/mxcache/legacy/converters/Mx
 mxcache-ds10-integration/src/main/java/com/maxifier/mxcache/legacy/converters/MxConvertToByteArray10.java -text
 mxcache-ds10-integration/src/main/java/com/maxifier/mxcache/legacy/converters/MxConvertToResource10.java -text
 mxcache-ds10-integration/src/main/java/com/maxifier/mxcache/legacy/layered/MxLayeredCacheSerializator10Impl.java -text
+mxcache-ds11-integration/pom.xml -text
+mxcache-ds11-integration/src/main/java/com/maxifier/mxcache/ds/MxInputStreamContextResolver.java -text
+mxcache-ds11-integration/src/main/java/com/maxifier/mxcache/legacy/converters/MxConvertFromByteArray11.java -text
+mxcache-ds11-integration/src/main/java/com/maxifier/mxcache/legacy/converters/MxConvertFromResource11.java -text
+mxcache-ds11-integration/src/main/java/com/maxifier/mxcache/legacy/converters/MxConvertToByteArray11.java -text
+mxcache-ds11-integration/src/main/java/com/maxifier/mxcache/legacy/converters/MxConvertToResource11.java -text
+mxcache-ds11-integration/src/main/java/com/maxifier/mxcache/legacy/layered/MxLayeredCacheSerializator11Impl.java -text
+mxcache-ds11-integration/src/main/resources/META-INF/services/com.maxifier.mxcache.ContextResolver -text
+mxcache-ds11-integration/src/test/java/com/maxifier/mxcache/ds/MxInputStreamContextResolverUTest.java -text
