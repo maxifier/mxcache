@@ -151,3 +151,9 @@ mxcache-commons/src/test/java/com/maxifier/mxcache/util/MultiLockUTest.java -tex
 mxcache-commons/src/test/java/com/maxifier/mxcache/util/THashMapBuilderUTest.java -text
 mxcache-commons/src/test/java/com/maxifier/mxcache/util/TestClass.java -text
 mxcache-commons/src/test/java/com/maxifier/mxcache/util/TestClassImpl.java -text
+mxcache-ds10-integration/pom.xml -text
+mxcache-ds10-integration/src/main/java/com/maxifier/mxcache/legacy/converters/MxConvertFromByteArray10.java -text
+mxcache-ds10-integration/src/main/java/com/maxifier/mxcache/legacy/converters/MxConvertFromResource10.java -text
+mxcache-ds10-integration/src/main/java/com/maxifier/mxcache/legacy/converters/MxConvertToByteArray10.java -text
+mxcache-ds10-integration/src/main/java/com/maxifier/mxcache/legacy/converters/MxConvertToResource10.java -text
+mxcache-ds10-integration/src/main/java/com/maxifier/mxcache/legacy/layered/MxLayeredCacheSerializator10Impl.java -text
