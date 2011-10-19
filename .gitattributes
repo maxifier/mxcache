@@ -1,1 +1,4 @@
 * text=auto !eol
+jconsole-stub/pom.xml -text
+jconsole-stub/src/main/java/com/sun/tools/jconsole/JConsoleContext.java -text
+jconsole-stub/src/main/java/com/sun/tools/jconsole/JConsolePlugin.java -text
