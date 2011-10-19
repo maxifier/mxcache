@@ -1799,4 +1799,5 @@ mxcache-tests/src/test/java/com/maxifier/mxcache/test/OverloadTest.java -text
 mxcache-tests/src/test/java/com/maxifier/mxcache/test/PerformanceFTest.java -text
 mxcache-tests/src/test/java/com/maxifier/mxcache/test/TestDisabledCache.java -text
 mxcache-tests/src/test/resources/META-INF/mxcache.xml -text
+/mxcache.iml -text
 /pom.xml -text
