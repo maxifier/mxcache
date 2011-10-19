@@ -209,6 +209,12 @@ mxcache-generation/src/test/java/com/maxifier/mxcache/template/storage/generic/P
 mxcache-generation/src/test/java/com/maxifier/mxcache/template/storage/generic/P2PBoxValueCacheTest.template -text
 mxcache-generation/src/test/java/com/maxifier/mxcache/template/storage/generic/PBoxValueCacheTest.template -text
 mxcache-generation/src/test/java/com/maxifier/mxcache/template/storage/generic/PUnboxValueCacheTest.template -text
+mxcache-guice-integration/pom.xml -text
+mxcache-guice-integration/src/main/java/com/maxifier/mxcache/guice/GuiceInstanceProvider.java -text
+mxcache-guice-integration/src/main/java/com/maxifier/mxcache/guice/GuiceInstanceProviderName.java -text
+mxcache-guice-integration/src/main/java/com/maxifier/mxcache/guice/MxCacheGuiceChildModule.java -text
+mxcache-guice-integration/src/main/java/com/maxifier/mxcache/guice/MxCacheGuiceModule.java -text
+mxcache-guice-integration/src/test/java/com/maxifier/mxcache/guice/GuiceIntegrationUTest.java -text
 mxcache-idea-plugin/pom.xml -text
 mxcache-idea-plugin/src/assembly/assembly.xml -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/CachedProcessingItem.java -text
