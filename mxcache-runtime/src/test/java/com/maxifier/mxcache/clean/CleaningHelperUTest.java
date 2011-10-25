@@ -6,6 +6,7 @@ import com.maxifier.mxcache.impl.resource.nodes.SingletonDependencyNode;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static org.mockito.Mockito.*;
@@ -62,5 +63,16 @@ public class CleaningHelperUTest {
 
         verify(n1, atLeast(1)).getDependencyNode();
         verify(n2, atLeast(1)).getDependencyNode();
+    }
+
+    public void testAlreadyLocked() {
+        Lock lock = new ReentrantLock();
+        lock.lock();
+        try {
+            CleaningHelper.lock(Arrays.asList(lock));
+            CleaningHelper.unlock(Arrays.asList(lock));
+        } finally {
+            lock.unlock();
+        }
     }
 }

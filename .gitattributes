@@ -1793,6 +1793,7 @@ mxcache-tests/src/test/java/com/maxifier/mxcache/resource/SerializationTest.java
 mxcache-tests/src/test/java/com/maxifier/mxcache/test/CacheDependencyTrackingUTest.java -text
 mxcache-tests/src/test/java/com/maxifier/mxcache/test/CachedKeyToValueFTest.java -text
 mxcache-tests/src/test/java/com/maxifier/mxcache/test/CachedPrimitiveFTest.java -text
+mxcache-tests/src/test/java/com/maxifier/mxcache/test/ClearInsideCalculateFTest.java -text
 mxcache-tests/src/test/java/com/maxifier/mxcache/test/InheritanceTest.java -text
 mxcache-tests/src/test/java/com/maxifier/mxcache/test/MixedCacheKeyFTest.java -text
 mxcache-tests/src/test/java/com/maxifier/mxcache/test/OverloadTest.java -text

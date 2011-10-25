@@ -6,4 +6,7 @@
         </selector>
         <disableCache>true</disableCache>
     </rule>
+    <rule>
+        <trackDependency>INSTANCE</trackDependency>
+    </rule>
 </mxcache>
