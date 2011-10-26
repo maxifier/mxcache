@@ -159,12 +159,6 @@ public final class MxLayeredCache<T> extends MutableStatisticsImpl implements Mx
 //        }
 //    }
 
-    private MxLayeredStrategy<T> createStrategy(MxCacheLayer layer, Object value, MxReusageForecastManager<T> reusageForecastManager) {
-        MxLayeredStrategy<T> strategy = new MxLayeredStrategy<T>(this, layer, value, reusageForecastManager);
-        registerStrategy(strategy);
-        return strategy;
-    }
-
     void registerStrategy(MxLayeredStrategy<T> strategy) {
         Reference<MxLayeredStrategy<T>> ref = new WeakReference<MxLayeredStrategy<T>>(strategy, queue);
         elements.add(ref);
@@ -188,7 +182,7 @@ public final class MxLayeredCache<T> extends MutableStatisticsImpl implements Mx
             logger.warn("Proxy reattached: " + proxy);
             return value;
         }
-        MxLayeredStrategy<T> strategy = createStrategy(null, value, reusageForecastManager);
+        MxLayeredStrategy<T> strategy = new MxLayeredStrategy<T>(this, value, reusageForecastManager);
         T proxy = proxyFactory.createProxy((Class<T>) value.getClass(), strategy);
         WeakReference<MxProxy> proxyRef = new WeakReference<MxProxy>((MxProxy) proxy, proxyQueue);
         proxyCache.put(proxyRef, strategy);

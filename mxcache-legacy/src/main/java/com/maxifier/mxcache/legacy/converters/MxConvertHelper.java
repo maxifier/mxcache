@@ -49,14 +49,20 @@ public final class MxConvertHelper {
         return (T) convert(from.getId(), to.getId(), type.getId(), o);
     }
 
-    public Object convert(int from, int to, int type, Object o) {
-        MxConverter conv = converters[from][to];
-        if (conv == null) {
-            throw new IllegalArgumentException("Cannot convert from " + states[from] + " to " + states[to]);
+    public Object convert(int from, int to, int type, Object o) throws ConverterException {
+        if (from < 0 || from >= states.length) {
+            throw new ConverterException("Invalid from layer: " + from);
+        }
+        if (to < 0 || to >= states.length) {
+            throw new ConverterException("Invalid to layer: " + from);
+        }
+        MxConverter converter = converters[from][to];
+        if (converter == null) {
+            throw new ConverterException("Cannot convert from " + states[from] + " to " + states[to]);
         }
         long start = System.nanoTime();
         //noinspection unchecked
-        Object r = conv.convert(o);
+        Object r = converter.convert(o);
         long end = System.nanoTime();
         long duration = end - start;
         reportCost(from, to, type, duration);

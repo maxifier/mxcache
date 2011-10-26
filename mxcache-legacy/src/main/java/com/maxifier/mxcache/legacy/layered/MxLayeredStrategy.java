@@ -18,6 +18,7 @@ import java.lang.ref.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings({"SynchronizeOnNonFinalField", "SynchronizationOnLocalVariableOrMethodParameter"})
 public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy<T>> implements Externalizable, Comparable<MxLayeredStrategy<T>>, Resolvable<T> {
     private static final Logger logger = LoggerFactory.getLogger(MxLayeredStrategy.class);
 
@@ -87,16 +88,22 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
     @SuppressWarnings({"unchecked"})
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         MxObjectInput input = (MxObjectInput) in;
-        manager = input.deserialize();
-        count = manager.getLayerCount();
-        data = new Object[count];
+        MxLayeredCache<T> manager = input.deserialize();
 
         T stv = (T) input.deserialize();
         reusageForecastManager = (MxReusageForecastManager) input.readObject();
 
+        init(manager, stv);
+    }
+
+    private void init(MxLayeredCache<T> manager, T stv) {
+        this.manager = manager;
+        count = manager.getLayerCount();
+        data = new Object[count];
+
         synchronized (manager) {
-            manager.registerStrategy(this);
-            manager.addAndUpdate(this);
+            this.manager.registerStrategy(this);
+            this.manager.addAndUpdate(this);
             shorttimeValue = stv;
         }
     }
@@ -108,21 +115,9 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
     public MxLayeredStrategy() {
     }
 
-    public MxLayeredStrategy(MxLayeredCache<T> manager, MxCacheLayer layer, Object value, MxReusageForecastManager<T> reusageForecastManager) {
+    public MxLayeredStrategy(MxLayeredCache<T> manager, T value, MxReusageForecastManager<T> reusageForecastManager) {
         this.reusageForecastManager = reusageForecastManager;
-        this.manager = manager;
-        count = manager.getLayerCount();
-        data = new Object[count];
-
-        synchronized (this.manager) {
-            if (layer == null) {
-                manager.addAndUpdate(this);
-                //noinspection unchecked
-                shorttimeValue = (T) value;
-            } else {
-                setValue(layer.getId(), value);
-            }
-        }
+        init(manager, value);
     }
 
     /**
@@ -145,10 +140,28 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
     }
 
     void clearShorttime() {
+        boolean canRemove = false;
         if (data[0] == null) {
-            setValue(0, shorttimeValue);
+            if (shorttimeValue instanceof MxProxy) {
+                logger.warn("MxProxy passed to convertDown(int,Object)");
+            }
+            if (count == 1 || manager.getLayer(0).tryToCache(this)) {
+                data[0] = shorttimeValue;
+                canRemove = true;
+            } else if (!convertDown(0, shorttimeValue)) {
+                for (int i = 1; i<count; i++) {
+                    if (data[i] != null) {
+                        canRemove = true;
+                        break;
+                    }
+                }
+            }
+        } else {
+            canRemove = true;
         }
-        shorttimeValue = null;
+        if (canRemove) {
+            shorttimeValue = null;
+        }
     }
 
     @Override
@@ -190,8 +203,18 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
     }
 
     void exitPool(int layer) {
-        convertDown(layer, data[layer]);
-        data[layer] = null;
+        if (convertDown(layer, data[layer])) {
+            // если не получается сконвертировать, то забьем на это дело, и оставим все как есть
+            data[layer] = null;
+        } else {
+            // если есть хоть какая-то форма, то можно удалить все равно
+            for (int i = 0; i < count; i++) {
+                if (data[i] != null && i != layer) {
+                    data[layer] = null;
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -200,8 +223,9 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
      *
      * @param layerId текущий слой
      * @param value   значение
+     * @return true if corresponding layer was found and previous representation can be removed
      */
-    private void convertDown(int layerId, Object value) {
+    private boolean convertDown(int layerId, Object value) {
         if (value instanceof MxProxy) {
             logger.warn("MxProxy passed to convertDown(int,Object)");
         }
@@ -222,34 +246,24 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
             }
         }
         if (minLayer == -1) {
-            throw new IllegalStateException("Cannot collapse: no layer found");
+            logger.error("Cannot collapse: no layer found to move from " + layerId);
+            return false;
         }
         if (data[minLayer] == null) {
             if (minLayer != count - 1) {
                 if (!manager.getLayer(minLayer).tryToCache(this)) {
-                    throw new IllegalStateException("Cannot add to longtime cache");
+                    logger.error("Cannot add to longtime cache from " + layerId);
+                    return false;
                 }
             }
-            data[minLayer] = manager.getConverter().convert(layerId, minLayer, 0, value);
-        }
-    }
-
-    private void setValue(int layerId, Object value) {
-        if (value instanceof MxProxy) {
-            logger.warn("MxProxy passed to convertDown(int,Object)");
-        }
-        if (data[layerId] != null) {
-            throw new IllegalArgumentException("Layer " + manager.getLayer(layerId) + " is already in pool");
-        }
-        if (layerId == count - 1) {
-            data[layerId] = value;
-        } else {
-            if (manager.getLayer(layerId).tryToCache(this)) {
-                data[layerId] = value;
-            } else {
-                convertDown(layerId, value);
+            try {
+                data[minLayer] = manager.getConverter().convert(layerId, minLayer, 0, value);
+            } catch (Throwable e) {
+                logger.error("Cannot convert from " + layerId + " to " + minLayer, e);
+                return false;
             }
         }
+        return true;
     }
 
     @SuppressWarnings({"unchecked"})
