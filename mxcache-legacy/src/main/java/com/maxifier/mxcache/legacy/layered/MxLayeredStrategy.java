@@ -203,7 +203,11 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
                     manager.hit();
                 }
             } else {
-                manager.moveToEnd(this);
+                if (isInList()) {
+                    // элемент может не быть в списке, если его не удалось сохранить на диск - в этом случае значение
+                    // будет установленно, но из списка он может быть удален
+                    manager.moveToEnd(this);
+                }
                 manager.hit();
             }
             return shorttimeValue;

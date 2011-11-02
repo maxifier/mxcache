@@ -15,6 +15,10 @@ public final class MxList<T extends MxList.Element<T>> {
         private boolean inList;
         private T prev;
         private T next;
+
+        public boolean isInList() {
+            return inList;
+        }
     }
 
     public T remove(T e) {
