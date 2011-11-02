@@ -140,28 +140,31 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
     }
 
     void clearShorttime() {
-        boolean canRemove = false;
-        if (data[0] == null) {
-            if (shorttimeValue instanceof MxProxy) {
-                logger.warn("MxProxy passed to convertDown(int,Object)");
-            }
-            if (count == 1 || manager.getLayer(0).tryToCache(this)) {
-                data[0] = shorttimeValue;
-                canRemove = true;
-            } else if (!convertDown(0, shorttimeValue)) {
-                for (int i = 1; i<count; i++) {
-                    if (data[i] != null) {
-                        canRemove = true;
-                        break;
-                    }
-                }
-            }
-        } else {
-            canRemove = true;
-        }
-        if (canRemove) {
+        if (convertToClear()) {
             shorttimeValue = null;
         }
+    }
+
+    private boolean convertToClear() {
+        if (data[0] != null) {
+            return true;
+        }
+        if (shorttimeValue instanceof MxProxy) {
+            logger.warn("MxProxy passed to convertDown(int,Object)");
+        }
+        if (count == 1 || manager.getLayer(0).tryToCache(this)) {
+            data[0] = shorttimeValue;
+            return true;
+        }
+        if (convertDown(0, shorttimeValue)) {
+            return true;
+        }
+        for (int i = 1; i<count; i++) {
+            if (data[i] != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
