@@ -199,6 +199,7 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
                 } else {
                     shorttimeValue = (T) data[0];
                     manager.addAndUpdate(this);
+                    manager.hit();
                 }
             } else {
                 manager.moveToEnd(this);
