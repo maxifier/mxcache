@@ -321,7 +321,11 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
     String getKey() {
         StringBuilder builder = new StringBuilder();
         if (shorttimeValue != null) {
-            builder.append("SHORTTIME ");
+            if (isInList()) {
+                builder.append("SHORTTIME ");
+            } else {
+                builder.append("UNCLEAN ");
+            }
         }
         for (int i = 0; i < count; i++) {
             if (data[i] != null) {
