@@ -184,17 +184,21 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
         }
     }
 
+    @SuppressWarnings({"unchecked"})
     private T getValue0() {
         synchronized (manager) {
             queries++;
             lastQueryTime = manager.getTime();
-            if (shorttimeValue == null) {
+            if (shorttimeValue == null && data[0] == null) {
                 long start = System.nanoTime();
                 shorttimeValue = getInternalValue();
                 manager.addAndUpdate(this);
                 long end = System.nanoTime();
                 manager.miss(end - start);
             } else {
+                if (shorttimeValue == null) {
+                    shorttimeValue = (T) data[0];
+                }
                 manager.moveToEnd(this);
                 manager.hit();
             }
@@ -266,12 +270,9 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
         return true;
     }
 
-    @SuppressWarnings({"unchecked"})
     private T getInternalValue() {
-        T v = (T) data[0];
-        if (v != null) {
-            return v;
-        }
+        // data[0] is checked in getValue0(), so we don't check it again
+        assert data[0] == null;
         int min = 0;
         float minCost = Float.POSITIVE_INFINITY;
         for (int i = 1; i < count; i++) {
