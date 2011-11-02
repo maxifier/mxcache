@@ -9,6 +9,8 @@ import com.maxifier.mxcache.util.FormatHelper;
  * Time: 10:23:19
  */
 public class PooledCacheControl implements PooledCacheControlMBean {
+    public static final int NS_IN_MS = 1000000;
+
     private final MxCachePoolManager manager;
 
     public PooledCacheControl(MxCachePoolManager manager) {
@@ -150,5 +152,10 @@ public class PooledCacheControl implements PooledCacheControlMBean {
     @Override
     public int getOldCount() {
         return manager.getOldCount();
+    }
+
+    @Override
+    public long getStateHandlerExecutionTime() {
+        return manager.getStateHandlerExecutionTime() / NS_IN_MS;
     }
 }

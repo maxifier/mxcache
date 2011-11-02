@@ -64,4 +64,6 @@ public interface PooledCacheControlMBean extends AbstractCacheControl {
     int getYoungCount();
 
     int getOldCount();
+
+    long getStateHandlerExecutionTime();
 }

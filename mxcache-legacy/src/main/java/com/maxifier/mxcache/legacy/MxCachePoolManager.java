@@ -69,6 +69,8 @@ public class MxCachePoolManager<T> extends ElementOwner<T> implements MxStateHan
 
     private double size;
 
+    private long stateHandlerExecutionTime;
+
     private final PriorityQueue<PooledElement<T>> pool;
     private final List<PooledElement<T>> young;
 
@@ -214,6 +216,10 @@ public class MxCachePoolManager<T> extends ElementOwner<T> implements MxStateHan
         } finally {
             unlock();
         }
+    }
+
+    public long getStateHandlerExecutionTime() {
+        return stateHandlerExecutionTime;
     }
 
     /**
@@ -411,6 +417,7 @@ public class MxCachePoolManager<T> extends ElementOwner<T> implements MxStateHan
         Lock wholeLock = lock.getWholeLock();
         wholeLock.lock();
         try {
+            long start = System.nanoTime();
             boolean periodEnded = processEvents();
             updatePool();
             if (periodEnded) {
@@ -426,6 +433,8 @@ public class MxCachePoolManager<T> extends ElementOwner<T> implements MxStateHan
                     lastTimeCacheMapsClean = currentTime;
                 }
             }
+            long end = System.nanoTime();
+            stateHandlerExecutionTime += end-start;
         } finally {
             wholeLock.unlock();
         }

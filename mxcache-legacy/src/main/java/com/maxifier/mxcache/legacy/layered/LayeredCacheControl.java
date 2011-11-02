@@ -7,6 +7,8 @@ package com.maxifier.mxcache.legacy.layered;
  * Time: 14:45:09
  */
 public class LayeredCacheControl implements LayeredCacheControlMBean {
+    public static final int NS_IN_MS = 1000000;
+
     private final MxLayeredCache manager;
 
     public LayeredCacheControl(MxLayeredCache manager) {
@@ -36,5 +38,10 @@ public class LayeredCacheControl implements LayeredCacheControlMBean {
     @Override
     public String printKeyStatistics() {
         return manager.printKeyStatistics();
+    }
+
+    @Override
+    public long getStateHandlerExecutionTime() {
+        return manager.getStateHandlerExecutionTime() / NS_IN_MS;
     }
 }

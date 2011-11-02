@@ -62,6 +62,8 @@ public final class MxLayeredCache<T> extends MutableStatisticsImpl implements Mx
 
     private int time;
 
+    private long stateHandlerExecutionTime;
+
     //------------------------------------------------------------------------------------------------------------------
 
     private static void checkConverters(MxConvertHelper converter, MxCacheLayer[] layers) {
@@ -189,6 +191,10 @@ public final class MxLayeredCache<T> extends MutableStatisticsImpl implements Mx
         return proxy;
     }
 
+    public synchronized long getStateHandlerExecutionTime() {
+        return stateHandlerExecutionTime;
+    }
+
     int getLayerCount() {
         return n;
     }
@@ -199,6 +205,7 @@ public final class MxLayeredCache<T> extends MutableStatisticsImpl implements Mx
 
     @Override
     public synchronized void stateHandler() {
+        long start = System.nanoTime();
         time++;
 
         processProxyReferences();
@@ -227,6 +234,8 @@ public final class MxLayeredCache<T> extends MutableStatisticsImpl implements Mx
         for (MxCacheLayer layer : layers) {
             layer.update(time);
         }
+        long end = System.nanoTime();
+        stateHandlerExecutionTime += (end-start);
     }
 
     private void processProxyReferences() {

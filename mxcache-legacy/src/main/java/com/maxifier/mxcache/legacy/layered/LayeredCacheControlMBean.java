@@ -22,4 +22,7 @@ public interface LayeredCacheControlMBean extends AbstractCacheControl {
     String printConvertationStatistics();
 
     String printKeyStatistics();
+
+    @Override
+    long getStateHandlerExecutionTime();
 }

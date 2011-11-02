@@ -14,4 +14,6 @@ public interface AbstractCacheControl {
     double getMissRate();
 
     String printConvertationStatistics();
+
+    long getStateHandlerExecutionTime();
 }
