@@ -190,14 +190,15 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
             queries++;
             lastQueryTime = manager.getTime();
             if (shorttimeValue == null) {
-                if (data[0] == null) {
+                T v = (T)data[0];
+                if (v == null) {
                     long start = System.nanoTime();
                     shorttimeValue = getInternalValue();
                     manager.addAndUpdate(this);
                     long end = System.nanoTime();
                     manager.miss(end - start);
                 } else {
-                    shorttimeValue = (T) data[0];
+                    shorttimeValue = v;
                     manager.addAndUpdate(this);
                     manager.hit();
                 }
