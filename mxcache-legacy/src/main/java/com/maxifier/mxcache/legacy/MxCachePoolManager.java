@@ -400,6 +400,19 @@ public class MxCachePoolManager<T> extends ElementOwner<T> implements MxStateHan
         young.clear();
     }
 
+    public int getTotalSize() {
+        lock();
+        try {
+            int res = 0;
+            for (PooledCache<?, T, ?> cache : caches) {
+                res += cache.size();
+            }
+            return res;
+        } finally {
+            unlock();
+        }
+    }
+
     public void clearAll() {
         lock();
         try {

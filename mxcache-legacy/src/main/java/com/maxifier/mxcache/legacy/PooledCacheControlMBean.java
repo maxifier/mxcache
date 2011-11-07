@@ -17,6 +17,9 @@ public interface PooledCacheControlMBean extends AbstractCacheControl {
     int getHits();
 
     @Override
+    int getTotalSize();
+
+    @Override
     double getMissRate();
 
     double getLimitValue();

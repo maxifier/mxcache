@@ -262,6 +262,14 @@ public final class MxLayeredCache<T> extends MutableStatisticsImpl implements Mx
         }
     }
 
+    public int getTotalSize() {
+        return proxyCache.size();
+    }
+
+    public synchronized int getShortTimeSize() {
+        return shorttimeCache.getSize();
+    }
+
     public synchronized String printKeyStatistics() {
         StringBuilder buf = new StringBuilder();
         buf.append("+++++++++++++++ MX CACHE STATE ").append(this).append("+++++++++++++++++++++++++++++\n");

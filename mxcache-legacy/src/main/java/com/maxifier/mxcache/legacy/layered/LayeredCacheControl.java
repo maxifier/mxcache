@@ -44,4 +44,14 @@ public class LayeredCacheControl implements LayeredCacheControlMBean {
     public long getStateHandlerExecutionTime() {
         return manager.getStateHandlerExecutionTime() / NS_IN_MS;
     }
+
+    @Override
+    public int getShortTimeSize() {
+        return manager.getShortTimeSize();
+    }
+
+    @Override
+    public int getTotalSize() {
+        return manager.getTotalSize();
+    }
 }

@@ -11,6 +11,8 @@ public interface AbstractCacheControl {
 
     int getMisses();
 
+    int getTotalSize();
+
     double getMissRate();
 
     String printConvertationStatistics();

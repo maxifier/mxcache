@@ -158,4 +158,9 @@ public class PooledCacheControl implements PooledCacheControlMBean {
     public long getStateHandlerExecutionTime() {
         return manager.getStateHandlerExecutionTime() / NS_IN_MS;
     }
+
+    @Override
+    public int getTotalSize() {
+        return manager.getTotalSize();
+    }
 }
