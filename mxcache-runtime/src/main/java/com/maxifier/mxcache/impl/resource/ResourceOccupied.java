@@ -18,6 +18,7 @@ public class ResourceOccupied extends Error {
     private final MxResource resource;
 
     public ResourceOccupied(MxResource resource) {
+        super(resource.toString());
         this.resource = resource;
     }
 
