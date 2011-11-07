@@ -18,7 +18,6 @@ public class ResourceOccupied extends Error {
     private final MxResource resource;
 
     public ResourceOccupied(MxResource resource) {
-        super(resource.toString());
         this.resource = resource;
     }
 
@@ -30,5 +29,10 @@ public class ResourceOccupied extends Error {
     public Throwable fillInStackTrace() {
         // do nothing - we only need to traverse stack, not stacktrace.
         return this;
+    }
+
+    @Override
+    public String getMessage() {
+        return resource.toString();
     }
 }
