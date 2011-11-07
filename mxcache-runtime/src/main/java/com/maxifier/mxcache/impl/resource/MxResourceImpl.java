@@ -13,6 +13,8 @@ import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.resource.ResourceModificationException;
 import com.maxifier.mxcache.util.TIdentityHashSet;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
  * Time: 9:18:59
  */
 final class MxResourceImpl extends AbstractDependencyNode implements MxResource, Serializable, CleaningNode {
+    private static final Logger logger = LoggerFactory.getLogger(MxResourceImpl.class);
+
     private static final long serialVersionUID = 100L;
 
     @NotNull
@@ -104,10 +108,13 @@ final class MxResourceImpl extends AbstractDependencyNode implements MxResource,
 
     @Override
     public void waitForEndOfModification() {
+        if (lock.isWriteLocked() && logger.isTraceEnabled()) {
+            logger.trace("Thread {} is waiting for resource \"{}\"", Thread.currentThread(), this);
+        }
         readLock.lock();
         try {
             if (lock.isWriteLockedByCurrentThread()) {
-                throw new ResourceModificationException("Resource \"" + name + "\" is already being written from current thread");
+                throw new ResourceModificationException("Current thread (" + Thread.currentThread() + ") has already locked resource \"" + this + "\" for write");
             }
         } finally {
             readLock.unlock();

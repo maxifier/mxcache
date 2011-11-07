@@ -1,6 +1,7 @@
 package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.resource.MxResource;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,7 +18,7 @@ import com.maxifier.mxcache.resource.MxResource;
 public class ResourceOccupied extends Error {
     private final MxResource resource;
 
-    public ResourceOccupied(MxResource resource) {
+    public ResourceOccupied(@NotNull MxResource resource) {
         this.resource = resource;
     }
 
@@ -33,6 +34,6 @@ public class ResourceOccupied extends Error {
 
     @Override
     public String getMessage() {
-        return resource.toString();
+        return "Resource \"" + resource + "\" is locked for write. Stack will be unrolled and topmost cached method will wait for resource to be released. This exception should not be caught";
     }
 }
