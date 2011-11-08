@@ -46,8 +46,8 @@ public class LayeredCacheControl implements LayeredCacheControlMBean {
     }
 
     @Override
-    public int getShortTimeSize() {
-        return manager.getShortTimeSize();
+    public int getReadyToUseSize() {
+        return manager.getReadyToUseSize();
     }
 
     @Override

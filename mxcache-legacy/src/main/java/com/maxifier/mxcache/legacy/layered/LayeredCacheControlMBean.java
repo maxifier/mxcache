@@ -28,5 +28,5 @@ public interface LayeredCacheControlMBean extends AbstractCacheControl {
     @Override
     long getStateHandlerExecutionTime();
 
-    int getShortTimeSize();
+    int getReadyToUseSize();
 }

@@ -115,6 +115,10 @@ public final class MxCacheLayer<T> implements MxConvertState<T> {
         lastElementInLongtime = null;
     }
 
+    int size() {
+        return longtimeCache.size();
+    }
+
     public String getName() {
         return name;
     }
