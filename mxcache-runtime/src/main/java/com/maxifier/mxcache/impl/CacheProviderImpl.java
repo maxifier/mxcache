@@ -29,8 +29,6 @@ public class CacheProviderImpl implements CacheProvider {
 
     private final Map<CacheId, RegistryEntry> registry = new THashMap<CacheId, RegistryEntry>();
 
-    @SuppressWarnings( { "UnusedDeclaration" })
-    // this method is invoked by reflection
     public CacheProviderImpl() {
         this(true);
     }

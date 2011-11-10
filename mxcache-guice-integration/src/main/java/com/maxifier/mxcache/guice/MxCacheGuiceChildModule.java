@@ -3,10 +3,12 @@ package com.maxifier.mxcache.guice;
 import com.google.inject.AbstractModule;
 import com.google.inject.PrivateModule;
 import com.google.inject.Scopes;
+import com.maxifier.mxcache.PublicAPI;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.util.ClassGenerator;
 import gnu.trove.THashMap;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -27,13 +29,13 @@ public class MxCacheGuiceChildModule extends AbstractModule {
 
     private final String name;
 
-    @SuppressWarnings( { "UnusedDeclaration" })
+    @PublicAPI
     // this method may be used by client
     public MxCacheGuiceChildModule(Class<? extends CacheContext> contextClass) {
         this(contextClass, null);
     }
 
-    public MxCacheGuiceChildModule(Class<? extends CacheContext> contextClass, String name) {
+    public MxCacheGuiceChildModule(Class<? extends CacheContext> contextClass, @Nullable String name) {
         this.contextClass = contextClass;
         this.name = name;
         this.instanceProviderClass = getInstanceProviderClass(contextClass);

@@ -20,6 +20,7 @@ public class MutableStatisticsImpl implements MutableStatistics {
     private static final AtomicLongFieldUpdater<MutableStatisticsImpl> TIME_UPDATER = USE_ATOMIC_UPDATERS ? AtomicLongFieldUpdater.newUpdater(MutableStatisticsImpl.class, "time") : null;
 
     @SuppressWarnings({"UnusedDeclaration"})
+    // these fields are updated through atomic updaters
     private volatile long time;
     private volatile int hits;
     private volatile int misses;

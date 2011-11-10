@@ -1,5 +1,6 @@
 package com.maxifier.mxcache.transform;
 
+import com.maxifier.mxcache.PublicAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,19 +25,20 @@ public final class BasicTransforms {
         t.start();
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @SuppressWarnings({"UnusedParameters"})
+    @PublicAPI
     // used in Ignore
     public static Object ignore(Object o) {
         return null;
     }
 
-    @SuppressWarnings( "UnusedDeclaration" )
+    @PublicAPI
     // used in SoftKey
     public static <T> SoftReference<T> createSoftReference(T t) {
         return new SmartSoftReference<T>(t, QUEUE);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @PublicAPI
     // used in WeakKey
     public static <T> WeakReference<T> createWeakReference(T t) {
         return new SmartWeakReference<T>(t, QUEUE);

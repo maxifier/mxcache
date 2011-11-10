@@ -2,6 +2,7 @@ package com.maxifier.mxcache.ds;
 
 import com.magenta.dataserializator.MxObjectInput;
 import com.maxifier.mxcache.ContextResolver;
+import com.maxifier.mxcache.PublicAPI;
 import com.maxifier.mxcache.context.CacheContext;
 
 /**
@@ -10,7 +11,7 @@ import com.maxifier.mxcache.context.CacheContext;
  * Date: 10.03.11
  * Time: 16:22
  */
-@SuppressWarnings( "UnusedDeclaration" )
+@PublicAPI
 // used in services
 public class MxInputStreamContextResolver implements ContextResolver<MxObjectInput> {
     @Override

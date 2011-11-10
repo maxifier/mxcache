@@ -339,6 +339,8 @@ mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/converters/MxConvertRes
 mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/converters/MxConvertState.java -text
 mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/converters/MxConvertType.java -text
 mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/converters/MxConverter.java -text
+mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/converters/Scheduled.java -text
+mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/converters/SchedulingConverter.java -text
 mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/layered/LayeredCacheControl.java -text
 mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/layered/LayeredCacheControlMBean.java -text
 mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/layered/MxCacheLayer.java -text
@@ -371,6 +373,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/MxCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/MxCacheException.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/NoSuchInstanceException.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/NonInstrumentedCacheException.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/PublicAPI.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/ResourceInstrumented.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/StatisticsMode.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/StatisticsModeEnum.java -text
@@ -1144,6 +1147,8 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/resource/ResourceModification
 mxcache-runtime/src/main/java/com/maxifier/mxcache/resource/ResourceReader.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/resource/ResourceWriter.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/resource/TrackDependency.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/scheduler/MxScheduler.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/scheduler/MxSchedulerImpl.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/storage/BooleanBooleanStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/storage/BooleanByteStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/storage/BooleanCharacterStorage.java -text

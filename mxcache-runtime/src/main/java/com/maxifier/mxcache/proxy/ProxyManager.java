@@ -2,6 +2,7 @@ package com.maxifier.mxcache.proxy;
 
 import com.maxifier.mxcache.CacheFactory;
 import com.maxifier.mxcache.NoSuchInstanceException;
+import com.maxifier.mxcache.PublicAPI;
 import com.maxifier.mxcache.context.CacheContext;
 import gnu.trove.THashMap;
 import org.slf4j.Logger;
@@ -29,14 +30,14 @@ public final class ProxyManager {
 
     private final Map<ProxyMappingKey, Class<? extends ProxyFactory>> mapping = new THashMap<ProxyMappingKey, Class<? extends ProxyFactory>>();
 
-    @SuppressWarnings("UnusedDeclaration")
+    @PublicAPI
     // this method is used in generated code
     public ProxyFactory getProxyFactory(CacheContext context, Class owner, String name, String desc) {
         ProxyMappingKey key = new ProxyMappingKey(owner, name, desc);
         return getProxyFactory(context, key);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @PublicAPI
     // this method is used in generated code by 2.1.9 instrumentator
     @Deprecated
     public ProxyFactory getProxyFactory(Class owner, String name, String desc) {
