@@ -41,7 +41,7 @@ public class SchedulingConverter<F, T> implements MxConverter<F, Scheduled<F, T>
     @SuppressWarnings({"unchecked"})
     @PublicAPI
     public MxConverter<Scheduled<T, F>, F> reverse(MxConverter<T, F> converter) {
-        return new ReverseConverter<F, T, F>(MxConverter.IDENTITY, converter);
+        return new ReverseConverter<F, T, F>(IdentityConverter.<F>getInstance(), converter);
     }
 
     private static class ReverseConverter<F, T, R> implements MxConverter<Scheduled<T, R>, F> {

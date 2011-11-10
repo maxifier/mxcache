@@ -330,6 +330,7 @@ mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/PooledElement.java -tex
 mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/PooledReusageForecast.java -text
 mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/PooledStorageFactory.java -text
 mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/converters/ConverterException.java -text
+mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/converters/IdentityConverter.java -text
 mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/converters/MxAbstractResourceConverter.java -text
 mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/converters/MxConvertBytesToResource.java -text
 mxcache-legacy/src/main/java/com/maxifier/mxcache/legacy/converters/MxConvertHelper.java -text
