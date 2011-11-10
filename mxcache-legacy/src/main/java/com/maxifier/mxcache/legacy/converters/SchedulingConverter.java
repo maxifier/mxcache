@@ -1,6 +1,7 @@
 package com.maxifier.mxcache.legacy.converters;
 
 import com.maxifier.mxcache.CacheFactory;
+import com.maxifier.mxcache.PublicAPI;
 
 /**
  * Created by IntelliJ IDEA.
@@ -8,6 +9,7 @@ import com.maxifier.mxcache.CacheFactory;
  * Date: 10.11.11
  * Time: 13:19
  */
+@PublicAPI
 public class SchedulingConverter<F, T> implements MxConverter<F, Scheduled<F, T>> {
     private final MxConverter<F, T> converter;
 
@@ -31,20 +33,22 @@ public class SchedulingConverter<F, T> implements MxConverter<F, Scheduled<F, T>
         return res;
     }
 
-    public <R> MxConverter<Scheduled<T, R>, F> back(MxConverter<T, F> converter1, MxConverter<R, F> converter2) {
-        return new BackConverter<F, T, R>(converter1, converter2);
+    @PublicAPI
+    public <R> MxConverter<Scheduled<T, R>, F> reverse(MxConverter<T, F> converter1, MxConverter<R, F> converter2) {
+        return new ReverseConverter<F, T, R>(converter1, converter2);
     }
 
     @SuppressWarnings({"unchecked"})
-    public MxConverter<Scheduled<T, F>, F> back(MxConverter<T, F> converter) {
-        return new BackConverter<F, T, F>(MxConverter.IDENTITY, converter);
+    @PublicAPI
+    public MxConverter<Scheduled<T, F>, F> reverse(MxConverter<T, F> converter) {
+        return new ReverseConverter<F, T, F>(MxConverter.IDENTITY, converter);
     }
 
-    private static class BackConverter<F, T, R> implements MxConverter<Scheduled<T, R>, F> {
+    private static class ReverseConverter<F, T, R> implements MxConverter<Scheduled<T, R>, F> {
         private final MxConverter<T, F> converter1;
         private final MxConverter<R, F> converter2;
 
-        BackConverter(MxConverter<T, F> converter1, MxConverter<R, F> converter2) {
+        ReverseConverter(MxConverter<T, F> converter1, MxConverter<R, F> converter2) {
             this.converter1 = converter1;
             this.converter2 = converter2;
         }
