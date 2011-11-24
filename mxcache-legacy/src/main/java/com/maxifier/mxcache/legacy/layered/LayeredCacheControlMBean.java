@@ -2,8 +2,6 @@ package com.maxifier.mxcache.legacy.layered;
 
 import com.maxifier.mxcache.legacy.AbstractCacheControl;
 
-import java.util.Map;
-
 /**
  * Created by IntelliJ IDEA.
  * User: dalex
