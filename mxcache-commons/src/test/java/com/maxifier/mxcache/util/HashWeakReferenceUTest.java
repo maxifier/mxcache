@@ -2,6 +2,8 @@ package com.maxifier.mxcache.util;
 
 import org.testng.annotations.Test;
 
+import static junit.framework.Assert.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: dalex
@@ -21,26 +23,29 @@ public class HashWeakReferenceUTest {
         HashWeakReference<Object> r2 = new HashWeakReference<Object>(o);
         HashWeakReference<Object> r3 = new HashWeakReference<Object>(alive);
 
-        assert r1.get() != null;
-        assert r2.get() != null;
-        assert r3.get() != null;
+        //noinspection EqualsBetweenInconvertibleTypes
+        assertFalse(r1.equals("123"));
 
-        assert !r1.equals(r3);
-        assert !r3.equals(r1);
+        assertNotNull(r1.get());
+        assertNotNull(r2.get());
+        assertNotNull(r3.get());
 
-        assert !r2.equals(r3);
-        assert !r3.equals(r2);
+        assertFalse(r1.equals(r3));
+        assertFalse(r3.equals(r1));
 
-        assert r1.equals(r2);
-        assert r2.equals(r1);
+        assertFalse(r2.equals(r3));
+        assertFalse(r3.equals(r2));
 
-        assert r1.equals(r1);
-        assert r2.equals(r2);
-        assert r3.equals(r3);
+        assertEquals(r1, r2);
+        assertEquals(r2, r1);
 
-        assert r1.hashCode() == hash;
-        assert r2.hashCode() == hash;
-        assert r3.hashCode() == alive.hashCode();
+        assertEquals(r1, r1);
+        assertEquals(r2, r2);
+        assertEquals(r3, r3);
+
+        assertEquals(r1.hashCode(), hash);
+        assertEquals(r2.hashCode(), hash);
+        assertEquals(r3.hashCode(), alive.hashCode());
 
         //noinspection UnusedAssignment,ReuseOfLocalVariable
         o = null;
@@ -50,33 +55,33 @@ public class HashWeakReferenceUTest {
             Thread.sleep(10);
         }
 
-        assert r1.get() == null;
-        assert r2.get() == null;
+        assertNull(r1.get());
+        assertNull(r2.get());
 
         // the object is alive!
-        assert r3.get() != null;
+        assertNotNull(r3.get());
 
         // still not equal
-        assert !r1.equals(r3);
-        assert !r3.equals(r1);
+        assertFalse(r1.equals(r3));
+        assertFalse(r3.equals(r1));
 
-        assert !r2.equals(r3);
-        assert !r3.equals(r2);
+        assertFalse(r2.equals(r3));
+        assertFalse(r3.equals(r2));
 
         // they are not equal now
-        assert !r1.equals(r2);
-        assert !r2.equals(r1);
+        assertFalse(r1.equals(r2));
+        assertFalse(r2.equals(r1));
 
         // but each reference is still equeal to itself
-        assert r1.equals(r1);
-        assert r2.equals(r2);
-        assert r3.equals(r3);
+        assertEquals(r1, r1);
+        assertEquals(r2, r2);
+        assertEquals(r3, r3);
 
         // and hash is still the same
-        assert r1.hashCode() == hash;
-        assert r2.hashCode() == hash;
+        assertEquals(r1.hashCode(), hash);
+        assertEquals(r2.hashCode(), hash);
 
         // we need to call hashCode as compiler may optimize code otherwise and remove reference to alive!
-        assert r3.hashCode() == alive.hashCode();
+        assertEquals(r3.hashCode(), alive.hashCode());
     }
 }
