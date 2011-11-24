@@ -251,6 +251,7 @@ public class CacheProviderImplUTest {
         public TestStorageFactory(CacheDescriptor descriptor) {
         }
 
+        @NotNull
         @Override
         public Storage createStorage(Object owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
             return new TestStorage();
@@ -263,6 +264,7 @@ public class CacheProviderImplUTest {
     }
 
     public static class InvalidStorageFactory implements StorageFactory {
+        @NotNull
         @Override
         public Storage createStorage(Object owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
             throw new UnsupportedOperationException();

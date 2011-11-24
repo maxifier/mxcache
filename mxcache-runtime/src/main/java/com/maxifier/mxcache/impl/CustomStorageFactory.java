@@ -46,6 +46,7 @@ public class CustomStorageFactory<T> implements StorageFactory<T> {
         return true;
     }
 
+    @NotNull
     @Override
     public Storage createStorage(T owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
         return constructor.newInstance(arguments);

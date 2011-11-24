@@ -6,6 +6,7 @@ import com.maxifier.mxcache.storage.Storage;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.CacheConfiguration;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,7 @@ public class EhcacheStorageFactory<T> implements StorageFactory<T> {
         configuration = ConfigurationParser.parseConfiguration(descriptor);
     }
 
+    @NotNull
     @Override
     public Storage createStorage(T owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
         String name = configuration.getName();
