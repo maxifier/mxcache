@@ -25,6 +25,8 @@ public class HashWeakReferenceUTest {
 
         //noinspection EqualsBetweenInconvertibleTypes
         assertFalse(r1.equals("123"));
+        //noinspection NullableProblems,ObjectEqualsNull
+        assertFalse(r1.equals(null));
 
         assertNotNull(r1.get());
         assertNotNull(r2.get());
