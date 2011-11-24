@@ -44,7 +44,7 @@ public abstract class Tuple implements Serializable {
      *
      * @return i-th element of tuple
      *
-     * @throws IllegalArgumentException if i-th element is not char
+     * @throws IllegalArgumentException if i-th element is not char or cannot be converted to char (i.e. is not also int, short, byte)
      */
     public abstract char getChar(int i);
 
@@ -53,7 +53,7 @@ public abstract class Tuple implements Serializable {
      *
      * @return i-th element of tuple
      *
-     * @throws IllegalArgumentException if i-th element is not short
+     * @throws IllegalArgumentException if i-th element is not short or cannot be converted to short (i.e. is not also char, byte)
      */
     public abstract short getShort(int i);
 
@@ -61,7 +61,7 @@ public abstract class Tuple implements Serializable {
      * @param i element index
      *
      * @return i-th element of tuple
-     * @throws IllegalArgumentException if i-th element is not int 
+     * @throws IllegalArgumentException if i-th element is not int or cannot be converted to int (i.e. is not also short, char, byte)
      */
     public abstract int getInt(int i);
 
@@ -70,7 +70,7 @@ public abstract class Tuple implements Serializable {
      *
      * @return i-th element of tuple
      *
-     * @throws IllegalArgumentException if i-th element is not long
+     * @throws IllegalArgumentException if i-th element is not long or cannot be converted to long (i.e. is not also int, short, char, byte)
      */
     public abstract long getLong(int i);
 
@@ -88,7 +88,7 @@ public abstract class Tuple implements Serializable {
      *
      * @return i-th element of tuple
      *
-     * @throws IllegalArgumentException if i-th element is not double
+     * @throws IllegalArgumentException if i-th element is not double or cannot be converted to double (i.e. is not also float)
      */
     public abstract double getDouble(int i);
 
