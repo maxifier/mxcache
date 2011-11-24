@@ -370,6 +370,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/EvictionPolicyEnum.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/GenericContextResolver.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/IllegalCachedClass.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/InstanceProvider.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/LightweightLock.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/MxCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/MxCacheException.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/NoSuchInstanceException.java -text

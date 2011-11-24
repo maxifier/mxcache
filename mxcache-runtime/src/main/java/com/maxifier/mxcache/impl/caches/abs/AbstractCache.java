@@ -1,12 +1,12 @@
 package com.maxifier.mxcache.impl.caches.abs;
 
+import com.maxifier.mxcache.LightweightLock;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.interfaces.Statistics;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Date: 08.09.2010
  * Time: 9:51:52
  */
-abstract class AbstractCache extends ReentrantLock implements Cache, Lock {
+abstract class AbstractCache extends LightweightLock implements Cache, Lock {
     private final MutableStatistics statistics;
 
     protected AbstractCache(@Nullable MutableStatistics statistics) {

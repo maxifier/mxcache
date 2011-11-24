@@ -15,8 +15,8 @@ import org.testng.annotations.Test;
  * Date: 31.08.2010
  * Time: 16:14:31
  */
-@SuppressWarnings({"AccessStaticViaInstance"})
-@Test(enabled = false)
+//@SuppressWarnings({"AccessStaticViaInstance"})
+@Test(enabled = true)
 public class PerformanceFTest {
     private static final CacheCleaner CLEANER = CacheFactory.getCleaner();
 
@@ -57,43 +57,43 @@ public class PerformanceFTest {
 
         @Cached
         @TrackDependency(DependencyTracking.INSTANCE)
-        public static String testChainB(int x) {
+        public String testChainB(int x) {
             return testChainA(x);
         }
 
         @Cached
-        public static String getStringToString(String src) {
+        public String getStringToString(String src) {
             return src;
         }
 
-        public static String missStringToString(String src) {
-            return src;
-        }
-
-        @Cached
-        public static int getIntToInt(int src) {
-            return src;
-        }
-
-        public static int missIntToInt(int src) {
+        public String missStringToString(String src) {
             return src;
         }
 
         @Cached
-        public static int getTupleToInt(int a, int b) {
+        public int getIntToInt(int src) {
+            return src;
+        }
+
+        public int missIntToInt(int src) {
+            return src;
+        }
+
+        @Cached
+        public int getTupleToInt(int a, int b) {
             return a + b;
         }
 
-        public static int missInt(int a, int b) {
+        public int missInt(int a, int b) {
             return a + b;
         }
 
         @Cached
-        public static String getString() {
+        public String getString() {
             return "123";
         }
 
-        public static String missString() {
+        public String missString() {
             return "123";
         }
     }
@@ -375,7 +375,7 @@ public class PerformanceFTest {
     }
 
     private static void checkTime(String label, long time, int maxTime) {
-        System.out.println(label + " = " + time);
+        System.out.println(label + " = " + time + " / " + maxTime);
         System.out.flush();
         Assert.assertTrue(time < maxTime, label + " (" + time + ") should be less than " + maxTime);
     }
