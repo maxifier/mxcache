@@ -1,5 +1,6 @@
 package com.maxifier.mxcache.tuple;
 
+import com.maxifier.mxcache.PublicAPI;
 import com.maxifier.mxcache.asm.commons.Method;
 import static com.maxifier.mxcache.asm.commons.Method.getMethod;
 import static com.maxifier.mxcache.asm.commons.GeneratorAdapter.*;
@@ -9,11 +10,8 @@ import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 import com.maxifier.mxcache.asm.Label;
 import com.maxifier.mxcache.asm.Type;
-import com.maxifier.mxcache.util.ClassGenerator;
+import com.maxifier.mxcache.util.*;
 
-import com.maxifier.mxcache.util.MxConstructorGenerator;
-import com.maxifier.mxcache.util.MxField;
-import com.maxifier.mxcache.util.MxGeneratorAdapter;
 import gnu.trove.*;
 
 import java.lang.reflect.Constructor;
@@ -87,6 +85,7 @@ public final class TupleGenerator {
         return getTupleClass0(toErasedTypes(values));
     }
 
+    @PublicAPI
     public static Class<Tuple> getTupleClass(Type... values) {
         return getTupleClass0(erase(values));
     }
@@ -579,36 +578,70 @@ public final class TupleGenerator {
         visitor.endMethod();
     }
 
+    private static final Generator[][] CONVERTERS = new Generator[Type.DOUBLE + 1][Type.DOUBLE + 1];
+    static {
+        addCast(Type.BYTE_TYPE, Type.CHAR_TYPE);
+        addCast(Type.BYTE_TYPE, Type.SHORT_TYPE);
+        addCast(Type.BYTE_TYPE, Type.INT_TYPE);
+        addCast(Type.BYTE_TYPE, Type.LONG_TYPE);
+
+        addCast(Type.SHORT_TYPE, Type.CHAR_TYPE);
+        addCast(Type.SHORT_TYPE, Type.INT_TYPE);
+        addCast(Type.SHORT_TYPE, Type.LONG_TYPE);
+
+        addCast(Type.CHAR_TYPE, Type.SHORT_TYPE);
+        addCast(Type.CHAR_TYPE, Type.INT_TYPE);
+        addCast(Type.CHAR_TYPE, Type.LONG_TYPE);
+
+        addCast(Type.INT_TYPE, Type.LONG_TYPE);
+
+        addCast(Type.FLOAT_TYPE, Type.DOUBLE_TYPE);
+    }
+
+    private static void addCast(Type from, Type to) {
+        CONVERTERS[from.getSort()][to.getSort()] = new CastConverter(from, to);
+    }
+
     private static void generateGetPrimitive(Type[] types, Type tupleType, Type primType, MxGeneratorAdapter visitor) {
         visitor.start();
         Label invalidArgument = new Label();
         visitor.loadArg(0);
 
-        Label[] labels = createLabels(types, primType, invalidArgument);
-        visitor.visitTableSwitchInsn(0, types.length - 1, invalidArgument, labels);
-        for (int i = 0; i < types.length; i++) {
-            if (types[i] == primType) {
-                visitor.mark(labels[i]);
-                visitor.loadThis();
-                visitor.getField(tupleType, "$" + i, primType);
-                visitor.returnValue();
-            }
-        }
-        visitor.mark(invalidArgument);
-        generateInvalidTupleIndex(visitor);
-        visitor.endMethod();
-    }
-
-    private static Label[] createLabels(Type[] types, Type primType, Label invalidArgument) {
         Label[] labels = new Label[types.length];
-        for (int i = 0; i<types.length; i++) {
-            if (types[i] == primType) {
+        for (int i = 0; i < types.length; i++) {
+            Type type = types[i];
+            if (type == primType || (type.getSort() <= Type.DOUBLE && CONVERTERS[type.getSort()][primType.getSort()] != null)) {
                 labels[i] = new Label();
             } else {
                 labels[i] = invalidArgument;
             }
         }
-        return labels;
+        visitor.visitTableSwitchInsn(0, types.length - 1, invalidArgument, labels);
+        for (int i = 0; i < types.length; i++) {
+            Type type = types[i];
+            if (type == primType) {
+                visitor.mark(labels[i]);
+                visitor.loadThis();
+                visitor.getField(tupleType, "$" + i, type);
+                visitor.returnValue();
+            } else if (type.getSort() <= Type.DOUBLE) {
+                Generator c = CONVERTERS[type.getSort()][primType.getSort()];
+                if (c != null) {
+                    visitor.mark(labels[i]);
+                    visitor.loadThis();
+                    visitor.getField(tupleType, "$" + i, type);
+                    c.generate(visitor);
+                    visitor.returnValue();
+                } else {
+                    assert labels[i] == invalidArgument;
+                }
+            } else {
+                assert labels[i] == invalidArgument;
+            }
+        }
+        visitor.mark(invalidArgument);
+        generateInvalidTupleIndex(visitor);
+        visitor.endMethod();
     }
 
     private static Label[] createLabels(int n) {
@@ -673,6 +706,21 @@ public final class TupleGenerator {
         @Override
         public Class<? extends Tuple> getTupleClass() {
             return ctor.getDeclaringClass();
+        }
+    }
+
+    private static class CastConverter extends Generator {
+        private final Type from;
+        private final Type to;
+
+        public CastConverter(Type from, Type to) {
+            this.from = from;
+            this.to = to;
+        }
+
+        @Override
+        public void generate(MxGeneratorAdapter mv) {
+            mv.cast(from, to);
         }
     }
 }

@@ -101,6 +101,31 @@ public class TupleGeneratorUTest {
         createTuple(array(String.class), "Test").getLong(0);
     }
 
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testInvalidConverts() throws Exception {
+        createTuple(array(long.class), 3L).getInt(0);
+    }
+
+    public void testConverts() throws Exception {
+        Tuple tuple = createTuple(array(byte.class, int.class, float.class, String.class), (byte)1, 3, 4f, "test");
+        assertEquals(tuple.getByte(0), (byte)1);
+        assertEquals(tuple.getChar(0), (char)1);
+        assertEquals(tuple.getShort(0), (short)1);
+        assertEquals(tuple.getInt(0), 1);
+        assertEquals(tuple.getLong(0), 1L);
+
+        assertEquals(tuple.getInt(1), 3);
+        assertEquals(tuple.getLong(1), 3L);
+
+        assertEquals(tuple.getFloat(2), 4f);
+        assertEquals(tuple.getDouble(2), 4d);
+
+        assertEquals(tuple.get(0), (byte)1);
+        assertEquals(tuple.get(1), 3);
+        assertEquals(tuple.get(2), 4f);
+        assertEquals(tuple.get(3), "test");
+    }
+
     public void testEquals() throws Exception {
         Class[] t = array(boolean.class, byte.class, char.class, short.class, int.class, long.class, float.class, float.class, double.class, double.class, String.class, String.class);
         Object[] v1 = { true, (byte) 3, 'a', (short) 11, 441, 71L, 31f, Float.NaN, 44d, Double.NaN, "123", null};

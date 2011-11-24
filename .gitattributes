@@ -104,6 +104,7 @@ mxcache-asm/src/main/java/com/maxifier/mxcache/asm/util/TraceSignatureVisitor.ja
 mxcache-asm/src/main/java/com/maxifier/mxcache/asm/util/Traceable.java -text
 mxcache-commons/mxcache-commons.iml -text
 mxcache-commons/pom.xml -text
+mxcache-commons/src/main/java/com/maxifier/mxcache/PublicAPI.java -text
 mxcache-commons/src/main/java/com/maxifier/mxcache/proxy/MxAbstractProxy.java -text
 mxcache-commons/src/main/java/com/maxifier/mxcache/proxy/MxAbstractProxyFactory.java -text
 mxcache-commons/src/main/java/com/maxifier/mxcache/proxy/MxGenericProxy.java -text
@@ -375,7 +376,6 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/MxCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/MxCacheException.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/NoSuchInstanceException.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/NonInstrumentedCacheException.java -text
-mxcache-runtime/src/main/java/com/maxifier/mxcache/PublicAPI.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/ResourceInstrumented.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/StatisticsMode.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/StatisticsModeEnum.java -text
