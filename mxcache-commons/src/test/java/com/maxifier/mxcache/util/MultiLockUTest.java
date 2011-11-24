@@ -7,6 +7,8 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static org.testng.Assert.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: dalex
@@ -22,11 +24,26 @@ public class MultiLockUTest {
 
         part.lock();
         try {
+            assertTrue(part.isHeldByCurrentThread());
+            assertTrue(part.isLocked());
+
             part.lock();
-            part.unlock();
+            try {
+                assertTrue(part.isHeldByCurrentThread());
+                assertTrue(part.isLocked());
+            } finally {
+                part.unlock();
+            }
         } finally {
             part.unlock();
         }
+    }
+
+    @Test(expectedExceptions = IllegalMonitorStateException.class)
+    public void testInvalidUnlock() {
+        MultiLock lock = new MultiLock();
+        MultiLock.Sublock part = new MultiLock.Sublock(lock);
+        part.unlock();
     }
 
     public void testLockWithParent() {
@@ -36,7 +53,12 @@ public class MultiLockUTest {
         lock.lock();
         try {
             part.lock();
-            part.unlock();
+            try {
+                assertTrue(part.isHeldByCurrentThread());
+                assertTrue(part.isLocked());
+            } finally {
+                part.unlock();
+            }
         } finally {
             lock.unlock();
         }
@@ -52,9 +74,13 @@ public class MultiLockUTest {
             @Override
             public void run() {
                 part.lock();
-                barrier(barrier);
-                barrier(barrier);
                 try {
+                    barrier(barrier);
+                    barrier(barrier);
+
+                    assertTrue(part.isHeldByCurrentThread());
+                    assertTrue(part.isLocked());
+
                     lock.lock();
                     try {
                         notification.set(true);
@@ -80,7 +106,7 @@ public class MultiLockUTest {
             part.lock();
             try {
                 // проверяем, что пропустили
-                Assert.assertTrue(notification.get());
+                assertTrue(notification.get());
             } finally {
                 part.lock();
             }
@@ -128,7 +154,7 @@ public class MultiLockUTest {
                 part.lock();
                 try {
                     // проверяем, что пропустили
-                    Assert.assertTrue(notification.get());
+                    assertTrue(notification.get());
                 } finally {
                     part.lock();
                 }
