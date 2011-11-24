@@ -15,8 +15,7 @@ import org.testng.annotations.Test;
  * Date: 31.08.2010
  * Time: 16:14:31
  */
-//@SuppressWarnings({"AccessStaticViaInstance"})
-@Test(enabled = true)
+@Test(enabled = false)
 public class PerformanceFTest {
     private static final CacheCleaner CLEANER = CacheFactory.getCleaner();
 
