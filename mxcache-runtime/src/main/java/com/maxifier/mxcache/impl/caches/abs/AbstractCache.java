@@ -14,7 +14,7 @@ import java.util.concurrent.locks.Lock;
  * Date: 08.09.2010
  * Time: 9:51:52
  */
-abstract class AbstractCache extends LightweightLock implements Cache, Lock {
+abstract class AbstractCache extends LightweightLock implements Cache {
     private final MutableStatistics statistics;
 
     protected AbstractCache(@Nullable MutableStatistics statistics) {
