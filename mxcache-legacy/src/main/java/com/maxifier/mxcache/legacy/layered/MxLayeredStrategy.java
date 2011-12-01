@@ -3,6 +3,7 @@ package com.maxifier.mxcache.legacy.layered;
 import com.magenta.dataserializator.MxObjectInput;
 import com.magenta.dataserializator.MxObjectOutput;
 import com.maxifier.mxcache.MxCacheException;
+import com.maxifier.mxcache.PublicAPI;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.impl.resource.ResourceOccupied;
@@ -111,6 +112,7 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
     /**
      * @deprecated externalizable use only
      */
+    @SuppressWarnings("UnusedDeclaration")
     @Deprecated
     public MxLayeredStrategy() {
     }
@@ -265,11 +267,9 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
             return false;
         }
         if (data[minLayer] == null) {
-            if (minLayer != count - 1) {
-                if (!manager.getLayer(minLayer).tryToCache(this)) {
-                    logger.error("Cannot add to longtime cache from " + layerId);
-                    return false;
-                }
+            if (minLayer != count - 1 && !manager.getLayer(minLayer).tryToCache(this)) {
+                logger.error("Cannot add to longtime cache from " + layerId);
+                return false;
             }
             try {
                 data[minLayer] = manager.getConverter().convert(layerId, minLayer, 0, value);
@@ -308,10 +308,12 @@ public final class MxLayeredStrategy<T> extends MxList.Element<MxLayeredStrategy
         return v;
     }
 
+    @PublicAPI
     public int getQueries() {
         return queries;
     }
 
+    @PublicAPI
     public int getLastQueryTime() {
         return lastQueryTime;
     }

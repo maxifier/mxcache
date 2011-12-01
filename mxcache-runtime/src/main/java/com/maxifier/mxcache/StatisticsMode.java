@@ -1,7 +1,5 @@
 package com.maxifier.mxcache;
 
-import com.maxifier.mxcache.provider.CachingStrategy;
-
 import java.lang.annotation.*;
 
 /**

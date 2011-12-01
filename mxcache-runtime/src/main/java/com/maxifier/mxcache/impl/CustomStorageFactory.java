@@ -5,6 +5,7 @@ import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.StorageFactory;
 import com.maxifier.mxcache.storage.Storage;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -57,7 +58,7 @@ public class CustomStorageFactory<T> implements StorageFactory<T> {
         return constructor.getDeclaringClass().getCanonicalName();
     }
 
-    @NotNull
+    @Nullable
     static <T> Constructor<? extends T> getCustomConstructor(Class<? extends T> cls) {
         Constructor[] constructors = cls.getDeclaredConstructors();
 
@@ -65,12 +66,10 @@ public class CustomStorageFactory<T> implements StorageFactory<T> {
         int n = 0;
         for (Constructor constructor : constructors) {
             Class<?>[] types = constructor.getParameterTypes();
-            if (isAllowedConstructorArgumentTypes(types)) {
-                if (res == null || n < types.length) {
-                    //noinspection unchecked
-                    res = constructor;
-                    n = types.length;
-                }
+            if (isAllowedConstructorArgumentTypes(types) && (res == null || n < types.length)) {
+                //noinspection unchecked
+                res = constructor;
+                n = types.length;
             }
         }
         return res;

@@ -89,11 +89,9 @@ class UseProxyDetector extends ClassAdapter {
                 cached = true;
                 proxiedMethods.remove(method);
                 useProxy = false;
-            } else if (desc.equals(InstrumentatorImpl.USE_PROXY_DESCRIPTOR)) {
-                if (!cached) {
-                    proxiedMethods.put(method, context);
-                    useProxy = true;
-                }
+            } else if (desc.equals(InstrumentatorImpl.USE_PROXY_DESCRIPTOR) && !cached) {
+                proxiedMethods.put(method, context);
+                useProxy = true;
             }
             return v;
         }

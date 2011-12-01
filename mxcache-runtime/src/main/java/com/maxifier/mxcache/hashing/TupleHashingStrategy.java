@@ -9,7 +9,7 @@ import gnu.trove.TObjectHashingStrategy;
  * Date: 01.07.2010
  * Time: 14:14:35
  */
-public class TupleHashingStrategy implements TObjectHashingStrategy<Tuple> {
+public final class TupleHashingStrategy implements TObjectHashingStrategy<Tuple> {
     private static final long serialVersionUID = 100L;
 
     /** Большое простое число, просто хэш для null */

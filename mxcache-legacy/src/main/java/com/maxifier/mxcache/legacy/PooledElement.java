@@ -260,17 +260,15 @@ class PooledElement<T> extends MultiLock.Sublock {
             }
             setObject(null);
         }
-        if (ALLOW_SAVE_TO_BYTES) {
-            if (bytes != null) {
-                double distCost = diskStorageCost();
+        if (ALLOW_SAVE_TO_BYTES && bytes != null) {
+            double distCost = diskStorageCost();
 
-                double removeCost = removeCost();
+            double removeCost = removeCost();
 
-                if (distCost < removeCost && resource == null) {
-                    setResource(save(bytes, value));
-                }
-                setBytes(null);
+            if (distCost < removeCost && resource == null) {
+                setResource(save(bytes, value));
             }
+            setBytes(null);
         }
         return value == null && bytes == null;
     }

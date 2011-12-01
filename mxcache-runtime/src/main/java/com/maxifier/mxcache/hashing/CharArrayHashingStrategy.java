@@ -11,7 +11,7 @@ import java.util.Arrays;
  * Date: 01.07.2010
  * Time: 14:42:12
  */
-public class CharArrayHashingStrategy implements TObjectHashingStrategy<char[]> {
+public final class CharArrayHashingStrategy implements TObjectHashingStrategy<char[]> {
     private static final long serialVersionUID = 100L;
 
     private static final CharArrayHashingStrategy INSTANCE = new CharArrayHashingStrategy();

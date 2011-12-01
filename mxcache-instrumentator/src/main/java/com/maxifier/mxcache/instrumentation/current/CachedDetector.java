@@ -8,7 +8,7 @@ import com.maxifier.mxcache.util.CodegenHelper;
 import gnu.trove.THashMap;
 
 import java.lang.reflect.Modifier;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
 
 import static com.maxifier.mxcache.instrumentation.CommonRuntimeTypes.*;
@@ -127,20 +127,15 @@ class CachedDetector extends ClassAdapter {
             @Override
             public void visit(String name, Object value) {
                 if (name.equals("tags") && value instanceof String[]) {
-                    List<String> tags = context.getTags();
-                    for (String tag : (String[])value) {
-                        tags.add(tag);
-                    }
+                    Collections.addAll(context.getTags(), (String[]) value);
                 } else if (name.equals("name") && value instanceof String) {
                     if (!value.equals("")) {
                         context.setName((String) value);
                     }
                 } else if (name.equals("group")) {
                     context.setGroup((String) value);
-                } else if (name.equals("activity")) {
-                    if (!"".equals(value)) {
-                        throw new IllegalCachedClass("Activity is not supported currently", sourceFileName);
-                    }
+                } else if (name.equals("activity") && !"".equals(value)) {
+                    throw new IllegalCachedClass("Activity is not supported currently", sourceFileName);
                 }
             }
 

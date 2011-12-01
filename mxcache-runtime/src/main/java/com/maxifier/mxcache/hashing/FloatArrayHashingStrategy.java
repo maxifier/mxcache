@@ -11,7 +11,7 @@ import java.util.Arrays;
  * Date: 01.07.2010
  * Time: 14:42:12
  */
-public class FloatArrayHashingStrategy implements TObjectHashingStrategy<float[]> {
+public final class FloatArrayHashingStrategy implements TObjectHashingStrategy<float[]> {
     private static final long serialVersionUID = 100L;
 
     private static final FloatArrayHashingStrategy INSTANCE = new FloatArrayHashingStrategy();
