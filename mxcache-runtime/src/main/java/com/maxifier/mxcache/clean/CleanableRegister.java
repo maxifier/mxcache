@@ -36,27 +36,7 @@ public final class CleanableRegister implements CacheCleaner {
     private final Map<String, CustomCleanableInstanceList> groupCleanMap = new THashMap<String, CustomCleanableInstanceList>();
     private final Map<String, CustomCleanableInstanceList> tagCleanMap = new THashMap<String, CustomCleanableInstanceList>();
 
-    private static final Cleanable<?> EMPTY_CLEANABLE = new Cleanable<Object>() {
-        @Override
-        public void appendStaticCachesTo(List<CleaningNode> locks) {
-            // interfaces has no caches
-        }
-
-        @Override
-        public void appendInstanceCachesTo(List<CleaningNode> locks, Object o) {
-            // interfaces has no caches
-        }
-
-        @Override
-        public Cache getStaticCache(int id) {
-            throw new IllegalArgumentException("Interface has no caches");
-        }
-
-        @Override
-        public Cache getInstanceCache(Object o, int id) {
-            throw new IllegalArgumentException("Interface has no caches");
-        }
-    };
+    private static final Cleanable<?> EMPTY_CLEANABLE = new EmptyCleanable();
 
     //---- Вызывается в секции статической инициализации инструментированного класса -----------------------------------
 
@@ -299,6 +279,28 @@ public final class CleanableRegister implements CacheCleaner {
             list.clearCache();
         } else {
             logger.warn("Can`t find cache for annotation " + annotationClass);
+        }
+    }
+
+    private static class EmptyCleanable implements Cleanable<Object> {
+        @Override
+        public void appendStaticCachesTo(List<CleaningNode> locks) {
+            // interfaces has no caches
+        }
+
+        @Override
+        public void appendInstanceCachesTo(List<CleaningNode> locks, Object o) {
+            // interfaces has no caches
+        }
+
+        @Override
+        public Cache getStaticCache(int id) {
+            throw new IllegalArgumentException("Interface has no caches");
+        }
+
+        @Override
+        public Cache getInstanceCache(Object o, int id) {
+            throw new IllegalArgumentException("Interface has no caches");
         }
     }
 }
