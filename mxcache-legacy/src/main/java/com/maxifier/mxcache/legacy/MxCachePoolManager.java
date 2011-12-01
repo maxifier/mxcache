@@ -1,5 +1,6 @@
 package com.maxifier.mxcache.legacy;
 
+import com.maxifier.mxcache.PublicAPI;
 import com.maxifier.mxcache.legacy.converters.*;
 import com.maxifier.mxcache.util.FormatHelper;
 import com.maxifier.mxcache.util.MultiLock;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.Lock;
@@ -413,6 +415,7 @@ public class MxCachePoolManager<T> extends ElementOwner<T> implements MxStateHan
         }
     }
 
+    @PublicAPI
     public void clearAll() {
         lock();
         try {
@@ -715,7 +718,7 @@ public class MxCachePoolManager<T> extends ElementOwner<T> implements MxStateHan
         return lock;
     }
 
-    private static class PooledElementComparator<T> implements Comparator<PooledElement<T>> {
+    private static class PooledElementComparator<T> implements Comparator<PooledElement<T>>, Serializable {
         @Override
         public int compare(PooledElement<T> a, PooledElement<T> b) {
             return a == b ? 0 : Float.compare(a.getForecast(), b.getForecast());

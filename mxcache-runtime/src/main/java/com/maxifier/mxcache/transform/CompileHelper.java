@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
 import javax.tools.*;
 import javax.tools.JavaFileObject.Kind;
@@ -62,9 +64,16 @@ public final class CompileHelper extends ForwardingJavaFileManager<StandardJavaF
             return new ByteArrayOutputStream() {
                 @Override
                 public void close() throws IOException {
-                    loadedClass = CodegenHelper.loadClass(new ClassLoader() {}, toByteArray());
+                    loadedClass = CodegenHelper.loadClass(AccessController.doPrivileged(new CreateClassLoaderAction()), toByteArray());
                 }
             };
+        }
+    }
+
+    private static class CreateClassLoaderAction implements PrivilegedAction<ClassLoader> {
+        @Override
+        public ClassLoader run() {
+            return new ClassLoader() {};
         }
     }
 
