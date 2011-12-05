@@ -21,6 +21,9 @@ public abstract class MxAbstractResourceConverter<T> implements MxConverter<T, M
 
     private static final String DEFAULT_RESOURCE_NAME_TEMPLATE = "cache/${classAbbr}_${id}.tmp";
 
+    private static final int MAX_ABBREVIATION_LENGTH = 3;
+    private static final int MAX_CACHE_RANDOM_ID = 0x1000000;
+
     private final MxResourceManager resourceManager;
     private final String resourceNameTemplate;
 
@@ -43,7 +46,7 @@ public abstract class MxAbstractResourceConverter<T> implements MxConverter<T, M
     private static String getClassAbr(@NotNull Class cls) {
         String s = cls.getName();
         StringBuilder b = new StringBuilder();
-        for (int i = 0; i < s.length() && b.length() <= 3; i++) {
+        for (int i = 0; i < s.length() && b.length() <= MAX_ABBREVIATION_LENGTH; i++) {
             char c = s.charAt(i);
             if (Character.isUpperCase(c) || Character.isDigit(c)) {
                 b.append(Character.toLowerCase(c));
@@ -60,7 +63,7 @@ public abstract class MxAbstractResourceConverter<T> implements MxConverter<T, M
             String prefix = resourceName.substring(0, index);
             String postfix = resourceName.substring(index + ID_TAG_NAME.length());
             do {
-                cacheFile = resourceManager.getTempResource(prefix + Integer.toHexString(RANDOM.nextInt(0x1000000)) + postfix);
+                cacheFile = resourceManager.getTempResource(prefix + Integer.toHexString(RANDOM.nextInt(MAX_CACHE_RANDOM_ID)) + postfix);
             } while (cacheFile.exists());
             try {
                 cacheFile.deleteOnExit();
