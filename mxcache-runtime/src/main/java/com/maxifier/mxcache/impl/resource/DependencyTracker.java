@@ -20,7 +20,7 @@ import java.util.*;
 public final class DependencyTracker {
     private static final ThreadLocal<DependencyNode> NODE = new ThreadLocal<DependencyNode>();
 
-    /** Этот узел выставляется, если не нужно автоотслеживание зависимостей */
+    /** ???? ???? ????????????, ???? ?? ????? ???????????????? ???????????? */
     public static final DependencyNode DUMMY_NODE = new DummyDependencyNode();
 
     private DependencyTracker() {
@@ -33,10 +33,7 @@ public final class DependencyTracker {
      */
     public static void mark(DependencyNode node) {
         if (node != DUMMY_NODE) {
-            DependencyNode oldNode = NODE.get();
-            if (oldNode != null && oldNode != DUMMY_NODE) {
-                node.trackDependency(oldNode);
-            }
+            track(node, NODE.get());
         }
     }
 
@@ -51,16 +48,19 @@ public final class DependencyTracker {
         DependencyNode oldNode = NODE.get();
         assert oldNode == null || node != null: "Could not reassign node to null";
         if (node != DUMMY_NODE) {
-            if (oldNode != null && oldNode != DUMMY_NODE) {
-                // отслеживаем только для существенных узлов
-                node.trackDependency(oldNode);
-            }
+            track(node, oldNode);
             NODE.set(node);
         } else if (oldNode == null) {
-            // если этот узел первый, то все-таки выставим наш узел-индикатор
+            // ???? ???? ???? ??????, ?? ???-???? ???????? ??? ????-?????????
             NODE.set(node);
         }
         return oldNode;
+    }
+
+    private static void track(DependencyNode node, DependencyNode oldNode) {
+        if (oldNode != null && oldNode != DUMMY_NODE && node != oldNode) {
+            node.trackDependency(oldNode);
+        }
     }
 
     public static void exit(@Nullable DependencyNode callerNode) {
@@ -128,7 +128,7 @@ public final class DependencyTracker {
 
         @Override
         public void addNode(@NotNull CleaningNode cache) {
-            // ничего не делаем, кэшу ничего не обязательно знать, что его узел ущербный
+            // ?????? ?? ??????, ???? ?????? ?? ??????????? ?????, ??? ??? ???? ????????
         }
 
         @Override

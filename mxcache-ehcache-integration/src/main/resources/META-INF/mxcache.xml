@@ -2,7 +2,7 @@
 <mxcache>
     <rule>
         <selector>
-            <annotation>com.maxifier.mxcache.ehcache.UseEhcache</annotation>
+            <annotated>com.maxifier.mxcache.ehcache.UseEhcache</annotated>
         </selector>
         <strategy>com.maxifier.mxcache.ehcache.EhcacheStrategy</strategy>
     </rule>
