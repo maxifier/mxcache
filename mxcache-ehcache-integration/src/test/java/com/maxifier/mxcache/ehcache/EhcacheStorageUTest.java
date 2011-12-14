@@ -1,7 +1,6 @@
 package com.maxifier.mxcache.ehcache;
 
 import com.maxifier.mxcache.Cached;
-import com.maxifier.mxcache.EvictionPolicyEnum;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -15,24 +14,54 @@ import org.testng.annotations.Test;
 public class EhcacheStorageUTest {
 
     @SuppressWarnings( { "UnusedParameters" })
-    class T {
+    class X {
         int i;
 
         @Cached(name = "xxx")
-        @UseEhcache(maxElements = 3)
+        @UseEhcache
         private int xxx(String s) {
             return i++;
         }
+    }
+
+    class Y {
+        int i;
 
         @Cached(name = "yyy")
-        @UseEhcache(maxElements = 2, memoryEvictionPolicy = EvictionPolicyEnum.LFU)
+        @UseEhcache
         private int yyy(String s) {
             return i++;
         }
     }
 
+    class Z {
+        int i;
+
+        @Cached(name = "zzz")
+        @UseEhcache
+        private int zzz(String s) {
+            return i++;
+        }
+    }
+
+    public void testDiskStore() {
+        Z t = new Z();
+        Assert.assertEquals(t.zzz("1"), 0);
+        Assert.assertEquals(t.zzz("2"), 1);
+        Assert.assertEquals(t.zzz("1"), 0);
+        Assert.assertEquals(t.zzz("2"), 1);
+        Assert.assertEquals(t.zzz("3"), 2);
+
+        Assert.assertEquals(t.zzz("4"), 3);
+        Assert.assertEquals(t.zzz("5"), 4);
+        Assert.assertEquals(t.zzz("6"), 5);
+
+        // loaded from disk...
+        Assert.assertEquals(t.zzz("1"), 0);
+    }
+
     public void testSimpleOverflow() {
-        T t = new T();
+        X t = new X();
         Assert.assertEquals(t.xxx("1"), 0);
         Assert.assertEquals(t.xxx("2"), 1);
         Assert.assertEquals(t.xxx("1"), 0);
@@ -45,19 +74,8 @@ public class EhcacheStorageUTest {
         Assert.assertEquals(t.xxx("1"), 6);
     }
 
-    public void testDifferentInstances() {
-        T t1 = new T();
-        T t2 = new T();
-        Assert.assertEquals(t1.xxx("1"), 0);
-        Assert.assertEquals(t2.xxx("1"), 0);
-        Assert.assertEquals(t1.xxx("2"), 1);
-        Assert.assertEquals(t2.xxx("2"), 1);
-        Assert.assertEquals(t1.xxx("3"), 2);
-        Assert.assertEquals(t2.xxx("4"), 2);
-    }
-
     public void testEvictionPolicy() {
-        T t = new T();
+        Y t = new Y();
         Assert.assertEquals(t.yyy("1"), 0);
         Assert.assertEquals(t.yyy("1"), 0);
         Assert.assertEquals(t.yyy("1"), 0);

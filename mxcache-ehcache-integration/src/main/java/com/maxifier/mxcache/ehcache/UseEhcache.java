@@ -14,7 +14,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface UseEhcache {
-    int maxElements();
-
-    EvictionPolicyEnum memoryEvictionPolicy() default EvictionPolicyEnum.DEFAULT;
+    String configURL() default "classpath://META-INF/ehcache.xml";
 }

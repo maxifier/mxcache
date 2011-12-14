@@ -175,6 +175,7 @@ mxcache-ehcache-integration/src/main/java/com/maxifier/mxcache/ehcache/EhcacheSt
 mxcache-ehcache-integration/src/main/java/com/maxifier/mxcache/ehcache/UseEhcache.java -text
 mxcache-ehcache-integration/src/main/resources/META-INF/mxcache.xml -text
 mxcache-ehcache-integration/src/test/java/com/maxifier/mxcache/ehcache/EhcacheStorageUTest.java -text
+mxcache-ehcache-integration/src/test/resources/META-INF/ehcache.xml -text
 mxcache-generation/mxcache-generation.iml -text
 mxcache-generation/pom.xml -text
 mxcache-generation/src/test/java/com/maxifier/mxcache/generation/Generate.java -text
