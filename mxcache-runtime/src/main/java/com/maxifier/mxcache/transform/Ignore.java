@@ -16,7 +16,6 @@ import java.lang.annotation.Target;
  * <p>
  * Ignoring arguments of cached methods is error-prone. <b>Be carefull while using this annotation!</b>
  */
-@Transform(owner = BasicTransforms.class, method = "ignore")
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 @Deprecated

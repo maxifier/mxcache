@@ -19,7 +19,7 @@ import static com.maxifier.mxcache.util.CodegenHelper.*;
 * Date: 15.09.2010
 * Time: 12:29:32
 */
-public class ExternalTransformGenerator implements TransformGenerator {
+public class ExternalTransformGenerator extends ScalarTransformGenerator {
     private static final String TRANSFORMATOR_FIELD = "transformator";
 
     private static final Type INSTANCE_PROVIDER_TYPE = getType(InstanceProvider.class);

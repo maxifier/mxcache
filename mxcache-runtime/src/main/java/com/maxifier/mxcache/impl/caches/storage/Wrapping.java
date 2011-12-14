@@ -80,7 +80,7 @@ public final class Wrapping {
         return getFactory(storageSignature, cacheSignature, null, null, perElementLocking);
     }
 
-    public static WrapperFactory getFactory(Signature storageSignature, Signature cacheSignature, TransformGenerator userKeyTransformer, TransformGenerator userValueTransformer, boolean perElementLocking) {
+    public static WrapperFactory getFactory(Signature storageSignature, Signature cacheSignature, @Nullable TransformGenerator userKeyTransformer, @Nullable TransformGenerator userValueTransformer, boolean perElementLocking) {
         if (isNoTransform(userKeyTransformer) && isNoTransform(userValueTransformer) && storageSignature.isWider(cacheSignature)) {
             return getPlainFactory(storageSignature, perElementLocking);
         }
@@ -127,7 +127,7 @@ public final class Wrapping {
 
     private static WrapperFactory createConvertingFactory(Signature storageSignature, Signature cacheSignature, CacheImplementationSignature signature, @NotNull TransformGenerator userKeyTransformer, @NotNull TransformGenerator userValueTransformer, boolean perElementLocking) {
         @NotNull
-        TransformGenerator keyTransformer = boxTransformer(userKeyTransformer, cacheSignature.getKey(), storageSignature.getKey());
+        TransformGenerator keyTransformer = boxTransformer(userKeyTransformer, cacheSignature.getContainer(), storageSignature.getContainer());
         @NotNull
         TransformGenerator valueTransformer = boxTransformer(userValueTransformer, cacheSignature.getValue(), storageSignature.getValue());
 
@@ -167,10 +167,10 @@ public final class Wrapping {
 
         generateGetStatistics(w, superName, wrapperType, storageType);
 
-        Type erasedCacheKeyType = cacheSignature.getKey() == null ? null : erase(Type.getType(cacheSignature.getKey()));
+        Type erasedCacheKeyType = erase(cacheSignature. getContainerType());
         Type erasedCacheValueType = erase(Type.getType(cacheSignature.getValue()));
 
-        Type storageKeyType = storageSignature.getKey() == null ? null : Type.getType(storageSignature.getKey());
+        Type storageKeyType = storageSignature.getContainerType();
         Type storageValueType = Type.getType(storageSignature.getValue());
 
         if (needsIsCalculated(erasedCacheValueType)) {

@@ -1342,10 +1342,12 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/CustomTransformAnno
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/EmptyTransformGenerator.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/ExternalTransformGenerator.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/Ignore.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/IgnoreTransformGenerator.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/InvalidTransformAnnotations.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/InvocationType.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/JavaSourceFactory.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/ReversibleTransform.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/ScalarTransformGenerator.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/SmartReference.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/SmartSoftReference.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/SmartWeakReference.java -text

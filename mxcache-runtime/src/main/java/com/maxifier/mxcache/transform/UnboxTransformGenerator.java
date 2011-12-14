@@ -12,7 +12,7 @@ import static com.maxifier.mxcache.util.CodegenHelper.toClass;
 * Date: 15.09.2010
 * Time: 12:29:20
 */
-public class UnboxTransformGenerator implements TransformGenerator {
+public class UnboxTransformGenerator extends ScalarTransformGenerator {
     private final Type type;
 
     public UnboxTransformGenerator(Type type) {

@@ -7,6 +7,7 @@ import com.maxifier.mxcache.context.CacheContextImpl;
 import com.maxifier.mxcache.context.UseCacheContext;
 import com.maxifier.mxcache.transform.Ignore;
 import com.maxifier.mxcache.transform.Transform;
+import com.maxifier.mxcache.transform.WeakKey;
 
 import java.io.*;
 import java.lang.annotation.Retention;
@@ -134,6 +135,24 @@ public class TestCachedImpl implements TestCached {
     @Override
     public String ignore(@Ignore String x) {
         return x;
+    }
+
+    @Cached
+    @Override
+    public String ignore(@Ignore String x, long y) {
+        return x + y;
+    }
+
+    @Cached
+    @Override
+    public String ignore(@Ignore long x, @WeakKey String y) {
+        return x + y;
+    }
+
+    @Cached
+    @Override
+    public String ignore(String x, @Ignore long y, @WeakKey String z) {
+        return x + y + z;
     }
 
     @Override

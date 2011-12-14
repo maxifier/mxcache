@@ -221,6 +221,9 @@ public final class CodegenHelper {
     }
 
     public static Type erase(Type value) {
+        if (value == null) {
+            return null;
+        }
         return isReferenceType(value) ? OBJECT_TYPE : value;
     }
 

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 * Date: 15.09.2010
 * Time: 12:29:13
 */
-public class BoxTransformGenerator implements TransformGenerator {
+public class BoxTransformGenerator extends ScalarTransformGenerator {
     private final Type type;
 
     public BoxTransformGenerator(@NotNull Type type) {

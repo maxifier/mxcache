@@ -78,8 +78,8 @@ public class NullCacheManager<T> implements CacheManager<T> {
         ctor.returnValue();
         ctor.endMethod();
 
-        Type keyType = signature.getKey() == null ? null : Type.getType(signature.getKey());
-        MxGeneratorAdapter getOrCreate = cw.defineMethod(ACC_PUBLIC, new Method("getOrCreate", valueType, signature.getKey() == null ? EMPTY_TYPES : new Type[] { keyType }));
+        Type keyType = signature.getContainerType();
+        MxGeneratorAdapter getOrCreate = cw.defineMethod(ACC_PUBLIC, new Method("getOrCreate", valueType, signature.getContainer() == null ? EMPTY_TYPES : new Type[] { keyType }));
         getOrCreate.visitCode();
         getOrCreate.get(calculable);
         getOrCreate.get(owner);

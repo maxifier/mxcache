@@ -3,8 +3,6 @@ package com.maxifier.mxcache.transform;
 import com.maxifier.mxcache.CacheFactory;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.Method;
-import com.maxifier.mxcache.tuple.Tuple;
-import com.maxifier.mxcache.tuple.TupleGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,6 +20,7 @@ import static com.maxifier.mxcache.transform.InvocationType.*;
  * Date: 14.09.2010
  * Time: 18:59:42
  */
+@SuppressWarnings("deprecation")
 public final class TransformGeneratorFactoryImpl implements TransformGeneratorFactory {
     private static final TransformGeneratorFactoryImpl INSTANCE = new TransformGeneratorFactoryImpl();
 
@@ -64,6 +63,20 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
         @Override
         public String toString() {
             return annotation.toString();
+        }
+    }
+
+    private static class ConstTransformGeneratorRef<T extends Annotation> extends TransformGeneratorRef<T> {
+        private final TransformGenerator generator;
+
+        public ConstTransformGeneratorRef(T annotation, Class argType, TransformGenerator generator) {
+            super(annotation, argType);
+            this.generator = generator;
+        }
+
+        @Override
+        TransformGenerator get(Annotation[] allAnnotations) {
+            return generator;
         }
     }
 
@@ -156,6 +169,9 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
 
     @Nullable
     private TransformGeneratorRef forAnnotation(Class argType, Annotation annotation) {
+        if (annotation instanceof Ignore) {
+            return new ConstTransformGeneratorRef<Ignore>((Ignore)annotation, argType, TransformGenerator.IGNORE_TRANSFORM);
+        }
         if (annotation instanceof Transform) {
             return new SimpleTransformGeneratorRef((Transform) annotation, argType);
         }
@@ -193,27 +209,30 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
 
     @NotNull
     TransformGenerator createMultiParam(Annotation[][] paramAnnotations, Class[] params) throws InvalidTransformAnnotations {
-        int transformatorCount = 0;
+        boolean onlyNoTransforms = true;
         TransformGenerator[] transformGenerators = new TransformGenerator[params.length];
         Class[] transformedParams = Arrays.copyOf(params, params.length);
+        int outParams = 0;
         for (int i = 0; i < paramAnnotations.length; i++) {
             Annotation[] paramAnnotation = paramAnnotations[i];
             Class paramType = params[i];
             TransformGenerator transformGenerator = forArgument(paramAnnotation, paramType);
-            if (transformGenerator != null) {
+            if (transformGenerator == TransformGenerator.NO_TRANSFORM) {
+                transformedParams[outParams++] = paramType;
+            } else {
+                onlyNoTransforms = false;
                 transformGenerators[i] = transformGenerator;
-                transformedParams[i] = transformGenerator.getTransformedType(paramType);
-                transformatorCount++;
+                if (transformGenerator != TransformGenerator.IGNORE_TRANSFORM) {
+                    transformedParams[outParams++] = transformGenerator.getTransformedType(paramType);
+                }
             }
         }
-        if (transformatorCount == 0) {
+        if (onlyNoTransforms) {
             return TransformGenerator.NO_TRANSFORM;
         }
 
-        Class<? extends Tuple> tupleIn = TupleGenerator.getTupleClass(params);
-        Class<? extends Tuple> tupleOut = TupleGenerator.getTupleClass(transformedParams);
-
-        return new TupleTransformGenerator(transformGenerators, params, transformedParams, tupleIn, tupleOut);
+        transformedParams = outParams != transformedParams.length ? Arrays.copyOf(transformedParams, outParams) : transformedParams;
+        return new TupleTransformGenerator(transformGenerators, params, transformedParams);
     }
 
     @Override

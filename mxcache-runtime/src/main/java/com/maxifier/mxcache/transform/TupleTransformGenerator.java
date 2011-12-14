@@ -3,6 +3,8 @@ package com.maxifier.mxcache.transform;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
 import com.maxifier.mxcache.asm.commons.Method;
+import com.maxifier.mxcache.provider.Signature;
+import com.maxifier.mxcache.tuple.TupleGenerator;
 import com.maxifier.mxcache.util.ClassGenerator;
 
 import java.util.Arrays;
@@ -25,18 +27,27 @@ class TupleTransformGenerator implements TransformGenerator {
     private final Class tupleIn;
     private final Type tupleInType;
 
+    private final Class container;
     private final Class tupleOut;
     private final Type tupleOutType;
 
-    public TupleTransformGenerator(TransformGenerator[] transformGenerators, Class[] inTypes, Class[] outTypes, Class tupleIn, Class tupleOut) {
-        tupleInType = Type.getType(tupleIn);
-        tupleOutType = Type.getType(tupleOut);
-
+    public TupleTransformGenerator(TransformGenerator[] transformGenerators, Class[] inTypes, Class[] outTypes) {
         this.transformGenerators = transformGenerators;
         this.outTypes = outTypes;
         this.inTypes = inTypes;
-        this.tupleIn = tupleIn;
-        this.tupleOut = tupleOut;
+
+        tupleIn = TupleGenerator.getTupleClass(inTypes);
+        tupleInType = Type.getType(tupleIn);
+
+        if (outTypes.length > 1) {
+            tupleOut = TupleGenerator.getTupleClass(outTypes);
+            tupleOutType = Type.getType(tupleOut);
+            container = tupleOut;
+        } else {
+            tupleOut = null;
+            tupleOutType = null;
+            container = outTypes.length == 0 ? null : outTypes[0];
+        }
 
         this.fieldCount = getFieldCount(transformGenerators);
     }
@@ -54,34 +65,44 @@ class TupleTransformGenerator implements TransformGenerator {
     @Override
     public void generateForward(Type thisType, int fieldIndex, GeneratorAdapter method) {
         method.checkCast(tupleInType);
-        method.newInstance(tupleOutType);
-        method.dupX1();
-        method.swap();
-        for (int i = 0; i < transformGenerators.length; i++) {
+        if (tupleOut != null) {
+            method.newInstance(tupleOutType);
+            method.dupX1();
+            method.swap();
+        }
+        for (int i = 0, j = 0; i < transformGenerators.length; i++) {
             TransformGenerator transformGenerator = transformGenerators[i];
-            Type from = Type.getType(inTypes[i]);
-            Type to = Type.getType(outTypes[i]);
-            boolean last = i == transformGenerators.length - 1;
-            if (!last) {
-                method.dup();
-            }
-            method.invokeVirtual(tupleInType, new Method("getElement" + i, erase(from), EMPTY_TYPES));
-            if (isReferenceType(from)) {
-                method.checkCast(from);
-            }
-            if (transformGenerator != null) {
-                transformGenerator.generateForward(thisType, fieldIndex, method);
-                fieldIndex += transformGenerator.getFieldCount();
-            }
-            if (!last) {
-                method.swap(OBJECT_TYPE, to);
+            if (transformGenerator != TransformGenerator.IGNORE_TRANSFORM) {
+                Type from = Type.getType(inTypes[i]);
+                Type to = Type.getType(outTypes[j]);
+                boolean last = j == outTypes.length - 1;
+                if (!last) {
+                    method.dup();
+                }
+                method.invokeVirtual(tupleInType, new Method("getElement" + i, erase(from), EMPTY_TYPES));
+                if (isReferenceType(from)) {
+                    method.checkCast(from);
+                }
+                if (transformGenerator != null) {
+                    transformGenerator.generateForward(thisType, fieldIndex, method);
+                    fieldIndex += transformGenerator.getFieldCount();
+                }
+                if (!last) {
+                    method.swap(OBJECT_TYPE, to);
+                }
+                j++;
             }
         }
-        method.invokeConstructor(tupleOutType, new Method(CONSTRUCTOR_NAME, Type.VOID_TYPE, toErasedTypes(outTypes)));
+        if (tupleOut != null) {
+            method.invokeConstructor(tupleOutType, new Method(CONSTRUCTOR_NAME, Type.VOID_TYPE, toErasedTypes(outTypes)));
+        }
     }
 
     @Override
     public void generateBackward(Type thisType, int fieldIndex, GeneratorAdapter method) {
+        if (inTypes.length != outTypes.length) {
+            throw new UnsupportedOperationException("There are ignored params");
+        }
         method.checkCast(tupleOutType);
         method.newInstance(tupleInType);
         method.dupX1();
@@ -137,7 +158,18 @@ class TupleTransformGenerator implements TransformGenerator {
     @Override
     public Class getTransformedType(Class in) {
         assert in == tupleIn: "Tuple type should match " + in + " and " + tupleIn;
-        return tupleOut;
+        return container;
+    }
+
+    @Override
+    public Signature transformKey(Signature in) {
+        assert in.getContainer() == tupleIn: "Tuple type should match " + in + " and " + tupleIn;
+        return new Signature(outTypes, container, in.getValue());
+    }
+
+    @Override
+    public Signature transformValue(Signature in) {
+        throw new UnsupportedOperationException("Value cannot be tuple transform");
     }
 
     @Override

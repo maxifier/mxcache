@@ -118,7 +118,10 @@ public final class ProxyingCacheGenerator {
 
         writer.visitEnd();
 
-        ResolvableGenerator.generateResolvable(owner, calculatableName, cacheInterface, new Method("getOrCreate", OBJECT_TYPE, ekey == null ? EMPTY_TYPES : new Type[] { ekey }), key == null ? EMPTY_TYPES : new Type[] { getType(key) }, false, keyTransform == null ? null : new TransformGenerator[] { keyTransform });
+        Type[] keyTypes = key == null ? EMPTY_TYPES : new Type[]{getType(key)};
+        Type[] ekeyTypes = ekey == null ? EMPTY_TYPES : new Type[]{ekey};
+        TransformGenerator[] transforms = keyTransform == null ? null : new TransformGenerator[]{keyTransform};
+        ResolvableGenerator.generateResolvable(owner, calculatableName, cacheInterface, new Method("getOrCreate", OBJECT_TYPE, ekeyTypes), keyTypes, false, transforms);
         return writer.toByteArray();
     }
 

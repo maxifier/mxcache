@@ -2,6 +2,7 @@ package com.maxifier.mxcache.transform;
 
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
+import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.util.ClassGenerator;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,6 +54,16 @@ public final class ChainedTransformGenerator implements TransformGenerator {
     @Override
     public Class getTransformedType(Class in) {
         return second.getTransformedType(first.getTransformedType(in));
+    }
+
+    @Override
+    public Signature transformKey(Signature in) {
+        return second.transformKey(first.transformKey(in));
+    }
+
+    @Override
+    public Signature transformValue(Signature in) {
+        return second.transformValue(first.transformValue(in));
     }
 
     @Override

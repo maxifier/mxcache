@@ -2,6 +2,7 @@ package com.maxifier.mxcache.transform;
 
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
+import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.util.ClassGenerator;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,6 +54,16 @@ public class CompositeTransformGenerator implements TransformGenerator {
     }
 
     @Override
+    public Signature transformKey(Signature in) {
+        return forward.transformKey(in);
+    }
+
+    @Override
+    public Signature transformValue(Signature in) {
+        return forward.transformValue(in);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -63,7 +74,6 @@ public class CompositeTransformGenerator implements TransformGenerator {
 
         CompositeTransformGenerator that = (CompositeTransformGenerator) o;
         return forward.equals(that.forward) && backward.equals(that.backward);
-
     }
 
     @Override

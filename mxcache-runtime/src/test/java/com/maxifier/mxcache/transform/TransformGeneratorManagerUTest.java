@@ -250,7 +250,7 @@ public class TransformGeneratorManagerUTest {
     public static class TestFactory implements TransformFactory {
         @Override
         public TransformGenerator create(Annotation annotation, Annotation[] allAnnotations, Class paramType) {
-            return new TransformGenerator() {
+            return new ScalarTransformGenerator() {
                 @Override
                 public void generateForward(Type thisType, int fieldIndex, GeneratorAdapter method) {
                     method.pop();

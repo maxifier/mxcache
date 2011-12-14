@@ -1,10 +1,12 @@
 package com.maxifier.mxcache.provider;
 
+import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.impl.caches.abs.elementlocked.ElementLockedStorage;
 import com.maxifier.mxcache.storage.Storage;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -19,7 +21,9 @@ public final class Signature {
     private static final String STORAGE_PACKAGE_NAME = "com.maxifier.mxcache.storage.";
     private static final String LOCKED_STORAGE_PACKAGE_NAME = "com.maxifier.mxcache.storage.elementlocked.";
 
-    private final Class key;
+    private final Class[] keys;
+    
+    private final Class container;
 
     private final Class value;
 
@@ -47,9 +51,9 @@ public final class Signature {
     }
 
     public Signature erased() {
-        Class erasedKey = key == null ? null : erase(key);
+        Class erasedKey = container == null ? null : erase(container);
         Class erasedValue = erase(value);
-        if (erasedValue == value && erasedKey == key) {
+        if (erasedValue == value && erasedKey == container) {
             return this;
         }
         return new Signature(erasedKey, erasedValue);
@@ -99,13 +103,33 @@ public final class Signature {
         return res == null ? UNKNOWN : res;
     }
 
-    public Signature(Class key, Class value) {
-        this.key = key;
+    public Signature(@NotNull Class[] keys, @NotNull Class tuple, Class value) {
+        this.keys = keys;
+        this.container = tuple;
         this.value = value;
     }
 
-    public Class getKey() {
-        return key;
+    public Signature(Class key, Class value) {
+        if (key == null) {
+            this.keys = null;
+            this.container = null;
+        } else {
+            this.keys = new Class[] {key};
+            this.container = key;
+        }
+        this.value = value;
+    }
+
+    public boolean hasKeys() {
+        return container != null;
+    }
+
+    public Class getContainer() {
+        return container;
+    }
+    
+    public Type getContainerType() {
+        return container == null ? null : Type.getType(container);
     }
 
     public Class getValue() {
@@ -123,24 +147,32 @@ public final class Signature {
 
         Signature signature = (Signature) o;
 
-        return key == signature.key && value == signature.value;
+        return container == signature.container && value == signature.value;
 
     }
 
     @Override
     public int hashCode() {
-        if (key == null) {
+        if (container == null) {
             return value.hashCode();
         }
-        return 31 * key.hashCode() + value.hashCode();
+        return 31 * container.hashCode() + value.hashCode();
     }
 
     @Override
     public String toString() {
-        if (key == null) {
+        if (container == null) {
             return value.getName() + "()";
         } else {
-            return value.getName() + "(" + key.getName() + ")";
+            StringBuilder b = new StringBuilder();
+            b.append(value.getName()).append("(");
+            if (keys == null) {
+                b.append(container.getName());
+            } else {
+                b.append("Tuple:").append(Arrays.toString(keys));
+            }
+            b.append(")");
+            return b.toString();
         }
     }
 
@@ -157,10 +189,10 @@ public final class Signature {
     }
 
     public String getImplementationClassName(String prefix, String postfix) {
-        if (key == null) {
+        if (container == null) {
             return prefix + toString(value) + postfix;
         }
-        return prefix + toString(key) + toString(value) + postfix;
+        return prefix + toString(container) + toString(value) + postfix;
     }
 
     /**
@@ -181,6 +213,14 @@ public final class Signature {
             return Character.toUpperCase(n.charAt(0)) + n.substring(1);
         }
         return "Object";
+    }
+    
+    public Class getKey(int index) {
+        return keys[index];
+    }
+    
+    public int getKeyCount() {
+        return keys.length;
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -208,7 +248,28 @@ public final class Signature {
      * false if additional transformation is required.
      */
     public boolean isWider(Signature other) {
-        return (key == other.key || key.isAssignableFrom(other.key)) &&
+        return (container == other.container || container.isAssignableFrom(other.container)) &&
                 (value == other.value || value.isAssignableFrom(other.value));
+    }
+
+    public Signature overrideKey(Class key) {
+        if (key == container && keys.length == 1 && keys[0] == key) {
+            return this;
+        }
+        return new Signature(key, value);
+    }
+    
+    public Signature overrideKeys(Class[] keys, Class container) {
+        if (Arrays.equals(keys, this.keys) && container == this.container) {
+            return this;
+        }
+        return new Signature(keys, container, value);
+    }
+
+    public Signature overrideValue(Class value) {
+        if (value == this.value) {
+            return this;
+        }
+        return new Signature(keys, container, value);
     }
 }

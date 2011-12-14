@@ -18,6 +18,7 @@ import com.maxifier.mxcache.transform.TransformGenerator;
 import com.maxifier.mxcache.transform.TransformGeneratorFactoryImpl;
 import com.maxifier.mxcache.util.CodegenHelper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,10 +58,22 @@ public class CacheDescriptor<T> {
     }
 
     public CacheDescriptor(Class<T> ownerClass, int id, Class keyType, Class valueType, Object calculable, String methodName, String methodDesc, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory) {
-        this(ownerClass, id, new Signature(keyType, valueType), calculable, CodegenHelper.getMethod(ownerClass, methodName, methodDesc), cacheName, group, tags, rule, proxyFactory, null);
+        this(ownerClass, id, keyType, valueType, calculable, CodegenHelper.getMethod(ownerClass, methodName, methodDesc), cacheName, group, tags, rule, proxyFactory);
     }
 
-    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Object calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory, PropertyOverrides overrides) {
+    private CacheDescriptor(Class<T> ownerClass, int id, Class keyType, Class valueType, Object calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory) {
+        this(ownerClass, id, signature(keyType, valueType, method), calculable, method, cacheName, group, tags, rule, proxyFactory, null);
+    }
+
+    private static Signature signature(Class keyType, Class valueType, Method method) {
+        if (keyType == null) {
+            return new Signature(null, valueType);
+        }
+        //noinspection unchecked
+        return new Signature(method.getParameterTypes(), keyType, valueType);
+    }
+
+    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Object calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory, @Nullable PropertyOverrides overrides) {
         this(ownerClass, id, signature, calculable, method, cacheName, group, tags, rule, proxyFactory, TransformGeneratorFactoryImpl.getInstance().forMethod(method), TransformGenerator.NO_TRANSFORM, overrides);
     }
 
@@ -69,7 +82,7 @@ public class CacheDescriptor<T> {
     }
 
     private static Signature getTransformedSignature(Signature signature, TransformGenerator keyTransform, TransformGenerator valueTransform) {
-        return new Signature(signature.getKey() == null ? null : keyTransform.getTransformedType(signature.getKey()), valueTransform.getTransformedType(signature.getValue())); 
+        return valueTransform.transformValue(keyTransform.transformKey(signature));
     }
 
     private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Object calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, Signature transformedSignature, PropertyOverrides overrides) {
@@ -89,6 +102,7 @@ public class CacheDescriptor<T> {
         rule.override(method, cacheName);
     }
 
+    @PublicAPI
     public CacheDescriptor<T> overrideCalculable(Object calculatable) {
         Class<?> calculatableInterface = getCalculatableInterface();
         if (!calculatableInterface.isInstance(calculatable)) {
@@ -98,6 +112,7 @@ public class CacheDescriptor<T> {
         return new CacheDescriptor<T>(ownerClass, id, signature, calculatable, method, null, group, tags, rule, proxyFactory, keyTransform, valueTransform, transformedSignature, overrides);
     }
 
+    @PublicAPI
     public CacheDescriptor<T> overrideProxyFactory(ProxyFactory factory) {
         // cache name is already set in rule, so we pass null
         return new CacheDescriptor<T>(ownerClass, id, signature, calculable, method, null, group, tags, rule, factory, keyTransform, valueTransform, transformedSignature, overrides);
@@ -109,7 +124,7 @@ public class CacheDescriptor<T> {
     }
 
     public Class getKeyType() {
-        return signature.getKey();
+        return signature.getContainer();
     }
 
     public Class getValueType() {

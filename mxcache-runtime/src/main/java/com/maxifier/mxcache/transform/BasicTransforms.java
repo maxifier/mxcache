@@ -25,13 +25,6 @@ public final class BasicTransforms {
         t.start();
     }
 
-    @SuppressWarnings({"UnusedParameters"})
-    @PublicAPI
-    // used in Ignore
-    public static Object ignore(Object o) {
-        return null;
-    }
-
     @PublicAPI
     // used in SoftKey
     public static <T> SoftReference<T> createSoftReference(T t) {

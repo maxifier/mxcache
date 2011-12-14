@@ -2,31 +2,36 @@ package com.maxifier.mxcache.transform;
 
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
-import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.util.ClassGenerator;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 11.10.2010
-* Time: 16:12:44
-*/
-final class EmptyTransformGenerator implements TransformGenerator {
-    private static final TransformGenerator INSTANCE = new EmptyTransformGenerator();
+ * Created by IntelliJ IDEA.
+ * User: Administrator
+ * Date: 12/14/11
+ * Time: 11:49 AM
+ */
+public class IgnoreTransformGenerator extends ScalarTransformGenerator {
+    private static final TransformGenerator INSTANCE = new IgnoreTransformGenerator();
 
     public static TransformGenerator getInstance() {
         return INSTANCE;
     }
 
-    private EmptyTransformGenerator() {
+    private IgnoreTransformGenerator() {
     }
 
     @Override
     public void generateForward(Type thisType, int fieldIndex, GeneratorAdapter method) {
+        if (thisType.getSize() == 2) {
+            method.pop2();
+        } else {
+            method.pop();
+        }
     }
 
     @Override
     public void generateBackward(Type thisType, int fieldIndex, GeneratorAdapter method) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -44,21 +49,6 @@ final class EmptyTransformGenerator implements TransformGenerator {
 
     @Override
     public Class getTransformedType(Class in) {
-        return in;
-    }
-
-    @Override
-    public Signature transformKey(Signature in) {
-        return in;
-    }
-
-    @Override
-    public Signature transformValue(Signature in) {
-        return in;
-    }
-
-    @Override
-    public String toString() {
-        return "<no transform>";
+        return null;
     }
 }

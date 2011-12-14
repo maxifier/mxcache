@@ -4,6 +4,7 @@ import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.hashing.HashingStrategyFactory;
 import com.maxifier.mxcache.provider.*;
 import com.maxifier.mxcache.storage.Storage;
+import com.maxifier.mxcache.transform.Ignore;
 import com.maxifier.mxcache.transform.SoftKey;
 import com.maxifier.mxcache.transform.WeakKey;
 import gnu.trove.TIntArrayList;
@@ -29,17 +30,17 @@ public class DefaultStorageFactory<T> implements StorageFactory<T> {
     private final int[] tupleIndices;
 
     DefaultStorageFactory(CacheContext context, HashingStrategyFactory hashingStrategyFactory, CacheDescriptor descriptor) {
-
-        if (descriptor.getKeyType() == null) {
-            implementation = descriptor.getTransformedSignature().getImplementationClass(CACHES_PACKAGE, "StorageImpl");
+        Signature transformedSignature = descriptor.getTransformedSignature();
+        if (!transformedSignature.hasKeys()) {
+            implementation = transformedSignature.getImplementationClass(CACHES_PACKAGE, "StorageImpl");
             tupleIndices = null;
         } else {
             TIntArrayList p = getReferenceKeys(descriptor);
             if (p.isEmpty()) {
-                implementation = descriptor.getTransformedSignature().getImplementationClass(CACHES_PACKAGE, "TroveStorage");
+                implementation = transformedSignature.getImplementationClass(CACHES_PACKAGE, "TroveStorage");
                 tupleIndices = null;
-            } else if (descriptor.getMethod().getParameterAnnotations().length == 1) {
-                implementation = descriptor.getTransformedSignature().getImplementationClass(CACHES_PACKAGE, "WeakTroveStorage");
+            } else if (transformedSignature.getKeyCount() == 1) {
+                implementation = transformedSignature.getImplementationClass(CACHES_PACKAGE, "WeakTroveStorage");
                 tupleIndices = null;
             } else {
                 implementation = findClass(CACHES_PACKAGE + "Tuple" + Signature.toString(descriptor.getValueType()) + "WeakTroveStorage");
@@ -94,12 +95,23 @@ public class DefaultStorageFactory<T> implements StorageFactory<T> {
     private TIntArrayList getReferenceKeys(CacheDescriptor descriptor) {
         Annotation[][] ann = descriptor.getMethod().getParameterAnnotations();
         TIntArrayList p = new TIntArrayList(ann.length);
-        for (int i = 0; i < ann.length; i++) {
-            Annotation[] annotations = ann[i];
+        int pos = 0;
+        for (Annotation[] annotations : ann) {
+            boolean ref = false;
+            boolean ignored = false;
             for (Annotation a : annotations) {
                 if ((a instanceof WeakKey) || (a instanceof SoftKey)) {
-                    p.add(i);
+                    ref = true;
                 }
+                if (a instanceof Ignore) {
+                    ignored = true;
+                }
+            }
+            if (!ignored) {
+                if (ref) {
+                    p.add(pos);
+                }
+                pos++;
             }
         }
         return p;

@@ -583,6 +583,28 @@ public class DynamicInstrumentationFTest {
 
         assertEquals(t.ignore("123"), "123");
         assertEquals(t.ignore("333"), "123");
+
+        assertEquals(t.ignore("12", 3), "123");
+        assertEquals(t.ignore("33", 3), "123");
+
+        // we want key to be gc'ed
+        // noinspection RedundantStringConstructorCall
+        String key = new String("23");
+        assertEquals(t.ignore(1, key), "123");
+        assertEquals(t.ignore(2, "23"), "123");
+
+        assertEquals(t.ignore("A", 1, key), "A123");
+        assertEquals(t.ignore("A", 2, "23"), "A123");
+
+        // we want key to be gc'ed, and create new key
+        key = "23";
+
+        System.gc();
+        Thread.sleep(100);
+        System.gc();
+
+        assertEquals(t.ignore(2, key), "223");
+        assertEquals(t.ignore("A", 2, key), "A223");
     }
 
     private static class DefaultTestStrategy extends TestStrategy {

@@ -30,6 +30,12 @@ public interface TestCached extends Serializable {
     String ignore(String x, String y);
 
     String ignore(String x);
+    
+    String ignore(String x, long y);
+    
+    String ignore(long x, String y);
+
+    String ignore(String x, long y, String z);
 
     String exceptionTest() throws IOException;
 
