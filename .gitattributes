@@ -168,7 +168,6 @@ mxcache-ds11-integration/src/main/java/com/maxifier/mxcache/legacy/layered/MxLay
 mxcache-ds11-integration/src/main/resources/META-INF/services/com.maxifier.mxcache.ContextResolver -text
 mxcache-ds11-integration/src/test/java/com/maxifier/mxcache/ds/MxInputStreamContextResolverUTest.java -text
 mxcache-ehcache-integration/pom.xml -text
-mxcache-ehcache-integration/src/main/java/com/maxifier/mxcache/ehcache/ConfigurationParser.java -text
 mxcache-ehcache-integration/src/main/java/com/maxifier/mxcache/ehcache/EhcacheStorage.java -text
 mxcache-ehcache-integration/src/main/java/com/maxifier/mxcache/ehcache/EhcacheStorageFactory.java -text
 mxcache-ehcache-integration/src/main/java/com/maxifier/mxcache/ehcache/EhcacheStrategy.java -text
