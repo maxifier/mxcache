@@ -5,10 +5,7 @@ import com.maxifier.mxcache.provider.StorageFactory;
 import com.maxifier.mxcache.storage.Storage;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.config.CacheConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -19,8 +16,6 @@ import java.lang.reflect.InvocationTargetException;
 * Time: 18:33
 */
 public class EhcacheStorageFactory<T> implements StorageFactory<T> {
-    private static final Logger logger = LoggerFactory.getLogger(EhcacheStorageFactory.class);
-
     private final CacheManager cacheManager;
     private final CacheDescriptor descriptor;
 

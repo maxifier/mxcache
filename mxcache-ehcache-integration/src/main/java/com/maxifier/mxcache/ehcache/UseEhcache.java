@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.ehcache;
 
-import com.maxifier.mxcache.EvictionPolicyEnum;
+import com.maxifier.mxcache.PublicAPI;
 
 import java.lang.annotation.*;
 
@@ -14,5 +14,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface UseEhcache {
+    @PublicAPI
     String configURL() default "classpath://META-INF/ehcache.xml";
 }
