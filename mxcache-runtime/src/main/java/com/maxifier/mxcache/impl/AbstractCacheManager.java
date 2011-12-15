@@ -10,6 +10,7 @@ import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.impl.resource.nodes.MultipleDependencyNode;
 import com.maxifier.mxcache.caches.Cache;
+import com.maxifier.mxcache.resource.MxResource;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +33,7 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     private final DependencyNode staticNode;
 
     private final DependencyTracking trackDependency;
-    private final Set<String> resourceDependencies;
+    private final MxResource[] resourceDependencies;
 
     private final CacheContext context;
 
@@ -60,11 +61,11 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
         }
 
         trackDependency = convertStatic(convertDefault(descriptor.getTrackDependency()));
-        resourceDependencies = descriptor.getResourceDependencies();
+        resourceDependencies = getResources(descriptor.getResourceDependencies());
 
         switch (trackDependency) {
             case NONE:
-                if (resourceDependencies.isEmpty()) {
+                if (resourceDependencies == null) {
                     staticNode = null;
                 } else {
                     staticNode = createStaticNode();
@@ -79,6 +80,18 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
             default:
                 throw new UnsupportedOperationException("Unknown value: " + trackDependency);
         }
+    }
+
+    private MxResource[] getResources(Set<String> resourceNames) {
+        if (resourceNames == null || resourceNames.isEmpty()) {
+            return null;
+        }
+        MxResource[] res = new MxResource[resourceNames.size()];
+        int i = 0;
+        for (String resourceName : resourceNames) {
+            res[i++] = MxResourceFactory.getResource(resourceName);
+        }
+        return res;
     }
 
     protected StatisticsModeEnum getStatisticsMode() {
@@ -126,8 +139,10 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
      * @param node ухед зависимостей
      */
     protected void registerExplicitDependencies(DependencyNode node) {
-        for (String resourceId : resourceDependencies) {
-            DependencyTracker.addExplicitDependency(node, MxResourceFactory.getResource(resourceId));
+        if (resourceDependencies != null) {
+            for (MxResource resourceId : resourceDependencies) {
+                DependencyTracker.addExplicitDependency(node, resourceId);
+            }
         }
     }
 
