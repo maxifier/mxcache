@@ -10,7 +10,7 @@ import com.maxifier.mxcache.util.ClassGenerator;
  * Date: 12/14/11
  * Time: 11:49 AM
  */
-public class IgnoreTransformGenerator extends ScalarTransformGenerator {
+public final class IgnoreTransformGenerator extends ScalarTransformGenerator {
     private static final TransformGenerator INSTANCE = new IgnoreTransformGenerator();
 
     public static TransformGenerator getInstance() {
