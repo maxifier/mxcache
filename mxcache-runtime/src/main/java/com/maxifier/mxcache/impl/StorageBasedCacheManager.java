@@ -33,20 +33,21 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
     private WrapperFactory wrapperFactoryCache;
     private boolean elementLockedCache;
     private Signature storageSignatureCache;
+    private boolean inlineCache;
 
     public StorageBasedCacheManager(CacheContext context, CacheDescriptor<T> descriptor, StorageFactory<T> storageFactory) {
         super(context, descriptor);
         this.storageFactory = storageFactory;
         cacheSignature = descriptor.getSignature();
+        // проверка идет по классу, а не instanceof потому что наследники могут переопределить поведение
+        inlineCache = storageFactory.getClass() == DefaultStorageFactory.class && descriptor.getSignature().getContainer() == null;
     }
 
     @NotNull
     @Override
     protected Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws InstantiationException, IllegalAccessException, InvocationTargetException {
-        CacheDescriptor<T> descriptor = getDescriptor();
-        Signature signature = descriptor.getSignature();
-        if (storageFactory.getClass() == DefaultStorageFactory.class && signature.getContainer() == null) {
-            return createInlineCache(owner, dependencyNode, statistics, descriptor, signature.getValue());
+        if (inlineCache) {
+            return createInlineCache(owner, dependencyNode, statistics);
         }
         Storage storage = storageFactory.createStorage(owner);
         StatisticsModeEnum statisticsMode = getStatisticsMode();
@@ -64,10 +65,13 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
                 break;
         }
         return getWrapperFactory(storage instanceof ElementLockedStorage, Signature.of(storage.getClass()))
-                .wrap(owner, descriptor.getCalculable(), dependencyNode, storage, statistics);
+                .wrap(owner, getDescriptor().getCalculable(), dependencyNode, storage, statistics);
     }
 
-    private Cache createInlineCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics, CacheDescriptor<T> descriptor, Class valueType) {
+    private Cache createInlineCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) {
+        assert inlineCache;
+        CacheDescriptor<T> descriptor = getDescriptor();
+        Class valueType = descriptor.getSignature().getValue();
         Object calculable = descriptor.getCalculable();
         if (valueType == boolean.class) {
             return new BooleanInlineCacheImpl(owner, (BooleanCalculatable) calculable, dependencyNode, statistics);
