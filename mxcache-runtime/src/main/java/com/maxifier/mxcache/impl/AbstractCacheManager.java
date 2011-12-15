@@ -86,16 +86,26 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     }
 
     /**
-     * Создает и регистрирует узел для статических зависимостей
+     * Создает и регистрирует узел для статических зависимостей. Должен зарегистрировать явные зависимости с помощью registerExplicitDependencies.
      * @return узел зависимостей
      */
-    private DependencyNode createStaticNode() {
+    protected DependencyNode createStaticNode() {
         DependencyNode node;
         if (descriptor.isStatic()) {
             node = new SingletonDependencyNode();
         } else {
             node = new MultipleDependencyNode();
         }
+        registerExplicitDependencies(node);
+        return node;
+    }
+
+    /**
+     * Создает узел зависимостей для отдельного экземпляра. Должен зарегистрировать явные зависимости с помощью registerExplicitDependencies.
+     * @return узел
+     */
+    protected DependencyNode createInstanceNode() {
+        DependencyNode node = new SingletonDependencyNode();
         registerExplicitDependencies(node);
         return node;
     }
@@ -111,7 +121,11 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
         return tracking == DependencyTracking.DEFAULT ? DEFAULT_DEPENDENCY_TRACKING_VALUE : tracking;
     }
 
-    private void registerExplicitDependencies(DependencyNode node) {
+    /**
+     * Добавляет статические зависимости от ресурсов, заданные через аннотации
+     * @param node ухед зависимостей
+     */
+    protected void registerExplicitDependencies(DependencyNode node) {
         for (String resourceId : resourceDependencies) {
             DependencyTracker.addExplicitDependency(node, MxResourceFactory.getResource(resourceId));
         }
@@ -158,9 +172,7 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
             case STATIC:
                 return staticNode;
             case INSTANCE:
-                DependencyNode node = new SingletonDependencyNode();
-                registerExplicitDependencies(node);
-                return node;
+                return createInstanceNode();
             default:
                 throw new UnsupportedOperationException("Unknown value: " + trackDependency);
         }
