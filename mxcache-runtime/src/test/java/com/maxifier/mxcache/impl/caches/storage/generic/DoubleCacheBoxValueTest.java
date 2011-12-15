@@ -43,7 +43,7 @@ public class DoubleCacheBoxValueTest {
         DoubleCache cache = (DoubleCache) Wrapping.getFactory(new Signature(null, Object.class), new Signature(null, double.class), false).
                     wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
 
-        assert cache.size() == 0;
+        assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
@@ -67,7 +67,7 @@ public class DoubleCacheBoxValueTest {
         when(storage.load()).thenReturn(42d);
         when(storage.size()).thenReturn(1);
 
-        assert cache.size() == 1;
+        assert cache.getSize() == 1;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 

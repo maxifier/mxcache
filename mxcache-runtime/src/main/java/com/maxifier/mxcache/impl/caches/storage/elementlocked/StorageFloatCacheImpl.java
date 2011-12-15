@@ -70,16 +70,7 @@ public class StorageFloatCacheImpl extends AbstractFloatCache implements Storage
     
     @Override
     public int size() {
-        Lock lock = getLock();
-        if (lock == null) {
-            return storage.size();
-        }
-        lock.lock();
-        try {
-            return storage.size();
-        } finally {
-            lock.unlock();
-        }
+        return storage.size();
     }
 
     @Nullable

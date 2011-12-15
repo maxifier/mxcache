@@ -62,12 +62,7 @@ public class StorageBooleanLongCacheImpl extends AbstractBooleanLongCache implem
     
     @Override
     public int size() {
-        lock();
-        try {
-            return storage.size();
-        } finally {
-            unlock();
-        }
+        return storage.size();
     }
 
     @Nullable

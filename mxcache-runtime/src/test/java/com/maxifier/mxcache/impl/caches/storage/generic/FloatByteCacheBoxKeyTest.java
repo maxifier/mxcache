@@ -44,7 +44,7 @@ public class FloatByteCacheBoxKeyTest {
         FloatByteCache cache = (FloatByteCache) Wrapping.getFactory(new Signature(Object.class, byte.class), new Signature(float.class, byte.class), false).
                 wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
 
-        assert cache.size() == 0;
+        assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
@@ -69,7 +69,7 @@ public class FloatByteCacheBoxKeyTest {
         when(storage.load(42f)).thenReturn((byte)42);
         when(storage.size()).thenReturn(1);
 
-        assert cache.size() == 1;
+        assert cache.getSize() == 1;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 

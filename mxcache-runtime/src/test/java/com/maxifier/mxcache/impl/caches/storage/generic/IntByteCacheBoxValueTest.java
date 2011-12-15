@@ -44,7 +44,7 @@ public class IntByteCacheBoxValueTest {
         IntByteCache cache = (IntByteCache) Wrapping.getFactory(new Signature(int.class, Object.class), new Signature(int.class, byte.class), false).
                 wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
 
-        assert cache.size() == 0;
+        assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
@@ -68,7 +68,7 @@ public class IntByteCacheBoxValueTest {
         when(storage.load(42)).thenReturn((byte)42);
         when(storage.size()).thenReturn(1);
 
-        assert cache.size() == 1;
+        assert cache.getSize() == 1;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 

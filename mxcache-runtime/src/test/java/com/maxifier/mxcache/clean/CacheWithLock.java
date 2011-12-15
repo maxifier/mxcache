@@ -33,7 +33,7 @@ class CacheWithLock implements Cache {
     }
 
     @Override
-    public int size() {
+    public int getSize() {
         return 0;
     }
 

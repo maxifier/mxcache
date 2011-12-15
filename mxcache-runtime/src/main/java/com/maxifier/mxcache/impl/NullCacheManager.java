@@ -101,7 +101,7 @@ public class NullCacheManager<T> implements CacheManager<T> {
         getLock.returnValue();
         getLock.endMethod();
 
-        MxGeneratorAdapter size = cw.defineMethod(ACC_PUBLIC, "size", Type.INT_TYPE);
+        MxGeneratorAdapter size = cw.defineMethod(ACC_PUBLIC, "getSize", Type.INT_TYPE);
         size.visitCode();
         size.push(0);
         size.returnValue();

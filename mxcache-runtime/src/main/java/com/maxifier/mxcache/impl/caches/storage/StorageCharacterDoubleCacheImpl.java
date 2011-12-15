@@ -62,12 +62,7 @@ public class StorageCharacterDoubleCacheImpl extends AbstractCharacterDoubleCach
     
     @Override
     public int size() {
-        lock();
-        try {
-            return storage.size();
-        } finally {
-            unlock();
-        }
+        return storage.size();
     }
 
     @Nullable

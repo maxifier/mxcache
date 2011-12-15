@@ -44,7 +44,7 @@ public class LongCharacterCacheBoxKeyValueTest {
         LongCharacterCache cache = (LongCharacterCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(long.class, char.class), false).
                 wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
 
-        assert cache.size() == 0;
+        assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
@@ -68,7 +68,7 @@ public class LongCharacterCacheBoxKeyValueTest {
         when(storage.load(42L)).thenReturn('*');
         when(storage.size()).thenReturn(1);
 
-        assert cache.size() == 1;
+        assert cache.getSize() == 1;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 

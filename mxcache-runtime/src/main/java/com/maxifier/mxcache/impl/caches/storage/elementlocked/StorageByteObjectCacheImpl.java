@@ -73,16 +73,7 @@ public class StorageByteObjectCacheImpl<F> extends AbstractByteObjectCache<F> im
 
     @Override
     public int size() {
-        Lock lock = getLock();
-        if (lock == null) {
-            return storage.size();
-        }
-        lock.lock();
-        try {
-            return storage.size();
-        } finally {
-            lock.unlock();
-        }
+        return storage.size();
     }
 
     @Nullable

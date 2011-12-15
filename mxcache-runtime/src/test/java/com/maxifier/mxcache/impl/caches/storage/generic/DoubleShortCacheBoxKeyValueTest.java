@@ -44,7 +44,7 @@ public class DoubleShortCacheBoxKeyValueTest {
         DoubleShortCache cache = (DoubleShortCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(double.class, short.class), false).
                 wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
 
-        assert cache.size() == 0;
+        assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
@@ -68,7 +68,7 @@ public class DoubleShortCacheBoxKeyValueTest {
         when(storage.load(42d)).thenReturn((short)42);
         when(storage.size()).thenReturn(1);
 
-        assert cache.size() == 1;
+        assert cache.getSize() == 1;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 

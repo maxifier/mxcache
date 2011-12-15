@@ -57,12 +57,7 @@ public class StorageFloatObjectCacheImpl<F> extends AbstractFloatObjectCache<F> 
 
     @Override
     public int size() {
-        lock();
-        try {
-            return storage.size();
-        } finally {
-            unlock();
-        }
+        return storage.size();
     }
 
     @Nullable

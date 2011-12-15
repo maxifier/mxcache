@@ -62,12 +62,7 @@ public class StorageObjectByteCacheImpl<E> extends AbstractObjectByteCache<E> im
     
     @Override
     public int size() {
-        lock();
-        try {
-            return storage.size();
-        } finally {
-            unlock();
-        }
+        return storage.size();
     }
 
     @Nullable

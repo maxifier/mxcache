@@ -67,12 +67,12 @@ public class ProxyingCacheGeneratorUTest {
         assertSame(cache.getLock(), TEST_LOCK);
         verify(calculatable).getLock();
 
-        assertEquals(cache.size(), SIZE);
+        assertEquals(cache.getSize(), SIZE);
         assertSame(cache.getStatistics(), STATISTICS);
 
         cache.clear();
         verify(calculatable).clear();
-        verify(calculatable).size();
+        verify(calculatable).getSize();
         verify(calculatable).getStatistics();
         verifyNoMoreInteractions(calculatable);
     }
@@ -98,12 +98,12 @@ public class ProxyingCacheGeneratorUTest {
         verify(t, atLeast(1)).b(123L);
         verifyNoMoreInteractions(t);
 
-        assertEquals(cache.size(), SIZE);
+        assertEquals(cache.getSize(), SIZE);
         assertSame(cache.getStatistics(), STATISTICS);
 
         cache.clear();
         verify(calculatable).clear();
-        verify(calculatable).size();
+        verify(calculatable).getSize();
         verify(calculatable).getStatistics();
         verifyNoMoreInteractions(calculatable);
 
@@ -121,11 +121,11 @@ public class ProxyingCacheGeneratorUTest {
         verify(factory).proxy(eq(String.class), Matchers.<Resolvable<String>>any());
         verify(calculatable).getOrCreate(123);
 
-        assertEquals(cache.size(), SIZE);
+        assertEquals(cache.getSize(), SIZE);
         assertSame(cache.getStatistics(), STATISTICS);
         assertSame(cache.getLock(), TEST_LOCK);
         verify(calculatable).getLock();
-        verify(calculatable).size();
+        verify(calculatable).getSize();
         verify(calculatable).getStatistics();
         cache.clear();
         verify(calculatable).clear();
@@ -143,11 +143,11 @@ public class ProxyingCacheGeneratorUTest {
         verify(factory).proxy(eq(String.class), Matchers.<Resolvable<String>>any());
         verify(calculatable).getOrCreate();
 
-        assertEquals(cache.size(), SIZE);
+        assertEquals(cache.getSize(), SIZE);
         assertSame(cache.getStatistics(), STATISTICS);
         assertSame(cache.getLock(), TEST_LOCK);
         verify(calculatable).getLock();
-        verify(calculatable).size();
+        verify(calculatable).getSize();
         verify(calculatable).getStatistics();
         cache.clear();
         verify(calculatable).clear();
@@ -177,7 +177,7 @@ public class ProxyingCacheGeneratorUTest {
         }
 
         @Override
-        public int size() {
+        public int getSize() {
             return SIZE;
         }
 
@@ -213,7 +213,7 @@ public class ProxyingCacheGeneratorUTest {
         }
 
         @Override
-        public int size() {
+        public int getSize() {
             return SIZE;
         }
 
@@ -249,7 +249,7 @@ public class ProxyingCacheGeneratorUTest {
         }
 
         @Override
-        public int size() {
+        public int getSize() {
             return SIZE;
         }
 

@@ -62,12 +62,7 @@ public class StorageShortCacheImpl extends AbstractShortCache implements Storage
     
     @Override
     public int size() {
-        lock();
-        try {
-            return storage.size();
-        } finally {
-            unlock();
-        }
+        return storage.size();
     }
 
     @Nullable

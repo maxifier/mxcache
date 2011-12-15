@@ -139,7 +139,7 @@ public class PooledCacheFTest {
         assertEquals(cache.getOrCreate("maxifier"), new Value("cool"));
 
         assertEquals(manager.getYoungCount(), 2);
-        assertEquals(cache.size(), 2);
+        assertEquals(cache.getSize(), 2);
 
         verify(calculatable).calculate(null, "test");
         verify(calculatable).calculate(null, "maxifier");
@@ -150,7 +150,7 @@ public class PooledCacheFTest {
 
         // вычищается только один элемент
         assertEquals(manager.getYoungCount(), 1);
-        assertEquals(cache.size(), 2);
+        assertEquals(cache.getSize(), 2);
 
         when(calculatable.calculate(null, "test")).thenReturn(new Value("new test"));
         when(calculatable.calculate(null, "maxifier")).thenReturn(new Value("new cool"));
@@ -200,7 +200,7 @@ public class PooledCacheFTest {
         }
 
         assertEquals(manager.getOldCount(), 2);
-        assertEquals(cache.size(), 2);
+        assertEquals(cache.getSize(), 2);
 
         verify(calculatable).calculate(null, "test");
         verify(calculatable).calculate(null, "maxifier");
@@ -211,7 +211,7 @@ public class PooledCacheFTest {
 
         // вычищается только один элемент
         assertEquals(manager.getOldCount(), 1);
-        assertEquals(cache.size(), 2);
+        assertEquals(cache.getSize(), 2);
 
         when(calculatable.calculate(null, "test")).thenReturn(new Value("new test"));
         when(calculatable.calculate(null, "maxifier")).thenReturn(new Value("new cool"));
@@ -301,8 +301,8 @@ public class PooledCacheFTest {
         assertEquals(cache.getOrCreate("test"), new Value("test"));
         assertEquals(cache2.getOrCreate("test"), new Value("test"));
 
-        assertEquals(cache.size(), 1);
-        assertEquals(cache2.size(), 1);
+        assertEquals(cache.getSize(), 1);
+        assertEquals(cache2.getSize(), 1);
 
         assertEquals(manager.getConfiguration().getPoolSize(), 2.0);
 
@@ -311,8 +311,8 @@ public class PooledCacheFTest {
         reset(calculatable);
 
         lockAndClear(cache);
-        assertEquals(cache.size(), 0);
-        assertEquals(cache2.size(), 1);
+        assertEquals(cache.getSize(), 0);
+        assertEquals(cache2.getSize(), 1);
 
         assertEquals(manager.getConfiguration().getPoolSize(), 1.0);
 

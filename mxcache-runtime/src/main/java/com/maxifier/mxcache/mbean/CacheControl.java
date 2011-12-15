@@ -67,7 +67,7 @@ public class CacheControl implements CacheControlMXBean {
             try {
                 for (Cache c : cache.getInstances()) {
                     count++;
-                    total += c.size();
+                    total += c.getSize();
                     Statistics stat = c.getStatistics();
                     if (stat != null) {
                         statisticsSet.add(stat);

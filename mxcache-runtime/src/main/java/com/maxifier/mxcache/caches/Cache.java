@@ -14,7 +14,7 @@ public interface Cache extends StatisticsHolder, CleaningNode {
     /**
      * @return Приблизительное число элементов. (Число элементов может поменяться в любой момент!)
      */
-    int size();
+    int getSize();
 
     /**
      * @return дескриптор кэша, для которого создан данный экземпляр

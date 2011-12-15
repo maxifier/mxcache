@@ -62,12 +62,7 @@ public class StorageIntCacheImpl extends AbstractIntCache implements StorageHold
     
     @Override
     public int size() {
-        lock();
-        try {
-            return storage.size();
-        } finally {
-            unlock();
-        }
+        return storage.size();
     }
 
     @Nullable

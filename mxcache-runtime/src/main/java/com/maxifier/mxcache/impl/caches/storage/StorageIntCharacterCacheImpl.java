@@ -62,12 +62,7 @@ public class StorageIntCharacterCacheImpl extends AbstractIntCharacterCache impl
     
     @Override
     public int size() {
-        lock();
-        try {
-            return storage.size();
-        } finally {
-            unlock();
-        }
+        return storage.size();
     }
 
     @Nullable

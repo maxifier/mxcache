@@ -44,7 +44,7 @@ public class ByteLongCacheBoxKeyValueTest {
         ByteLongCache cache = (ByteLongCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(byte.class, long.class), false).
                 wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
 
-        assert cache.size() == 0;
+        assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
@@ -68,7 +68,7 @@ public class ByteLongCacheBoxKeyValueTest {
         when(storage.load((byte)42)).thenReturn(42L);
         when(storage.size()).thenReturn(1);
 
-        assert cache.size() == 1;
+        assert cache.getSize() == 1;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 

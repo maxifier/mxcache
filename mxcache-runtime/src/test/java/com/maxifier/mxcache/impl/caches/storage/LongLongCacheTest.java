@@ -105,7 +105,7 @@ public class LongLongCacheTest {
             @Override
             public void run() {
                 try {
-                    assert cache.size() == 0;
+                    assert cache.getSize() == 0;
                     assert cache.getStatistics().getHits() == 0;
                     assert cache.getStatistics().getMisses() == 0;
 
@@ -158,7 +158,7 @@ public class LongLongCacheTest {
         LongLongCache cache = (LongLongCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
 
-        assert cache.size() == 0;
+        assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
@@ -190,7 +190,7 @@ public class LongLongCacheTest {
         when(storage.load(42L)).thenReturn(42L);
         when(storage.size()).thenReturn(1);
 
-        assert cache.size() == 1;
+        assert cache.getSize() == 1;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 

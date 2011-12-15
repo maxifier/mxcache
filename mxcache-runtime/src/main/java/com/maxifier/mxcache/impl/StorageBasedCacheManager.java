@@ -1,7 +1,9 @@
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.StatisticsModeEnum;
+import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.context.CacheContext;
+import com.maxifier.mxcache.impl.caches.def.*;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.interfaces.StatisticsHolder;
@@ -41,6 +43,11 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
     @NotNull
     @Override
     protected Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws InstantiationException, IllegalAccessException, InvocationTargetException {
+        CacheDescriptor<T> descriptor = getDescriptor();
+        Signature signature = descriptor.getSignature();
+        if (storageFactory.getClass() == DefaultStorageFactory.class && signature.getContainer() == null) {
+            return createInlineCache(owner, dependencyNode, statistics, descriptor, signature.getValue());
+        }
         Storage storage = storageFactory.createStorage(owner);
         StatisticsModeEnum statisticsMode = getStatisticsMode();
         switch (statisticsMode) {
@@ -57,9 +64,38 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
                 break;
         }
         return getWrapperFactory(storage instanceof ElementLockedStorage, Signature.of(storage.getClass()))
-                .wrap(owner, getDescriptor().getCalculable(), dependencyNode, storage, statistics);
+                .wrap(owner, descriptor.getCalculable(), dependencyNode, storage, statistics);
     }
 
+    private Cache createInlineCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics, CacheDescriptor<T> descriptor, Class valueType) {
+        Object calculable = descriptor.getCalculable();
+        if (valueType == boolean.class) {
+            return new BooleanInlineCacheImpl(owner, (BooleanCalculatable) calculable, dependencyNode, statistics);
+        }
+        if (valueType == byte.class) {
+            return new ByteInlineCacheImpl(owner, (ByteCalculatable) calculable, dependencyNode, statistics);
+        }
+        if (valueType == short.class) {
+            return new ShortInlineCacheImpl(owner, (ShortCalculatable) calculable, dependencyNode, statistics);
+        }
+        if (valueType == char.class) {
+            return new CharacterInlineCacheImpl(owner, (CharacterCalculatable) calculable, dependencyNode, statistics);
+        }
+        if (valueType == int.class) {
+            return new IntInlineCacheImpl(owner, (IntCalculatable) calculable, dependencyNode, statistics);
+        }
+        if (valueType == long.class) {
+            return new LongInlineCacheImpl(owner, (LongCalculatable) calculable, dependencyNode, statistics);
+        }
+        if (valueType == float.class) {
+            return new FloatInlineCacheImpl(owner, (FloatCalculatable) calculable, dependencyNode, statistics);
+        }
+        if (valueType == double.class) {
+            return new DoubleInlineCacheImpl(owner, (DoubleCalculatable) calculable, dependencyNode, statistics);
+        }
+        //noinspection unchecked
+        return new ObjectInlineCacheImpl(owner, (ObjectCalculatable) calculable, dependencyNode, statistics);
+    }
 
 
     private synchronized WrapperFactory getWrapperFactory(boolean elementLocked, Signature storageSignature) {
@@ -75,4 +111,5 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
     public String getImplementationDetails() {
         return storageFactory.getImplementationDetails();
     }
+
 }

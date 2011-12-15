@@ -44,7 +44,7 @@ public class DoubleCharacterCacheBoxValueTest {
         DoubleCharacterCache cache = (DoubleCharacterCache) Wrapping.getFactory(new Signature(double.class, Object.class), new Signature(double.class, char.class), false).
                 wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
 
-        assert cache.size() == 0;
+        assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
@@ -68,7 +68,7 @@ public class DoubleCharacterCacheBoxValueTest {
         when(storage.load(42d)).thenReturn('*');
         when(storage.size()).thenReturn(1);
 
-        assert cache.size() == 1;
+        assert cache.getSize() == 1;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 

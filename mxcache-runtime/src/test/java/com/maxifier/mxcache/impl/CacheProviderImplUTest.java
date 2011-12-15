@@ -96,7 +96,7 @@ public class CacheProviderImplUTest {
                         }
 
                         @Override
-                        public int size() {
+                        public int getSize() {
                             throw new UnsupportedOperationException();
                         }
 
@@ -314,7 +314,7 @@ public class CacheProviderImplUTest {
         ObjectObjectCalculatable<String, String> calculatable = mock(ObjectObjectCalculatable.class);
 
         ObjectObjectCache<String, String> c = (ObjectObjectCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
-        assertEquals(c.size(), TEST_SIZE_FINGERPRINT);
+        assertEquals(c.getSize(), TEST_SIZE_FINGERPRINT);
         assertEquals(c.getOrCreate("test"), TEST_LOAD_FINGERPRINT);
         verifyZeroInteractions(calculatable);
     }
@@ -332,7 +332,7 @@ public class CacheProviderImplUTest {
         ObjectObjectCalculatable<String, String> calculatable = mock(ObjectObjectCalculatable.class);
 
         ObjectObjectCache<String, String> c = (ObjectObjectCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
-        assertEquals(c.size(), TEST_SIZE_FINGERPRINT);
+        assertEquals(c.getSize(), TEST_SIZE_FINGERPRINT);
         assertEquals(c.getOrCreate("test"), TEST_LOAD_FINGERPRINT);
         verifyZeroInteractions(calculatable);
     }
@@ -352,9 +352,9 @@ public class CacheProviderImplUTest {
 
         ObjectObjectCache<String, String> c = (ObjectObjectCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         // it will use default cause it cannot create TestStorage2
-        assertEquals(c.size(), 0);
+        assertEquals(c.getSize(), 0);
         assertEquals(c.getOrCreate("test"), "it's ok");
-        assertEquals(c.size(), 1);
+        assertEquals(c.getSize(), 1);
     }
 
     public void testBind() {

@@ -78,16 +78,7 @@ public class StorageObjectIntCacheImpl<E> extends AbstractObjectIntCache<E> impl
     
     @Override
     public int size() {
-        Lock lock = getLock();
-        if (lock == null) {
-            return storage.size();
-        }
-        lock.lock();
-        try {
-            return storage.size();
-        } finally {
-            lock.unlock();
-        }
+        return storage.size();
     }
 
     @Nullable

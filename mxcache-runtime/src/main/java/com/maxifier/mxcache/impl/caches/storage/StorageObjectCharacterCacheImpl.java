@@ -62,12 +62,7 @@ public class StorageObjectCharacterCacheImpl<E> extends AbstractObjectCharacterC
     
     @Override
     public int size() {
-        lock();
-        try {
-            return storage.size();
-        } finally {
-            unlock();
-        }
+        return storage.size();
     }
 
     @Nullable

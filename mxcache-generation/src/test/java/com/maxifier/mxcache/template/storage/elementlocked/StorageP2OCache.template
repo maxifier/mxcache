@@ -73,16 +73,7 @@ public class Storage#EG##FG#CacheImpl extends Abstract#EG##FG#Cache implements S
 
     @Override
     public int size() {
-        Lock lock = getLock();
-        if (lock == null) {
-            return storage.size();
-        }
-        lock.lock();
-        try {
-            return storage.size();
-        } finally {
-            lock.unlock();
-        }
+        return storage.size();
     }
 
     @Nullable

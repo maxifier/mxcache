@@ -129,7 +129,7 @@ public class DefaultStorageFactoryUTest {
         ObjectObjectCache<int[], int[]> c = (ObjectObjectCache) d.createCache(INSTANCE);
         assertEquals(d.getInstances().size(), 1);
         // it should be empty
-        assertEquals(c.size(), 0);
+        assertEquals(c.getSize(), 0);
         // and also it should have lock assigned
         assertNotNull(c.getLock());
         int[] a1 = { 3, 4 };
@@ -173,7 +173,7 @@ public class DefaultStorageFactoryUTest {
         ObjectObjectCache<String, String> c = (ObjectObjectCache) d.createCache(INSTANCE);
         assertEquals(d.getInstances().size(), 1);
         // it should be empty
-        assert c.size() == 0;
+        assert c.getSize() == 0;
         // and also it should have lock assigned
         assert c.getLock() != null;
         assert c.getOrCreate("123") == null;
@@ -196,7 +196,7 @@ public class DefaultStorageFactoryUTest {
         ObjectObjectCache<String, String> c = (ObjectObjectCache) d.createCache(INSTANCE);
         assertEquals(d.getInstances().size(), 1);
         // it should be empty
-        assert c.size() == 0;
+        assert c.getSize() == 0;
         // and also it should have lock assigned
         assert c.getLock() != null;
         assert c.getOrCreate("123") == null;
@@ -237,7 +237,7 @@ public class DefaultStorageFactoryUTest {
         Cache c = d.createCache(INSTANCE);
         assertEquals(d.getInstances().size(), 1);
         // it should be empty
-        assertEquals(c.size(), 0);
+        assertEquals(c.getSize(), 0);
         // and also it should have lock assigned
         assertNotNull(c.getLock());
         assertTrue(cache.isInstance(c), "Cache for " + key + " -> " + value + " should be instance of " + cache + " but is " + c.getClass());
@@ -306,7 +306,7 @@ public class DefaultStorageFactoryUTest {
         // noinspection unchecked
         ObjectLongCache<Key> c = (ObjectLongCache<Key>) d.createCache(INSTANCE);
 
-        assertEquals(c.size(), 0);
+        assertEquals(c.getSize(), 0);
 
         Key k = new Key(1, 2);
         ReferenceQueue<Key> q = new ReferenceQueue<Key>();
@@ -321,7 +321,7 @@ public class DefaultStorageFactoryUTest {
         // first key is the same!
         assertEquals(c.getOrCreate(new Key(1, 4)), 2);
 
-        assertEquals(c.size(), 1);
+        assertEquals(c.getSize(), 1);
     }
 
     public void testTransformToObject() throws InterruptedException {
@@ -335,15 +335,15 @@ public class DefaultStorageFactoryUTest {
         // noinspection unchecked
         LongObjectCache<String> c = (LongObjectCache<String>) d.createCache(INSTANCE);
 
-        assertEquals(c.size(), 0);
+        assertEquals(c.getSize(), 0);
 
         assertEquals(c.getOrCreate(1), "1");
         assertEquals(c.getOrCreate(0), "1");
-        assertEquals(c.size(), 1);
+        assertEquals(c.getSize(), 1);
 
         assertEquals(c.getOrCreate(70), "70");
         assertEquals(c.getOrCreate(TEST_SIZE_FINGERPRINT), "70");
-        assertEquals(c.size(), 2);
+        assertEquals(c.getSize(), 2);
     }
 
     public void testWeakCaches() throws InterruptedException {
@@ -357,7 +357,7 @@ public class DefaultStorageFactoryUTest {
         // noinspection unchecked
         ObjectObjectCache<Key, String> c = (ObjectObjectCache<Key, String>) d.createCache(INSTANCE);
 
-        assertEquals(c.size(), 0);
+        assertEquals(c.getSize(), 0);
 
         Key k = new Key(7, 7);
         ReferenceQueue<Key> q = new ReferenceQueue<Key>();
@@ -365,7 +365,7 @@ public class DefaultStorageFactoryUTest {
 
         assertEquals(c.getOrCreate(k), "7");
         assertEquals(c.getOrCreate(new Key(7, 11)), "7");
-        assertEquals(c.size(), 1);
+        assertEquals(c.getSize(), 1);
         //noinspection UnusedAssignment
         k = null;
 
@@ -376,7 +376,7 @@ public class DefaultStorageFactoryUTest {
         System.gc();
 
         assertEquals(c.getOrCreate(new Key(7, 11)), "11");
-        assertEquals(c.size(), 1);
+        assertEquals(c.getSize(), 1);
     }
 
     public void testTupleWeakCaches() throws InterruptedException {
@@ -392,7 +392,7 @@ public class DefaultStorageFactoryUTest {
         // noinspection unchecked
         ObjectObjectCache<Tuple, String> c = (ObjectObjectCache<Tuple, String>) d.createCache(INSTANCE);
 
-        assertEquals(c.size(), 0);
+        assertEquals(c.getSize(), 0);
 
         Key k = new Key(7, 7);
         ReferenceQueue<Key> q = new ReferenceQueue<Key>();
@@ -400,7 +400,7 @@ public class DefaultStorageFactoryUTest {
 
         assertEquals(c.getOrCreate(factory.create(k, "123", "321")), "7123321");
         assertEquals(c.getOrCreate(factory.create(new Key(7, 11), "123", "321")), "7123321");
-        assertEquals(c.size(), 1);
+        assertEquals(c.getSize(), 1);
         //noinspection UnusedAssignment
         k = null;
 
@@ -411,6 +411,6 @@ public class DefaultStorageFactoryUTest {
         System.gc();
 
         assertEquals(c.getOrCreate(factory.create(new Key(7, 11), "123", "321")), "11123321");
-        assertEquals(c.size(), 1);
+        assertEquals(c.getSize(), 1);
     }
 }

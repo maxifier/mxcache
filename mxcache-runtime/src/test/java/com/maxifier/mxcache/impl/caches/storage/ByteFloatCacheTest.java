@@ -105,7 +105,7 @@ public class ByteFloatCacheTest {
             @Override
             public void run() {
                 try {
-                    assert cache.size() == 0;
+                    assert cache.getSize() == 0;
                     assert cache.getStatistics().getHits() == 0;
                     assert cache.getStatistics().getMisses() == 0;
 
@@ -158,7 +158,7 @@ public class ByteFloatCacheTest {
         ByteFloatCache cache = (ByteFloatCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
 
-        assert cache.size() == 0;
+        assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
@@ -190,7 +190,7 @@ public class ByteFloatCacheTest {
         when(storage.load((byte)42)).thenReturn(42f);
         when(storage.size()).thenReturn(1);
 
-        assert cache.size() == 1;
+        assert cache.getSize() == 1;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 

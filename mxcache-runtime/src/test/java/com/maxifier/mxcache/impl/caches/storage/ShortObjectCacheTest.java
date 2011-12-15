@@ -55,7 +55,7 @@ public class ShortObjectCacheTest {
         ShortObjectCache cache = (ShortObjectCache) Wrapping.getFactory(SINGATURE, SINGATURE, elementLocked).
                     wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
 
-        assert cache.size() == 0;
+        assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
@@ -86,7 +86,7 @@ public class ShortObjectCacheTest {
         when(storage.load((short)42)).thenReturn("123");
         when(storage.size()).thenReturn(1);
 
-        assert cache.size() == 1;
+        assert cache.getSize() == 1;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 

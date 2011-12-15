@@ -44,7 +44,7 @@ public class FloatFloatCacheBoxValueTest {
         FloatFloatCache cache = (FloatFloatCache) Wrapping.getFactory(new Signature(float.class, Object.class), new Signature(float.class, float.class), false).
                 wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
 
-        assert cache.size() == 0;
+        assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
@@ -68,7 +68,7 @@ public class FloatFloatCacheBoxValueTest {
         when(storage.load(42f)).thenReturn(42f);
         when(storage.size()).thenReturn(1);
 
-        assert cache.size() == 1;
+        assert cache.getSize() == 1;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 

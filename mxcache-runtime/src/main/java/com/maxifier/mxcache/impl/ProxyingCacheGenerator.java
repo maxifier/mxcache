@@ -42,7 +42,7 @@ public final class ProxyingCacheGenerator {
     private static final String DUMMY_NODE_FIELD_NAME = "DUMMY_NODE";
 
     private static final Method GET_STATISTICS_METHOD = new Method("getStatistics", STATISTICS_TYPE, EMPTY_TYPES);
-    private static final Method SIZE_METHOD = new Method("size", INT_TYPE, EMPTY_TYPES);
+    private static final Method SIZE_METHOD = new Method("getSize", INT_TYPE, EMPTY_TYPES);
     private static final Method GET_LOCK_METHOD = new Method("getLock", LOCK_TYPE, EMPTY_TYPES);
     private static final Method CLEAR_METHOD = Method.getMethod("void clear()");
     private static final Method PROXY_METHOD = new Method("proxy", OBJECT_TYPE, new Type[] { CLASS_TYPE, RESOLVABLE_TYPE });

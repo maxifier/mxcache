@@ -62,12 +62,7 @@ public class StorageLongCacheImpl extends AbstractLongCache implements StorageHo
     
     @Override
     public int size() {
-        lock();
-        try {
-            return storage.size();
-        } finally {
-            unlock();
-        }
+        return storage.size();
     }
 
     @Nullable

@@ -44,7 +44,7 @@ public class LongCacheUnboxValueTest {
         ObjectCache cache = (ObjectCache) Wrapping.getFactory(new Signature(null, long.class), new Signature(null, Object.class), false).
                     wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
 
-        assert cache.size() == 0;
+        assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
@@ -69,7 +69,7 @@ public class LongCacheUnboxValueTest {
         when(storage.load()).thenReturn(42L);
         when(storage.size()).thenReturn(1);
 
-        assert cache.size() == 1;
+        assert cache.getSize() == 1;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 

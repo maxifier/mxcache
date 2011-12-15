@@ -62,12 +62,7 @@ public class StorageByteCharacterCacheImpl extends AbstractByteCharacterCache im
     
     @Override
     public int size() {
-        lock();
-        try {
-            return storage.size();
-        } finally {
-            unlock();
-        }
+        return storage.size();
     }
 
     @Nullable

@@ -44,7 +44,7 @@ public class BooleanFloatCacheBoxKeyTest {
         BooleanFloatCache cache = (BooleanFloatCache) Wrapping.getFactory(new Signature(Object.class, float.class), new Signature(boolean.class, float.class), false).
                 wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
 
-        assert cache.size() == 0;
+        assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
@@ -69,7 +69,7 @@ public class BooleanFloatCacheBoxKeyTest {
         when(storage.load(true)).thenReturn(42f);
         when(storage.size()).thenReturn(1);
 
-        assert cache.size() == 1;
+        assert cache.getSize() == 1;
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
