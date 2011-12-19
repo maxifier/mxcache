@@ -1,10 +1,13 @@
 package com.maxifier.mxcache.provider;
 
+import com.maxifier.mxcache.PublicAPI;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.impl.caches.abs.elementlocked.ElementLockedStorage;
 import com.maxifier.mxcache.storage.Storage;
+import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -16,7 +19,7 @@ import java.util.WeakHashMap;
  * Date: 09.09.2010
  * Time: 19:40:24
  */
-public final class Signature {
+public class Signature {
     private static final String CACHES_PACKAGE_NAME = "com.maxifier.mxcache.caches.";
     private static final String STORAGE_PACKAGE_NAME = "com.maxifier.mxcache.storage.";
     private static final String LOCKED_STORAGE_PACKAGE_NAME = "com.maxifier.mxcache.storage.elementlocked.";
@@ -26,51 +29,78 @@ public final class Signature {
     private final Class container;
 
     private final Class value;
+    
+    private final Signature erased;
 
     private static final Class[] BASIC_TYPES = { boolean.class, byte.class, short.class, char.class,
             int.class, long.class, float.class, double.class, Object.class, null };
 
-    private static final Map<Class, Signature> CACHE = createCache();
+    private static final Map<Class, Map<Class, Signature>> BASIC;
+    private static final Map<Class, Signature> CACHE;
 
-    private static final Signature UNKNOWN = new Signature(null, null);
+    private static final Map<Class, String> PRIMITIVE_NAMES = createPrimitiveNamesCache();
 
-    private static Map<Class, Signature> createCache() {
-        Map<Class, Signature> res = new WeakHashMap<Class, Signature>();
+    static {
+        CACHE = new WeakHashMap<Class, Signature>(BASIC_TYPES.length * (BASIC_TYPES.length - 1));
+        BASIC = new THashMap<Class, Map<Class, Signature>>(BASIC_TYPES.length);
         for (Class e : BASIC_TYPES) {
+            Map<Class, Signature> byValue = new THashMap<Class, Signature>(BASIC_TYPES.length - 1);
+            BASIC.put(e, byValue);
             for (Class f : BASIC_TYPES) {
                 if (f != null) {
-                    Signature s = new Signature(e, f);
-                    res.put(s.getCacheInterface(), s);
-                    res.put(s.getCalculableInterface(), s);
-                    res.put(s.getStorageInterface(), s);
-                    res.put(s.getElementLockedStorageInterface(), s);
+                    Signature s = new BasicSignature(e, f);
+                    CACHE.put(s.getCacheInterface(), s);
+                    CACHE.put(s.getCalculableInterface(), s);
+                    CACHE.put(s.getStorageInterface(), s);
+                    CACHE.put(s.getElementLockedStorageInterface(), s);
+                    byValue.put(f, s);
                 }
             }
         }
-        return res;
+    }
+
+    private static final Signature UNKNOWN = new Signature(null, null);
+
+    private static Map<Class, String> createPrimitiveNamesCache() {
+        Map<Class, String> primitiveNames = new THashMap<Class, String>(8);
+        primitiveNames.put(boolean.class, "Boolean");
+        primitiveNames.put(byte.class, "Byte");
+        primitiveNames.put(short.class, "Short");
+        primitiveNames.put(char.class, "Character");
+        primitiveNames.put(int.class, "Int");
+        primitiveNames.put(long.class, "Long");
+        primitiveNames.put(float.class, "Float");
+        primitiveNames.put(double.class, "Double");
+        return primitiveNames;
     }
 
     public Signature erased() {
-        Class erasedKey = container == null ? null : erase(container);
-        Class erasedValue = erase(value);
-        if (erasedValue == value && erasedKey == container) {
-            return this;
-        }
-        return new Signature(erasedKey, erasedValue);
+        return erased;
     }
 
     private Class erase(Class k) {
-        Class erasedKey;
-        if (!k.isPrimitive() && k != Object.class) {
-            erasedKey = Object.class;
-        } else {
-            erasedKey = k;
+        if (k != null && !k.isPrimitive()) {
+            return Object.class;
         }
-        return erasedKey;
+        return k;
     }
 
     @NotNull
-    public static synchronized Signature of(Class c) {
+    public static synchronized Signature of(@Nullable Class container, @NotNull Class value) {
+        Map<Class, Signature> byValue = BASIC.get(container);
+        if (byValue == null) {
+            return new Signature(container, value);
+        }
+        Signature signature = byValue.get(value);
+        if (signature == null) {
+            // мы не сохраняем!
+            return new Signature(container, value);
+        }
+        return signature;
+    }
+
+    @NotNull
+    public static synchronized Signature ofStorage(@NotNull Class<? extends Storage> c) {
         Signature s = CACHE.get(c);
         if (s == null) {
             s = extractSignature(c);
@@ -107,6 +137,11 @@ public final class Signature {
         this.keys = keys;
         this.container = tuple;
         this.value = value;
+        if (this instanceof BasicSignature) {
+            erased = this;
+        } else {
+            erased = of(erase(tuple), erase(value));
+        }
     }
 
     public Signature(Class key, Class value) {
@@ -118,6 +153,18 @@ public final class Signature {
             this.container = key;
         }
         this.value = value;
+
+        if (value == null && key == null) {
+            // for unknown: internal use only!
+            if (UNKNOWN != null) {
+                throw new IllegalArgumentException("value & key should not be null");
+            }
+            erased = null;
+        } else if (this instanceof BasicSignature) {
+            erased = this;
+        } else {
+            erased = of(erase(key), erase(value));
+        }
     }
 
     public boolean hasKeys() {
@@ -141,7 +188,7 @@ public final class Signature {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Signature)) {
             return false;
         }
 
@@ -177,22 +224,11 @@ public final class Signature {
     }
 
     public Class<?> getImplementationClass(String prefix, String postfix) {
-        return findClass(getImplementationClassName(prefix, postfix));
-    }
-
-    private static Class<?> findClass(String implName) {
-        try {
-            return Class.forName(implName);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("No implementation class found (suggested implementation: " + implName + ")");
-        }
+        return erased.getImplementationClass(prefix, postfix);
     }
 
     public String getImplementationClassName(String prefix, String postfix) {
-        if (container == null) {
-            return prefix + toString(value) + postfix;
-        }
-        return prefix + toString(container) + toString(value) + postfix;
+        return erased.getImplementationClassName(prefix, postfix);
     }
 
     /**
@@ -205,16 +241,12 @@ public final class Signature {
      * @return element of Cache class name
      */
     public static String toString(Class c) {
-        if (c == char.class) {
-            return "Character";
-        }                         
-        if (c.isPrimitive()) {
-            String n = c.getSimpleName();
-            return Character.toUpperCase(n.charAt(0)) + n.substring(1);
+        if (!c.isPrimitive()) {
+            return "Object";
         }
-        return "Object";
+        return PRIMITIVE_NAMES.get(c);
     }
-    
+
     public Class getKey(int index) {
         return keys[index];
     }
@@ -223,23 +255,22 @@ public final class Signature {
         return keys.length;
     }
 
-    @SuppressWarnings({ "unchecked" })
     public Class<? extends Cache> getCacheInterface() {
-        return (Class<? extends Cache>) getImplementationClass(CACHES_PACKAGE_NAME, "Cache");
+        return erased.getCacheInterface();
     }
 
     public Class<?> getCalculableInterface() {
-        return getImplementationClass(CACHES_PACKAGE_NAME, "Calculatable");
+        return erased.getCalculableInterface();
     }
 
     @SuppressWarnings({ "unchecked" })
     public Class<? extends Storage> getStorageInterface() {
-        return (Class<? extends Storage>) getImplementationClass(STORAGE_PACKAGE_NAME, "Storage");
+        return erased.getStorageInterface();
     }
 
     @SuppressWarnings({ "unchecked" })
     public Class<? extends ElementLockedStorage> getElementLockedStorageInterface() {
-        return (Class<? extends ElementLockedStorage>) getImplementationClass(LOCKED_STORAGE_PACKAGE_NAME, "ElementLockedStorage");
+        return erased.getElementLockedStorageInterface();
     }
 
     /**
@@ -256,9 +287,10 @@ public final class Signature {
         if (key == container && keys.length == 1 && keys[0] == key) {
             return this;
         }
-        return new Signature(key, value);
+        return of(key, value);
     }
-    
+
+    @PublicAPI
     public Signature overrideKeys(Class[] keys, Class container) {
         if (Arrays.equals(keys, this.keys) && container == this.container) {
             return this;
@@ -266,10 +298,66 @@ public final class Signature {
         return new Signature(keys, container, value);
     }
 
+    @PublicAPI
     public Signature overrideValue(Class value) {
         if (value == this.value) {
             return this;
         }
         return new Signature(keys, container, value);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static class BasicSignature extends Signature {
+        private final Class<? extends Cache> cacheInterface;
+        private final Class<? extends Storage> storageInterface;
+        private final Class<?> calculatableInterface;
+        private final Class<? extends ElementLockedStorage> elementLockedStorageInterface;
+
+        BasicSignature(Class key, Class value) {
+            super(key, value);
+            cacheInterface = (Class<? extends Cache>) getImplementationClass(CACHES_PACKAGE_NAME, "Cache");
+            storageInterface = (Class<? extends Storage>) getImplementationClass(STORAGE_PACKAGE_NAME, "Storage");
+            calculatableInterface = getImplementationClass(CACHES_PACKAGE_NAME, "Calculatable");
+            elementLockedStorageInterface = (Class<? extends ElementLockedStorage>) getImplementationClass(LOCKED_STORAGE_PACKAGE_NAME, "ElementLockedStorage");
+        }
+
+        @Override
+        public Class<? extends Cache> getCacheInterface() {
+            return cacheInterface;
+        }
+
+        @Override
+        public Class<? extends Storage> getStorageInterface() {
+            return storageInterface;
+        }
+
+        @Override
+        public Class<?> getCalculableInterface() {
+            return calculatableInterface;
+        }
+
+        @Override
+        public Class<? extends ElementLockedStorage> getElementLockedStorageInterface() {
+            return elementLockedStorageInterface;
+        }
+
+        public String getImplementationClassName(String prefix, String postfix) {
+            if (getContainer() == null) {
+                return prefix + toString(getValue()) + postfix;
+            }
+            return prefix + toString(getContainer()) + toString(getValue()) + postfix;
+        }
+
+        public Class<?> getImplementationClass(String prefix, String postfix) {
+            return findClass(getImplementationClassName(prefix, postfix));
+        }
+
+        private static Class<?> findClass(String implName) {
+            try {
+                return Class.forName(implName);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalStateException("No implementation class found (suggested implementation: " + implName + ")");
+            }
+        }
     }
 }

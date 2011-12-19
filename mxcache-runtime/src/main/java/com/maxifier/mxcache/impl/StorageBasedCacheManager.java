@@ -64,7 +64,7 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
                 }
                 break;
         }
-        return getWrapperFactory(storage instanceof ElementLockedStorage, Signature.of(storage.getClass()))
+        return getWrapperFactory(storage instanceof ElementLockedStorage, Signature.ofStorage(storage.getClass()))
                 .wrap(owner, getDescriptor().getCalculable(), dependencyNode, storage, statistics);
     }
 

@@ -85,7 +85,7 @@ public class PooledCacheFTest {
         MxPooledCacheStrategy<Value, MxConvertType> strategy = new TestStrategy<Value>(manager);
         // noinspection unchecked
         ObjectObjectCalculatable<String, Value> calculatable = mock(ObjectObjectCalculatable.class);
-        Signature sign = new Signature(String.class, Value.class);
+        Signature sign = Signature.of(String.class, Value.class);
         // noinspection unchecked
         ObjectObjectCache<String, Value> cache = (ObjectObjectCache) Wrapping.getFactory(sign, sign, true)
                 .wrap(null, calculatable, DependencyTracker.DUMMY_NODE,
@@ -123,7 +123,7 @@ public class PooledCacheFTest {
         MxPooledCacheStrategy<Value, MxConvertType> strategy = new TestStrategy<Value>(manager);
         // noinspection unchecked
         ObjectObjectCalculatable<String, Value> calculatable = mock(ObjectObjectCalculatable.class);
-        Signature sign = new Signature(String.class, Value.class);
+        Signature sign = Signature.of(String.class, Value.class);
         // noinspection unchecked
         ObjectObjectCache<String, Value> cache = (ObjectObjectCache) Wrapping.getFactory(sign, sign, true)
                 .wrap(null, calculatable, DependencyTracker.DUMMY_NODE,
@@ -176,7 +176,7 @@ public class PooledCacheFTest {
         MxPooledCacheStrategy<Value, MxConvertType> strategy = new TestStrategy<Value>(manager);
         // noinspection unchecked
         ObjectObjectCalculatable<String, Value> calculatable = mock(ObjectObjectCalculatable.class);
-        Signature sign = new Signature(String.class, Value.class);
+        Signature sign = Signature.of(String.class, Value.class);
         // noinspection unchecked
         ObjectObjectCache<String, Value> cache = (ObjectObjectCache) Wrapping.getFactory(sign, sign, true)
                 .wrap(null, calculatable, DependencyTracker.DUMMY_NODE,
@@ -252,7 +252,7 @@ public class PooledCacheFTest {
                 return new Value(o);
             }
         };
-        Signature sign = new Signature(String.class, Value.class);
+        Signature sign = Signature.of(String.class, Value.class);
         // noinspection unchecked
         final ObjectObjectCache<String, Value> cache = (ObjectObjectCache) Wrapping.getFactory(sign, sign, true)
                 .wrap(null, calculatable, DependencyTracker.DUMMY_NODE,
@@ -285,7 +285,7 @@ public class PooledCacheFTest {
         MxPooledCacheStrategy<Value, MxConvertType> strategy = new TestStrategy<Value>(manager);
         // noinspection unchecked
         ObjectObjectCalculatable<String, Value> calculatable = mock(ObjectObjectCalculatable.class);
-        Signature sign = new Signature(String.class, Value.class);
+        Signature sign = Signature.of(String.class, Value.class);
         // noinspection unchecked
         ObjectObjectCache<String, Value> cache = (ObjectObjectCache) Wrapping.getFactory(sign, sign, true)
                 .wrap(null, calculatable, DependencyTracker.DUMMY_NODE,

@@ -67,7 +67,7 @@ public class CacheDescriptor<T> {
 
     private static Signature signature(Class keyType, Class valueType, Method method) {
         if (keyType == null) {
-            return new Signature(null, valueType);
+            return Signature.of(null, valueType);
         }
         //noinspection unchecked
         return new Signature(method.getParameterTypes(), keyType, valueType);

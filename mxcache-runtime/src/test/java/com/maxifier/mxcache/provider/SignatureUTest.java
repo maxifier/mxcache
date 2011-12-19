@@ -1,5 +1,6 @@
 package com.maxifier.mxcache.provider;
 
+import com.maxifier.mxcache.caches.ObjectObjectCache;
 import com.maxifier.mxcache.impl.caches.def.ObjectObjectWeakTroveStorage;
 import com.maxifier.mxcache.impl.caches.def.ObjectStorageImpl;
 import org.testng.annotations.Test;
@@ -16,11 +17,30 @@ import static org.testng.Assert.*;
 public class SignatureUTest {
     @Test
     public void testTroveStorages() throws Exception {
-        Signature soo = Signature.of(ObjectObjectWeakTroveStorage.class);
-        assertEquals(soo, new Signature(Object.class, Object.class));
+        Signature soo = Signature.ofStorage(ObjectObjectWeakTroveStorage.class);
+        assertSame(soo, Signature.of(Object.class, Object.class));
 
-        Signature so = Signature.of(ObjectStorageImpl.class);
-        assertEquals(so, new Signature(null, Object.class));
+        Signature so = Signature.ofStorage(ObjectStorageImpl.class);
+        assertSame(so, Signature.of(null, Object.class));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testNull() {
+        new Signature(null, null);
+    }
+
+    @Test
+    public void testErased() {
+        Signature s = Signature.of(String.class, String.class);
+        assertSame(s.getValue(), String.class);
+        assertSame(s.getContainer(), String.class);
+        assertSame(s.erased(), Signature.of(Object.class, Object.class));
+    }
+
+    @Test
+    public void testGetCacheInterface() {
+        Signature s = Signature.of(String.class, String.class);
+        assertSame(s.getCacheInterface(), ObjectObjectCache.class);
     }
 
     @Test
