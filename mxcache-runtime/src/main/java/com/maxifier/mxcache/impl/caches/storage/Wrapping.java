@@ -8,7 +8,6 @@ import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.impl.MutableStatistics;
-import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.interfaces.StatisticsHolder;
 import com.maxifier.mxcache.storage.Storage;
@@ -38,7 +37,6 @@ import static com.maxifier.mxcache.transform.TransformGenerator.NO_TRANSFORM;
  * Time: 19:41:46
  */
 public final class Wrapping {
-    private static final Type DEPENDENCY_NODE_TYPE = Type.getType(DependencyNode.class);
     private static final Type MUTABLE_STATISTICS_TYPE = Type.getType(MutableStatistics.class);
     private static final Type STORAGE_TYPE = Type.getType(Storage.class);
     private static final Type STATISTICS_HOLDER_TYPE = Type.getType(StatisticsHolder.class);
@@ -391,7 +389,7 @@ public final class Wrapping {
     }
 
     private static void generateConstructor(ClassWriter w, Type superType, Type calculatableType) {
-        Method method = new Method(CONSTRUCTOR_NAME, VOID_TYPE, new Type[] { OBJECT_TYPE, calculatableType, DEPENDENCY_NODE_TYPE, MUTABLE_STATISTICS_TYPE });
+        Method method = new Method(CONSTRUCTOR_NAME, VOID_TYPE, new Type[] { OBJECT_TYPE, calculatableType, MUTABLE_STATISTICS_TYPE });
 
         WrapperMethodGenerator ctor = defineMethod(w, method);
         ctor.visitCode();
@@ -399,7 +397,6 @@ public final class Wrapping {
         ctor.loadArg(0);
         ctor.loadArg(1);
         ctor.loadArg(2);
-        ctor.loadArg(3);
         ctor.invokeConstructor(superType, method);
         ctor.returnValue();
         ctor.endMethod();

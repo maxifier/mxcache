@@ -28,8 +28,8 @@ public class StorageLongShortCacheImpl extends AbstractLongShortCache implements
 
     private LongShortStorage storage;
 
-    public StorageLongShortCacheImpl(Object owner, LongShortCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageLongShortCacheImpl(Object owner, LongShortCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

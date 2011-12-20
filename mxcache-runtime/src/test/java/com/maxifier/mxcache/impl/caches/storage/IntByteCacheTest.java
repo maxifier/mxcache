@@ -95,7 +95,8 @@ public class IntByteCacheTest {
         when(storage.size()).thenReturn(0);
 
         final IntByteCache cache = (IntByteCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", occupied, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", occupied, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         occupied.setOccupied(true);
 
@@ -156,7 +157,8 @@ public class IntByteCacheTest {
         when(storage.size()).thenReturn(0);
 
         IntByteCache cache = (IntByteCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -184,7 +186,8 @@ public class IntByteCacheTest {
         IntByteStorage storage = createStorage(elementLocked);
 
         IntByteCache cache = (IntByteCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.isCalculated(42)).thenReturn(true);
         when(storage.load(42)).thenReturn((byte)42);
@@ -216,7 +219,8 @@ public class IntByteCacheTest {
         IntByteStorage storage = createStorage(elementLocked);
 
         IntByteCache cache = (IntByteCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -236,7 +240,8 @@ public class IntByteCacheTest {
         when(calculatable.calculate("123", 42)).thenThrow(new ResourceOccupied(r));
 
         IntByteCache cache = (IntByteCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -266,7 +271,8 @@ public class IntByteCacheTest {
         when(storage.isCalculated(42)).thenReturn(false);
 
         IntByteCache cache = (IntByteCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -305,7 +311,8 @@ public class IntByteCacheTest {
         IntByteStorage storage = mock(elementLocked ? IntByteElementLockedStorage.class : IntByteStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
 
         IntByteCache cache = (IntByteCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.getStatistics();
 

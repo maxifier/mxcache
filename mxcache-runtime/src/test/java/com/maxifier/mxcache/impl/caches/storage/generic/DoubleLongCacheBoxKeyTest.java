@@ -42,7 +42,8 @@ public class DoubleLongCacheBoxKeyTest {
         when(storage.size()).thenReturn(0);
 
         DoubleLongCache cache = (DoubleLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(double.class, long.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -63,7 +64,8 @@ public class DoubleLongCacheBoxKeyTest {
         ObjectLongStorage storage = mock(ObjectLongStorage.class);
 
         DoubleLongCache cache = (DoubleLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(double.class, long.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.isCalculated(42d)).thenReturn(true);
         when(storage.load(42d)).thenReturn(42L);
@@ -88,7 +90,8 @@ public class DoubleLongCacheBoxKeyTest {
         ObjectLongStorage storage = mock(ObjectLongStorage.class);
 
         DoubleLongCache cache = (DoubleLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(double.class, long.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -107,7 +110,8 @@ public class DoubleLongCacheBoxKeyTest {
         when(calculatable.calculate("123", 42d)).thenThrow(new ResourceOccupied(r));
 
         DoubleLongCache cache = (DoubleLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(double.class, long.class), false).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -130,7 +134,8 @@ public class DoubleLongCacheBoxKeyTest {
         when(storage.isCalculated(42d)).thenReturn(false);
 
         DoubleLongCache cache = (DoubleLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(double.class, long.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;

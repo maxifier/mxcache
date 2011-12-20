@@ -1,5 +1,6 @@
 package com.maxifier.mxcache.caches;
 
+import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.interfaces.StatisticsHolder;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 
@@ -20,4 +21,6 @@ public interface Cache extends StatisticsHolder, CleaningNode {
      * @return дескриптор кэша, для которого создан данный экземпляр
      */
     CacheDescriptor getDescriptor();
+
+    void setDependencyNode(DependencyNode node);
 }

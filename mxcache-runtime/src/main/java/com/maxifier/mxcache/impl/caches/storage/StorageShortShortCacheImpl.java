@@ -28,8 +28,8 @@ public class StorageShortShortCacheImpl extends AbstractShortShortCache implemen
 
     private ShortShortStorage storage;
 
-    public StorageShortShortCacheImpl(Object owner, ShortShortCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageShortShortCacheImpl(Object owner, ShortShortCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.impl.caches.def.*;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
+import com.maxifier.mxcache.impl.resource.DependencyNodeVisitor;
 import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.interfaces.StatisticsHolder;
 import com.maxifier.mxcache.provider.CacheDescriptor;
@@ -15,8 +16,10 @@ import com.maxifier.mxcache.impl.caches.storage.Wrapping;
 import com.maxifier.mxcache.provider.StorageFactory;
 import com.maxifier.mxcache.storage.Storage;
 import com.maxifier.mxcache.storage.elementlocked.ElementLockedStorage;
+import com.maxifier.mxcache.util.TIdentityHashSet;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.Reference;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -26,6 +29,33 @@ import java.lang.reflect.InvocationTargetException;
  * Time: 17:09:02
  */
 public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
+    public static final DependencyNode MARKER_NODE = new DependencyNode() {
+        @Override
+        public Reference<DependencyNode> getSelfReference() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void visitDependantNodes(DependencyNodeVisitor visitor) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void appendNodes(TIdentityHashSet<CleaningNode> elements) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void trackDependency(DependencyNode node) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addNode(@NotNull CleaningNode cache) {
+            // do nothing: cache itself is DependencyNode
+        }
+    };
+
     private final StorageFactory<T> storageFactory;
 
     private final Signature cacheSignature;
@@ -47,7 +77,12 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
     @Override
     protected Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws InstantiationException, IllegalAccessException, InvocationTargetException {
         if (inlineCache) {
-            return createInlineCache(owner, dependencyNode, statistics);
+            if (dependencyNode == MARKER_NODE) {
+                return createInlineCacheWithDependencyNode(owner, statistics);
+            }
+            Cache cache = createInlineCache(owner, statistics);
+            cache.setDependencyNode(dependencyNode);
+            return cache;
         }
         Storage storage = storageFactory.createStorage(owner);
         StatisticsModeEnum statisticsMode = getStatisticsMode();
@@ -64,41 +99,84 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
                 }
                 break;
         }
-        return getWrapperFactory(storage instanceof ElementLockedStorage, Signature.ofStorage(storage.getClass()))
-                .wrap(owner, getDescriptor().getCalculable(), dependencyNode, storage, statistics);
+        Cache cache = getWrapperFactory(storage instanceof ElementLockedStorage, Signature.ofStorage(storage.getClass()))
+                .wrap(owner, getDescriptor().getCalculable(), storage, statistics);
+        cache.setDependencyNode(dependencyNode);
+        return cache;
     }
 
-    private Cache createInlineCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) {
+    @Override
+    protected DependencyNode createInstanceNode() {
+        if (inlineCache) {
+            return MARKER_NODE;
+        }
+        return super.createInstanceNode();
+    }
+
+    private Cache createInlineCache(T owner, MutableStatistics statistics) {
         assert inlineCache;
         CacheDescriptor<T> descriptor = getDescriptor();
         Class valueType = descriptor.getSignature().getValue();
         Object calculable = descriptor.getCalculable();
         if (valueType == boolean.class) {
-            return new BooleanInlineCacheImpl(owner, (BooleanCalculatable) calculable, dependencyNode, statistics);
+            return new BooleanInlineCacheImpl(owner, (BooleanCalculatable) calculable, statistics);
         }
         if (valueType == byte.class) {
-            return new ByteInlineCacheImpl(owner, (ByteCalculatable) calculable, dependencyNode, statistics);
+            return new ByteInlineCacheImpl(owner, (ByteCalculatable) calculable, statistics);
         }
         if (valueType == short.class) {
-            return new ShortInlineCacheImpl(owner, (ShortCalculatable) calculable, dependencyNode, statistics);
+            return new ShortInlineCacheImpl(owner, (ShortCalculatable) calculable, statistics);
         }
         if (valueType == char.class) {
-            return new CharacterInlineCacheImpl(owner, (CharacterCalculatable) calculable, dependencyNode, statistics);
+            return new CharacterInlineCacheImpl(owner, (CharacterCalculatable) calculable, statistics);
         }
         if (valueType == int.class) {
-            return new IntInlineCacheImpl(owner, (IntCalculatable) calculable, dependencyNode, statistics);
+            return new IntInlineCacheImpl(owner, (IntCalculatable) calculable, statistics);
         }
         if (valueType == long.class) {
-            return new LongInlineCacheImpl(owner, (LongCalculatable) calculable, dependencyNode, statistics);
+            return new LongInlineCacheImpl(owner, (LongCalculatable) calculable, statistics);
         }
         if (valueType == float.class) {
-            return new FloatInlineCacheImpl(owner, (FloatCalculatable) calculable, dependencyNode, statistics);
+            return new FloatInlineCacheImpl(owner, (FloatCalculatable) calculable, statistics);
         }
         if (valueType == double.class) {
-            return new DoubleInlineCacheImpl(owner, (DoubleCalculatable) calculable, dependencyNode, statistics);
+            return new DoubleInlineCacheImpl(owner, (DoubleCalculatable) calculable, statistics);
         }
         //noinspection unchecked
-        return new ObjectInlineCacheImpl(owner, (ObjectCalculatable) calculable, dependencyNode, statistics);
+        return new ObjectInlineCacheImpl(owner, (ObjectCalculatable) calculable, statistics);
+    }
+
+    private Cache createInlineCacheWithDependencyNode(T owner, MutableStatistics statistics) {
+        assert inlineCache;
+        CacheDescriptor<T> descriptor = getDescriptor();
+        Class valueType = descriptor.getSignature().getValue();
+        Object calculable = descriptor.getCalculable();
+        if (valueType == boolean.class) {
+            return new BooleanInlineDependencyCache(owner, (BooleanCalculatable) calculable, statistics);
+        }
+        if (valueType == byte.class) {
+            return new ByteInlineDependencyCache(owner, (ByteCalculatable) calculable, statistics);
+        }
+        if (valueType == short.class) {
+            return new ShortInlineDependencyCache(owner, (ShortCalculatable) calculable, statistics);
+        }
+        if (valueType == char.class) {
+            return new CharacterInlineDependencyCache(owner, (CharacterCalculatable) calculable, statistics);
+        }
+        if (valueType == int.class) {
+            return new IntInlineDependencyCache(owner, (IntCalculatable) calculable, statistics);
+        }
+        if (valueType == long.class) {
+            return new LongInlineDependencyCache(owner, (LongCalculatable) calculable, statistics);
+        }
+        if (valueType == float.class) {
+            return new FloatInlineDependencyCache(owner, (FloatCalculatable) calculable, statistics);
+        }
+        if (valueType == double.class) {
+            return new DoubleInlineDependencyCache(owner, (DoubleCalculatable) calculable, statistics);
+        }
+        //noinspection unchecked
+        return new ObjectInlineDependencyCache(owner, (ObjectCalculatable) calculable, statistics);
     }
 
 

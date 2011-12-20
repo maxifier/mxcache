@@ -42,7 +42,8 @@ public class ObjectFloatCacheBoxValueTest {
         when(storage.size()).thenReturn(0);
 
         ObjectFloatCache cache = (ObjectFloatCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(Object.class, float.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -63,7 +64,8 @@ public class ObjectFloatCacheBoxValueTest {
         ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         ObjectFloatCache cache = (ObjectFloatCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(Object.class, float.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.load("123")).thenReturn(42f);
         when(storage.size()).thenReturn(1);
@@ -86,7 +88,8 @@ public class ObjectFloatCacheBoxValueTest {
         ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         ObjectFloatCache cache = (ObjectFloatCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(Object.class, float.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -104,7 +107,8 @@ public class ObjectFloatCacheBoxValueTest {
         when(calculatable.calculate("123", "123")).thenThrow(new ResourceOccupied(r));
 
         ObjectFloatCache cache = (ObjectFloatCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(Object.class, float.class), false).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -126,7 +130,8 @@ public class ObjectFloatCacheBoxValueTest {
         when(storage.load("123")).thenReturn(Storage.UNDEFINED);
 
         ObjectFloatCache cache = (ObjectFloatCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(Object.class, float.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;

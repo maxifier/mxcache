@@ -42,7 +42,8 @@ public class FloatCharacterCacheBoxKeyTest {
         when(storage.size()).thenReturn(0);
 
         FloatCharacterCache cache = (FloatCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(float.class, char.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -63,7 +64,8 @@ public class FloatCharacterCacheBoxKeyTest {
         ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
 
         FloatCharacterCache cache = (FloatCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(float.class, char.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.isCalculated(42f)).thenReturn(true);
         when(storage.load(42f)).thenReturn('*');
@@ -88,7 +90,8 @@ public class FloatCharacterCacheBoxKeyTest {
         ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
 
         FloatCharacterCache cache = (FloatCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(float.class, char.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -107,7 +110,8 @@ public class FloatCharacterCacheBoxKeyTest {
         when(calculatable.calculate("123", 42f)).thenThrow(new ResourceOccupied(r));
 
         FloatCharacterCache cache = (FloatCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(float.class, char.class), false).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -130,7 +134,8 @@ public class FloatCharacterCacheBoxKeyTest {
         when(storage.isCalculated(42f)).thenReturn(false);
 
         FloatCharacterCache cache = (FloatCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(float.class, char.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;

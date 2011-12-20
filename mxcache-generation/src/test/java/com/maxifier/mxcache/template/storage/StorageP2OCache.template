@@ -28,8 +28,8 @@ public class Storage#EG##FG#CacheImpl extends Abstract#EG##FG#Cache implements S
 
     private #EG##FG#Storage storage;
 
-    public Storage#E##F#CacheImpl(Object owner, #EG##FG#Calculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public Storage#E##F#CacheImpl(Object owner, #EG##FG#Calculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

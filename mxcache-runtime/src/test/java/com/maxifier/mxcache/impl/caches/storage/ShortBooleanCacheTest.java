@@ -95,7 +95,8 @@ public class ShortBooleanCacheTest {
         when(storage.size()).thenReturn(0);
 
         final ShortBooleanCache cache = (ShortBooleanCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", occupied, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", occupied, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         occupied.setOccupied(true);
 
@@ -156,7 +157,8 @@ public class ShortBooleanCacheTest {
         when(storage.size()).thenReturn(0);
 
         ShortBooleanCache cache = (ShortBooleanCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -184,7 +186,8 @@ public class ShortBooleanCacheTest {
         ShortBooleanStorage storage = createStorage(elementLocked);
 
         ShortBooleanCache cache = (ShortBooleanCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.isCalculated((short)42)).thenReturn(true);
         when(storage.load((short)42)).thenReturn(true);
@@ -216,7 +219,8 @@ public class ShortBooleanCacheTest {
         ShortBooleanStorage storage = createStorage(elementLocked);
 
         ShortBooleanCache cache = (ShortBooleanCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -236,7 +240,8 @@ public class ShortBooleanCacheTest {
         when(calculatable.calculate("123", (short)42)).thenThrow(new ResourceOccupied(r));
 
         ShortBooleanCache cache = (ShortBooleanCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -266,7 +271,8 @@ public class ShortBooleanCacheTest {
         when(storage.isCalculated((short)42)).thenReturn(false);
 
         ShortBooleanCache cache = (ShortBooleanCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -305,7 +311,8 @@ public class ShortBooleanCacheTest {
         ShortBooleanStorage storage = mock(elementLocked ? ShortBooleanElementLockedStorage.class : ShortBooleanStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
 
         ShortBooleanCache cache = (ShortBooleanCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.getStatistics();
 

@@ -28,8 +28,8 @@ public class StorageShortCacheImpl extends AbstractShortCache implements Storage
 
     private ShortStorage storage;
 
-    public StorageShortCacheImpl(Object owner, ShortCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageShortCacheImpl(Object owner, ShortCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

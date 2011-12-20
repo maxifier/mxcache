@@ -95,7 +95,8 @@ public class CharacterCacheTest {
         when(storage.size()).thenReturn(0);
 
         final CharacterCache cache = (CharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", occupied, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", occupied, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         occupied.setOccupied(true);
 
@@ -155,7 +156,8 @@ public class CharacterCacheTest {
         when(storage.size()).thenReturn(0);
 
         CharacterCache cache = (CharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -182,7 +184,8 @@ public class CharacterCacheTest {
         CharacterStorage storage = createStorage(elementLocked);
 
         CharacterCache cache = (CharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.isCalculated()).thenReturn(true);
         when(storage.load()).thenReturn('*');
@@ -213,7 +216,8 @@ public class CharacterCacheTest {
         CharacterStorage storage = createStorage(elementLocked);
 
         CharacterCache cache = (CharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -233,7 +237,8 @@ public class CharacterCacheTest {
         when(calculatable.calculate("123")).thenThrow(new ResourceOccupied(r));
 
         CharacterCache cache = (CharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -262,7 +267,8 @@ public class CharacterCacheTest {
         when(storage.isCalculated()).thenReturn(false);
 
         CharacterCache cache = (CharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -300,7 +306,8 @@ public class CharacterCacheTest {
         CharacterStorage storage = mock(elementLocked ? CharacterElementLockedStorage.class : CharacterStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
 
         CharacterCache cache = (CharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.getStatistics();
 

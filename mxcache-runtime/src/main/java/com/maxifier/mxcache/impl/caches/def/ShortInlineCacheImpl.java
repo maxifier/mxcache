@@ -3,7 +3,6 @@ package com.maxifier.mxcache.impl.caches.def;
 import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.caches.abs.*;
-import com.maxifier.mxcache.impl.resource.DependencyNode;
 
 /**
  * Project: Maxifier
@@ -21,8 +20,8 @@ public class ShortInlineCacheImpl extends AbstractShortCache {
     private volatile boolean set;
     private short value;
 
-    public ShortInlineCacheImpl(Object owner, ShortCalculatable calculable, DependencyNode dependencyNode, MutableStatistics statistics) {
-        super(owner, calculable, dependencyNode, statistics);
+    public ShortInlineCacheImpl(Object owner, ShortCalculatable calculable, MutableStatistics statistics) {
+        super(owner, calculable, statistics);
     }
 
     @Override

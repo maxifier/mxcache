@@ -42,7 +42,8 @@ public class ShortByteCacheBoxKeyTest {
         when(storage.size()).thenReturn(0);
 
         ShortByteCache cache = (ShortByteCache) Wrapping.getFactory(new Signature(Object.class, byte.class), new Signature(short.class, byte.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -63,7 +64,8 @@ public class ShortByteCacheBoxKeyTest {
         ObjectByteStorage storage = mock(ObjectByteStorage.class);
 
         ShortByteCache cache = (ShortByteCache) Wrapping.getFactory(new Signature(Object.class, byte.class), new Signature(short.class, byte.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.isCalculated((short)42)).thenReturn(true);
         when(storage.load((short)42)).thenReturn((byte)42);
@@ -88,7 +90,8 @@ public class ShortByteCacheBoxKeyTest {
         ObjectByteStorage storage = mock(ObjectByteStorage.class);
 
         ShortByteCache cache = (ShortByteCache) Wrapping.getFactory(new Signature(Object.class, byte.class), new Signature(short.class, byte.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -107,7 +110,8 @@ public class ShortByteCacheBoxKeyTest {
         when(calculatable.calculate("123", (short)42)).thenThrow(new ResourceOccupied(r));
 
         ShortByteCache cache = (ShortByteCache) Wrapping.getFactory(new Signature(Object.class, byte.class), new Signature(short.class, byte.class), false).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -130,7 +134,8 @@ public class ShortByteCacheBoxKeyTest {
         when(storage.isCalculated((short)42)).thenReturn(false);
 
         ShortByteCache cache = (ShortByteCache) Wrapping.getFactory(new Signature(Object.class, byte.class), new Signature(short.class, byte.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;

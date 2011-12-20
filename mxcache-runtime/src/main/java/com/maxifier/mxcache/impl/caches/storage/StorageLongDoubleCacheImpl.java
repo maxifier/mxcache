@@ -28,8 +28,8 @@ public class StorageLongDoubleCacheImpl extends AbstractLongDoubleCache implemen
 
     private LongDoubleStorage storage;
 
-    public StorageLongDoubleCacheImpl(Object owner, LongDoubleCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageLongDoubleCacheImpl(Object owner, LongDoubleCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

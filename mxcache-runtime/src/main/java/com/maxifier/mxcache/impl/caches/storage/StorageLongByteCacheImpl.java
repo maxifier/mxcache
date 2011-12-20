@@ -28,8 +28,8 @@ public class StorageLongByteCacheImpl extends AbstractLongByteCache implements S
 
     private LongByteStorage storage;
 
-    public StorageLongByteCacheImpl(Object owner, LongByteCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageLongByteCacheImpl(Object owner, LongByteCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

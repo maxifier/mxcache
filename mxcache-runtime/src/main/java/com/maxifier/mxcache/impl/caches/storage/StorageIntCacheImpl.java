@@ -28,8 +28,8 @@ public class StorageIntCacheImpl extends AbstractIntCache implements StorageHold
 
     private IntStorage storage;
 
-    public StorageIntCacheImpl(Object owner, IntCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageIntCacheImpl(Object owner, IntCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

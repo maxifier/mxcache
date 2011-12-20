@@ -28,8 +28,8 @@ public class StorageCharacterCacheImpl extends AbstractCharacterCache implements
 
     private CharacterStorage storage;
 
-    public StorageCharacterCacheImpl(Object owner, CharacterCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageCharacterCacheImpl(Object owner, CharacterCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

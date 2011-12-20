@@ -28,8 +28,8 @@ public class StorageObjectIntCacheImpl<E> extends AbstractObjectIntCache<E> impl
 
     private ObjectIntStorage<E> storage;
 
-    public StorageObjectIntCacheImpl(Object owner, ObjectIntCalculatable<E> calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageObjectIntCacheImpl(Object owner, ObjectIntCalculatable<E> calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

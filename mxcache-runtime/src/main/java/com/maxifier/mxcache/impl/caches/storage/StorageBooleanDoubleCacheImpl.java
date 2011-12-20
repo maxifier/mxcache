@@ -28,8 +28,8 @@ public class StorageBooleanDoubleCacheImpl extends AbstractBooleanDoubleCache im
 
     private BooleanDoubleStorage storage;
 
-    public StorageBooleanDoubleCacheImpl(Object owner, BooleanDoubleCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageBooleanDoubleCacheImpl(Object owner, BooleanDoubleCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

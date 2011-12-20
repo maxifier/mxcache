@@ -28,8 +28,8 @@ public class StorageByteCharacterCacheImpl extends AbstractByteCharacterCache im
 
     private ByteCharacterStorage storage;
 
-    public StorageByteCharacterCacheImpl(Object owner, ByteCharacterCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageByteCharacterCacheImpl(Object owner, ByteCharacterCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

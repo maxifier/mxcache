@@ -9,7 +9,6 @@ import com.maxifier.mxcache.impl.resource.*;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.storage.elementlocked.*;
 
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Project: Maxifier
@@ -26,14 +25,10 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AbstractShortObjectCache<F> extends AbstractElementLockedCache implements ShortObjectCache<F>, ShortObjectElementLockedStorage<F> {
     private final ShortObjectCalculatable<F> calculatable;
 
-    @NotNull
-    private final DependencyNode node;
-
     private final Object owner;
 
-    public AbstractShortObjectCache(Object owner, ShortObjectCalculatable<F> calculatable, @NotNull DependencyNode node, MutableStatistics statistics) {
+    public AbstractShortObjectCache(Object owner, ShortObjectCalculatable<F> calculatable, MutableStatistics statistics) {
         super(statistics);
-        this.node = node;
         this.owner = owner;
         this.calculatable = calculatable;
     }
@@ -45,11 +40,11 @@ public abstract class AbstractShortObjectCache<F> extends AbstractElementLockedC
         try {
             Object v = load(o);
             if (v != UNDEFINED) {
-                DependencyTracker.mark(node);
+                DependencyTracker.mark(getDependencyNode());
                 hit();
                 return (F)v;
             }
-            DependencyNode callerNode = DependencyTracker.track(node);
+            DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
             try {
                 while(true) {
                     try {
@@ -94,11 +89,6 @@ public abstract class AbstractShortObjectCache<F> extends AbstractElementLockedC
     public CacheDescriptor getDescriptor() {
         CacheId id = CalculatableHelper.getId(calculatable.getClass());
         return CacheFactory.getProvider().getDescriptor(id);
-    }
-
-    @Override
-    public DependencyNode getDependencyNode() {
-        return node;
     }
 
     @Override

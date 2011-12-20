@@ -28,8 +28,8 @@ public class StorageCharacterDoubleCacheImpl extends AbstractCharacterDoubleCach
 
     private CharacterDoubleStorage storage;
 
-    public StorageCharacterDoubleCacheImpl(Object owner, CharacterDoubleCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageCharacterDoubleCacheImpl(Object owner, CharacterDoubleCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

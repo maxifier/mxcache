@@ -192,6 +192,11 @@ public class ProxyingCacheGeneratorUTest {
         }
 
         @Override
+        public void setDependencyNode(DependencyNode node) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public DependencyNode getDependencyNode() {
             return DependencyTracker.DUMMY_NODE;
         }
@@ -228,6 +233,11 @@ public class ProxyingCacheGeneratorUTest {
         }
 
         @Override
+        public void setDependencyNode(DependencyNode node) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public DependencyNode getDependencyNode() {
             return DependencyTracker.DUMMY_NODE;
         }
@@ -261,6 +271,11 @@ public class ProxyingCacheGeneratorUTest {
         @Override
         public CacheDescriptor getDescriptor() {
             return null;
+        }
+
+        @Override
+        public void setDependencyNode(DependencyNode node) {
+            throw new UnsupportedOperationException();
         }
 
         @Override

@@ -28,8 +28,8 @@ public class StorageDoubleDoubleCacheImpl extends AbstractDoubleDoubleCache impl
 
     private DoubleDoubleStorage storage;
 
-    public StorageDoubleDoubleCacheImpl(Object owner, DoubleDoubleCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageDoubleDoubleCacheImpl(Object owner, DoubleDoubleCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

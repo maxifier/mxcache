@@ -86,6 +86,10 @@ public class CacheProviderImplUTest {
                         }
 
                         @Override
+                        public void setDependencyNode(DependencyNode node) {
+                        }
+
+                        @Override
                         public Lock getLock() {
                             throw new UnsupportedOperationException();
                         }

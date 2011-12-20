@@ -28,8 +28,8 @@ public class StorageLongCacheImpl extends AbstractLongCache implements StorageHo
 
     private LongStorage storage;
 
-    public StorageLongCacheImpl(Object owner, LongCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageLongCacheImpl(Object owner, LongCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

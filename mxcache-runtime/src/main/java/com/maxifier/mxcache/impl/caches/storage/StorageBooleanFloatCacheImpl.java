@@ -28,8 +28,8 @@ public class StorageBooleanFloatCacheImpl extends AbstractBooleanFloatCache impl
 
     private BooleanFloatStorage storage;
 
-    public StorageBooleanFloatCacheImpl(Object owner, BooleanFloatCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageBooleanFloatCacheImpl(Object owner, BooleanFloatCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

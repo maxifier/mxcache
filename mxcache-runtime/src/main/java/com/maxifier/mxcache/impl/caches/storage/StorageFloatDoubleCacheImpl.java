@@ -28,8 +28,8 @@ public class StorageFloatDoubleCacheImpl extends AbstractFloatDoubleCache implem
 
     private FloatDoubleStorage storage;
 
-    public StorageFloatDoubleCacheImpl(Object owner, FloatDoubleCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageFloatDoubleCacheImpl(Object owner, FloatDoubleCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

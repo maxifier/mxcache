@@ -28,8 +28,8 @@ public class StorageFloatCacheImpl extends AbstractFloatCache implements Storage
 
     private FloatStorage storage;
 
-    public StorageFloatCacheImpl(Object owner, FloatCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageFloatCacheImpl(Object owner, FloatCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

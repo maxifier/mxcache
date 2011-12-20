@@ -8,7 +8,6 @@ import com.maxifier.mxcache.legacy.converters.MxAbstractResourceConverter;
 import com.maxifier.mxcache.legacy.converters.MxConverter;
 import com.maxifier.mxcache.storage.Storage;
 import com.maxifier.mxcache.impl.caches.storage.Wrapping;
-import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.legacy.converters.MxConvertType;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.Signature;
@@ -88,8 +87,8 @@ public class PooledCacheFTest {
         Signature sign = Signature.of(String.class, Value.class);
         // noinspection unchecked
         ObjectObjectCache<String, Value> cache = (ObjectObjectCache) Wrapping.getFactory(sign, sign, true)
-                .wrap(null, calculatable, DependencyTracker.DUMMY_NODE,
-                      new PooledCache<String, Value, MxConvertType>(null, manager, MxConvertType.DEFAULT, strategy), new MutableStatisticsImpl());
+                .wrap(null, calculatable,
+                        new PooledCache<String, Value, MxConvertType>(null, manager, MxConvertType.DEFAULT, strategy), new MutableStatisticsImpl());
 
         when(calculatable.calculate(null, "test")).thenReturn(new Value("test"));
         assertEquals(cache.getOrCreate("test"), new Value("test"));
@@ -126,8 +125,8 @@ public class PooledCacheFTest {
         Signature sign = Signature.of(String.class, Value.class);
         // noinspection unchecked
         ObjectObjectCache<String, Value> cache = (ObjectObjectCache) Wrapping.getFactory(sign, sign, true)
-                .wrap(null, calculatable, DependencyTracker.DUMMY_NODE,
-                      new PooledCache<String, Value, MxConvertType>(null, manager, MxConvertType.DEFAULT, strategy), new MutableStatisticsImpl());
+                .wrap(null, calculatable,
+                        new PooledCache<String, Value, MxConvertType>(null, manager, MxConvertType.DEFAULT, strategy), new MutableStatisticsImpl());
 
         when(calculatable.calculate(null, "test")).thenReturn(new Value("test"));
         when(calculatable.calculate(null, "maxifier")).thenReturn(new Value("cool"));
@@ -179,8 +178,8 @@ public class PooledCacheFTest {
         Signature sign = Signature.of(String.class, Value.class);
         // noinspection unchecked
         ObjectObjectCache<String, Value> cache = (ObjectObjectCache) Wrapping.getFactory(sign, sign, true)
-                .wrap(null, calculatable, DependencyTracker.DUMMY_NODE,
-                      new PooledCache<String, Value, MxConvertType>(null, manager, MxConvertType.DEFAULT, strategy), new MutableStatisticsImpl());
+                .wrap(null, calculatable,
+                        new PooledCache<String, Value, MxConvertType>(null, manager, MxConvertType.DEFAULT, strategy), new MutableStatisticsImpl());
 
         when(calculatable.calculate(null, "test")).thenReturn(new Value("test"));
         when(calculatable.calculate(null, "maxifier")).thenReturn(new Value("cool"));
@@ -255,8 +254,8 @@ public class PooledCacheFTest {
         Signature sign = Signature.of(String.class, Value.class);
         // noinspection unchecked
         final ObjectObjectCache<String, Value> cache = (ObjectObjectCache) Wrapping.getFactory(sign, sign, true)
-                .wrap(null, calculatable, DependencyTracker.DUMMY_NODE,
-                      new PooledCache<String, Value, MxConvertType>(null, manager, MxConvertType.DEFAULT, strategy), new MutableStatisticsImpl());
+                .wrap(null, calculatable,
+                        new PooledCache<String, Value, MxConvertType>(null, manager, MxConvertType.DEFAULT, strategy), new MutableStatisticsImpl());
 
         Thread thread = new Thread() {
             @Override
@@ -288,13 +287,13 @@ public class PooledCacheFTest {
         Signature sign = Signature.of(String.class, Value.class);
         // noinspection unchecked
         ObjectObjectCache<String, Value> cache = (ObjectObjectCache) Wrapping.getFactory(sign, sign, true)
-                .wrap(null, calculatable, DependencyTracker.DUMMY_NODE,
-                      new PooledCache<String, Value, MxConvertType>(null, manager, MxConvertType.DEFAULT, strategy), new MutableStatisticsImpl());
+                .wrap(null, calculatable,
+                        new PooledCache<String, Value, MxConvertType>(null, manager, MxConvertType.DEFAULT, strategy), new MutableStatisticsImpl());
 
         // noinspection unchecked
         ObjectObjectCache<String, Value> cache2 = (ObjectObjectCache) Wrapping.getFactory(sign, sign, true)
-                .wrap(null, calculatable, DependencyTracker.DUMMY_NODE,
-                      new PooledCache<String, Value, MxConvertType>(null, manager, MxConvertType.DEFAULT, strategy), new MutableStatisticsImpl());
+                .wrap(null, calculatable,
+                        new PooledCache<String, Value, MxConvertType>(null, manager, MxConvertType.DEFAULT, strategy), new MutableStatisticsImpl());
 
         when(calculatable.calculate(null, "test")).thenReturn(new Value("test"));
         assertEquals(cache.getOrCreate("test"), new Value("test"));

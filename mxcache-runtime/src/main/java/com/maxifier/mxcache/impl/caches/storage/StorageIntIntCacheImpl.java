@@ -28,8 +28,8 @@ public class StorageIntIntCacheImpl extends AbstractIntIntCache implements Stora
 
     private IntIntStorage storage;
 
-    public StorageIntIntCacheImpl(Object owner, IntIntCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageIntIntCacheImpl(Object owner, IntIntCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.maxifier.mxcache.impl.caches.storage;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.storage.Storage;
-import com.maxifier.mxcache.impl.resource.DependencyNode;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -23,9 +22,9 @@ class WrapperFactoryImpl implements WrapperFactory {
 
     @SuppressWarnings({ "unchecked" })
     @Override
-    public Cache wrap(Object owner, Object calculable, DependencyNode dependencyNode, Storage storage, MutableStatistics statistics) {
+    public Cache wrap(Object owner, Object calculable, Storage storage, MutableStatistics statistics) {
         try {
-            Cache cache = constructor.newInstance(owner, calculable, dependencyNode, statistics);
+            Cache cache = constructor.newInstance(owner, calculable, statistics);
             ((StorageHolder)cache).setStorage(storage);
             return cache;
         } catch (InstantiationException e) {

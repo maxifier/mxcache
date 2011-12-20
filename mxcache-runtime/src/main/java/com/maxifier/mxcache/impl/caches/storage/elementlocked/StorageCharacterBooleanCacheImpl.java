@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 public class StorageCharacterBooleanCacheImpl extends AbstractCharacterBooleanCache implements StorageHolder<CharacterBooleanElementLockedStorage> {
     private CharacterBooleanElementLockedStorage storage;
 
-    public StorageCharacterBooleanCacheImpl(Object owner, CharacterBooleanCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageCharacterBooleanCacheImpl(Object owner, CharacterBooleanCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

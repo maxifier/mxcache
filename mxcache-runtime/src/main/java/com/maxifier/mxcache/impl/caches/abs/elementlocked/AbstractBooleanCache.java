@@ -11,7 +11,6 @@ import com.maxifier.mxcache.storage.elementlocked.*;
 
 import java.util.concurrent.locks.Lock;
 
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Project: Maxifier
@@ -28,14 +27,10 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AbstractBooleanCache extends AbstractElementLockedCache implements BooleanCache, BooleanElementLockedStorage {
     private final BooleanCalculatable calculatable;
 
-    @NotNull
-    private final DependencyNode node;
-
     private final Object owner;
 
-    public AbstractBooleanCache(Object owner, BooleanCalculatable calculatable, @NotNull DependencyNode node, MutableStatistics statistics) {
+    public AbstractBooleanCache(Object owner, BooleanCalculatable calculatable, MutableStatistics statistics) {
         super(statistics);
-        this.node = node;
         this.owner = owner;
         this.calculatable = calculatable;
     }
@@ -48,12 +43,12 @@ public abstract class AbstractBooleanCache extends AbstractElementLockedCache im
         }
         try {
             if (isCalculated()) {
-                DependencyTracker.mark(node);
+                DependencyTracker.mark(getDependencyNode());
                 hit();
                 return load();
             }
 
-            DependencyNode callerNode = DependencyTracker.track(node);
+            DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
             try {
                 while(true) {
                     try {
@@ -102,11 +97,6 @@ public abstract class AbstractBooleanCache extends AbstractElementLockedCache im
     public CacheDescriptor getDescriptor() {
         CacheId id = CalculatableHelper.getId(calculatable.getClass());
         return CacheFactory.getProvider().getDescriptor(id);
-    }
-
-    @Override
-    public DependencyNode getDependencyNode() {
-        return node;
     }
 
     @Override

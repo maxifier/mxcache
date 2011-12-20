@@ -28,8 +28,8 @@ public class StorageLongObjectCacheImpl<F> extends AbstractLongObjectCache<F> im
 
     private LongObjectStorage<F> storage;
 
-    public StorageLongObjectCacheImpl(Object owner, LongObjectCalculatable<F> calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageLongObjectCacheImpl(Object owner, LongObjectCalculatable<F> calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

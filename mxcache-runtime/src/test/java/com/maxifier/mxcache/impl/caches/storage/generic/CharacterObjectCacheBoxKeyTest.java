@@ -43,7 +43,8 @@ public class CharacterObjectCacheBoxKeyTest {
         when(storage.size()).thenReturn(0);
 
         CharacterObjectCache cache = (CharacterObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(char.class, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -64,7 +65,8 @@ public class CharacterObjectCacheBoxKeyTest {
         ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         CharacterObjectCache cache = (CharacterObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(char.class, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.load('*')).thenReturn("123");
         when(storage.size()).thenReturn(1);
@@ -87,7 +89,8 @@ public class CharacterObjectCacheBoxKeyTest {
         ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         CharacterObjectCache cache = (CharacterObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(char.class, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -105,7 +108,8 @@ public class CharacterObjectCacheBoxKeyTest {
         when(calculatable.calculate("123", '*')).thenThrow(new ResourceOccupied(r));
 
         CharacterObjectCache cache = (CharacterObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(char.class, Object.class), false).
-                    wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -127,7 +131,8 @@ public class CharacterObjectCacheBoxKeyTest {
         when(storage.load('*')).thenReturn(Storage.UNDEFINED);
 
         CharacterObjectCache cache = (CharacterObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(char.class, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -151,7 +156,8 @@ public class CharacterObjectCacheBoxKeyTest {
         ObjectObjectStorage storage = mock(ObjectObjectStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
 
         CharacterObjectCache cache = (CharacterObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(char.class, Object.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.getStatistics();
 

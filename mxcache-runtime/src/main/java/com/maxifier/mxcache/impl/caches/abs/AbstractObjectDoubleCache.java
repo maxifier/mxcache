@@ -9,8 +9,6 @@ import com.maxifier.mxcache.impl.resource.*;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.storage.*;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Project: Maxifier
  * Created by: Yakoushin Andrey
@@ -26,14 +24,10 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AbstractObjectDoubleCache<E> extends AbstractCache implements ObjectDoubleCache<E>, ObjectDoubleStorage<E> {
     private final ObjectDoubleCalculatable<E> calculatable;
 
-    @NotNull
-    private final DependencyNode node;
-
     private final Object owner;
 
-    public AbstractObjectDoubleCache(Object owner, ObjectDoubleCalculatable<E> calculatable, @NotNull DependencyNode node, MutableStatistics statistics) {
+    public AbstractObjectDoubleCache(Object owner, ObjectDoubleCalculatable<E> calculatable, MutableStatistics statistics) {
         super(statistics);
-        this.node = node;
         this.owner = owner;
         this.calculatable = calculatable;
     }
@@ -43,11 +37,11 @@ public abstract class AbstractObjectDoubleCache<E> extends AbstractCache impleme
         lock();
         try {
             if (isCalculated(o)) {
-                DependencyTracker.mark(node);
+                DependencyTracker.mark(getDependencyNode());
                 hit();
                 return load(o);
             }
-            DependencyNode callerNode = DependencyTracker.track(node);
+            DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
             try {
                 while(true) {
                     try {
@@ -90,11 +84,6 @@ public abstract class AbstractObjectDoubleCache<E> extends AbstractCache impleme
     public CacheDescriptor getDescriptor() {
         CacheId id = CalculatableHelper.getId(calculatable.getClass());
         return CacheFactory.getProvider().getDescriptor(id);
-    }
-
-    @Override
-    public DependencyNode getDependencyNode() {
-        return node;
     }
 
     @Override

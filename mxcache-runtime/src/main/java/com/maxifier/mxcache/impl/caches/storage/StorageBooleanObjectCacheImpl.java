@@ -28,8 +28,8 @@ public class StorageBooleanObjectCacheImpl<F> extends AbstractBooleanObjectCache
 
     private BooleanObjectStorage<F> storage;
 
-    public StorageBooleanObjectCacheImpl(Object owner, BooleanObjectCalculatable<F> calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageBooleanObjectCacheImpl(Object owner, BooleanObjectCalculatable<F> calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

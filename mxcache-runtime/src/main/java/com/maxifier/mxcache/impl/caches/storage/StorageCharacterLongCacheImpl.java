@@ -28,8 +28,8 @@ public class StorageCharacterLongCacheImpl extends AbstractCharacterLongCache im
 
     private CharacterLongStorage storage;
 
-    public StorageCharacterLongCacheImpl(Object owner, CharacterLongCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageCharacterLongCacheImpl(Object owner, CharacterLongCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

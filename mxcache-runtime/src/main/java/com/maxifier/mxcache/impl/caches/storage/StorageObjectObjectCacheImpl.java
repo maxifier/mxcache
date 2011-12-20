@@ -28,8 +28,8 @@ public class StorageObjectObjectCacheImpl<E, F> extends AbstractObjectObjectCach
 
     private ObjectObjectStorage<E, F> storage;
 
-    public StorageObjectObjectCacheImpl(Object owner, ObjectObjectCalculatable<E, F> calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageObjectObjectCacheImpl(Object owner, ObjectObjectCalculatable<E, F> calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

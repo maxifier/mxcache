@@ -28,8 +28,8 @@ public class StorageByteShortCacheImpl extends AbstractByteShortCache implements
 
     private ByteShortStorage storage;
 
-    public StorageByteShortCacheImpl(Object owner, ByteShortCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageByteShortCacheImpl(Object owner, ByteShortCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

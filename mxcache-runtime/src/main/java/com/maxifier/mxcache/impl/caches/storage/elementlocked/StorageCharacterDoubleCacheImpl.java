@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 public class StorageCharacterDoubleCacheImpl extends AbstractCharacterDoubleCache implements StorageHolder<CharacterDoubleElementLockedStorage> {
     private CharacterDoubleElementLockedStorage storage;
 
-    public StorageCharacterDoubleCacheImpl(Object owner, CharacterDoubleCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageCharacterDoubleCacheImpl(Object owner, CharacterDoubleCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

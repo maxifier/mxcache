@@ -42,7 +42,8 @@ public class IntCacheUnboxValueTest {
         when(storage.size()).thenReturn(0);
 
         ObjectCache cache = (ObjectCache) Wrapping.getFactory(new Signature(null, int.class), new Signature(null, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -63,7 +64,8 @@ public class IntCacheUnboxValueTest {
         IntStorage storage = mock(IntStorage.class);
 
         ObjectCache cache = (ObjectCache) Wrapping.getFactory(new Signature(null, int.class), new Signature(null, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.isCalculated()).thenReturn(true);
         when(storage.load()).thenReturn(42);
@@ -88,7 +90,8 @@ public class IntCacheUnboxValueTest {
         IntStorage storage = mock(IntStorage.class);
 
         ObjectCache cache = (ObjectCache) Wrapping.getFactory(new Signature(null, int.class), new Signature(null, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -107,7 +110,8 @@ public class IntCacheUnboxValueTest {
         when(calculatable.calculate("123")).thenThrow(new ResourceOccupied(r));
 
         ObjectCache cache = (ObjectCache) Wrapping.getFactory(new Signature(null, int.class), new Signature(null, Object.class), false).
-                    wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -130,7 +134,8 @@ public class IntCacheUnboxValueTest {
         when(storage.isCalculated()).thenReturn(false);
 
         ObjectCache cache = (ObjectCache) Wrapping.getFactory(new Signature(null, int.class), new Signature(null, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;

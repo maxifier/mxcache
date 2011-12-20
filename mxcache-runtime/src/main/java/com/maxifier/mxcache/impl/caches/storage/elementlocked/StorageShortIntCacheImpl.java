@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 public class StorageShortIntCacheImpl extends AbstractShortIntCache implements StorageHolder<ShortIntElementLockedStorage> {
     private ShortIntElementLockedStorage storage;
 
-    public StorageShortIntCacheImpl(Object owner, ShortIntCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageShortIntCacheImpl(Object owner, ShortIntCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

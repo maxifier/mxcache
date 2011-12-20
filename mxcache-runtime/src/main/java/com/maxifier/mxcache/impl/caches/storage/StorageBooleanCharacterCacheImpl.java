@@ -28,8 +28,8 @@ public class StorageBooleanCharacterCacheImpl extends AbstractBooleanCharacterCa
 
     private BooleanCharacterStorage storage;
 
-    public StorageBooleanCharacterCacheImpl(Object owner, BooleanCharacterCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageBooleanCharacterCacheImpl(Object owner, BooleanCharacterCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

@@ -28,8 +28,8 @@ public class StorageCharacterObjectCacheImpl<F> extends AbstractCharacterObjectC
 
     private CharacterObjectStorage<F> storage;
 
-    public StorageCharacterObjectCacheImpl(Object owner, CharacterObjectCalculatable<F> calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageCharacterObjectCacheImpl(Object owner, CharacterObjectCalculatable<F> calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

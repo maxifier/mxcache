@@ -42,7 +42,8 @@ public class ByteIntCacheBoxKeyTest {
         when(storage.size()).thenReturn(0);
 
         ByteIntCache cache = (ByteIntCache) Wrapping.getFactory(new Signature(Object.class, int.class), new Signature(byte.class, int.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -63,7 +64,8 @@ public class ByteIntCacheBoxKeyTest {
         ObjectIntStorage storage = mock(ObjectIntStorage.class);
 
         ByteIntCache cache = (ByteIntCache) Wrapping.getFactory(new Signature(Object.class, int.class), new Signature(byte.class, int.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.isCalculated((byte)42)).thenReturn(true);
         when(storage.load((byte)42)).thenReturn(42);
@@ -88,7 +90,8 @@ public class ByteIntCacheBoxKeyTest {
         ObjectIntStorage storage = mock(ObjectIntStorage.class);
 
         ByteIntCache cache = (ByteIntCache) Wrapping.getFactory(new Signature(Object.class, int.class), new Signature(byte.class, int.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -107,7 +110,8 @@ public class ByteIntCacheBoxKeyTest {
         when(calculatable.calculate("123", (byte)42)).thenThrow(new ResourceOccupied(r));
 
         ByteIntCache cache = (ByteIntCache) Wrapping.getFactory(new Signature(Object.class, int.class), new Signature(byte.class, int.class), false).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -130,7 +134,8 @@ public class ByteIntCacheBoxKeyTest {
         when(storage.isCalculated((byte)42)).thenReturn(false);
 
         ByteIntCache cache = (ByteIntCache) Wrapping.getFactory(new Signature(Object.class, int.class), new Signature(byte.class, int.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;

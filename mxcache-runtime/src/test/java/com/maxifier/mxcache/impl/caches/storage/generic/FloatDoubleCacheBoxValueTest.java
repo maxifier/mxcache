@@ -42,7 +42,8 @@ public class FloatDoubleCacheBoxValueTest {
         when(storage.size()).thenReturn(0);
 
         FloatDoubleCache cache = (FloatDoubleCache) Wrapping.getFactory(new Signature(float.class, Object.class), new Signature(float.class, double.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -63,7 +64,8 @@ public class FloatDoubleCacheBoxValueTest {
         FloatObjectStorage storage = mock(FloatObjectStorage.class);
 
         FloatDoubleCache cache = (FloatDoubleCache) Wrapping.getFactory(new Signature(float.class, Object.class), new Signature(float.class, double.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.load(42f)).thenReturn(42d);
         when(storage.size()).thenReturn(1);
@@ -86,7 +88,8 @@ public class FloatDoubleCacheBoxValueTest {
         FloatObjectStorage storage = mock(FloatObjectStorage.class);
 
         FloatDoubleCache cache = (FloatDoubleCache) Wrapping.getFactory(new Signature(float.class, Object.class), new Signature(float.class, double.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -104,7 +107,8 @@ public class FloatDoubleCacheBoxValueTest {
         when(calculatable.calculate("123", 42f)).thenThrow(new ResourceOccupied(r));
 
         FloatDoubleCache cache = (FloatDoubleCache) Wrapping.getFactory(new Signature(float.class, Object.class), new Signature(float.class, double.class), false).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -126,7 +130,8 @@ public class FloatDoubleCacheBoxValueTest {
         when(storage.load(42f)).thenReturn(Storage.UNDEFINED);
 
         FloatDoubleCache cache = (FloatDoubleCache) Wrapping.getFactory(new Signature(float.class, Object.class), new Signature(float.class, double.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;

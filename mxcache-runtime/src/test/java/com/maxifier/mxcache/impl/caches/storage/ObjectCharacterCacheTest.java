@@ -95,7 +95,8 @@ public class ObjectCharacterCacheTest {
         when(storage.size()).thenReturn(0);
 
         final ObjectCharacterCache cache = (ObjectCharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", occupied, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", occupied, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         occupied.setOccupied(true);
 
@@ -156,7 +157,8 @@ public class ObjectCharacterCacheTest {
         when(storage.size()).thenReturn(0);
 
         ObjectCharacterCache cache = (ObjectCharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -184,7 +186,8 @@ public class ObjectCharacterCacheTest {
         ObjectCharacterStorage storage = createStorage(elementLocked);
 
         ObjectCharacterCache cache = (ObjectCharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.isCalculated("123")).thenReturn(true);
         when(storage.load("123")).thenReturn('*');
@@ -216,7 +219,8 @@ public class ObjectCharacterCacheTest {
         ObjectCharacterStorage storage = createStorage(elementLocked);
 
         ObjectCharacterCache cache = (ObjectCharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -236,7 +240,8 @@ public class ObjectCharacterCacheTest {
         when(calculatable.calculate("123", "123")).thenThrow(new ResourceOccupied(r));
 
         ObjectCharacterCache cache = (ObjectCharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -266,7 +271,8 @@ public class ObjectCharacterCacheTest {
         when(storage.isCalculated("123")).thenReturn(false);
 
         ObjectCharacterCache cache = (ObjectCharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -305,7 +311,8 @@ public class ObjectCharacterCacheTest {
         ObjectCharacterStorage storage = mock(elementLocked ? ObjectCharacterElementLockedStorage.class : ObjectCharacterStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
 
         ObjectCharacterCache cache = (ObjectCharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.getStatistics();
 

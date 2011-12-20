@@ -2,6 +2,7 @@ package com.maxifier.mxcache.impl.caches.abs.elementlocked;
 
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.impl.MutableStatistics;
+import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.interfaces.Statistics;
 
 import java.util.concurrent.locks.Lock;
@@ -15,8 +16,15 @@ import java.util.concurrent.locks.Lock;
 abstract class AbstractElementLockedCache implements Cache, ElementLockedStorage {
     private final MutableStatistics statistics;
 
+    private DependencyNode node;
+
     protected AbstractElementLockedCache(MutableStatistics statistics) {
         this.statistics = statistics;
+    }
+
+    @Override
+    public void setDependencyNode(DependencyNode node) {
+        this.node = node;
     }
 
     public void miss(long dt) {
@@ -44,5 +52,10 @@ abstract class AbstractElementLockedCache implements Cache, ElementLockedStorage
         } finally {
             lock.unlock();
         }
+    }
+
+    @Override
+    public DependencyNode getDependencyNode() {
+        return node;
     }
 }

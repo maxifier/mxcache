@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 public class StorageDoubleBooleanCacheImpl extends AbstractDoubleBooleanCache implements StorageHolder<DoubleBooleanElementLockedStorage> {
     private DoubleBooleanElementLockedStorage storage;
 
-    public StorageDoubleBooleanCacheImpl(Object owner, DoubleBooleanCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageDoubleBooleanCacheImpl(Object owner, DoubleBooleanCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

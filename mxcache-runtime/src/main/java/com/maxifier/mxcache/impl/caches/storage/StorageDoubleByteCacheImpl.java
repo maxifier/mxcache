@@ -28,8 +28,8 @@ public class StorageDoubleByteCacheImpl extends AbstractDoubleByteCache implemen
 
     private DoubleByteStorage storage;
 
-    public StorageDoubleByteCacheImpl(Object owner, DoubleByteCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageDoubleByteCacheImpl(Object owner, DoubleByteCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

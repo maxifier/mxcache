@@ -12,5 +12,5 @@ import com.maxifier.mxcache.impl.resource.DependencyNode;
  * Time: 19:40:03
  */
 public interface WrapperFactory {
-    Cache wrap(Object owner, Object calculable, DependencyNode dependencyNode, Storage storage, MutableStatistics statistics);
+    Cache wrap(Object owner, Object calculable, Storage storage, MutableStatistics statistics);
 }

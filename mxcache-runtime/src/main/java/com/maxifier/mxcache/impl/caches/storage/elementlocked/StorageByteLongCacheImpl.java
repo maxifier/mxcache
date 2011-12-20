@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 public class StorageByteLongCacheImpl extends AbstractByteLongCache implements StorageHolder<ByteLongElementLockedStorage> {
     private ByteLongElementLockedStorage storage;
 
-    public StorageByteLongCacheImpl(Object owner, ByteLongCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageByteLongCacheImpl(Object owner, ByteLongCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

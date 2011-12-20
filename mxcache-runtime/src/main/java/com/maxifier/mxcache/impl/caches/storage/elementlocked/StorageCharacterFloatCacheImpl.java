@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 public class StorageCharacterFloatCacheImpl extends AbstractCharacterFloatCache implements StorageHolder<CharacterFloatElementLockedStorage> {
     private CharacterFloatElementLockedStorage storage;
 
-    public StorageCharacterFloatCacheImpl(Object owner, CharacterFloatCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageCharacterFloatCacheImpl(Object owner, CharacterFloatCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

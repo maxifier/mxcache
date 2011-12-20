@@ -28,8 +28,8 @@ public class StorageFloatShortCacheImpl extends AbstractFloatShortCache implemen
 
     private FloatShortStorage storage;
 
-    public StorageFloatShortCacheImpl(Object owner, FloatShortCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageFloatShortCacheImpl(Object owner, FloatShortCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

@@ -28,8 +28,8 @@ public class StorageObjectByteCacheImpl<E> extends AbstractObjectByteCache<E> im
 
     private ObjectByteStorage<E> storage;
 
-    public StorageObjectByteCacheImpl(Object owner, ObjectByteCalculatable<E> calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageObjectByteCacheImpl(Object owner, ObjectByteCalculatable<E> calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

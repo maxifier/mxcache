@@ -42,7 +42,8 @@ public class FloatBooleanCacheBoxValueTest {
         when(storage.size()).thenReturn(0);
 
         FloatBooleanCache cache = (FloatBooleanCache) Wrapping.getFactory(new Signature(float.class, Object.class), new Signature(float.class, boolean.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -63,7 +64,8 @@ public class FloatBooleanCacheBoxValueTest {
         FloatObjectStorage storage = mock(FloatObjectStorage.class);
 
         FloatBooleanCache cache = (FloatBooleanCache) Wrapping.getFactory(new Signature(float.class, Object.class), new Signature(float.class, boolean.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.load(42f)).thenReturn(true);
         when(storage.size()).thenReturn(1);
@@ -86,7 +88,8 @@ public class FloatBooleanCacheBoxValueTest {
         FloatObjectStorage storage = mock(FloatObjectStorage.class);
 
         FloatBooleanCache cache = (FloatBooleanCache) Wrapping.getFactory(new Signature(float.class, Object.class), new Signature(float.class, boolean.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -104,7 +107,8 @@ public class FloatBooleanCacheBoxValueTest {
         when(calculatable.calculate("123", 42f)).thenThrow(new ResourceOccupied(r));
 
         FloatBooleanCache cache = (FloatBooleanCache) Wrapping.getFactory(new Signature(float.class, Object.class), new Signature(float.class, boolean.class), false).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -126,7 +130,8 @@ public class FloatBooleanCacheBoxValueTest {
         when(storage.load(42f)).thenReturn(Storage.UNDEFINED);
 
         FloatBooleanCache cache = (FloatBooleanCache) Wrapping.getFactory(new Signature(float.class, Object.class), new Signature(float.class, boolean.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;

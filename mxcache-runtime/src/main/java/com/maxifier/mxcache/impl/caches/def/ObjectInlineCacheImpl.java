@@ -3,7 +3,6 @@ package com.maxifier.mxcache.impl.caches.def;
 import com.maxifier.mxcache.caches.ObjectCalculatable;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.caches.abs.AbstractObjectCache;
-import com.maxifier.mxcache.impl.resource.DependencyNode;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,8 +13,8 @@ import com.maxifier.mxcache.impl.resource.DependencyNode;
 public class ObjectInlineCacheImpl<T> extends AbstractObjectCache<T> {
     private volatile Object value = UNDEFINED;
 
-    public ObjectInlineCacheImpl(Object owner, ObjectCalculatable<T> calculable, DependencyNode dependencyNode, MutableStatistics statistics) {
-        super(owner, calculable, dependencyNode, statistics);
+    public ObjectInlineCacheImpl(Object owner, ObjectCalculatable<T> calculable, MutableStatistics statistics) {
+        super(owner, calculable, statistics);
     }
 
     @Override

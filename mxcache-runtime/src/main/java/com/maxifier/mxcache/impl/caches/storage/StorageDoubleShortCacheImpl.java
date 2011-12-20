@@ -28,8 +28,8 @@ public class StorageDoubleShortCacheImpl extends AbstractDoubleShortCache implem
 
     private DoubleShortStorage storage;
 
-    public StorageDoubleShortCacheImpl(Object owner, DoubleShortCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageDoubleShortCacheImpl(Object owner, DoubleShortCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

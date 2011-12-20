@@ -28,8 +28,8 @@ public class StorageIntDoubleCacheImpl extends AbstractIntDoubleCache implements
 
     private IntDoubleStorage storage;
 
-    public StorageIntDoubleCacheImpl(Object owner, IntDoubleCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageIntDoubleCacheImpl(Object owner, IntDoubleCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

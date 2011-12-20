@@ -4,6 +4,7 @@ import com.maxifier.mxcache.Cached;
 import com.maxifier.mxcache.NonInstrumentedCacheException;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.caches.CleaningNode;
+import com.maxifier.mxcache.impl.resource.DependencyNode;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
@@ -851,6 +852,11 @@ public class CacheCleanerUTest {
             this.instance = instance;
         }
 
+        @Override
+        public void setDependencyNode(DependencyNode node) {
+            throw new UnsupportedOperationException();
+        }
+
         @SuppressWarnings({ "unchecked" })
         @Override
         public void clear() {
@@ -875,6 +881,11 @@ public class CacheCleanerUTest {
             this.cleanableWithLocks = cleanableWithLocks;
             this.id = id;
             this.clazz = clazz;
+        }
+
+        @Override
+        public void setDependencyNode(DependencyNode node) {
+            throw new UnsupportedOperationException();
         }
 
         @Override

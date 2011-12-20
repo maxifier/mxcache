@@ -28,8 +28,8 @@ public class StorageShortBooleanCacheImpl extends AbstractShortBooleanCache impl
 
     private ShortBooleanStorage storage;
 
-    public StorageShortBooleanCacheImpl(Object owner, ShortBooleanCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageShortBooleanCacheImpl(Object owner, ShortBooleanCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 public class StorageDoubleObjectCacheImpl<F> extends AbstractDoubleObjectCache<F> implements StorageHolder<DoubleObjectElementLockedStorage<F>> {
     private DoubleObjectElementLockedStorage<F> storage;
 
-    public StorageDoubleObjectCacheImpl(Object owner, DoubleObjectCalculatable<F> calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageDoubleObjectCacheImpl(Object owner, DoubleObjectCalculatable<F> calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

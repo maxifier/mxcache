@@ -53,7 +53,8 @@ public class ByteObjectCacheTest {
         when(storage.size()).thenReturn(0);
 
         ByteObjectCache cache = (ByteObjectCache) Wrapping.getFactory(SINGATURE, SINGATURE, elementLocked).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -81,7 +82,8 @@ public class ByteObjectCacheTest {
         ByteObjectStorage storage = createStorage(elementLocked);
 
         ByteObjectCache cache = (ByteObjectCache) Wrapping.getFactory(SINGATURE, SINGATURE, elementLocked).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.load((byte)42)).thenReturn("123");
         when(storage.size()).thenReturn(1);
@@ -111,7 +113,8 @@ public class ByteObjectCacheTest {
         ByteObjectStorage storage = createStorage(elementLocked);
 
         ByteObjectCache cache = (ByteObjectCache) Wrapping.getFactory(SINGATURE, SINGATURE, elementLocked).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -130,7 +133,8 @@ public class ByteObjectCacheTest {
         when(calculatable.calculate("123", (byte)42)).thenThrow(new ResourceOccupied(r));
 
         ByteObjectCache cache = (ByteObjectCache) Wrapping.getFactory(SINGATURE, SINGATURE, elementLocked).
-                    wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -159,7 +163,8 @@ public class ByteObjectCacheTest {
         when(storage.load((byte)42)).thenReturn(Storage.UNDEFINED);
 
         ByteObjectCache cache = (ByteObjectCache) Wrapping.getFactory(SINGATURE, SINGATURE, elementLocked).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -198,7 +203,8 @@ public class ByteObjectCacheTest {
         ByteObjectStorage storage = mock(elementLocked ? ByteObjectElementLockedStorage.class : ByteObjectStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
 
         ByteObjectCache cache = (ByteObjectCache) Wrapping.getFactory(SINGATURE, SINGATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.getStatistics();
 

@@ -196,6 +196,7 @@ mxcache-generation/src/test/java/com/maxifier/mxcache/template/impl/P2PCacheTest
 mxcache-generation/src/test/java/com/maxifier/mxcache/template/impl/P2PTroveStorage.template -text
 mxcache-generation/src/test/java/com/maxifier/mxcache/template/impl/PCacheTest.template -text
 mxcache-generation/src/test/java/com/maxifier/mxcache/template/impl/PInlineCacheImpl.template -text
+mxcache-generation/src/test/java/com/maxifier/mxcache/template/impl/PInlineDependencyCache.template -text
 mxcache-generation/src/test/java/com/maxifier/mxcache/template/impl/PStorageImpl.template -text
 mxcache-generation/src/test/java/com/maxifier/mxcache/template/interfaces/P2PCache.template -text
 mxcache-generation/src/test/java/com/maxifier/mxcache/template/interfaces/P2PCalculatable.template -text
@@ -812,6 +813,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/BooleanCharac
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/BooleanDoubleTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/BooleanFloatTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/BooleanInlineCacheImpl.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/BooleanInlineDependencyCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/BooleanIntTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/BooleanLongTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/BooleanObjectTroveStorage.java -text
@@ -823,6 +825,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ByteCharacter
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ByteDoubleTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ByteFloatTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ByteInlineCacheImpl.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ByteInlineDependencyCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ByteIntTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ByteLongTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ByteObjectTroveStorage.java -text
@@ -834,6 +837,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/CharacterChar
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/CharacterDoubleTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/CharacterFloatTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/CharacterInlineCacheImpl.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/CharacterInlineDependencyCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/CharacterIntTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/CharacterLongTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/CharacterObjectTroveStorage.java -text
@@ -845,6 +849,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/DoubleCharact
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/DoubleDoubleTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/DoubleFloatTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/DoubleInlineCacheImpl.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/DoubleInlineDependencyCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/DoubleIntTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/DoubleLongTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/DoubleObjectTroveStorage.java -text
@@ -856,6 +861,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/FloatCharacte
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/FloatDoubleTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/FloatFloatTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/FloatInlineCacheImpl.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/FloatInlineDependencyCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/FloatIntTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/FloatLongTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/FloatObjectTroveStorage.java -text
@@ -867,6 +873,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/IntCharacterT
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/IntDoubleTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/IntFloatTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/IntInlineCacheImpl.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/IntInlineDependencyCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/IntIntTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/IntLongTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/IntObjectTroveStorage.java -text
@@ -878,6 +885,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/LongCharacter
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/LongDoubleTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/LongFloatTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/LongInlineCacheImpl.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/LongInlineDependencyCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/LongIntTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/LongLongTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/LongObjectTroveStorage.java -text
@@ -894,6 +902,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ObjectDoubleW
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ObjectFloatTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ObjectFloatWeakTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ObjectInlineCacheImpl.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ObjectInlineDependencyCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ObjectIntTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ObjectIntWeakTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ObjectLongTroveStorage.java -text
@@ -909,6 +918,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ShortCharacte
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ShortDoubleTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ShortFloatTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ShortInlineCacheImpl.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ShortInlineDependencyCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ShortIntTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ShortLongTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/ShortObjectTroveStorage.java -text

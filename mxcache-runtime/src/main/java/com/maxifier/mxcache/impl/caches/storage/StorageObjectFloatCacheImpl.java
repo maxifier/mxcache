@@ -28,8 +28,8 @@ public class StorageObjectFloatCacheImpl<E> extends AbstractObjectFloatCache<E> 
 
     private ObjectFloatStorage<E> storage;
 
-    public StorageObjectFloatCacheImpl(Object owner, ObjectFloatCalculatable<E> calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageObjectFloatCacheImpl(Object owner, ObjectFloatCalculatable<E> calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 public class StorageLongFloatCacheImpl extends AbstractLongFloatCache implements StorageHolder<LongFloatElementLockedStorage> {
     private LongFloatElementLockedStorage storage;
 
-    public StorageLongFloatCacheImpl(Object owner, LongFloatCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageLongFloatCacheImpl(Object owner, LongFloatCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

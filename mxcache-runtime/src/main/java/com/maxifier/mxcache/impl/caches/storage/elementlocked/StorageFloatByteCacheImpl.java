@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 public class StorageFloatByteCacheImpl extends AbstractFloatByteCache implements StorageHolder<FloatByteElementLockedStorage> {
     private FloatByteElementLockedStorage storage;
 
-    public StorageFloatByteCacheImpl(Object owner, FloatByteCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageFloatByteCacheImpl(Object owner, FloatByteCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

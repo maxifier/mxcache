@@ -28,8 +28,8 @@ public class StorageBooleanLongCacheImpl extends AbstractBooleanLongCache implem
 
     private BooleanLongStorage storage;
 
-    public StorageBooleanLongCacheImpl(Object owner, BooleanLongCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageBooleanLongCacheImpl(Object owner, BooleanLongCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

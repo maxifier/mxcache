@@ -9,8 +9,6 @@ import com.maxifier.mxcache.impl.resource.*;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.storage.*;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Project: Maxifier
  * Created by: Yakoushin Andrey
@@ -26,14 +24,10 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AbstractCharacterObjectCache<F> extends AbstractCache implements CharacterObjectCache<F>, CharacterObjectStorage<F> {
     private final CharacterObjectCalculatable<F> calculatable;
 
-    @NotNull
-    private final DependencyNode node;
-
     private final Object owner;
 
-    public AbstractCharacterObjectCache(Object owner, CharacterObjectCalculatable<F> calculatable, @NotNull DependencyNode node, MutableStatistics statistics) {
+    public AbstractCharacterObjectCache(Object owner, CharacterObjectCalculatable<F> calculatable, MutableStatistics statistics) {
         super(statistics);
-        this.node = node;
         this.owner = owner;
         this.calculatable = calculatable;
     }
@@ -45,11 +39,11 @@ public abstract class AbstractCharacterObjectCache<F> extends AbstractCache impl
         try {
             Object v = load(o);
             if (v != UNDEFINED) {
-                DependencyTracker.mark(node);
+                DependencyTracker.mark(getDependencyNode());
                 hit();
                 return (F)v;
             }
-            DependencyNode callerNode = DependencyTracker.track(node);
+            DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
             try {
                 while(true) {
                     try {
@@ -94,11 +88,6 @@ public abstract class AbstractCharacterObjectCache<F> extends AbstractCache impl
     public CacheDescriptor getDescriptor() {
         CacheId id = CalculatableHelper.getId(calculatable.getClass());
         return CacheFactory.getProvider().getDescriptor(id);
-    }
-
-    @Override
-    public DependencyNode getDependencyNode() {
-        return node;
     }
 
     @Override

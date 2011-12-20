@@ -42,7 +42,8 @@ public class ByteCharacterCacheBoxValueTest {
         when(storage.size()).thenReturn(0);
 
         ByteCharacterCache cache = (ByteCharacterCache) Wrapping.getFactory(new Signature(byte.class, Object.class), new Signature(byte.class, char.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -63,7 +64,8 @@ public class ByteCharacterCacheBoxValueTest {
         ByteObjectStorage storage = mock(ByteObjectStorage.class);
 
         ByteCharacterCache cache = (ByteCharacterCache) Wrapping.getFactory(new Signature(byte.class, Object.class), new Signature(byte.class, char.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.load((byte)42)).thenReturn('*');
         when(storage.size()).thenReturn(1);
@@ -86,7 +88,8 @@ public class ByteCharacterCacheBoxValueTest {
         ByteObjectStorage storage = mock(ByteObjectStorage.class);
 
         ByteCharacterCache cache = (ByteCharacterCache) Wrapping.getFactory(new Signature(byte.class, Object.class), new Signature(byte.class, char.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -104,7 +107,8 @@ public class ByteCharacterCacheBoxValueTest {
         when(calculatable.calculate("123", (byte)42)).thenThrow(new ResourceOccupied(r));
 
         ByteCharacterCache cache = (ByteCharacterCache) Wrapping.getFactory(new Signature(byte.class, Object.class), new Signature(byte.class, char.class), false).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -126,7 +130,8 @@ public class ByteCharacterCacheBoxValueTest {
         when(storage.load((byte)42)).thenReturn(Storage.UNDEFINED);
 
         ByteCharacterCache cache = (ByteCharacterCache) Wrapping.getFactory(new Signature(byte.class, Object.class), new Signature(byte.class, char.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;

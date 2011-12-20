@@ -95,7 +95,8 @@ public class #E##F#CacheTest {
         when(storage.size()).thenReturn(0);
 
         final #E##F#Cache cache = (#E##F#Cache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", occupied, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", occupied, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         occupied.setOccupied(true);
 
@@ -158,7 +159,8 @@ public class #E##F#CacheTest {
         when(storage.size()).thenReturn(0);
 
         #E##F#Cache cache = (#E##F#Cache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -188,7 +190,8 @@ public class #E##F#CacheTest {
         #E##F#Storage storage = createStorage(elementLocked);
 
         #E##F#Cache cache = (#E##F#Cache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.isCalculated(#ETEST#)).thenReturn(true);
         when(storage.load(#ETEST#)).thenReturn(#FTEST#);
@@ -222,7 +225,8 @@ public class #E##F#CacheTest {
         #E##F#Storage storage = createStorage(elementLocked);
 
         #E##F#Cache cache = (#E##F#Cache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -242,7 +246,8 @@ public class #E##F#CacheTest {
         when(calculatable.calculate("123"#IF_E#, #ETEST##ENDIF#)).thenThrow(new ResourceOccupied(r));
 
         #E##F#Cache cache = (#E##F#Cache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -274,7 +279,8 @@ public class #E##F#CacheTest {
         when(storage.isCalculated(#ETEST#)).thenReturn(false);
 
         #E##F#Cache cache = (#E##F#Cache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -315,7 +321,8 @@ public class #E##F#CacheTest {
         #E##F#Storage storage = mock(elementLocked ? #E##F#ElementLockedStorage.class : #E##F#Storage.class, withSettings().extraInterfaces(StatisticsHolder.class));
 
         #E##F#Cache cache = (#E##F#Cache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.getStatistics();
 

@@ -42,7 +42,8 @@ public class IntBooleanCacheBoxKeyTest {
         when(storage.size()).thenReturn(0);
 
         IntBooleanCache cache = (IntBooleanCache) Wrapping.getFactory(new Signature(Object.class, boolean.class), new Signature(int.class, boolean.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -63,7 +64,8 @@ public class IntBooleanCacheBoxKeyTest {
         ObjectBooleanStorage storage = mock(ObjectBooleanStorage.class);
 
         IntBooleanCache cache = (IntBooleanCache) Wrapping.getFactory(new Signature(Object.class, boolean.class), new Signature(int.class, boolean.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.isCalculated(42)).thenReturn(true);
         when(storage.load(42)).thenReturn(true);
@@ -88,7 +90,8 @@ public class IntBooleanCacheBoxKeyTest {
         ObjectBooleanStorage storage = mock(ObjectBooleanStorage.class);
 
         IntBooleanCache cache = (IntBooleanCache) Wrapping.getFactory(new Signature(Object.class, boolean.class), new Signature(int.class, boolean.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -107,7 +110,8 @@ public class IntBooleanCacheBoxKeyTest {
         when(calculatable.calculate("123", 42)).thenThrow(new ResourceOccupied(r));
 
         IntBooleanCache cache = (IntBooleanCache) Wrapping.getFactory(new Signature(Object.class, boolean.class), new Signature(int.class, boolean.class), false).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -130,7 +134,8 @@ public class IntBooleanCacheBoxKeyTest {
         when(storage.isCalculated(42)).thenReturn(false);
 
         IntBooleanCache cache = (IntBooleanCache) Wrapping.getFactory(new Signature(Object.class, boolean.class), new Signature(int.class, boolean.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;

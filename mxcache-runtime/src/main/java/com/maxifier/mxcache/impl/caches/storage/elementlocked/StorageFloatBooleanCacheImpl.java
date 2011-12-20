@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 public class StorageFloatBooleanCacheImpl extends AbstractFloatBooleanCache implements StorageHolder<FloatBooleanElementLockedStorage> {
     private FloatBooleanElementLockedStorage storage;
 
-    public StorageFloatBooleanCacheImpl(Object owner, FloatBooleanCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageFloatBooleanCacheImpl(Object owner, FloatBooleanCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

@@ -28,8 +28,8 @@ public class StorageDoubleCacheImpl extends AbstractDoubleCache implements Stora
 
     private DoubleStorage storage;
 
-    public StorageDoubleCacheImpl(Object owner, DoubleCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageDoubleCacheImpl(Object owner, DoubleCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.maxifier.mxcache.impl.caches.def;
 import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.caches.abs.*;
-import com.maxifier.mxcache.impl.resource.DependencyNode;
 
 /**
  * Project: Maxifier
@@ -21,8 +20,8 @@ public class ByteInlineCacheImpl extends AbstractByteCache {
     private volatile boolean set;
     private byte value;
 
-    public ByteInlineCacheImpl(Object owner, ByteCalculatable calculable, DependencyNode dependencyNode, MutableStatistics statistics) {
-        super(owner, calculable, dependencyNode, statistics);
+    public ByteInlineCacheImpl(Object owner, ByteCalculatable calculable, MutableStatistics statistics) {
+        super(owner, calculable, statistics);
     }
 
     @Override

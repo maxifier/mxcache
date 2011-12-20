@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 public class StorageFloatObjectCacheImpl<F> extends AbstractFloatObjectCache<F> implements StorageHolder<FloatObjectElementLockedStorage<F>> {
     private FloatObjectElementLockedStorage<F> storage;
 
-    public StorageFloatObjectCacheImpl(Object owner, FloatObjectCalculatable<F> calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageFloatObjectCacheImpl(Object owner, FloatObjectCalculatable<F> calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

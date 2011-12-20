@@ -42,7 +42,8 @@ public class BooleanBooleanCacheBoxValueTest {
         when(storage.size()).thenReturn(0);
 
         BooleanBooleanCache cache = (BooleanBooleanCache) Wrapping.getFactory(new Signature(boolean.class, Object.class), new Signature(boolean.class, boolean.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -63,7 +64,8 @@ public class BooleanBooleanCacheBoxValueTest {
         BooleanObjectStorage storage = mock(BooleanObjectStorage.class);
 
         BooleanBooleanCache cache = (BooleanBooleanCache) Wrapping.getFactory(new Signature(boolean.class, Object.class), new Signature(boolean.class, boolean.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.load(true)).thenReturn(true);
         when(storage.size()).thenReturn(1);
@@ -86,7 +88,8 @@ public class BooleanBooleanCacheBoxValueTest {
         BooleanObjectStorage storage = mock(BooleanObjectStorage.class);
 
         BooleanBooleanCache cache = (BooleanBooleanCache) Wrapping.getFactory(new Signature(boolean.class, Object.class), new Signature(boolean.class, boolean.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -104,7 +107,8 @@ public class BooleanBooleanCacheBoxValueTest {
         when(calculatable.calculate("123", true)).thenThrow(new ResourceOccupied(r));
 
         BooleanBooleanCache cache = (BooleanBooleanCache) Wrapping.getFactory(new Signature(boolean.class, Object.class), new Signature(boolean.class, boolean.class), false).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -126,7 +130,8 @@ public class BooleanBooleanCacheBoxValueTest {
         when(storage.load(true)).thenReturn(Storage.UNDEFINED);
 
         BooleanBooleanCache cache = (BooleanBooleanCache) Wrapping.getFactory(new Signature(boolean.class, Object.class), new Signature(boolean.class, boolean.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;

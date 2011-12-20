@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 public class StorageIntCharacterCacheImpl extends AbstractIntCharacterCache implements StorageHolder<IntCharacterElementLockedStorage> {
     private IntCharacterElementLockedStorage storage;
 
-    public StorageIntCharacterCacheImpl(Object owner, IntCharacterCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageIntCharacterCacheImpl(Object owner, IntCharacterCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

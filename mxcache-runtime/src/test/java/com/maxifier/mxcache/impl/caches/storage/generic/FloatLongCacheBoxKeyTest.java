@@ -42,7 +42,8 @@ public class FloatLongCacheBoxKeyTest {
         when(storage.size()).thenReturn(0);
 
         FloatLongCache cache = (FloatLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(float.class, long.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -63,7 +64,8 @@ public class FloatLongCacheBoxKeyTest {
         ObjectLongStorage storage = mock(ObjectLongStorage.class);
 
         FloatLongCache cache = (FloatLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(float.class, long.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.isCalculated(42f)).thenReturn(true);
         when(storage.load(42f)).thenReturn(42L);
@@ -88,7 +90,8 @@ public class FloatLongCacheBoxKeyTest {
         ObjectLongStorage storage = mock(ObjectLongStorage.class);
 
         FloatLongCache cache = (FloatLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(float.class, long.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -107,7 +110,8 @@ public class FloatLongCacheBoxKeyTest {
         when(calculatable.calculate("123", 42f)).thenThrow(new ResourceOccupied(r));
 
         FloatLongCache cache = (FloatLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(float.class, long.class), false).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -130,7 +134,8 @@ public class FloatLongCacheBoxKeyTest {
         when(storage.isCalculated(42f)).thenReturn(false);
 
         FloatLongCache cache = (FloatLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(float.class, long.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;

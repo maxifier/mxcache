@@ -28,8 +28,8 @@ public class StorageBooleanIntCacheImpl extends AbstractBooleanIntCache implemen
 
     private BooleanIntStorage storage;
 
-    public StorageBooleanIntCacheImpl(Object owner, BooleanIntCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageBooleanIntCacheImpl(Object owner, BooleanIntCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

@@ -28,8 +28,8 @@ public class StorageByteIntCacheImpl extends AbstractByteIntCache implements Sto
 
     private ByteIntStorage storage;
 
-    public StorageByteIntCacheImpl(Object owner, ByteIntCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageByteIntCacheImpl(Object owner, ByteIntCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

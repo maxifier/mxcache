@@ -28,8 +28,8 @@ public class StorageCharacterFloatCacheImpl extends AbstractCharacterFloatCache 
 
     private CharacterFloatStorage storage;
 
-    public StorageCharacterFloatCacheImpl(Object owner, CharacterFloatCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageCharacterFloatCacheImpl(Object owner, CharacterFloatCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

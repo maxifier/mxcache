@@ -3,6 +3,7 @@ package com.maxifier.mxcache.impl.caches.abs;
 import com.maxifier.mxcache.LightweightLock;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.impl.MutableStatistics;
+import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.storage.Storage;
 import org.jetbrains.annotations.Nullable;
@@ -18,8 +19,15 @@ import java.util.concurrent.locks.Lock;
 abstract class AbstractCache extends LightweightLock implements Cache, Storage {
     private final MutableStatistics statistics;
 
+    private DependencyNode node;
+
     protected AbstractCache(@Nullable MutableStatistics statistics) {
         this.statistics = statistics;
+    }
+
+    @Override
+    public void setDependencyNode(DependencyNode node) {
+        this.node = node;
     }
 
     @Override
@@ -52,5 +60,10 @@ abstract class AbstractCache extends LightweightLock implements Cache, Storage {
         } finally {
             unlock();
         }
+    }
+
+    @Override
+    public DependencyNode getDependencyNode() {
+        return node;
     }
 }

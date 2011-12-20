@@ -28,8 +28,8 @@ public class StorageCharacterShortCacheImpl extends AbstractCharacterShortCache 
 
     private CharacterShortStorage storage;
 
-    public StorageCharacterShortCacheImpl(Object owner, CharacterShortCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageCharacterShortCacheImpl(Object owner, CharacterShortCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

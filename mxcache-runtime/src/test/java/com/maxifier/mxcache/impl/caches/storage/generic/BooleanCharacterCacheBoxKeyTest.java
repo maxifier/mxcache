@@ -42,7 +42,8 @@ public class BooleanCharacterCacheBoxKeyTest {
         when(storage.size()).thenReturn(0);
 
         BooleanCharacterCache cache = (BooleanCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(boolean.class, char.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -63,7 +64,8 @@ public class BooleanCharacterCacheBoxKeyTest {
         ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
 
         BooleanCharacterCache cache = (BooleanCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(boolean.class, char.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.isCalculated(true)).thenReturn(true);
         when(storage.load(true)).thenReturn('*');
@@ -88,7 +90,8 @@ public class BooleanCharacterCacheBoxKeyTest {
         ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
 
         BooleanCharacterCache cache = (BooleanCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(boolean.class, char.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -107,7 +110,8 @@ public class BooleanCharacterCacheBoxKeyTest {
         when(calculatable.calculate("123", true)).thenThrow(new ResourceOccupied(r));
 
         BooleanCharacterCache cache = (BooleanCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(boolean.class, char.class), false).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -130,7 +134,8 @@ public class BooleanCharacterCacheBoxKeyTest {
         when(storage.isCalculated(true)).thenReturn(false);
 
         BooleanCharacterCache cache = (BooleanCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(boolean.class, char.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;

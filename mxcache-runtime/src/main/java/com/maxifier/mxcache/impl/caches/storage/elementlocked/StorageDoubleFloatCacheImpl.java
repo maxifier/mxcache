@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 public class StorageDoubleFloatCacheImpl extends AbstractDoubleFloatCache implements StorageHolder<DoubleFloatElementLockedStorage> {
     private DoubleFloatElementLockedStorage storage;
 
-    public StorageDoubleFloatCacheImpl(Object owner, DoubleFloatCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageDoubleFloatCacheImpl(Object owner, DoubleFloatCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

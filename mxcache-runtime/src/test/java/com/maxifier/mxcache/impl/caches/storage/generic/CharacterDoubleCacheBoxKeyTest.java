@@ -42,7 +42,8 @@ public class CharacterDoubleCacheBoxKeyTest {
         when(storage.size()).thenReturn(0);
 
         CharacterDoubleCache cache = (CharacterDoubleCache) Wrapping.getFactory(new Signature(Object.class, double.class), new Signature(char.class, double.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -63,7 +64,8 @@ public class CharacterDoubleCacheBoxKeyTest {
         ObjectDoubleStorage storage = mock(ObjectDoubleStorage.class);
 
         CharacterDoubleCache cache = (CharacterDoubleCache) Wrapping.getFactory(new Signature(Object.class, double.class), new Signature(char.class, double.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.isCalculated('*')).thenReturn(true);
         when(storage.load('*')).thenReturn(42d);
@@ -88,7 +90,8 @@ public class CharacterDoubleCacheBoxKeyTest {
         ObjectDoubleStorage storage = mock(ObjectDoubleStorage.class);
 
         CharacterDoubleCache cache = (CharacterDoubleCache) Wrapping.getFactory(new Signature(Object.class, double.class), new Signature(char.class, double.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -107,7 +110,8 @@ public class CharacterDoubleCacheBoxKeyTest {
         when(calculatable.calculate("123", '*')).thenThrow(new ResourceOccupied(r));
 
         CharacterDoubleCache cache = (CharacterDoubleCache) Wrapping.getFactory(new Signature(Object.class, double.class), new Signature(char.class, double.class), false).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -130,7 +134,8 @@ public class CharacterDoubleCacheBoxKeyTest {
         when(storage.isCalculated('*')).thenReturn(false);
 
         CharacterDoubleCache cache = (CharacterDoubleCache) Wrapping.getFactory(new Signature(Object.class, double.class), new Signature(char.class, double.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;

@@ -28,8 +28,8 @@ public class StorageCharacterIntCacheImpl extends AbstractCharacterIntCache impl
 
     private CharacterIntStorage storage;
 
-    public StorageCharacterIntCacheImpl(Object owner, CharacterIntCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageCharacterIntCacheImpl(Object owner, CharacterIntCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

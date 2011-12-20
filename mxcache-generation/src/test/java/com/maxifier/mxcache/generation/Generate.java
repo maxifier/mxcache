@@ -266,6 +266,7 @@ public final class Generate {
         // BooleanCacheImpl is manually written
         generate("PStorageImpl.template", "", "StorageImpl.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_OBJECT);
         generate("PInlineCacheImpl.template", "", "InlineCacheImpl.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_OBJECT);
+        generate("PInlineDependencyCache.template", "", "InlineDependencyCache.java", inputPathImpl, outputPathImpl, WRAPPERS_OBJECT);
     }
 
     private static void generateImplTests() throws IOException {

@@ -28,8 +28,8 @@ public class StorageDoubleLongCacheImpl extends AbstractDoubleLongCache implemen
 
     private DoubleLongStorage storage;
 
-    public StorageDoubleLongCacheImpl(Object owner, DoubleLongCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageDoubleLongCacheImpl(Object owner, DoubleLongCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

@@ -42,7 +42,8 @@ public class BooleanLongCacheBoxKeyTest {
         when(storage.size()).thenReturn(0);
 
         BooleanLongCache cache = (BooleanLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(boolean.class, long.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -63,7 +64,8 @@ public class BooleanLongCacheBoxKeyTest {
         ObjectLongStorage storage = mock(ObjectLongStorage.class);
 
         BooleanLongCache cache = (BooleanLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(boolean.class, long.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.isCalculated(true)).thenReturn(true);
         when(storage.load(true)).thenReturn(42L);
@@ -88,7 +90,8 @@ public class BooleanLongCacheBoxKeyTest {
         ObjectLongStorage storage = mock(ObjectLongStorage.class);
 
         BooleanLongCache cache = (BooleanLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(boolean.class, long.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -107,7 +110,8 @@ public class BooleanLongCacheBoxKeyTest {
         when(calculatable.calculate("123", true)).thenThrow(new ResourceOccupied(r));
 
         BooleanLongCache cache = (BooleanLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(boolean.class, long.class), false).
-                wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -130,7 +134,8 @@ public class BooleanLongCacheBoxKeyTest {
         when(storage.isCalculated(true)).thenReturn(false);
 
         BooleanLongCache cache = (BooleanLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(boolean.class, long.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;

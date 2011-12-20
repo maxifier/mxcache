@@ -28,8 +28,8 @@ public class StorageBooleanByteCacheImpl extends AbstractBooleanByteCache implem
 
     private BooleanByteStorage storage;
 
-    public StorageBooleanByteCacheImpl(Object owner, BooleanByteCalculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public StorageBooleanByteCacheImpl(Object owner, BooleanByteCalculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

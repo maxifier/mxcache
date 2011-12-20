@@ -43,7 +43,8 @@ public class LongObjectCacheBoxKeyTest {
         when(storage.size()).thenReturn(0);
 
         LongObjectCache cache = (LongObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(long.class, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -64,7 +65,8 @@ public class LongObjectCacheBoxKeyTest {
         ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         LongObjectCache cache = (LongObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(long.class, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.load(42L)).thenReturn("123");
         when(storage.size()).thenReturn(1);
@@ -87,7 +89,8 @@ public class LongObjectCacheBoxKeyTest {
         ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         LongObjectCache cache = (LongObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(long.class, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -105,7 +108,8 @@ public class LongObjectCacheBoxKeyTest {
         when(calculatable.calculate("123", 42L)).thenThrow(new ResourceOccupied(r));
 
         LongObjectCache cache = (LongObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(long.class, Object.class), false).
-                    wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -127,7 +131,8 @@ public class LongObjectCacheBoxKeyTest {
         when(storage.load(42L)).thenReturn(Storage.UNDEFINED);
 
         LongObjectCache cache = (LongObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(long.class, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -151,7 +156,8 @@ public class LongObjectCacheBoxKeyTest {
         ObjectObjectStorage storage = mock(ObjectObjectStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
 
         LongObjectCache cache = (LongObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(long.class, Object.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.getStatistics();
 

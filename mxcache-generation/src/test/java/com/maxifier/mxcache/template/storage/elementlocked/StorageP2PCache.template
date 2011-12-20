@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 public class Storage#EG##FG#CacheImpl extends Abstract#EG##FG#Cache implements StorageHolder<#EG##FG#ElementLockedStorage> {
     private #EG##FG#ElementLockedStorage storage;
 
-    public Storage#E##F#CacheImpl(Object owner, #EG##FG#Calculatable calculatable, @NotNull DependencyNode node, @NotNull MutableStatistics statistics) {
-        super(owner, calculatable, node, statistics);
+    public Storage#E##F#CacheImpl(Object owner, #EG##FG#Calculatable calculatable, @NotNull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
     }
 
     @Override

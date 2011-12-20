@@ -43,7 +43,8 @@ public class FloatObjectCacheBoxKeyTest {
         when(storage.size()).thenReturn(0);
 
         FloatObjectCache cache = (FloatObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(float.class, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getSize() == 0;
         assert cache.getStatistics().getHits() == 0;
@@ -64,7 +65,8 @@ public class FloatObjectCacheBoxKeyTest {
         ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         FloatObjectCache cache = (FloatObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(float.class, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         when(storage.load(42f)).thenReturn("123");
         when(storage.size()).thenReturn(1);
@@ -87,7 +89,8 @@ public class FloatObjectCacheBoxKeyTest {
         ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         FloatObjectCache cache = (FloatObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(float.class, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.clear();
 
@@ -105,7 +108,8 @@ public class FloatObjectCacheBoxKeyTest {
         when(calculatable.calculate("123", 42f)).thenThrow(new ResourceOccupied(r));
 
         FloatObjectCache cache = (FloatObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(float.class, Object.class), false).
-                    wrap("123", calculatable, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -127,7 +131,8 @@ public class FloatObjectCacheBoxKeyTest {
         when(storage.load(42f)).thenReturn(Storage.UNDEFINED);
 
         FloatObjectCache cache = (FloatObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(float.class, Object.class), false).
-                    wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
@@ -151,7 +156,8 @@ public class FloatObjectCacheBoxKeyTest {
         ObjectObjectStorage storage = mock(ObjectObjectStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
 
         FloatObjectCache cache = (FloatObjectCache) Wrapping.getFactory(new Signature(Object.class, Object.class), new Signature(float.class, Object.class), false).
-                wrap("123", CALCULATABLE, DependencyTracker.DUMMY_NODE, storage, new MutableStatisticsImpl());
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
         cache.getStatistics();
 
