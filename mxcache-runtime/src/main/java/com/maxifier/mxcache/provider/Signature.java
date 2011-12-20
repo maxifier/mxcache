@@ -25,14 +25,6 @@ public class Signature {
     private static final String LOCKED_STORAGE_PACKAGE_NAME = "com.maxifier.mxcache.storage.elementlocked.";
     private static final int PRIMITIVE_TYPE_COUNT = 8;
 
-    private final Class[] keys;
-    
-    private final Class container;
-
-    private final Class value;
-    
-    private final Signature erased;
-
     private static final Class[] BASIC_TYPES = { boolean.class, byte.class, short.class, char.class,
             int.class, long.class, float.class, double.class, Object.class, null };
 
@@ -75,15 +67,17 @@ public class Signature {
         return primitiveNames;
     }
 
+    private final Class[] keys;
+
+    @Nullable
+    private final Class container;
+
+    private final Class value;
+    
+    private final Signature erased;
+
     public Signature erased() {
         return erased;
-    }
-
-    private Class erase(Class k) {
-        if (k != null && !k.isPrimitive()) {
-            return Object.class;
-        }
-        return k;
     }
 
     @NotNull
@@ -134,7 +128,7 @@ public class Signature {
         return res == null ? UNKNOWN : res;
     }
 
-    public Signature(@NotNull Class[] keys, @NotNull Class tuple, Class value) {
+    public Signature(Class[] keys, Class tuple, Class value) {
         this.keys = keys;
         this.container = tuple;
         this.value = value;
@@ -168,10 +162,18 @@ public class Signature {
         }
     }
 
+    private static Class erase(Class k) {
+        if (k != null && !k.isPrimitive()) {
+            return Object.class;
+        }
+        return k;
+    }
+
     public boolean hasKeys() {
         return container != null;
     }
 
+    @Nullable
     public Class getContainer() {
         return container;
     }
@@ -211,17 +213,16 @@ public class Signature {
     public String toString() {
         if (container == null) {
             return value.getName() + "()";
-        } else {
-            StringBuilder b = new StringBuilder();
-            b.append(value.getName()).append("(");
-            if (keys == null) {
-                b.append(container.getName());
-            } else {
-                b.append("Tuple:").append(Arrays.toString(keys));
-            }
-            b.append(")");
-            return b.toString();
         }
+        StringBuilder b = new StringBuilder();
+        b.append(value.getName()).append("(");
+        if (keys == null) {
+            b.append(container.getName());
+        } else {
+            b.append("Tuple:").append(Arrays.toString(keys));
+        }
+        b.append(")");
+        return b.toString();
     }
 
     public Class<?> getImplementationClass(String prefix, String postfix) {
@@ -242,6 +243,9 @@ public class Signature {
      * @return element of Cache class name
      */
     public static String toString(Class c) {
+        if (c == null) {
+            return "";
+        }
         if (!c.isPrimitive()) {
             return "Object";
         }
@@ -280,7 +284,7 @@ public class Signature {
      * false if additional transformation is required.
      */
     public boolean isWider(Signature other) {
-        return (container == other.container || container.isAssignableFrom(other.container)) &&
+        return (container == other.container || (container != null && other.container != null && container.isAssignableFrom(other.container))) &&
                 (value == other.value || value.isAssignableFrom(other.value));
     }
 
@@ -343,9 +347,6 @@ public class Signature {
         }
 
         public String getImplementationClassName(String prefix, String postfix) {
-            if (getContainer() == null) {
-                return prefix + toString(getValue()) + postfix;
-            }
             return prefix + toString(getContainer()) + toString(getValue()) + postfix;
         }
 
