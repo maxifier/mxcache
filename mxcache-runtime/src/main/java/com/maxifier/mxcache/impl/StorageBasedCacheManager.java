@@ -29,32 +29,7 @@ import java.lang.reflect.InvocationTargetException;
  * Time: 17:09:02
  */
 public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
-    public static final DependencyNode MARKER_NODE = new DependencyNode() {
-        @Override
-        public Reference<DependencyNode> getSelfReference() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void visitDependantNodes(DependencyNodeVisitor visitor) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void appendNodes(TIdentityHashSet<CleaningNode> elements) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void trackDependency(DependencyNode node) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void addNode(@NotNull CleaningNode cache) {
-            // do nothing: cache itself is DependencyNode
-        }
-    };
+    public static final DependencyNode MARKER_NODE = new MarkerDependencyNode();
 
     private final StorageFactory<T> storageFactory;
 
@@ -194,4 +169,30 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
         return storageFactory.getImplementationDetails();
     }
 
+    private static class MarkerDependencyNode implements DependencyNode {
+        @Override
+        public Reference<DependencyNode> getSelfReference() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void visitDependantNodes(DependencyNodeVisitor visitor) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void appendNodes(TIdentityHashSet<CleaningNode> elements) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void trackDependency(DependencyNode node) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void addNode(@NotNull CleaningNode cache) {
+            // do nothing: cache itself is DependencyNode
+        }
+    }
 }
