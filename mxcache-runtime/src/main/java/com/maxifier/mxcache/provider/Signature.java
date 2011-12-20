@@ -23,6 +23,7 @@ public class Signature {
     private static final String CACHES_PACKAGE_NAME = "com.maxifier.mxcache.caches.";
     private static final String STORAGE_PACKAGE_NAME = "com.maxifier.mxcache.storage.";
     private static final String LOCKED_STORAGE_PACKAGE_NAME = "com.maxifier.mxcache.storage.elementlocked.";
+    private static final int PRIMITIVE_TYPE_COUNT = 8;
 
     private final Class[] keys;
     
@@ -62,7 +63,7 @@ public class Signature {
     private static final Signature UNKNOWN = new Signature(null, null);
 
     private static Map<Class, String> createPrimitiveNamesCache() {
-        Map<Class, String> primitiveNames = new THashMap<Class, String>(8);
+        Map<Class, String> primitiveNames = new THashMap<Class, String>(PRIMITIVE_TYPE_COUNT);
         primitiveNames.put(boolean.class, "Boolean");
         primitiveNames.put(byte.class, "Byte");
         primitiveNames.put(short.class, "Short");
