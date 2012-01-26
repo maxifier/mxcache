@@ -1,6 +1,7 @@
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.*;
+import com.maxifier.mxcache.asm.Opcodes;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.context.CacheContextImpl;
 import com.maxifier.mxcache.impl.DefaultStrategy;
@@ -129,6 +130,13 @@ public class DynamicInstrumentationFTest {
     @Test (dataProvider = "all", expectedExceptions = IllegalCachedClass.class)
     public void testCachedNativeMethod(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         instrumentClass(CachedNative.class, instrumentator, cl);
+    }
+
+    @Test(dataProvider = "v229")
+    public void testModifiersRegressionMxcache31(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        Class<?> c = instrumentClass(TestCachedImpl.class, instrumentator, cl);
+        Assert.assertTrue((c.getDeclaredMethod("get").getModifiers() & Opcodes.ACC_SYNTHETIC) != 0, "Generated method should be synthetic");
+        Assert.assertTrue((c.getDeclaredMethod("get$create").getModifiers() & Opcodes.ACC_SYNTHETIC) == 0, "Original method should not be synthetic");
     }
 
     @SuppressWarnings({ "UnusedDeclaration" })

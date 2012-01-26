@@ -287,13 +287,12 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
 
     @Override
     public MethodVisitor visitMethod(final int access, final String name, final String desc, String sign, String[] exceptions) {
-        MethodVisitor oldVisitor = super.visitMethod(access, name, desc, sign, exceptions);
         if (!detector.hasCachedMethods()) {
-            return oldVisitor;
+            return super.visitMethod(access, name, desc, sign, exceptions);
         }
         if (Modifier.isStatic(access) && name.equals(STATIC_INITIALIZER_NAME)) {
             hasStaticInitializer = true;
-            return new MxGeneratorAdapter(oldVisitor, access, name, desc, thisType) {
+            return new MxGeneratorAdapter(super.visitMethod(access, name, desc, sign, exceptions), access, name, desc, thisType) {
                 @Override
                 public void visitCode() {
                     super.visitCode();
@@ -309,17 +308,17 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
                 throw new IllegalCachedClass("Method readObject(ObjectInputStream) should be private", sourceFileName);
             }
             hasReadObject = true;
-            return createRegistrator(access, name, desc, oldVisitor);
+            return createRegistrator(access, name, desc, super.visitMethod(access, name, desc, sign, exceptions));
         }
         if (!Modifier.isStatic(access) && name.equals(CodegenHelper.CONSTRUCTOR_NAME)) {
-            return createRegistrator(access, name, desc, oldVisitor);
+            return createRegistrator(access, name, desc, super.visitMethod(access, name, desc, sign, exceptions));
         }
         Method method = new Method(name, desc);
         CachedMethodContext context = detector.getCachedMethodContext(method);
         if (context == null) {
-            return oldVisitor;
+            return super.visitMethod(access, name, desc, sign, exceptions);
         }
-        return createMethodVisitor(access, name, desc, sign, exceptions, oldVisitor, context);
+        return createMethodVisitor(access, name, desc, sign, exceptions, super.visitMethod(access | ACC_SYNTHETIC, name, desc, sign, exceptions), context);
     }
 
     protected abstract CachedMethodVisitor createMethodVisitor(int access, String name, String desc, String sign, String[] exceptions, MethodVisitor oldVisitor, CachedMethodContext context);

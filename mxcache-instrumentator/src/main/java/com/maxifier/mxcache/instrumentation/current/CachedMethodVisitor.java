@@ -75,7 +75,7 @@ class CachedMethodVisitor extends MxGeneratorAdapter {
         Context context = new ContextImpl(id, isStatic);
         StubMethodFactory.generate(thisClass, id, this, name, innerMethodName, desc, isStatic, context, features229);
         endMethod();
-        mv = classVisitor.visitTransparentMethod(isStatic ? ACC_STATIC | ACC_SYNTHETIC : ACC_SYNTHETIC, innerMethodName, desc, sign, exceptions);
+        mv = classVisitor.visitTransparentMethod(isStatic ? ACC_STATIC : 0, innerMethodName, desc, sign, exceptions);
         mv.visitCode();
     }
 
