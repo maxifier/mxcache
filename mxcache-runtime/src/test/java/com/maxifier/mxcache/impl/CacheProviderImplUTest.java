@@ -4,6 +4,7 @@ import com.maxifier.mxcache.*;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.context.CacheContext;
+import com.maxifier.mxcache.context.CacheContextImpl;
 import com.maxifier.mxcache.impl.instanceprovider.DefaultInstanceProvider;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
@@ -71,71 +72,79 @@ public class CacheProviderImplUTest {
         @NotNull
         @Override
         public synchronized <T> CacheManager<T> getManager(CacheContext context, final CacheDescriptor<T> descriptor) {
-            return new CacheManager<T>() {
-                @Override
-                public CacheDescriptor<T> getDescriptor() {
-                    return descriptor;
-                }
+            return new XManager<T>(descriptor);
+        }
 
-                @Override
-                public Cache createCache(@Nullable T owner) {
-                    return new IntCache() {
-                        @Override
-                        public int getOrCreate() {
-                            return v;
-                        }
+        public class XManager<T> implements CacheManager<T> {
+            private final CacheDescriptor<T> descriptor;
 
-                        @Override
-                        public void setDependencyNode(DependencyNode node) {
-                        }
+            public XManager(CacheDescriptor<T> descriptor) {
+                this.descriptor = descriptor;
+            }
 
-                        @Override
-                        public Lock getLock() {
-                            throw new UnsupportedOperationException();
-                        }
+            @Override
+            public CacheDescriptor<T> getDescriptor() {
+                return descriptor;
+            }
 
-                        @Override
-                        public void clear() {
-                            throw new UnsupportedOperationException();
-                        }
+            @Override
+            public Cache createCache(@Nullable T owner) {
+                return new IntCache() {
+                    @Override
+                    public int getOrCreate() {
+                        return v;
+                    }
 
-                        @Override
-                        public int getSize() {
-                            throw new UnsupportedOperationException();
-                        }
+                    @Override
+                    public void setDependencyNode(DependencyNode node) {
+                    }
 
-                        @Override
-                        public Statistics getStatistics() {
-                            return null;
-                        }
+                    @Override
+                    public Lock getLock() {
+                        throw new UnsupportedOperationException();
+                    }
 
-                        @Override
-                        public CacheDescriptor getDescriptor() {
-                            return null;
-                        }
+                    @Override
+                    public void clear() {
+                        throw new UnsupportedOperationException();
+                    }
 
-                        @Override
-                        public DependencyNode getDependencyNode() {
-                            return DependencyTracker.DUMMY_NODE;
-                        }
-                    };
-                }
+                    @Override
+                    public int getSize() {
+                        throw new UnsupportedOperationException();
+                    }
 
-                @Override
-                public List<Cache> getInstances() {
-                    return Collections.emptyList();
-                }
+                    @Override
+                    public Statistics getStatistics() {
+                        return null;
+                    }
 
-                @Override
-                public String getImplementationDetails() {
-                    return IntCache.class.getCanonicalName();
-                }
+                    @Override
+                    public CacheDescriptor getDescriptor() {
+                        return null;
+                    }
 
-                @Override
-                public CacheContext getContext() {
-                    return null;
-                }
-            };
+                    @Override
+                    public DependencyNode getDependencyNode() {
+                        return DependencyTracker.DUMMY_NODE;
+                    }
+                };
+            }
+
+            @Override
+            public List<Cache> getInstances() {
+                return Collections.emptyList();
+            }
+
+            @Override
+            public String getImplementationDetails() {
+                return IntCache.class.getCanonicalName();
+            }
+
+            @Override
+            public CacheContext getContext() {
+                return null;
+            }
         }
     }
 
@@ -441,5 +450,43 @@ public class CacheProviderImplUTest {
         public int size() {
             return 0;
         }
+    }
+
+    @Test
+    public void regressionMxCache32() throws InterruptedException {
+        CacheProviderImpl p = new CacheProviderImpl(false);
+        p.registerCache(getClass(), 0, null, int.class, null, null, new IntCalculatable() {
+            @Override
+            public int calculate(Object owner) {
+                throw new UnsupportedOperationException();
+            }
+        }, "x", "()I", null);
+        InstanceProvider sp = mock(InstanceProvider.class);
+        when(sp.forClass(X.class)).thenReturn(new X() {
+            @NotNull
+            @Override
+            public synchronized <T> CacheManager<T> getManager(final CacheContext context, CacheDescriptor<T> descriptor) {
+                return new XManager<T>(descriptor) {
+                    @Override
+                    public String toString() {
+                        return context.toString();
+                    }
+                };
+            }
+        });
+        CacheContextImpl context = spy(new CacheContextImpl(sp));
+        p.createCache(getClass(), 0, this, context);
+        p.createCache(getClass(), 0, new CacheProviderImplUTest(), context);
+        // вызывается один раз, потому что после этого менеджер сохраняется в related
+        verify(sp, times(1)).forClass(X.class);
+        //noinspection unchecked
+        verify(context, times(1)).setRelated(any(CacheContext.ContextRelatedItem.class), any());
+        WeakReference<CacheContext> cr = new WeakReference<CacheContext>(context);
+        Assert.assertNotNull(cr.get());
+        context = null;
+        System.gc();
+        System.gc();
+        Thread.sleep(100);
+        Assert.assertNull(cr.get());
     }
 }

@@ -1,5 +1,6 @@
 package com.maxifier.mxcache.context;
 
+import com.maxifier.mxcache.AbstractCacheContext;
 import com.maxifier.mxcache.InstanceProvider;
 
 /**
@@ -8,7 +9,7 @@ import com.maxifier.mxcache.InstanceProvider;
  * Date: 18.02.11
  * Time: 8:29
  */
-public class CacheContextImpl implements CacheContext {
+public class CacheContextImpl extends AbstractCacheContext {
     private final InstanceProvider instanceProvider;
 
     public CacheContextImpl(InstanceProvider instanceProvider) {

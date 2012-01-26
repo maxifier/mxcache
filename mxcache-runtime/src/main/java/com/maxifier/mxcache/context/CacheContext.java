@@ -10,4 +10,11 @@ import com.maxifier.mxcache.InstanceProvider;
  */
 public interface CacheContext {
     InstanceProvider getInstanceProvider();
+    
+    <T> T getRelated(ContextRelatedItem<T> item);
+    
+    <T> void setRelated(ContextRelatedItem<T> item, T value);
+
+    @SuppressWarnings("UnusedDeclaration")
+    interface ContextRelatedItem<T> {}
 }

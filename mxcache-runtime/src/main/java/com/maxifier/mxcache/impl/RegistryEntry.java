@@ -10,10 +10,7 @@ import com.maxifier.mxcache.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 /**
 * Created by IntelliJ IDEA.
@@ -21,7 +18,7 @@ import java.util.WeakHashMap;
 * Date: 24.06.2010
 * Time: 11:03:20
 */
-class RegistryEntry<T> {
+class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheManager<T>> {
     private static final Logger logger = LoggerFactory.getLogger(RegistryEntry.class);
 
     private static final StrategyProperty<Class> STORAGE_FACTORY_PROPERTY = new AnnotationProperty<UseStorageFactory, Class>("storage.factory", Class.class, UseStorageFactory.class) {
@@ -42,16 +39,16 @@ class RegistryEntry<T> {
 
     private final CacheManager<T> nullCacheManager;
 
-    private final Map<CacheContext, CacheManager<T>> managers;
+    private final WeakHashMap<CacheContext, Void> relatedContexts;
 
     public RegistryEntry(CacheDescriptor<T> descriptor) {
         this.descriptor = descriptor;
         if (descriptor.isDisabled()) {
             nullCacheManager = new NullCacheManager<T>(descriptor);
-            managers = null;
+            relatedContexts = null;
         } else {
             nullCacheManager = null;
-            managers = new WeakHashMap<CacheContext, CacheManager<T>>();
+            relatedContexts = new WeakHashMap<CacheContext, Void>();
         }
     }
 
@@ -68,18 +65,29 @@ class RegistryEntry<T> {
     }
 
     public synchronized Collection<CacheManager<T>> getManagers() {
-        return managers == null ? Collections.<CacheManager<T>>emptySet() : Collections.unmodifiableCollection(managers.values());
+        if (relatedContexts == null) {
+            return Collections.emptySet();
+        }
+        List<CacheManager<T>> managers = new ArrayList<CacheManager<T>>();
+        for (CacheContext context : relatedContexts.keySet()) {
+            CacheManager<T> manager = context.getRelated(this);
+            if (manager != null) {
+                managers.add(manager);
+            }
+        }
+        return Collections.unmodifiableCollection(managers);
     }
 
     private synchronized CacheManager<T> getManager(CacheContext context) {
         if (nullCacheManager != null) {
             return nullCacheManager;
         }
-        CacheManager<T> manager = managers.get(context);
+        relatedContexts.put(context, null);
+        CacheManager<T> manager = context.getRelated(this);
         if (manager == null) {
             try {
                 manager = createManager(context);
-                managers.put(context, manager);
+                context.setRelated(this, manager);
             } catch (Exception e) {
                 logger.error("Cannot instantiate cache for " + descriptor + ", will use default", e);
                 return DefaultStrategy.getInstance().getManager(context, descriptor);
@@ -100,9 +108,6 @@ class RegistryEntry<T> {
         int n = 0;
         StringBuilder message = new StringBuilder();
         if (storageFactoryClass != null) {
-            if (n != 0) {
-                message.append(", ");
-            }
             message.append("storageFactory = ").append(storageFactoryClass);
             n++;
         }
@@ -163,6 +168,6 @@ class RegistryEntry<T> {
 
     @Override
     public String toString() {
-        return "RegistryEntry{descriptor=" + descriptor + ", managers=" + (managers == null ? nullCacheManager : managers) + '}';
+        return "RegistryEntry{descriptor=" + descriptor + ", managers=" + (nullCacheManager == null ? getManagers() : nullCacheManager) + '}';
     }
 }

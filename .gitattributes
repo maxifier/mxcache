@@ -363,6 +363,7 @@ mxcache-maven-plugin/src/main/java/com/maxifier/mxcache/mavenplugin/AbstractInst
 mxcache-maven-plugin/src/main/java/com/maxifier/mxcache/mavenplugin/InstrumentatorMojo.java -text
 mxcache-maven-plugin/src/main/java/com/maxifier/mxcache/mavenplugin/TestInstrumentatorMojo.java -text
 mxcache-runtime/pom.xml -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/AbstractCacheContext.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/CacheFactory.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/Cached.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/CachedInstrumented.java -text
