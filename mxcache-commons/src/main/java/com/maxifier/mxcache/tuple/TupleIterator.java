@@ -1,6 +1,7 @@
 package com.maxifier.mxcache.tuple;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
 * Created by IntelliJ IDEA.
@@ -24,6 +25,9 @@ public class TupleIterator implements Iterator<Object> {
 
     @Override
     public Object next() {
+        if (index >= objects.size()) {
+            throw new NoSuchElementException();
+        }
         return objects.get(index++);
     }
 

@@ -83,12 +83,12 @@ public final class TupleGenerator {
     }
 
     public static Class<Tuple> getTupleClass(Class... values) {
-        return getTupleClass0(toErasedTypes(values)).realClass;
+        return getTupleClass0(toErasedTypes(values)).getRealClass();
     }
 
     @PublicAPI
     public static Class<Tuple> getTupleClass(Type... values) {
-        return getTupleClass0(erase(values)).realClass;
+        return getTupleClass0(erase(values)).getRealClass();
     }
 
     public static String getTupleClassName(Type... values) {
@@ -100,13 +100,17 @@ public final class TupleGenerator {
     }
     
     private static class TupleClass {
-        final Class<Tuple> realClass;
-        TupleFactory factory;
+        private final Class<Tuple> realClass;
+        private TupleFactory factory;
 
         public TupleClass(Class<Tuple> realClass) {
             this.realClass = realClass;
         }
-        
+
+        public Class<Tuple> getRealClass() {
+            return realClass;
+        }
+
         public synchronized TupleFactory getOrCreateFactory() {
             if (factory == null) {
                 Constructor<?>[] ctors = realClass.getDeclaredConstructors();
