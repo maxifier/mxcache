@@ -207,4 +207,17 @@ public class TupleGeneratorUTest {
         }
         Assert.assertEquals(l, Arrays.asList(3, "123", 3L, 4L));
     }
+    
+    public void testSingletonFactoryMxcache30() {
+        TupleFactory f1 = TupleGenerator.getTupleFactory(int.class, int.class);
+        TupleFactory f2 = TupleGenerator.getTupleFactory(int.class, int.class);
+        Assert.assertSame(f1, f2);
+
+        TupleFactory f3 = TupleGenerator.getTupleFactory(int.class, String.class);
+        TupleFactory f4 = TupleGenerator.getTupleFactory(int.class, String.class);
+        Assert.assertSame(f3, f4);
+
+        TupleFactory f5 = TupleGenerator.getTupleFactory(int.class, Object.class);
+        Assert.assertSame(f3, f5);
+    }
 }

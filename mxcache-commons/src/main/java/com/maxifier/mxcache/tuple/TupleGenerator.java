@@ -7,6 +7,7 @@ import static com.maxifier.mxcache.asm.commons.GeneratorAdapter.*;
 import static com.maxifier.mxcache.asm.Type.*;
 import static com.maxifier.mxcache.asm.Opcodes.*;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
+import static com.maxifier.mxcache.util.CodegenHelper.erase;
 
 import com.maxifier.mxcache.asm.Label;
 import com.maxifier.mxcache.asm.Type;
@@ -54,7 +55,7 @@ public final class TupleGenerator {
     private static final Method APPEND_INT_METHOD = getMethod("java.lang.StringBuilder append(int)");
     private static final Method INIT_EXCEPTION_METHOD = getMethod("void <init>(String)");
 
-    private static final THashMap<String, Class<Tuple>> CACHE = new THashMap<String, Class<Tuple>>();
+    private static final THashMap<String, TupleClass> CACHE = new THashMap<String, TupleClass>();
 
     private static final TIntObjectHashMap<Type> STRATEGY_TYPE = new TIntObjectHashMap<Type>();
 
@@ -82,12 +83,12 @@ public final class TupleGenerator {
     }
 
     public static Class<Tuple> getTupleClass(Class... values) {
-        return getTupleClass0(toErasedTypes(values));
+        return getTupleClass0(toErasedTypes(values)).realClass;
     }
 
     @PublicAPI
     public static Class<Tuple> getTupleClass(Type... values) {
-        return getTupleClass0(erase(values));
+        return getTupleClass0(erase(values)).realClass;
     }
 
     public static String getTupleClassName(Type... values) {
@@ -95,20 +96,36 @@ public final class TupleGenerator {
     }
 
     public static TupleFactory getTupleFactory(Class... types) {
-        try {
-            Constructor<Tuple> ctor = getTupleClass(types).getConstructor(erase(types));
-            return new TupleFactoryImpl(ctor);
-        } catch (NoSuchMethodException e) {
-            throw new IllegalStateException(e);
+        return getTupleClass0(toErasedTypes(types)).getOrCreateFactory();
+    }
+    
+    private static class TupleClass {
+        final Class<Tuple> realClass;
+        TupleFactory factory;
+
+        public TupleClass(Class<Tuple> realClass) {
+            this.realClass = realClass;
+        }
+        
+        public synchronized TupleFactory getOrCreateFactory() {
+            if (factory == null) {
+                Constructor<?>[] ctors = realClass.getDeclaredConstructors();
+                if (ctors.length != 1) {
+                    throw new IllegalStateException("No constructor for " + realClass);
+                }
+                //noinspection unchecked
+                factory = new TupleFactoryImpl((Constructor<? extends Tuple>) ctors[0]);
+            }
+            return factory;
         }
     }
 
-    private static Class<Tuple> getTupleClass0(Type...types){
+    private static TupleClass getTupleClass0(Type...types){
         String tupleClassName = generateTupleClassName(types);
         synchronized(CACHE) {
-            Class<Tuple> tupleClass = CACHE.get(tupleClassName);
+            TupleClass tupleClass = CACHE.get(tupleClassName);
             if (tupleClass == null) {
-                tupleClass = generateTupleClass(tupleClassName, types);
+                tupleClass = new TupleClass(generateTupleClass(tupleClassName, types));
                 CACHE.put(tupleClassName, tupleClass);
             }
             return tupleClass;
