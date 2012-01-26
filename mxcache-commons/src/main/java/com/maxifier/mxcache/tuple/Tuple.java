@@ -3,6 +3,7 @@ package com.maxifier.mxcache.tuple;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,7 +15,7 @@ import java.io.Serializable;
  * Класс кортежа. Не стоит его реализовавыть вручную.
  * @see TupleGenerator
  */
-public abstract class Tuple implements Serializable {
+public abstract class Tuple implements Serializable, Iterable<Object> {
     /**
      * @param i element index
      * @return i-th element of tuple (wrapped if needed)
@@ -149,4 +150,10 @@ public abstract class Tuple implements Serializable {
         }
         return array;
     }
+
+    @Override
+    public Iterator<Object> iterator() {
+        return new TupleIterator(this);
+    }
+
 }

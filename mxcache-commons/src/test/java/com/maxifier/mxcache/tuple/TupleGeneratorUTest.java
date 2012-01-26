@@ -3,10 +3,13 @@ package com.maxifier.mxcache.tuple;
 import gnu.trove.TIntHashingStrategy;
 import gnu.trove.TObjectHashingStrategy;
 import gnu.trove.TObjectIdentityHashingStrategy;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,7 +63,7 @@ public class TupleGeneratorUTest {
         }, null);
     }
 
-    public void testCustomStrategyForPrivitive() throws Exception {
+    public void testCustomStrategyForPrimitive() throws Exception {
         TIntHashingStrategy constIntHashing = new TIntHashingStrategy() {
             @Override
             public int computeHashCode(int val) {
@@ -75,6 +78,9 @@ public class TupleGeneratorUTest {
 
         Tuple tuple2 = createTuple(array(int.class, boolean.class), 3, true);
         assert tuple.equals(tuple2, constIntHashing, null);
+
+        Tuple tuple3 = createTuple(array(int.class, boolean.class), 4, true);
+        Assert.assertFalse(tuple.equals(tuple3, constIntHashing, null));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -191,5 +197,14 @@ public class TupleGeneratorUTest {
         assertEquals(type.getClassLoader(), ClassLoader.getSystemClassLoader());
         assertEquals(Class.forName(type.getName()), type);
         return factory.create(values);
+    }
+
+    public void testIteration() throws Exception {
+        Tuple t = createTuple(new Class[]{int.class, String.class, Object.class, long.class}, 3, "123", 3L, 4L);
+        List<Object> l = new ArrayList<Object>();
+        for (Object o : t) {
+            l.add(o);
+        }
+        Assert.assertEquals(l, Arrays.asList(3, "123", 3L, 4L));
     }
 }

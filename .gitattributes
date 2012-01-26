@@ -124,6 +124,7 @@ mxcache-commons/src/main/java/com/maxifier/mxcache/size/SizeTransient.java -text
 mxcache-commons/src/main/java/com/maxifier/mxcache/tuple/Tuple.java -text
 mxcache-commons/src/main/java/com/maxifier/mxcache/tuple/TupleFactory.java -text
 mxcache-commons/src/main/java/com/maxifier/mxcache/tuple/TupleGenerator.java -text
+mxcache-commons/src/main/java/com/maxifier/mxcache/tuple/TupleIterator.java -text
 mxcache-commons/src/main/java/com/maxifier/mxcache/util/ClassGenerator.java -text
 mxcache-commons/src/main/java/com/maxifier/mxcache/util/CodegenHelper.java -text
 mxcache-commons/src/main/java/com/maxifier/mxcache/util/FormatHelper.java -text
