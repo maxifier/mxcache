@@ -36,6 +36,7 @@ import gnu.trove.TIntObjectHashMap;
 */
 abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implements InstrumentationStage {
     private static final String INVALID_CACHE_ID_MESSAGE = "Invalid cache id";
+    public static final String CLEANABLE_INNER_NAME = "Cleanable";
 
     private Type thisType;
     private int cacheId;
@@ -85,10 +86,10 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
         if (detector.hasCachedMethods()) {
             thisType = Type.getObjectType(className);
 
-            cleanableWriter = new ClassGenerator(0, className + "$Cleanable", OBJECT_TYPE, CLEANABLE_TYPE);
+            cleanableWriter = new ClassGenerator(0, className + "$" + CLEANABLE_INNER_NAME, OBJECT_TYPE, CLEANABLE_TYPE);
             cleanableClass = cleanableWriter.getThisType();
 
-            visitInnerClass(cleanableClass.getInternalName(), thisType.getInternalName(), null, ACC_PRIVATE);
+            visitInnerClass(cleanableClass.getInternalName(), thisType.getInternalName(), CLEANABLE_INNER_NAME, ACC_PRIVATE | ACC_STATIC);
             cleanableWriter.visitOuterClass(thisType.getInternalName(), null, null);
 
             addMarkerAnnotation();
