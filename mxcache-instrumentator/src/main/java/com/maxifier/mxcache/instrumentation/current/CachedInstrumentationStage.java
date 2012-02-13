@@ -319,7 +319,7 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
         if (context == null) {
             return super.visitMethod(access, name, desc, sign, exceptions);
         }
-        return createMethodVisitor(access, name, desc, sign, exceptions, super.visitMethod(access | ACC_SYNTHETIC, name, desc, sign, exceptions), context);
+        return createMethodVisitor(access, name, desc, sign, exceptions, super.visitMethod(access, name, desc, sign, exceptions), context);
     }
 
     protected abstract CachedMethodVisitor createMethodVisitor(int access, String name, String desc, String sign, String[] exceptions, MethodVisitor oldVisitor, CachedMethodContext context);

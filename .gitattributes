@@ -1820,6 +1820,8 @@ mxcache-runtime/src/test/java/com/maxifier/mxcache/proxy/ProxyManagerUTest.java 
 mxcache-runtime/src/test/java/com/maxifier/mxcache/transform/CompileHelperUTest.java -text
 mxcache-runtime/src/test/java/com/maxifier/mxcache/transform/TransformGeneratorManagerUTest.java -text
 mxcache-tests/pom.xml -text
+mxcache-tests/src/test/java/com/maxifier/mxcache/regression/MxCache33UTest.java -text
+mxcache-tests/src/test/java/com/maxifier/mxcache/regression/MxCache34UTest.java -text
 mxcache-tests/src/test/java/com/maxifier/mxcache/resource/SerializationTest.java -text
 mxcache-tests/src/test/java/com/maxifier/mxcache/test/CacheDependencyTrackingUTest.java -text
 mxcache-tests/src/test/java/com/maxifier/mxcache/test/CachedKeyToValueFTest.java -text

@@ -132,13 +132,6 @@ public class DynamicInstrumentationFTest {
         instrumentClass(CachedNative.class, instrumentator, cl);
     }
 
-    @Test(dataProvider = "v229")
-    public void testModifiersRegressionMxcache31(Instrumentator instrumentator, ClassLoader cl) throws Exception {
-        Class<?> c = instrumentClass(TestCachedImpl.class, instrumentator, cl);
-        Assert.assertTrue((c.getDeclaredMethod("get").getModifiers() & Opcodes.ACC_SYNTHETIC) != 0, "Generated method should be synthetic");
-        Assert.assertTrue((c.getDeclaredMethod("get$create").getModifiers() & Opcodes.ACC_SYNTHETIC) == 0, "Original method should not be synthetic");
-    }
-
     @SuppressWarnings({ "UnusedDeclaration" })
     @Test(dataProvider = "all")
     public void testNonCached(Instrumentator instrumentator, ClassLoader cl) throws Exception {
