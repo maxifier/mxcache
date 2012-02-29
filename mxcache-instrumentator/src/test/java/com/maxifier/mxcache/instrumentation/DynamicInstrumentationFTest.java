@@ -21,7 +21,7 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -64,10 +64,10 @@ public class DynamicInstrumentationFTest {
 //    private static final String ASM_JAR_NAME = "mxcache-asm-2.1.8.jar";
 //    private static final String COMMONS_2_0_1_JAR_NAME = "mxcache-commons-2.0.1.jar";
 //    private static final String COMMONS_2_1_0_JAR_NAME = "mxcache-commons-2.1.0.jar";
-    
+
 //    private static final ClassLoader V200_CLASSLOADER = getArtifact(COMMONS_2_0_1_JAR_NAME, ASM_JAR_NAME);
 //    private static final ClassLoader V210_CLASSLOADER = getArtifact(COMMONS_2_1_0_JAR_NAME, ASM_JAR_NAME);
-    
+
 //    private static ClassLoader getArtifact(String... names) {
 //        URL[] urls = new URL[names.length];
 //        for (int i = 0; i<names.length; i++) {
@@ -78,8 +78,8 @@ public class DynamicInstrumentationFTest {
 
 //    private static final Object[] V200 = { Instrumentator200.INSTANCE, V200_CLASSLOADER };
 //    private static final Object[] V210 = { Instrumentator210.INSTANCE, V210_CLASSLOADER};
-    private static final Object[] V219 = { InstrumentatorImpl.INSTANCE_219, null};
-    private static final Object[] V229 = { InstrumentatorImpl.INSTANCE_229, null };
+    private static final Object[] V219  = { InstrumentatorImpl.INSTANCE_219, null};
+    private static final Object[] V229  = { InstrumentatorImpl.INSTANCE_229, null };
 
     @DataProvider(name = "v229")
     public Object[][] v229() {
@@ -117,6 +117,18 @@ public class DynamicInstrumentationFTest {
         return (TestProxied) instrumentClass(TestProxiedImpl.class, instrumentator, cl).newInstance();
     }
 
+    @Test(dataProvider = "all")
+    public void testSerialVersionUID(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        TestCached t = loadCached(instrumentator, cl);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
+        oos.writeObject(t);
+        oos.close();
+        ByteArrayInputStream bin = new ByteArrayInputStream(bos.toByteArray());
+        ObjectInputStream oin = new ObjectInputStream(bin);
+        Assert.assertTrue(oin.readObject() instanceof TestCachedImpl);
+    }
+
     @Test(dataProvider = "all", expectedExceptions = IllegalCachedClass.class)
     public void testCachedInterface(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         instrumentClass(CachedInterface.class, instrumentator, cl);
@@ -150,7 +162,7 @@ public class DynamicInstrumentationFTest {
     public void testTooManyCachesCreated(Instrumentator instrumentator, ClassLoader cl) throws Exception {
 
         SpyCacheProvider spy = new SpyCacheProvider(CacheFactory.getProvider());
-        
+
         CacheFactory.setProviderOverride(spy);
         Class<?> c = instrumentClass(TestCachedImpl.class, instrumentator, cl);
         c.newInstance();
@@ -380,7 +392,7 @@ public class DynamicInstrumentationFTest {
     public void testStatic(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         Class<?> c = instrumentClass(TestCachedImpl.class, instrumentator, cl);
         Method m = c.getDeclaredMethod("getStatic");
-        
+
         assert m.invoke(null).equals(0);
         assert m.invoke(null).equals(0);
 
@@ -647,7 +659,7 @@ public class DynamicInstrumentationFTest {
 
     private static class SpyCacheProvider implements CacheProvider {
         private final CacheProvider provider0;
-        
+
         private final List<Object[]> queries = new ArrayList<Object[]>();
 
         public SpyCacheProvider(CacheProvider provider0) {
