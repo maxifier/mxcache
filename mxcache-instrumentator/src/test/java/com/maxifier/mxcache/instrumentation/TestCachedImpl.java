@@ -21,7 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 */
 public class TestCachedImpl implements TestCached {
     private int i;
-    private String s = "";
+    private String s;
     private int x;
 
     public static String test;
@@ -29,6 +29,11 @@ public class TestCachedImpl implements TestCached {
     @SuppressWarnings( { "UnusedDeclaration" })
     // used via reflection
     public TestCachedImpl() {
+        this("");
+    }
+    
+    public TestCachedImpl(String s) {
+        this.s = s;
     }
 
     @SuppressWarnings( { "UnusedDeclaration" })
