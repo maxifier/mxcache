@@ -1132,9 +1132,11 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/resource/CollectingDepen
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/resource/DependencyNode.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/resource/DependencyNodeVisitor.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/resource/DependencyTracker.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/resource/MxBoundResource.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/resource/MxResourceFactory.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/resource/MxResourceImpl.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/resource/MxResourceSerializableImpl.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/resource/MxStaticResource.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/resource/ResourceOccupied.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/resource/nodes/MultipleDependencyNode.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/resource/nodes/SingletonDependencyNode.java -text

@@ -24,7 +24,7 @@ public final class MxResourceFactory {
     static {
         for (ResourceConfig resourceConfig : CacheFactory.getConfiguration().getResources()) {
             String name = resourceConfig.getName();
-            RESOURCES.put(name, new MxResourceImpl(name));
+            RESOURCES.put(name, new MxStaticResource(name));
         }
     }
 
@@ -40,10 +40,14 @@ public final class MxResourceFactory {
     public static synchronized MxResource getResource(@NotNull String id) {
         MxResource resource = RESOURCES.get(id);
         if (resource == null) {
-            resource = new MxResourceImpl(id);
+            resource = new MxStaticResource(id);
             RESOURCES.put(id, resource);
         }
         return resource;
+    }
+
+    public static MxResource createResource(@NotNull Object owner, @NotNull String id) {
+        return new MxBoundResource(owner, id);
     }
 
     public static synchronized Set<MxResource> getAllResources() {

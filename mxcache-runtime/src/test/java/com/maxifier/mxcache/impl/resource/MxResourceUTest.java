@@ -192,6 +192,15 @@ public class MxResourceUTest {
         }
     }
 
+    public void testBound() {
+        MxResource r1 = MxResourceFactory.createResource("123", "test");
+        MxResource r2 = MxResourceFactory.createResource("123", "test");
+        Assert.assertNotSame(r1, r2);
+        Assert.assertFalse(r1.equals(r2));
+
+        Assert.assertEquals(r1.toString(), "123#test");
+    }
+
     private static class TesterThread extends Thread {
         private final MxResource r;
         private final Lock lock;
@@ -206,7 +215,7 @@ public class MxResourceUTest {
         }
 
         @Override
-                public void run() {
+        public void run() {
             r.writeStart();
             try {
                 lock.lock();

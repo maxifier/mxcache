@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.io.Serializable;
-import java.io.ObjectStreamException;
 
 import com.maxifier.mxcache.CacheFactory;
 import com.maxifier.mxcache.caches.CleaningNode;
@@ -22,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * Date: 12.04.2010
  * Time: 9:18:59
  */
-final class MxResourceImpl extends AbstractDependencyNode implements MxResource, Serializable, CleaningNode {
+class MxResourceImpl extends AbstractDependencyNode implements MxResource, Serializable, CleaningNode {
     private static final Logger logger = LoggerFactory.getLogger(MxResourceImpl.class);
 
     private static final long serialVersionUID = 100L;
@@ -133,30 +132,8 @@ final class MxResourceImpl extends AbstractDependencyNode implements MxResource,
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        MxResourceImpl that = (MxResourceImpl) o;
-
-        return name.equals(that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
-
-    private Object writeReplace() throws ObjectStreamException {
-        return new MxResourceSerializableImpl(this);
-    }
-
-    @Override
     public void appendNodes(TIdentityHashSet<CleaningNode> elements) {
+        // appendNodes не должне быть вызван, поскольку ресурс никогда не добавляется в DependencyTracker
         throw new UnsupportedOperationException();
     }
 
