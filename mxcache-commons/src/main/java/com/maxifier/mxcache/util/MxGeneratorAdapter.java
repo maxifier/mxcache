@@ -1,5 +1,6 @@
 package com.maxifier.mxcache.util;
 
+import com.maxifier.mxcache.asm.ClassVisitor;
 import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
 import com.maxifier.mxcache.asm.commons.Method;
 
@@ -49,6 +50,12 @@ public class MxGeneratorAdapter extends GeneratorAdapter {
         }
     }
 
+    public MxGeneratorAdapter(int access, Method method, Type thisClass, ClassVisitor cv) {
+        super(access, method, cv.visitMethod(access, method.getName(), method.getDescriptor(), null, null));
+        this.thisClass = thisClass;
+        isStatic = Modifier.isStatic(access);
+    }
+
     public MxGeneratorAdapter(int access, Method method, MethodVisitor mv, Type thisClass) {
         super(access, method, mv);
         this.thisClass = thisClass;
@@ -71,10 +78,15 @@ public class MxGeneratorAdapter extends GeneratorAdapter {
         if (!field.getOwner().equals(thisClass)) {
             throw new IllegalArgumentException("Cannot get field of another class");
         }
-        if (isStatic && !Modifier.isStatic(field.getAccess())) {
+        if (isStatic && !field.isStatic()) {
             throw new IllegalArgumentException("Cannot access non-static field from static context");
         }
-        get(field.getName(), field.getType());
+        if (field.isStatic()) {
+            getStatic(thisClass, field.getName(), field.getType());
+        } else {
+            loadThis();
+            getField(thisClass, field.getName(), field.getType());
+        }
     }
 
     public void get(String field, Type type) {

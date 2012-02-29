@@ -92,6 +92,16 @@ public class MxGenericProxyGeneratorUTest {
 
         final XChild proxy = (XChild) proxyFactory.createProxy(Y.class, new Z(new Y("123")));
 
+        final XChild newProxy = serialize(proxy);
+
+        Assert.assertEquals(proxy.get(321), "123321");
+        Assert.assertEquals(newProxy.get(321), "123321");
+
+        Assert.assertEquals(proxy.get("mama"), "123mama");
+        Assert.assertEquals(newProxy.get("mama"), "123mama");
+    }
+
+    private static <T> T serialize(T proxy) throws IOException, ClassNotFoundException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         ObjectOutputStream oos = new ObjectOutputStream(bos);
@@ -104,21 +114,14 @@ public class MxGenericProxyGeneratorUTest {
 
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
 
-
-        final XChild newProxy;
         ObjectInputStream ois = new ObjectInputStream(bis);
         try {
-            newProxy = (XChild) ois.readObject();
+            //noinspection unchecked
+            return (T) ois.readObject();
         } finally {
             ois.close();
             bis.close();
             bos.close();
         }
-
-        Assert.assertEquals(proxy.get(321), "123321");
-        Assert.assertEquals(newProxy.get(321), "123321");
-
-        Assert.assertEquals(proxy.get("mama"), "123mama");
-        Assert.assertEquals(newProxy.get("mama"), "123mama");
     }
 }

@@ -1,7 +1,6 @@
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.context.CacheContextImpl;
-import com.maxifier.mxcache.transform.Transform;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -48,4 +47,12 @@ public interface TestCached extends Serializable {
     String transformPrimitiveToString(long v);
 
     TestCached reloadWithContext(CacheContextImpl context) throws IOException, ClassNotFoundException;
+
+    void readResource();
+
+    void writeResource();
+
+    void readStatic();
+
+    void writeStatic();
 }

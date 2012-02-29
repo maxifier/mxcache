@@ -1,5 +1,6 @@
 package com.maxifier.mxcache.instrumentation.current;
 
+import com.maxifier.mxcache.util.MxField;
 import gnu.trove.THashSet;
 
 import java.util.ArrayList;
@@ -13,25 +14,25 @@ import java.util.Set;
  * Time: 10:57
  */
 public class ResourceMethodContext {
-    private final Set<String> readResourceFields = new THashSet<String>();
-    private final Set<String> writeResourceFields = new THashSet<String>();
+    private final Set<MxField> readResourceFields = new THashSet<MxField>();
+    private final Set<MxField> writeResourceFields = new THashSet<MxField>();
 
-    private final List<String> readResourceOrder = new ArrayList<String>();
-    private final List<String> writeResourceOrder = new ArrayList<String>();
+    private final List<MxField> readResourceOrder = new ArrayList<MxField>();
+    private final List<MxField> writeResourceOrder = new ArrayList<MxField>();
 
-    public Set<String> getReadResourceFields() {
+    public Set<MxField> getReadResourceFields() {
         return readResourceFields;
     }
 
-    public Set<String> getWriteResourceFields() {
+    public Set<MxField> getWriteResourceFields() {
         return writeResourceFields;
     }
 
-    public List<String> getReadResourceOrder() {
+    public List<MxField> getReadResourceOrder() {
         return readResourceOrder;
     }
 
-    public List<String> getWriteResourceOrder() {
+    public List<MxField> getWriteResourceOrder() {
         return writeResourceOrder;
     }
 }

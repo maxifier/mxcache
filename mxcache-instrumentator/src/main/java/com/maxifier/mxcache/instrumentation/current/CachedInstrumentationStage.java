@@ -41,8 +41,6 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
     private Type thisType;
     private int cacheId;
 
-    private boolean hasStaticInitializer;
-
     private boolean hasReadObject;
 
     private String sourceFileName;
@@ -82,8 +80,9 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
 
     @Override
     public void visit(int version, int access, String className, String signature, String superName, String[] interfaces) {
-        super.visit(version, access, className, signature, superName, interfaces);
         if (detector.hasCachedMethods()) {
+            cv = new AddStaticInitializer(cv, REGISTER_STATIC_METHOD);
+            super.visit(version, access, className, signature, superName, interfaces);
             thisType = Type.getObjectType(className);
 
             cleanableWriter = new ClassGenerator(0, className + "$" + CLEANABLE_INNER_NAME, OBJECT_TYPE, CLEANABLE_TYPE);
@@ -95,6 +94,8 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
             addMarkerAnnotation();
 
             cleanableWriter.defineDefaultConstructor();
+        } else {
+            super.visit(version, access, className, signature, superName, interfaces);
         }
     }
 
@@ -120,10 +121,6 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
             generateRegisterStatic();
 
             generateRegisterCache();
-
-            if (!hasStaticInitializer) {
-                generateStaticInitializer();
-            }
 
             if (!hasReadObject) {
                 generateReadObject();
@@ -163,15 +160,6 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
     }
 
     protected abstract void generateReadObject();
-
-    private void generateStaticInitializer() {
-        MethodVisitor visitor = visitTransparentMethod(STATIC_INITIALIZER_ACCESS, STATIC_INITIALIZER_NAME, "()V", null, null);
-        visitor.visitCode();
-        visitor.visitMethodInsn(INVOKESTATIC, thisType.getInternalName(), REGISTER_STATIC_METHOD.getName(), REGISTER_STATIC_METHOD.getDescriptor());
-        visitor.visitInsn(RETURN);
-        visitor.visitMaxs(0, 0);
-        visitor.visitEnd();
-    }
 
     private void pushCacheIdsMap(MxGeneratorAdapter sim, Map<String, CacheIdList> map) {
         if (map.isEmpty()) {
@@ -290,16 +278,6 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
     public MethodVisitor visitMethod(final int access, final String name, final String desc, String sign, String[] exceptions) {
         if (!detector.hasCachedMethods()) {
             return super.visitMethod(access, name, desc, sign, exceptions);
-        }
-        if (Modifier.isStatic(access) && name.equals(STATIC_INITIALIZER_NAME)) {
-            hasStaticInitializer = true;
-            return new MxGeneratorAdapter(super.visitMethod(access, name, desc, sign, exceptions), access, name, desc, thisType) {
-                @Override
-                public void visitCode() {
-                    super.visitCode();
-                    invokeStatic(thisType, REGISTER_STATIC_METHOD);
-                }
-            };
         }
         if (READ_OBJECT_METHOD.getName().equals(name) && READ_OBJECT_METHOD.getDescriptor().equals(desc)) {
             if (Modifier.isStatic(access)) {

@@ -16,6 +16,14 @@ public class SingletonDependencyNode extends AbstractDependencyNode {
     // we don't need to store reference here cause this node exists only if object itself is not gc'ed
     private CleaningNode instance;
 
+    public SingletonDependencyNode() {
+        // do nothing - instance is set by addNode.
+    }
+
+    public SingletonDependencyNode(CleaningNode instance) {
+        this.instance = instance;
+    }
+
     @Override
     public synchronized void addNode(@NotNull CleaningNode cache) {
         if (instance != null) {

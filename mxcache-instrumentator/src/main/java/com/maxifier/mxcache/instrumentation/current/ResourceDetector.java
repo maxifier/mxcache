@@ -3,6 +3,7 @@ package com.maxifier.mxcache.instrumentation.current;
 import com.maxifier.mxcache.IllegalCachedClass;
 import com.maxifier.mxcache.asm.*;
 import com.maxifier.mxcache.asm.commons.Method;
+import com.maxifier.mxcache.util.MxField;
 import gnu.trove.THashMap;
 
 import java.lang.reflect.Modifier;
@@ -10,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.maxifier.mxcache.asm.Opcodes.ACC_PRIVATE;
+import static com.maxifier.mxcache.asm.Opcodes.ACC_STATIC;
+import static com.maxifier.mxcache.asm.Opcodes.ACC_SYNTHETIC;
 import static com.maxifier.mxcache.instrumentation.current.RuntimeTypes.RESOURCE_INSTRUMENTED_ANNOTATION;
 
 /**
@@ -19,8 +23,14 @@ import static com.maxifier.mxcache.instrumentation.current.RuntimeTypes.RESOURCE
  * Time: 10:56
  */
 public class ResourceDetector extends ClassAdapter {
+    private static final int STATIC_RESOURCE_FIELD_ACCESS = ACC_PRIVATE | ACC_STATIC | ACC_SYNTHETIC;
+    private static final int RESOURCE_FIELD_ACCESS = ACC_PRIVATE | ACC_SYNTHETIC;
+
     private final Map<Method, ResourceMethodContext> resourceAccessors = new THashMap<Method, ResourceMethodContext>();
-    private final Map<String, String> resourceToFieldMapping = new THashMap<String, String>();
+    private final Map<String, MxField> resourceToFieldMapping = new THashMap<String, MxField>();
+    private final Map<String, MxField> resourceToFieldMappingStatic = new THashMap<String, MxField>();
+
+    private final boolean allowNonStatic;
 
     private int fieldID;
 
@@ -32,8 +42,9 @@ public class ResourceDetector extends ClassAdapter {
 
     private boolean alreadyInstrumented;
 
-    public ResourceDetector(ClassVisitor cv) {
+    public ResourceDetector(ClassVisitor cv, boolean allowNonStatic) {
         super(cv);
+        this.allowNonStatic = allowNonStatic;
     }
 
     public boolean hasResourceAccessors() {
@@ -115,11 +126,11 @@ public class ResourceDetector extends ClassAdapter {
         }
 
         private class ResourceAnnotationVisitor implements AnnotationVisitor {
-            private final Set<String> fields;
-            private final Set<String> fieldsToCheck;
-            private final List<String> orderedFields;
+            private final Set<MxField> fields;
+            private final Set<MxField> fieldsToCheck;
+            private final List<MxField> orderedFields;
 
-            public ResourceAnnotationVisitor(Set<String> fields, Set<String> fieldsToCheck, List<String> orderedFields) {
+            public ResourceAnnotationVisitor(Set<MxField> fields, Set<MxField> fieldsToCheck, List<MxField> orderedFields) {
                 this.fields = fields;
                 this.fieldsToCheck = fieldsToCheck;
                 this.orderedFields = orderedFields;
@@ -155,7 +166,12 @@ public class ResourceDetector extends ClassAdapter {
             private class ResourceValueAnnotationVisitor implements AnnotationVisitor {
                 @Override
                 public void visit(String name, Object value) {
-                    String field = nextField((String) value);
+                    String resourceName = (String) value;
+                    boolean nonStatic = allowNonStatic && resourceName.startsWith("#");
+                    if (nonStatic) {
+                        resourceName = resourceName.substring(1);
+                    }
+                    MxField field = nextField(resourceName, !nonStatic);
                     if (fieldsToCheck.contains(field)) {
                         throw new IllegalCachedClass("Resource " + value + " should not be read and written in one method: " + getMethodReference(), sourceFileName);
                     }
@@ -189,20 +205,25 @@ public class ResourceDetector extends ClassAdapter {
         }
     }
 
-    public Map<String, String> getResourceToFieldMapping() {
+    public Map<String, MxField> getResourceToFieldMapping() {
         return resourceToFieldMapping;
     }
 
-    String nextField(String id) {
-        String field = resourceToFieldMapping.get(id);
+    public Map<String, MxField> getResourceToFieldMappingStatic() {
+        return resourceToFieldMappingStatic;
+    }
+
+    MxField nextField(String id, boolean isStatic) {
+        Map<String, MxField> map = isStatic ? resourceToFieldMappingStatic : resourceToFieldMapping;
+        MxField field = map.get(id);
         if (field == null) {
-            field = createField();
-            resourceToFieldMapping.put(id, field);
+            field = new MxField(isStatic ? STATIC_RESOURCE_FIELD_ACCESS : RESOURCE_FIELD_ACCESS, thisType, createFieldName(), RuntimeTypes.MX_RESOURCE_TYPE);
+            map.put(id, field);
         }
         return field;
     }
 
-    private String createField() {
+    private String createFieldName() {
         return "$resource$" + fieldID++;
     }
 

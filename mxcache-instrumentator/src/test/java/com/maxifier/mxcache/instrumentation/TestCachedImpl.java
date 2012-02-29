@@ -5,6 +5,8 @@ import com.maxifier.mxcache.Strategy;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.context.CacheContextImpl;
 import com.maxifier.mxcache.context.UseCacheContext;
+import com.maxifier.mxcache.resource.ResourceReader;
+import com.maxifier.mxcache.resource.ResourceWriter;
 import com.maxifier.mxcache.transform.Ignore;
 import com.maxifier.mxcache.transform.Transform;
 import com.maxifier.mxcache.transform.WeakKey;
@@ -19,7 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 * Date: 24.03.2010
 * Time: 11:20:16
 */
-public class TestCachedImpl implements TestCached {
+public class TestCachedImpl implements TestCached, Serializable {
     private int i;
     private String s;
     private int x;
@@ -179,4 +181,27 @@ public class TestCachedImpl implements TestCached {
         return (TestCached) testMxObjectInput.readObject();
     }
 
+    @Override
+    @ResourceReader("#123")
+    public void readResource() {
+        // nothing
+    }
+
+    @Override
+    @ResourceWriter("#123")
+    public void writeResource() {
+        // nothing
+    }
+
+    @Override
+    @ResourceReader("123")
+    public void readStatic() {
+        // nothing
+    }
+
+    @Override
+    @ResourceWriter("123")
+    public void writeStatic() {
+        // nothing
+    }
 }

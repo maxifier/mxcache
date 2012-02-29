@@ -55,6 +55,7 @@ final class RuntimeTypes {
     static final Method GENERATE_RESOLVABLE = Method.getMethod("void generateResolvable(Class, int, String, String, boolean)");
     static final Method INIT_PROXY_FACTORIES_STATIC_METHOD = Method.getMethod("void $initProxyFactories$static()");
     static final Method GET_RESOURCE_METHOD = method("getResource", MX_RESOURCE_TYPE, STRING_TYPE);
+    static final Method CREATE_RESOURCE_METHOD = method("createResource", MX_RESOURCE_TYPE, OBJECT_TYPE, STRING_TYPE);
 
     static final Method FACTORY_REGISTER_CACHE_METHOD_OLD = Method.getMethod("void registerCache(Class,int,Class,Class,String,String[],Object,String,String)");
     static final Method FACTORY_REGISTER_CACHE_METHOD = Method.getMethod("void registerCache(Class,int,Class,Class,String,String[],Object,String,String,String)");
@@ -79,6 +80,11 @@ final class RuntimeTypes {
     static final Method GET_INSTANCE_CACHE_METHOD = method("getInstanceCache", CACHE_TYPE, OBJECT_TYPE, INT_TYPE);
 
     static final Method PROXY_METHOD = method("proxy", OBJECT_TYPE, CLASS_TYPE, RESOLVABLE_TYPE);
+    
+    static final Method READ_START = Method.getMethod("void readStart()");
+    static final Method WRITE_START = Method.getMethod("void writeStart()");
+    static final Method READ_END = Method.getMethod("void readEnd()");
+    static final Method WRITE_END = Method.getMethod("void writeEnd()");
 
     private static Method method(String name, Type returnType) {
         return new Method(name, returnType, EMPTY_TYPES);

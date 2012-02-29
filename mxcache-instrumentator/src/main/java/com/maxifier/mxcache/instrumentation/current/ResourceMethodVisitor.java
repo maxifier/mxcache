@@ -1,13 +1,18 @@
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.asm.AnnotationVisitor;
+import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.instrumentation.CommonRuntimeTypes;
 import com.maxifier.mxcache.asm.Label;
 import com.maxifier.mxcache.asm.MethodVisitor;
 import com.maxifier.mxcache.asm.Type;
+import com.maxifier.mxcache.util.MxField;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
 
+import java.util.List;
+
 import static com.maxifier.mxcache.asm.Opcodes.*;
+import static com.maxifier.mxcache.instrumentation.current.RuntimeTypes.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,17 +21,12 @@ import static com.maxifier.mxcache.asm.Opcodes.*;
  * Time: 12:49:37
  */
 class ResourceMethodVisitor extends MxGeneratorAdapter {
-    private static final String NO_ARG_VOID = "()V";
-
     private final ResourceMethodContext context;
-
-    private final Type thisClass;
 
     private Label start;
 
     public ResourceMethodVisitor(MethodVisitor visitor, int access, String name, String desc, Type thisClass, ResourceMethodContext context) {
         super(visitor, access, name, desc, thisClass);
-        this.thisClass = thisClass;
         this.context = context;
     }
 
@@ -81,24 +81,19 @@ class ResourceMethodVisitor extends MxGeneratorAdapter {
     }
 
     private void startResourceOperations() {
-        for (String resourceField : context.getReadResourceOrder()) {
-            visitFieldInsn(GETSTATIC, thisClass.getInternalName(), resourceField, RuntimeTypes.MX_RESOURCE_TYPE.getDescriptor());
-            visitMethodInsn(INVOKEINTERFACE, RuntimeTypes.MX_RESOURCE_TYPE.getInternalName(), "readStart", NO_ARG_VOID);
-        }
-        for (String resourceField : context.getWriteResourceOrder()) {
-            visitFieldInsn(GETSTATIC, thisClass.getInternalName(), resourceField, RuntimeTypes.MX_RESOURCE_TYPE.getDescriptor());
-            visitMethodInsn(INVOKEINTERFACE, RuntimeTypes.MX_RESOURCE_TYPE.getInternalName(), "writeStart", NO_ARG_VOID);
-        }
+        process(READ_START, context.getReadResourceOrder());
+        process(WRITE_START, context.getWriteResourceOrder());
     }
 
     private void endResourceOperations() {
-        for (String resourceField : context.getReadResourceOrder()) {
-            visitFieldInsn(GETSTATIC, thisClass.getInternalName(), resourceField, RuntimeTypes.MX_RESOURCE_TYPE.getDescriptor());
-            visitMethodInsn(INVOKEINTERFACE, RuntimeTypes.MX_RESOURCE_TYPE.getInternalName(), "readEnd", NO_ARG_VOID);
-        }
-        for (String resourceField : context.getWriteResourceOrder()) {
-            visitFieldInsn(GETSTATIC, thisClass.getInternalName(), resourceField, RuntimeTypes.MX_RESOURCE_TYPE.getDescriptor());
-            visitMethodInsn(INVOKEINTERFACE, RuntimeTypes.MX_RESOURCE_TYPE.getInternalName(), "writeEnd", NO_ARG_VOID);
+        process(READ_END, context.getReadResourceOrder());
+        process(WRITE_END, context.getWriteResourceOrder());
+    }
+
+    private void process(Method method, List<MxField> fields) {
+        for (MxField field : fields) {
+            get(field);
+            invokeInterface(MX_RESOURCE_TYPE, method);
         }
     }
 }

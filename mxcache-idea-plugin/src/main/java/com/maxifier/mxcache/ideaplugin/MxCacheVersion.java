@@ -20,7 +20,8 @@ import java.lang.reflect.InvocationTargetException;
 */
 enum MxCacheVersion {
     V219(InstrumentatorImpl.INSTANCE_219),
-    V229(InstrumentatorImpl.INSTANCE_229);
+    V229(InstrumentatorImpl.INSTANCE_229),
+    V2228(InstrumentatorImpl.INSTANCE_2228);
 
     public ClassInstrumentationResult instrument(byte[] bytecode) {
         return instrumentator.instrument(bytecode);
@@ -67,6 +68,9 @@ enum MxCacheVersion {
             }
             if (versionIdentifier.equals("2.2.9")) {
                 return V229;
+            }
+            if (versionIdentifier.equals("2.2.28")) {
+                return V2228;
             }
             throw new IllegalStateException("Unsupported version of MxCache: " + versionIdentifier + ", update MxCache Idea plugin or choose another version of MxCache");
         }

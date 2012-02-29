@@ -2,12 +2,16 @@ package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.*;
 import com.maxifier.mxcache.caches.Cache;
+import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.context.CacheContextImpl;
 import com.maxifier.mxcache.impl.CacheId;
 import com.maxifier.mxcache.impl.DefaultStrategy;
 import com.maxifier.mxcache.impl.instanceprovider.DefaultInstanceProvider;
+import com.maxifier.mxcache.impl.resource.DependencyNode;
+import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.impl.resource.MxResourceFactory;
+import com.maxifier.mxcache.impl.resource.nodes.SingletonDependencyNode;
 import com.maxifier.mxcache.instrumentation.current.InstrumentatorImpl;
 import com.maxifier.mxcache.clean.CacheCleaner;
 import com.maxifier.mxcache.provider.CacheDescriptor;
@@ -29,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.maxifier.mxcache.instrumentation.InstrumentationTestHelper.*;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
 /**
@@ -80,6 +85,7 @@ public class DynamicInstrumentationFTest {
 //    private static final Object[] V210 = { Instrumentator210.INSTANCE, V210_CLASSLOADER};
     private static final Object[] V219  = { InstrumentatorImpl.INSTANCE_219, null};
     private static final Object[] V229  = { InstrumentatorImpl.INSTANCE_229, null };
+    private static final Object[] V2228 = { InstrumentatorImpl.INSTANCE_2228, null };
 
     @DataProvider(name = "v229")
     public Object[][] v229() {
@@ -91,9 +97,14 @@ public class DynamicInstrumentationFTest {
         return new Object[][] { V219 };
     }
 
+    @DataProvider(name = "v2228")
+    public Object[][] v2228() {
+        return new Object[][] { V2228 };
+    }
+
     @DataProvider(name = "all")
     public Object[][] all() {
-        return new Object[][] { V219, V229 };
+        return new Object[][] { V219, V229, V2228 };
     }
 
     /**
@@ -203,6 +214,142 @@ public class DynamicInstrumentationFTest {
         Assert.assertEquals(cusInstance.nullCache("past"), "past1");
         Assert.assertEquals(cusInstance.nullCache("past"), "past1");
         Assert.assertEquals(cusInstance.nullCache("past"), "past1");
+    }
+
+    @Test(dataProvider = "v2228")
+    public void testBoundResourceRead(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        Class<?> c = instrumentClass(TestCachedImpl.class, instrumentator, cl);
+        TestCached o1 = (TestCached) c.newInstance();
+        TestCached o2 = (TestCached) c.newInstance();
+
+
+        CleaningNode n1 = mock(CleaningNode.class);
+        CleaningNode n2 = mock(CleaningNode.class);
+
+        DependencyNode dn1 = new SingletonDependencyNode(n1);
+        DependencyNode dn2 = new SingletonDependencyNode(n2);
+
+        when(n1.getDependencyNode()).thenReturn(dn1);
+        when(n2.getDependencyNode()).thenReturn(dn2);
+
+        DependencyNode p = DependencyTracker.track(dn1);
+        o1.readResource();
+
+        o1.readStatic();
+        o2.readStatic();
+
+        DependencyTracker.exit(p);
+
+        p = DependencyTracker.track(dn2);
+        o2.readResource();
+
+        o1.readStatic();
+        o2.readStatic();
+
+        DependencyTracker.exit(p);
+
+        o1.writeResource();
+
+        verify(n1).clear();
+        verify(n1, atLeast(1)).getDependencyNode();
+        verify(n1, atLeast(1)).getLock();
+
+        verifyZeroInteractions(n2);
+
+        o2.writeResource();
+        verifyZeroInteractions(n1);
+
+        verify(n2).clear();
+        verify(n2, atLeast(1)).getDependencyNode();
+        verify(n2, atLeast(1)).getLock();
+
+        o1.writeStatic();
+
+        verify(n2, times(2)).clear();
+        verify(n2, atLeast(1)).getDependencyNode();
+        verify(n2, atLeast(1)).getLock();
+
+        verify(n1, times(2)).clear();
+        verify(n1, atLeast(1)).getDependencyNode();
+        verify(n1, atLeast(1)).getLock();
+
+        o2.writeStatic();
+
+        verify(n2, times(3)).clear();
+        verify(n2, atLeast(1)).getDependencyNode();
+        verify(n2, atLeast(1)).getLock();
+
+        verify(n1, times(3)).clear();
+        verify(n1, atLeast(1)).getDependencyNode();
+        verify(n1, atLeast(1)).getLock();
+    }
+
+    @Test(dataProvider = "v2228")
+    public void testBoundResourceSerialization(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        Class<?> c = instrumentClass(TestCachedImpl.class, instrumentator, cl);
+        TestCached o1 = (TestCached) c.newInstance();
+
+        TestCached o2 = serialize(o1);
+
+        CleaningNode n1 = mock(CleaningNode.class);
+        CleaningNode n2 = mock(CleaningNode.class);
+
+        DependencyNode dn1 = new SingletonDependencyNode(n1);
+        DependencyNode dn2 = new SingletonDependencyNode(n2);
+
+        when(n1.getDependencyNode()).thenReturn(dn1);
+        when(n2.getDependencyNode()).thenReturn(dn2);
+
+        DependencyNode p = DependencyTracker.track(dn1);
+        o1.readResource();
+
+        o1.readStatic();
+        o2.readStatic();
+
+        DependencyTracker.exit(p);
+
+        p = DependencyTracker.track(dn2);
+        o2.readResource();
+
+        o1.readStatic();
+        o2.readStatic();
+
+        DependencyTracker.exit(p);
+
+        o1.writeResource();
+
+        verify(n1).clear();
+        verify(n1, atLeast(1)).getDependencyNode();
+        verify(n1, atLeast(1)).getLock();
+
+        verifyZeroInteractions(n2);
+
+        o2.writeResource();
+        verifyZeroInteractions(n1);
+
+        verify(n2).clear();
+        verify(n2, atLeast(1)).getDependencyNode();
+        verify(n2, atLeast(1)).getLock();
+
+        o1.writeStatic();
+
+        verify(n2, times(2)).clear();
+        verify(n2, atLeast(1)).getDependencyNode();
+        verify(n2, atLeast(1)).getLock();
+
+        verify(n1, times(2)).clear();
+        verify(n1, atLeast(1)).getDependencyNode();
+        verify(n1, atLeast(1)).getLock();
+
+        o2.writeStatic();
+
+        verify(n2, times(3)).clear();
+        verify(n2, atLeast(1)).getDependencyNode();
+        verify(n2, atLeast(1)).getLock();
+
+        verify(n1, times(3)).clear();
+        verify(n1, atLeast(1)).getDependencyNode();
+        verify(n1, atLeast(1)).getLock();
     }
 
     @Test(dataProvider = "v229")
@@ -702,6 +849,40 @@ public class DynamicInstrumentationFTest {
                 return (T) new DefaultTestStrategy();
             }
             return CacheFactory.getDefaultContext().getInstanceProvider().forClass(cls);
+        }
+    }
+
+    private static <T> T serialize(T proxy) throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
+
+        try {
+            oos.writeObject(proxy);
+        } finally {
+            oos.close();
+        }
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+
+        final Class<?> replacedClass = proxy.getClass();
+
+        ObjectInputStream ois = new ObjectInputStream(bis) {
+            @Override
+            protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+                if (desc.getName().equals(replacedClass.getName())) {
+                    return replacedClass;
+                }
+                return super.resolveClass(desc);
+            }
+        };
+        try {
+            //noinspection unchecked
+            return (T) ois.readObject();
+        } finally {
+            ois.close();
+            bis.close();
+            bos.close();
         }
     }
 }

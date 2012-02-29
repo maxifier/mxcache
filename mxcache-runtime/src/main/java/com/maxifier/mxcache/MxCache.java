@@ -35,7 +35,7 @@ public final class MxCache {
                 IOUtils.closeQuietly(in);
             }
         } catch (IOException e) {
-            return "<unknown>";
+            return "<unknown, " + VERSION + " compatible>";
         }
     }
 

@@ -36,7 +36,12 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
         protected UseProxyInstrumentationStage createProxyStage(ClassVisitor visitor, ClassVisitor detector) {
             return new UseProxyInstrumentationStage219(this, visitor, detector);
         }
+
+        protected ResourceInstrumentationStage createResourceStage(ClassVisitor visitor, ClassVisitor detector) {
+            return new ResourceInstrumentationStage219(this, visitor, detector);
+        }
     };
+
     public static final InstrumentatorImpl INSTANCE_229 = new InstrumentatorImpl(true, "Instrumentator<2.2.9>") {
         @Override
         protected CachedInstrumentationStage createCachedStage(ClassVisitor visitor, ClassVisitor detector) {
@@ -47,9 +52,30 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
         protected UseProxyInstrumentationStage createProxyStage(ClassVisitor visitor, ClassVisitor detector) {
             return new UseProxyInstrumentationStage229(this, visitor, detector);
         }
+
+        protected ResourceInstrumentationStage createResourceStage(ClassVisitor visitor, ClassVisitor detector) {
+            return new ResourceInstrumentationStage219(this, visitor, detector);
+        }
     };
 
-    public static final InstrumentatorImpl CURRENT_INSTANCE = INSTANCE_229;
+    public static final InstrumentatorImpl INSTANCE_2228 = new InstrumentatorImpl(true, "Instrumentator<2.2.28>") {
+        @Override
+        protected CachedInstrumentationStage createCachedStage(ClassVisitor visitor, ClassVisitor detector) {
+            return new CachedInstrumentationStage229(this, visitor, detector);
+        }
+
+        @Override
+        protected UseProxyInstrumentationStage createProxyStage(ClassVisitor visitor, ClassVisitor detector) {
+            return new UseProxyInstrumentationStage229(this, visitor, detector);
+        }
+
+        protected ResourceInstrumentationStage createResourceStage(ClassVisitor visitor, ClassVisitor detector) {
+            return new ResourceInstrumentationStage2228(this, visitor, detector);
+        }
+    };
+
+    public static final InstrumentatorImpl CURRENT_INSTANCE = INSTANCE_2228;
+//    public static final InstrumentatorImpl CURRENT_INSTANCE = INSTANCE_229;
 //    public static final InstrumentatorImpl CURRENT_INSTANCE = INSTANCE_219;
 
     private final String name;
@@ -70,6 +96,53 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
         }
     }
 
+    private static interface StageFactory {
+        boolean fastDetect(byte[] bytecode);
+
+        InstrumentationStage createStage(ClassVisitor visitor, ClassVisitor detector);
+    }
+    
+    private final StageFactory[] stageFactories = {
+            new StageFactory() {
+                @Override
+                public boolean fastDetect(byte[] bytecode) {
+                    return RESOURCE_READER_DESCRIPTOR_MATCHER.isContainedIn(bytecode) ||
+                            RESOURCE_WRITER_DESCRIPTOR_MATCHER.isContainedIn(bytecode);
+                }
+
+                @Override
+                public InstrumentationStage createStage(ClassVisitor visitor, ClassVisitor detector) {
+                    return createResourceStage(visitor, detector);
+                }
+            },
+            new StageFactory() {
+                @Override
+                public boolean fastDetect(byte[] bytecode) {
+                    return CACHED_DESCRIPTOR_MATCHER.isContainedIn(bytecode);
+                }
+
+                @Override
+                public InstrumentationStage createStage(ClassVisitor visitor, ClassVisitor detector) {
+                    return createCachedStage(visitor, detector);
+                }
+            },
+
+            // CachedInstrumentationStage removes @Cached annotations so it's impossible to differentiate
+            // @UseProxy w/ @Cached and @UseProxy w/o @Cached after it, so we place proxy instrumentation stage
+            // before it
+            new StageFactory() {
+                @Override
+                public boolean fastDetect(byte[] bytecode) {
+                    return USE_PROXY_DESCRIPTOR_MATCHER.isContainedIn(bytecode);
+                }
+
+                @Override
+                public InstrumentationStage createStage(ClassVisitor visitor, ClassVisitor detector) {
+                    return createProxyStage(visitor, detector);
+                }
+            }
+    };
+
     /**
      * Инструментирует байткод
      * @param bytecode байткод класса
@@ -79,10 +152,8 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
      */
     @Override
     public ClassInstrumentationResult instrument(byte[] bytecode) {
-        boolean containsCached = containsCached(bytecode);
-        boolean containsResources = containsResources(bytecode);
-        boolean containsUseProxy = containsUseProxy(bytecode);
-        if (!containsCached && !containsResources && !containsUseProxy) {
+        List<StageFactory> activeFactories = findMatchingStages(bytecode);
+        if (activeFactories.isEmpty()) {
             return null;
         }
         ClassReader classReader = new ClassReader(bytecode);
@@ -91,24 +162,10 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
         List<InstrumentationStage> stages = new ArrayList<InstrumentationStage>();
         ClassVisitor visitor = classWriter;
         ClassVisitor detector = new EmptyVisitor();
+
         // instrumentation stages are stacked, last added is first passed to class reader
-        if (containsResources) {
-            InstrumentationStage stage = createResourceStage(visitor, detector);
-            stages.add(stage);
-            visitor = stage;
-            detector = stage.getDetector();
-        }
-        if (containsCached) {
-            InstrumentationStage stage = createCachedStage(visitor, detector);
-            stages.add(stage);
-            visitor = stage;
-            detector = stage.getDetector();
-        }
-        if (containsUseProxy) {
-            // CachedInstrumentationStage removes @Cached annotations so it's impossible to differentiate
-            // @UseProxy w/ @Cached and @UseProxy w/o @Cached after it, so we place proxy instrumentation stage
-            // before it
-            InstrumentationStage stage = createProxyStage(visitor, detector);
+        for (StageFactory factory : activeFactories) {
+            InstrumentationStage stage = factory.createStage(visitor, detector);
             stages.add(stage);
             visitor = stage;
             detector = stage.getDetector();
@@ -134,9 +191,17 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
         return null;
     }
 
-    private ResourceInstrumentationStage createResourceStage(ClassVisitor visitor, ClassVisitor detector) {
-        return new ResourceInstrumentationStage(this, visitor, detector);
+    private List<StageFactory> findMatchingStages(byte[] bytecode) {
+        List<StageFactory> activeFactories = new ArrayList<StageFactory>();
+        for (StageFactory stageFactory : stageFactories) {
+            if (stageFactory.fastDetect(bytecode)) {
+                activeFactories.add(stageFactory);
+            }
+        }
+        return activeFactories;
     }
+
+    protected abstract ResourceInstrumentationStage createResourceStage(ClassVisitor visitor, ClassVisitor detector);
 
     protected abstract UseProxyInstrumentationStage createProxyStage(ClassVisitor visitor, ClassVisitor detector);
 
@@ -157,19 +222,6 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
             res.addAll(stage.getAdditionalClasses());
         }
         return res;
-    }
-
-    private static boolean containsCached(byte[] bytecode) {
-        return CACHED_DESCRIPTOR_MATCHER.isContainedIn(bytecode);
-    }
-
-    private static boolean containsUseProxy(byte[] bytecode) {
-        return USE_PROXY_DESCRIPTOR_MATCHER.isContainedIn(bytecode);
-    }
-
-    private static boolean containsResources(byte[] bytecode) {
-        return RESOURCE_READER_DESCRIPTOR_MATCHER.isContainedIn(bytecode) ||
-               RESOURCE_WRITER_DESCRIPTOR_MATCHER.isContainedIn(bytecode);
     }
 
     @Override

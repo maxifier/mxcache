@@ -244,6 +244,8 @@ mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/Contex
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/DynamicInstrumentator.java -text
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/InstrumentationStage.java -text
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/Instrumentator.java -text
+mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/current/AddInstanceInitializer.java -text
+mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/current/AddStaticInitializer.java -text
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/current/CacheIdList.java -text
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/current/CachedDetector.java -text
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/current/CachedInstrumentationStage.java -text
@@ -255,6 +257,8 @@ mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/curren
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/current/ProxiedMethodContext.java -text
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/current/ResourceDetector.java -text
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/current/ResourceInstrumentationStage.java -text
+mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/current/ResourceInstrumentationStage219.java -text
+mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/current/ResourceInstrumentationStage2228.java -text
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/current/ResourceMethodContext.java -text
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/current/ResourceMethodVisitor.java -text
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/current/RuntimeTypes.java -text
