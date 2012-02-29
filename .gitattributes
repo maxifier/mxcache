@@ -226,6 +226,7 @@ mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/CachedValidity
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/MxCacheInspection.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/MxCacheVersion.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/PsiMethodFinder.java -text
+mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/ResourceNameChecker.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/StaticInstrumentator.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/StaticInstrumentorInstaller.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/SwingWriteAction.java -text
@@ -235,6 +236,7 @@ mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/inspections/Re
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/inspections/ResourceNamingInspection.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/inspections/Validator.java -text
 mxcache-idea-plugin/src/main/resources/META-INF/plugin.xml -text
+mxcache-idea-plugin/src/test/java/com/maxifier/mxcache/ideaplugin/inspections/ResourceNameCheckerUTest.java -text
 mxcache-instrumentator/pom.xml -text
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/BytecodeMatcher.java -text
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/ClassDefinition.java -text
@@ -282,6 +284,7 @@ mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/Resour
 mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/ResourceTest.java -text
 mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/ResourceTestImpl.java -text
 mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/SerializationFTest.java -text
+mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/StaticMethodAccessedBoundResource.java -text
 mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/TestCached.java -text
 mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/TestCachedImpl.java -text
 mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/TestClass.java -text

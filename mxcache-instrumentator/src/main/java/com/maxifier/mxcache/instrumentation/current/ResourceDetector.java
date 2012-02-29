@@ -169,6 +169,9 @@ public class ResourceDetector extends ClassAdapter {
                     String resourceName = (String) value;
                     boolean nonStatic = allowNonStatic && resourceName.startsWith("#");
                     if (nonStatic) {
+                        if (Modifier.isStatic(access)) {
+                            throw new IllegalCachedClass("Bound resource " + value + " is accessed from static method: " + getMethodReference(), sourceFileName);
+                        }
                         resourceName = resourceName.substring(1);
                     }
                     MxField field = nextField(resourceName, !nonStatic);

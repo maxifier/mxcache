@@ -216,6 +216,11 @@ public class DynamicInstrumentationFTest {
         Assert.assertEquals(cusInstance.nullCache("past"), "past1");
     }
 
+    @Test(dataProvider = "v2228", expectedExceptions = IllegalCachedClass.class)
+    public void testReadBoundResourceFromStaticMethod(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        instrumentClass(StaticMethodAccessedBoundResource.class, instrumentator, cl);
+    }
+
     @Test(dataProvider = "v2228")
     public void testBoundResourceRead(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         Class<?> c = instrumentClass(TestCachedImpl.class, instrumentator, cl);
