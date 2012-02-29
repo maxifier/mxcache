@@ -1,9 +1,10 @@
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.*;
-import com.maxifier.mxcache.asm.Opcodes;
+import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.context.CacheContextImpl;
+import com.maxifier.mxcache.impl.CacheId;
 import com.maxifier.mxcache.impl.DefaultStrategy;
 import com.maxifier.mxcache.impl.instanceprovider.DefaultInstanceProvider;
 import com.maxifier.mxcache.impl.resource.MxResourceFactory;
@@ -11,9 +12,11 @@ import com.maxifier.mxcache.instrumentation.current.InstrumentatorImpl;
 import com.maxifier.mxcache.clean.CacheCleaner;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheManager;
+import com.maxifier.mxcache.provider.CacheProvider;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.util.CodegenHelper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -22,6 +25,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.maxifier.mxcache.instrumentation.InstrumentationTestHelper.*;
 import static org.testng.Assert.*;
@@ -139,6 +144,30 @@ public class DynamicInstrumentationFTest {
         assert instrumentator.instrument(CodegenHelper.getByteCode(NonCachedShortcut.class)) == null;
         // а тут сработает отсечение на отсутствие кэшированных методов
         assert instrumentator.instrument(CodegenHelper.getByteCode(NotCached.class)) == null;
+    }
+
+    @Test(dataProvider = "all")
+    public void testTooManyCachesCreated(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+
+        SpyCacheProvider spy = new SpyCacheProvider(CacheFactory.getProvider());
+        
+        CacheFactory.setProviderOverride(spy);
+        Class<?> c = instrumentClass(TestCachedImpl.class, instrumentator, cl);
+        c.newInstance();
+
+        int cachesCreated = 0;
+        for (Object[] objects : spy.getQueries()) {
+            if (objects[0].equals("createCache")) {
+                cachesCreated++;
+            }
+        }
+        int cachedMethods = 0;
+        for (Method method : TestCachedImpl.class.getDeclaredMethods()) {
+            if (method.getAnnotation(Cached.class) != null) {
+                cachedMethods++;
+            }
+        }
+        Assert.assertEquals(cachesCreated, cachedMethods);
     }
 
     @Test(dataProvider = "v229")
@@ -613,6 +642,42 @@ public class DynamicInstrumentationFTest {
         @Override
         public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
             return DefaultStrategy.getInstance().getManager(context, descriptor);
+        }
+    }
+
+    private static class SpyCacheProvider implements CacheProvider {
+        private final CacheProvider provider0;
+        
+        private final List<Object[]> queries = new ArrayList<Object[]>();
+
+        public SpyCacheProvider(CacheProvider provider0) {
+            this.provider0 = provider0;
+        }
+
+        @Override
+        public <T> void registerCache(Class<T> cacheOwner, int cacheId, Class keyType, Class valueType, String group, String[] tags, Object calculable, String methodName, String methodDesc, @Nullable String cacheName) {
+            queries.add(new Object[] {"registerCache", cacheOwner, cacheId, keyType, valueType, group, tags, calculable, methodName, methodDesc, cacheName});
+            provider0.registerCache(cacheOwner, cacheId, keyType, valueType, group, tags, calculable, methodName, methodDesc, cacheName);
+        }
+
+        @Override
+        public Cache createCache(@NotNull Class cacheOwner, int cacheId, @Nullable Object instance, CacheContext context) {
+            queries.add(new Object[] {"createCache", cacheOwner, cacheId, instance, context});
+            return provider0.createCache(cacheOwner, cacheId, instance, context);
+        }
+
+        @Override
+        public CacheDescriptor getDescriptor(CacheId id) {
+            return provider0.getDescriptor(id);
+        }
+
+        @Override
+        public List<CacheManager> getCaches() {
+            return provider0.getCaches();
+        }
+
+        public List<Object[]> getQueries() {
+            return queries;
         }
     }
 

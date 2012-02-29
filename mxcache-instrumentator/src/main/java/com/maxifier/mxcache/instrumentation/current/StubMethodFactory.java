@@ -3,6 +3,7 @@ package com.maxifier.mxcache.instrumentation.current;
 import static com.maxifier.mxcache.asm.Opcodes.*;
 import static com.maxifier.mxcache.asm.Type.*;
 
+import com.maxifier.mxcache.asm.Label;
 import com.maxifier.mxcache.impl.CalculatableHelper;
 import com.maxifier.mxcache.instrumentation.Context;
 import com.maxifier.mxcache.asm.commons.Method;
@@ -243,7 +244,14 @@ final class StubMethodFactory {
 
         @Override
         public void generate(MxGeneratorAdapter mv) {
-            if (!isStatic) {
+            Label skipInitialization;
+            if (isStatic) {
+                skipInitialization = null;
+            } else {
+                skipInitialization = new Label();
+                mv.loadThis();
+                mv.get(cacheFieldName, cacheType);
+                mv.ifNonNull(skipInitialization);
                 mv.loadThis();
             }
             mv.push(thisClass);
@@ -261,6 +269,9 @@ final class StubMethodFactory {
             }
             mv.checkCast(cacheType);
             mv.put(cacheFieldName, cacheType);
+            if (!isStatic) {
+                mv.mark(skipInitialization);
+            }
         }
     }
 
