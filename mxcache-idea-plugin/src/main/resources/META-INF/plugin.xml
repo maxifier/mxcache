@@ -23,6 +23,9 @@
             <!--this is only for compatibility cause idea 7 doesn't support compiler extension point-->
             <implementation-class>com.maxifier.mxcache.ideaplugin.StaticInstrumentorInstaller</implementation-class>
         </component>
+        <component>
+            <implementation-class>com.maxifier.mxcache.ideaplugin.MxCacheConfiguration</implementation-class>
+        </component>
     </project-components>
 
     <module-components />

@@ -223,6 +223,7 @@ mxcache-idea-plugin/pom.xml -text
 mxcache-idea-plugin/src/assembly/assembly.xml -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/CachedProcessingItem.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/CachedValidityState.java -text
+mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/MxCacheConfiguration.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/MxCacheInspection.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/MxCacheVersion.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/PsiMethodFinder.java -text

@@ -35,9 +35,15 @@ import javax.swing.*;
  * used to install it.
  */
 public class StaticInstrumentator implements ClassInstrumentingCompiler /*, ApplicationComponent */ {
+    private boolean enabled = true;
+
     @Override
     @NotNull
     public ProcessingItem[] getProcessingItems(CompileContext compileContext) {
+        if (!enabled) {
+            return new ProcessingItem[] {};
+        }
+
         List<CachedProcessingItem> items = new ArrayList<CachedProcessingItem>();
 
         for (Module module : compileContext.getCompileScope().getAffectedModules()) {
@@ -123,6 +129,14 @@ public class StaticInstrumentator implements ClassInstrumentingCompiler /*, Appl
                 list.add(new CachedProcessingItem(outputDir, entry, mxcacheVersion));
             }
         }
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     private static class InstrumentationAction implements Runnable {
