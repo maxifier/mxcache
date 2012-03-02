@@ -96,7 +96,7 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
         }
     }
 
-    private static interface StageFactory {
+    private interface StageFactory {
         boolean fastDetect(byte[] bytecode);
 
         InstrumentationStage createStage(ClassVisitor visitor, ClassVisitor detector);

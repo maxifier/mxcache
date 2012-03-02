@@ -11,8 +11,10 @@ import java.util.regex.Pattern;
  * Этот класс вынесен из ResourceNamingInspection чтобы его можно было тестировать - иначе падает при статической
  * инициализации.
  */
-public class ResourceNameChecker {
+public final class ResourceNameChecker {
     private static final Pattern NAME_PATTERN = Pattern.compile("#?([a-zA-Z_][\\w_]*\\.)*([a-zA-Z_][\\w_]*)");
+
+    private ResourceNameChecker() {}
 
     public static boolean isValidGroupOrTagName(String name) {
         return NAME_PATTERN.matcher(name).matches();

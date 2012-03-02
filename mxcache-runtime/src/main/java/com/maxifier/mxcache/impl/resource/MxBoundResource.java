@@ -2,8 +2,6 @@ package com.maxifier.mxcache.impl.resource;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
-
 /**
  * Created by IntelliJ IDEA.
  * User: kochurov
@@ -12,7 +10,7 @@ import java.io.Serializable;
  *
  * No equals or hash code: each resource is unique!
  */
-class MxBoundResource extends MxResourceImpl implements Serializable {
+class MxBoundResource extends MxResourceImpl {
     private final Object owner;
 
     public MxBoundResource(@NotNull Object owner, @NotNull String name) {

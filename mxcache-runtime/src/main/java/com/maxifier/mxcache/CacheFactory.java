@@ -39,7 +39,7 @@ public final class CacheFactory {
 
     private static CacheContext overrideDefault = null;
 
-    private static final ThreadLocal<CacheProvider> providerOverride = new ThreadLocal<CacheProvider>();
+    private static final ThreadLocal<CacheProvider> PROVIDER_OVERRIDE = new ThreadLocal<CacheProvider>();
 
     private CacheFactory() {
     }
@@ -97,7 +97,7 @@ public final class CacheFactory {
     }
 
     public static CacheProvider getProvider() {
-        CacheProvider override = providerOverride.get();
+        CacheProvider override = PROVIDER_OVERRIDE.get();
         if (override != null) {
             return override;
         }
@@ -105,7 +105,7 @@ public final class CacheFactory {
     }
 
     public static void setProviderOverride(CacheProvider providerOverride) {
-        CacheFactory.providerOverride.set(providerOverride);
+        CacheFactory.PROVIDER_OVERRIDE.set(providerOverride);
     }
 
     @PublicAPI

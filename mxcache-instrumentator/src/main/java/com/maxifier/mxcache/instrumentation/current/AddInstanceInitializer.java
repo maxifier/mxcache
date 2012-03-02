@@ -7,14 +7,8 @@ import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.AdviceAdapter;
 import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.util.CodegenHelper;
-import com.maxifier.mxcache.util.MxGeneratorAdapter;
 
 import java.lang.reflect.Modifier;
-
-import static com.maxifier.mxcache.asm.Opcodes.INVOKESTATIC;
-import static com.maxifier.mxcache.asm.Opcodes.RETURN;
-import static com.maxifier.mxcache.util.CodegenHelper.STATIC_INITIALIZER_ACCESS;
-import static com.maxifier.mxcache.util.CodegenHelper.STATIC_INITIALIZER_NAME;
 
 /**
  * Created by IntelliJ IDEA.
