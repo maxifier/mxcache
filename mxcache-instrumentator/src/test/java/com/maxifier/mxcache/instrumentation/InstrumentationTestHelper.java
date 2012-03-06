@@ -21,10 +21,10 @@ public final class InstrumentationTestHelper {
     }
 
     public static Class<?> instrumentClass(Class<?> srcClass) throws IOException, ClassNotFoundException {
-        return instrumentClass(srcClass, InstrumentatorImpl.CURRENT_INSTANCE, null);
+        return instrumentClass(srcClass, InstrumentatorImpl.LAST_VERSION, null);
     }
 
-    public static Class<?> instrumentClass(Class<?> srcClass, com.maxifier.mxcache.instrumentation.Instrumentator instrumentator, ClassLoader cl) throws IOException, ClassNotFoundException {
+    public static Class<?> instrumentClass(Class<?> srcClass, Instrumentator instrumentator, ClassLoader cl) throws IOException, ClassNotFoundException {
         cl = new ClassLoader(cl == null ? ClassLoader.getSystemClassLoader() : cl) {};
         byte[] bytes = CodegenHelper.getByteCode(srcClass);
         instrumentAndLoad(instrumentator, cl, bytes);
@@ -34,12 +34,12 @@ public final class InstrumentationTestHelper {
     private static void instrumentAndLoad(Instrumentator instrumentator, ClassLoader cl, byte[] bytes) {
         ClassInstrumentationResult res = instrumentator.instrument(bytes);
         for (ClassDefinition classDefinition : res.getAdditionalClasses()) {
-            if (instrumentator == InstrumentatorImpl.INSTANCE_229) {
+            if (instrumentator.getVersion().equals("2.2.9")) {
                 Assert.assertNull(instrumentator.instrument(classDefinition.getBytecode()));
             }
             CodegenHelper.loadClass(cl, classDefinition.getBytecode());
         }
-        if (instrumentator == InstrumentatorImpl.INSTANCE_229) {
+        if (instrumentator.getVersion().equals("2.2.9")) {
             Assert.assertNull(instrumentator.instrument(res.getInstrumentedBytecode()));
         }
         CodegenHelper.loadClass(cl, res.getInstrumentedBytecode());

@@ -15,6 +15,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>mxcache-instrumentator-facade</module>
         <module>mxcache-instrumentator</module>
         <module>mxcache-generation</module>
         <module>mxcache-runtime</module>
@@ -51,6 +52,11 @@
             <dependency>
                 <groupId>com.maxifier.mxcache</groupId>
                 <artifactId>mxcache-guice-integration</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>mxcache-instrumentator-facade</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

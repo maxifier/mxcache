@@ -21,14 +21,14 @@ import com.maxifier.mxcache.util.CodegenHelper;
  * @author ELectronic ENgine
  */
 public class DynamicInstrumentator implements ClassFileTransformer {
-    private final InstrumentatorImpl instrumentator;
+    private final Instrumentator instrumentator;
 
-    public DynamicInstrumentator(InstrumentatorImpl instrumentator) {
+    public DynamicInstrumentator(Instrumentator instrumentator) {
         this.instrumentator = instrumentator;
     }
 
     public static void premain(String agentArgs, Instrumentation inst) {
-        inst.addTransformer(new DynamicInstrumentator(InstrumentatorImpl.CURRENT_INSTANCE), true);
+        inst.addTransformer(new DynamicInstrumentator(InstrumentatorImpl.LAST_VERSION), true);
     }
 
     @Override

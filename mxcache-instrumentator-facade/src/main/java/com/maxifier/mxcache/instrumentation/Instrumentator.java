@@ -10,4 +10,6 @@ import com.maxifier.mxcache.IllegalCachedClass;
  */
 public interface Instrumentator {
     ClassInstrumentationResult instrument(byte[] bytecode) throws IllegalCachedClass;
+    
+    String getVersion();
 }

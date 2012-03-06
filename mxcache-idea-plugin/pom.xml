@@ -15,6 +15,11 @@
     <dependencies>
         <dependency>
             <groupId>com.maxifier.mxcache</groupId>
+            <artifactId>mxcache-instrumentator-facade</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.maxifier.mxcache</groupId>
             <artifactId>mxcache-instrumentator</artifactId>
         </dependency>
 

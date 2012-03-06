@@ -12,7 +12,6 @@ import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.impl.resource.MxResourceFactory;
 import com.maxifier.mxcache.impl.resource.nodes.SingletonDependencyNode;
-import com.maxifier.mxcache.instrumentation.current.InstrumentatorImpl;
 import com.maxifier.mxcache.clean.CacheCleaner;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheManager;
@@ -83,9 +82,9 @@ public class DynamicInstrumentationFTest {
 
 //    private static final Object[] V200 = { Instrumentator200.INSTANCE, V200_CLASSLOADER };
 //    private static final Object[] V210 = { Instrumentator210.INSTANCE, V210_CLASSLOADER};
-    private static final Object[] V219  = { InstrumentatorImpl.INSTANCE_219, null};
-    private static final Object[] V229  = { InstrumentatorImpl.INSTANCE_229, null };
-    private static final Object[] V2228 = { InstrumentatorImpl.INSTANCE_2228, null };
+    private static final Object[] V219  = { InstrumentatorProvider.getAvailableVersions().get("2.1.9"), null};
+    private static final Object[] V229  = { InstrumentatorProvider.getAvailableVersions().get("2.2.9"), null };
+    private static final Object[] V2228 = { InstrumentatorProvider.getAvailableVersions().get("2.2.28"), null };
 
     @DataProvider(name = "v229")
     public Object[][] v229() {

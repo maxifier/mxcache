@@ -8,7 +8,8 @@ import com.intellij.psi.PsiLiteralExpression;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.maxifier.mxcache.MxCacheException;
 import com.maxifier.mxcache.instrumentation.ClassInstrumentationResult;
-import com.maxifier.mxcache.instrumentation.current.InstrumentatorImpl;
+import com.maxifier.mxcache.instrumentation.Instrumentator;
+import com.maxifier.mxcache.instrumentation.InstrumentatorProvider;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -18,18 +19,14 @@ import java.lang.reflect.InvocationTargetException;
 * Date: 09.08.2010
 * Time: 12:04:02
 */
-enum MxCacheVersion {
-    V219(InstrumentatorImpl.INSTANCE_219),
-    V229(InstrumentatorImpl.INSTANCE_229),
-    V2228(InstrumentatorImpl.INSTANCE_2228);
-
+public class MxCacheVersion {
     public ClassInstrumentationResult instrument(byte[] bytecode) {
         return instrumentator.instrument(bytecode);
     }
 
     private final com.maxifier.mxcache.instrumentation.Instrumentator instrumentator;
 
-    MxCacheVersion(com.maxifier.mxcache.instrumentation.Instrumentator instrumentator) {
+    private MxCacheVersion(com.maxifier.mxcache.instrumentation.Instrumentator instrumentator) {
         this.instrumentator = instrumentator;
     }
 
@@ -63,14 +60,10 @@ enum MxCacheVersion {
                 return null;
             }
             String versionIdentifier = getVersionField(cls);
-            if (versionIdentifier.equals("2.1.9")) {
-                return V219;
-            }
-            if (versionIdentifier.equals("2.2.9")) {
-                return V229;
-            }
-            if (versionIdentifier.equals("2.2.28")) {
-                return V2228;
+
+            Instrumentator instrumentator = InstrumentatorProvider.getAvailableVersions().get(versionIdentifier);
+            if (instrumentator != null) {
+                return new MxCacheVersion(instrumentator);
             }
             throw new IllegalStateException("Unsupported version of MxCache: " + versionIdentifier + ", update MxCache Idea plugin or choose another version of MxCache");
         }
