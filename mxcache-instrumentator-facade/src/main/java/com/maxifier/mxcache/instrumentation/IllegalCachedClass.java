@@ -1,4 +1,4 @@
-package com.maxifier.mxcache;
+package com.maxifier.mxcache.instrumentation;
 
 /**
  * Created by IntelliJ IDEA.
@@ -6,7 +6,7 @@ package com.maxifier.mxcache;
  * Date: 24.03.2010
  * Time: 11:47:49
  */
-public class IllegalCachedClass extends MxCacheException {
+public class IllegalCachedClass extends RuntimeException {
     private final String sourceFileName;
 
     public IllegalCachedClass(String message, String sourceFileName) {

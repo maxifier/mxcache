@@ -3,6 +3,7 @@ package com.maxifier.mxcache.ideaplugin;
 import com.maxifier.mxcache.MxCacheException;
 import com.maxifier.mxcache.instrumentation.ClassDefinition;
 import com.maxifier.mxcache.instrumentation.ClassInstrumentationResult;
+import com.maxifier.mxcache.instrumentation.Instrumentator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -35,7 +36,14 @@ import javax.swing.*;
  * used to install it.
  */
 public class StaticInstrumentator implements ClassInstrumentingCompiler /*, ApplicationComponent */ {
+    private final InstrumentatorFinder instrumentatorFinder;
+
     private boolean enabled = true;
+
+    public StaticInstrumentator(InstrumentatorFinder instrumentatorFinder) {
+        this.instrumentatorFinder = instrumentatorFinder;
+    }
+
 
     @Override
     @NotNull
@@ -47,15 +55,15 @@ public class StaticInstrumentator implements ClassInstrumentingCompiler /*, Appl
         List<CachedProcessingItem> items = new ArrayList<CachedProcessingItem>();
 
         for (Module module : compileContext.getCompileScope().getAffectedModules()) {
-            MxCacheVersion mxCacheVersion = MxCacheVersion.of(module);
-            if (mxCacheVersion != null) {
+            Instrumentator instrumentator = instrumentatorFinder.getInstrumentator(module);
+            if (instrumentator != null) {
                 VirtualFile outputDirectory = compileContext.getModuleOutputDirectory(module);
                 if (outputDirectory != null) {
-                    findAllClasses(items, mxCacheVersion, outputDirectory, outputDirectory);
+                    findAllClasses(items, instrumentator, outputDirectory, outputDirectory);
                 }
                 VirtualFile testDirectory = compileContext.getModuleOutputDirectoryForTests(module);
                 if (testDirectory != null) {
-                    findAllClasses(items, mxCacheVersion, testDirectory, testDirectory);
+                    findAllClasses(items, instrumentator, testDirectory, testDirectory);
                 }
             }
         }
@@ -85,7 +93,7 @@ public class StaticInstrumentator implements ClassInstrumentingCompiler /*, Appl
 
     private void instrument(CachedProcessingItem item) throws IOException, InvocationTargetException, InterruptedException {
         byte[] bytecode = readFile(item.getFile());
-        ClassInstrumentationResult result = item.getMxCacheVersion().instrument(bytecode);
+        ClassInstrumentationResult result = item.getInstrumentator().instrument(bytecode);
         if (result != null) {
             InstrumentationAction action = new InstrumentationAction(result, item);
             SwingUtilities.invokeAndWait(new SwingWriteAction(action));
@@ -119,7 +127,7 @@ public class StaticInstrumentator implements ClassInstrumentingCompiler /*, Appl
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void findAllClasses(List<CachedProcessingItem> list, MxCacheVersion mxcacheVersion, VirtualFile outputDir, VirtualFile rootDir) {
+    private void findAllClasses(List<CachedProcessingItem> list, Instrumentator mxcacheVersion, VirtualFile outputDir, VirtualFile rootDir) {
         assert rootDir.isDirectory() : "rootDir isn't a directory";
 
         for (VirtualFile entry : rootDir.getChildren()) {
@@ -155,7 +163,7 @@ public class StaticInstrumentator implements ClassInstrumentingCompiler /*, Appl
                 for (ClassDefinition additionalClass : additionalClasses) {
                     try {
                         VirtualFile dir = item.getOutputDirectory();
-                        String[] path = additionalClass.getType().getInternalName().split("/");
+                        String[] path = additionalClass.getName().split("\\.");
                         for (int i = 0; i<path.length-1; i++) {
                             dir = getOrCreateDirectory(dir, path[i]);
                         }

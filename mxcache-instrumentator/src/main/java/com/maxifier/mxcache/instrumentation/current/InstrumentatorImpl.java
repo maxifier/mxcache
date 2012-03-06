@@ -90,7 +90,7 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
         if (addMarkerAnnotations) {
             AnnotationVisitor visitor = classVisitor.visitAnnotation(annotationType.getDescriptor(), true);
             visitor.visit("compatibleVersion", MxCache.getCompatibleVersion());
-            visitor.visit("version", MxCache.getVersion());
+            visitor.visit("version", MxCache.getVersionString());
             visitor.visitEnd();
         }
     }
@@ -147,7 +147,7 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
      * @param bytecode байткод класса
      * @return инструментированный байткод и список дополнительных классов,
      * или null, если инструментация не требуется
-     * @throws com.maxifier.mxcache.IllegalCachedClass если класс содержит некорректные аннотированные методы
+     * @throws com.maxifier.mxcache.instrumentation.IllegalCachedClass если класс содержит некорректные аннотированные методы
      */
     @Override
     public ClassInstrumentationResult instrument(byte[] bytecode) {

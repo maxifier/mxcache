@@ -1,7 +1,5 @@
 package com.maxifier.mxcache.instrumentation;
 
-import com.maxifier.mxcache.IllegalCachedClass;
-
 /**
  * Created by IntelliJ IDEA.
  * User: dalex

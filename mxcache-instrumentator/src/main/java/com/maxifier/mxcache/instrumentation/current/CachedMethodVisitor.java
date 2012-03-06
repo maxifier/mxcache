@@ -90,7 +90,7 @@ class CachedMethodVisitor extends MxGeneratorAdapter {
 
         @Override
         public void define(Type type, byte[] byteCode) {
-            classVisitor.getAdditionalClasses().add(new ClassDefinition(type, byteCode));
+            classVisitor.getAdditionalClasses().add(new ClassDefinition(type.getClassName(), byteCode));
         }
 
         @Override

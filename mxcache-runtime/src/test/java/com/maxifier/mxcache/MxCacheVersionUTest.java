@@ -1,6 +1,5 @@
 package com.maxifier.mxcache;
 
-import com.maxifier.mxcache.MxCache;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -12,7 +11,42 @@ import org.testng.annotations.Test;
  */
 @Test
 public class MxCacheVersionUTest {
-    public void test() {
-        Assert.assertTrue(MxCache.getVersion().matches("\\d+\\.\\d+\\.\\d+(-SNAPSHOT)?"));
+    public void testFormat() {
+        Assert.assertTrue(MxCache.getVersionString().matches("\\d+\\.\\d+\\.\\d+(-SNAPSHOT)?"));
+    }
+
+    public void testCompareVersion() {
+        eq("2.2.2", "2.2.2");
+        less("2.2.2", "2.2.3");
+        less("2.2.2-SNAPSHOT", "2.2.3-SNAPSHOT");
+        less("2.2.2-SNAPSHOT", "2.2.23-SNAPSHOT");
+        less("2.2.2-SNAPSHOT", "2.2.13-SNAPSHOT");
+        eq("2.2.2-SNAPSHOT", "2.2.2-SNAPSHOT");
+        eq("2.2.2-b4", "2.2.2-b4");
+        less("2.2.2-b4", "2.2.2");
+        less("2.2.2-b4", "2.2.2-b5");
+        less("2.2.2-b4", "2.2.2-b13");
+        less("2.2.2-b4x", "2.2.2-b13x");
+        less("2.2.2-a", "2.2.2-b");
+    }
+    
+    private static void less(String s1, String s2) {
+        MxCache.Version v1 = v(s1);
+        MxCache.Version v2 = v(s2);
+        Assert.assertEquals(v1.compareTo(v2), -1);
+        Assert.assertEquals(v2.compareTo(v1),  1);
+    }
+
+    private static void eq(String s1, String s2) {
+        MxCache.Version v1 = v(s1);
+        MxCache.Version v2 = v(s2);
+        Assert.assertEquals(v1, v2);
+        Assert.assertEquals(v2, v1);
+        Assert.assertEquals(v1.compareTo(v2),  0);
+        Assert.assertEquals(v2.compareTo(v1),  0);
+    }
+
+    private static MxCache.Version v(String s) {
+        return new MxCache.Version(s);
     }
 }

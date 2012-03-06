@@ -10,16 +10,4 @@
         <artifactId>mxcache</artifactId>
         <version>2.2.28-SNAPSHOT</version>
     </parent>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.maxifier.mxcache</groupId>
-            <artifactId>mxcache-asm</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.maxifier.mxcache</groupId>
-            <artifactId>mxcache-runtime</artifactId>
-        </dependency>
-    </dependencies>
 </project>

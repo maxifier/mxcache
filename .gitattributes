@@ -223,9 +223,12 @@ mxcache-idea-plugin/pom.xml -text
 mxcache-idea-plugin/src/assembly/assembly.xml -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/CachedProcessingItem.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/CachedValidityState.java -text
+mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/InstrumentatorBundle.java -text
+mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/InstrumentatorFinder.java -text
+mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/JarInstrumentatorBundle.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/MxCacheConfiguration.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/MxCacheInspection.java -text
-mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/MxCacheVersion.java -text
+mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/NativeInstrumentatorBundle.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/PsiMethodFinder.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/ResourceNameChecker.java -text
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/StaticInstrumentator.java -text
@@ -241,6 +244,7 @@ mxcache-idea-plugin/src/test/java/com/maxifier/mxcache/ideaplugin/inspections/Re
 mxcache-instrumentator-facade/pom.xml -text
 mxcache-instrumentator-facade/src/main/java/com/maxifier/mxcache/instrumentation/ClassDefinition.java -text
 mxcache-instrumentator-facade/src/main/java/com/maxifier/mxcache/instrumentation/ClassInstrumentationResult.java -text
+mxcache-instrumentator-facade/src/main/java/com/maxifier/mxcache/instrumentation/IllegalCachedClass.java -text
 mxcache-instrumentator-facade/src/main/java/com/maxifier/mxcache/instrumentation/Instrumentator.java -text
 mxcache-instrumentator/pom.xml -text
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/BytecodeMatcher.java -text
@@ -383,7 +387,6 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/DefaultCacheContext.java -tex
 mxcache-runtime/src/main/java/com/maxifier/mxcache/DependencyTracking.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/EvictionPolicyEnum.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/GenericContextResolver.java -text
-mxcache-runtime/src/main/java/com/maxifier/mxcache/IllegalCachedClass.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/InstanceProvider.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/LightweightLock.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/MxCache.java -text

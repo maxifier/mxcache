@@ -3,6 +3,7 @@ package com.maxifier.mxcache.ideaplugin;
 import com.intellij.openapi.compiler.FileProcessingCompiler;
 import com.intellij.openapi.compiler.ValidityState;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.maxifier.mxcache.instrumentation.Instrumentator;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -12,14 +13,14 @@ import org.jetbrains.annotations.NotNull;
  * Time: 12:31:40
  */
 class CachedProcessingItem implements FileProcessingCompiler.ProcessingItem {
-    private final MxCacheVersion version;
+    private final Instrumentator instrumentator;
     private final VirtualFile outputDirectory;
     private final VirtualFile file;
 
-    public CachedProcessingItem(VirtualFile outputDirectory, VirtualFile file, MxCacheVersion version) {
+    public CachedProcessingItem(VirtualFile outputDirectory, VirtualFile file, Instrumentator instrumentator) {
         this.file = file;
         this.outputDirectory = outputDirectory;
-        this.version = version;
+        this.instrumentator = instrumentator;
     }
 
     public VirtualFile getOutputDirectory() {
@@ -42,7 +43,7 @@ class CachedProcessingItem implements FileProcessingCompiler.ProcessingItem {
         return file.toString();
     }
 
-    public MxCacheVersion getMxCacheVersion() {
-        return version;
+    public Instrumentator getInstrumentator() {
+        return instrumentator;
     }
 }

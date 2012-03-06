@@ -1,7 +1,7 @@
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.asm.commons.Method;
-import com.maxifier.mxcache.IllegalCachedClass;
+import com.maxifier.mxcache.instrumentation.IllegalCachedClass;
 import com.maxifier.mxcache.asm.*;
 import gnu.trove.THashMap;
 

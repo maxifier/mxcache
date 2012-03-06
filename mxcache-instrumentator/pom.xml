@@ -43,6 +43,16 @@
         </dependency>
 
         <dependency>
+            <groupId>com.maxifier.mxcache</groupId>
+            <artifactId>mxcache-asm</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.maxifier.mxcache</groupId>
+            <artifactId>mxcache-runtime</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.magenta</groupId>
             <artifactId>data-serializator-core</artifactId>
             <version>1.1.2</version>

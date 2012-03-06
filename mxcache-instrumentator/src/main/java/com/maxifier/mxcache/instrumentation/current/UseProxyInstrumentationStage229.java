@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.instrumentation.current;
 
-import com.maxifier.mxcache.IllegalCachedClass;
+import com.maxifier.mxcache.instrumentation.IllegalCachedClass;
 import com.maxifier.mxcache.asm.AnnotationVisitor;
 import com.maxifier.mxcache.asm.ClassVisitor;
 import com.maxifier.mxcache.asm.MethodVisitor;

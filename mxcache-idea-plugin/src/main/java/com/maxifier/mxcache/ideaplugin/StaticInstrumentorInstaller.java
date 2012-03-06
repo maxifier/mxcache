@@ -19,9 +19,9 @@ public class StaticInstrumentorInstaller implements ProjectComponent, JDOMExtern
     private final Project project;
     private final StaticInstrumentator instrumentator;
 
-    public StaticInstrumentorInstaller(Project project) {
+    public StaticInstrumentorInstaller(Project project, InstrumentatorFinder instrumentatorFinder) {
         this.project = project;
-        instrumentator = new StaticInstrumentator();
+        instrumentator = new StaticInstrumentator(instrumentatorFinder);
     }
 
     public void projectOpened() {

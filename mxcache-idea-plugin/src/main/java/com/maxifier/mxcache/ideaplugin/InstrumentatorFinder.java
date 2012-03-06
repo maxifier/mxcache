@@ -1,17 +1,19 @@
 package com.maxifier.mxcache.ideaplugin;
 
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiLiteralExpression;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.maxifier.mxcache.MxCacheException;
-import com.maxifier.mxcache.instrumentation.ClassInstrumentationResult;
 import com.maxifier.mxcache.instrumentation.Instrumentator;
-import com.maxifier.mxcache.instrumentation.InstrumentatorProvider;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
 * Created by IntelliJ IDEA.
@@ -19,51 +21,78 @@ import java.lang.reflect.InvocationTargetException;
 * Date: 09.08.2010
 * Time: 12:04:02
 */
-public class MxCacheVersion {
-    public ClassInstrumentationResult instrument(byte[] bytecode) {
-        return instrumentator.instrument(bytecode);
+public class InstrumentatorFinder implements ProjectComponent {
+    private InstrumentatorFinder() { }
+
+    @Override
+    public void projectOpened() {
     }
 
-    private final com.maxifier.mxcache.instrumentation.Instrumentator instrumentator;
-
-    private MxCacheVersion(com.maxifier.mxcache.instrumentation.Instrumentator instrumentator) {
-        this.instrumentator = instrumentator;
+    @Override
+    public void projectClosed() {
     }
 
-    public static MxCacheVersion of(final Module module) {
-        VersionFinderAction finder = new VersionFinderAction(module);
+    @Override
+    public void initComponent() {
+    }
+
+    @Override
+    public void disposeComponent() {
+    }
+
+    @NotNull
+    @Override
+    public String getComponentName() {
+        return "InstrumentatorFinder";
+    }
+
+    private final InstrumentatorBundle builtinBundle = new NativeInstrumentatorBundle();
+
+    private final Collection<InstrumentatorBundle> bundles = new ArrayList<InstrumentatorBundle>();
+
+    private InstrumentatorBundle latestBundle = builtinBundle;
+
+    private void addBundle(InstrumentatorBundle bundle) {
+        bundles.add(bundle);
+        if (latestBundle.getVersion().compareTo(bundle.getVersion()) < 0) {
+            latestBundle = bundle;
+        }
+    }
+
+    public Instrumentator getInstrumentator(final Module module) {
+        InstrumentatorFinderAction finder = new InstrumentatorFinderAction(module);
         ApplicationManager.getApplication().runReadAction(finder);
-        return finder.getVersion();
+        return finder.getInstrumentator();
     }
 
-    private static class VersionFinderAction implements Runnable {
+    private class InstrumentatorFinderAction implements Runnable {
         private final Module module;
 
-        private MxCacheVersion version;
+        private Instrumentator instrumentator;
 
-        public VersionFinderAction(Module module) {
+        public InstrumentatorFinderAction(Module module) {
             this.module = module;
         }
 
-        public MxCacheVersion getVersion() {
-            return version;
+        public Instrumentator getInstrumentator() {
+            return instrumentator;
         }
 
         @Override
         public void run() {
-            version = findVersion();
+            instrumentator = findInstrumentator();
         }
 
-        private MxCacheVersion findVersion() {
+        private Instrumentator findInstrumentator() {
             PsiClass cls = findGlobalClass("com.maxifier.mxcache.MxCache");
             if (cls == null) {
                 return null;
             }
             String versionIdentifier = getVersionField(cls);
 
-            Instrumentator instrumentator = InstrumentatorProvider.getAvailableVersions().get(versionIdentifier);
+            Instrumentator instrumentator = getVersion(versionIdentifier);
             if (instrumentator != null) {
-                return new MxCacheVersion(instrumentator);
+                return instrumentator;
             }
             throw new IllegalStateException("Unsupported version of MxCache: " + versionIdentifier + ", update MxCache Idea plugin or choose another version of MxCache");
         }
@@ -122,6 +151,10 @@ public class MxCacheVersion {
                 throw new MxCacheException(e);
             }
         }
+    }
+
+    private Instrumentator getVersion(String version) {
+        return latestBundle.getAvailableVersions().get(version);
     }
 
     private static final class IdeaVersionException extends MxCacheException {

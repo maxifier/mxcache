@@ -14,6 +14,7 @@ import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 import com.maxifier.mxcache.instrumentation.ClassDefinition;
 import com.maxifier.mxcache.instrumentation.CommonRuntimeTypes;
+import com.maxifier.mxcache.instrumentation.IllegalCachedClass;
 import com.maxifier.mxcache.instrumentation.InstrumentationStage;
 import com.maxifier.mxcache.asm.*;
 import com.maxifier.mxcache.asm.commons.Method;
@@ -21,7 +22,6 @@ import com.maxifier.mxcache.asm.commons.SerialVersionUIDAdder;
 import com.maxifier.mxcache.asm.commons.TableSwitchGenerator;
 import com.maxifier.mxcache.util.ClassGenerator;
 import com.maxifier.mxcache.util.CodegenHelper;
-import com.maxifier.mxcache.IllegalCachedClass;
 import com.maxifier.mxcache.util.Generator;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
 import gnu.trove.THashMap;
@@ -134,7 +134,7 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
 
             cleanableWriter.visitEnd();
 
-            additionalClasses.add(new ClassDefinition(cleanableClass, cleanableWriter.toByteArray()));
+            additionalClasses.add(new ClassDefinition(cleanableClass.getClassName(), cleanableWriter.toByteArray()));
         }
         super.visitEnd();
     }

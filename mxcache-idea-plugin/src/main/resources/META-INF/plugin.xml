@@ -26,6 +26,9 @@
         <component>
             <implementation-class>com.maxifier.mxcache.ideaplugin.MxCacheConfiguration</implementation-class>
         </component>
+        <component>
+            <implementation-class>com.maxifier.mxcache.ideaplugin.InstrumentatorFinder</implementation-class>
+        </component>
     </project-components>
 
     <module-components />

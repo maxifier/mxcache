@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.instrumentation.current;
 
-import com.maxifier.mxcache.IllegalCachedClass;
+import com.maxifier.mxcache.instrumentation.IllegalCachedClass;
 import com.maxifier.mxcache.instrumentation.ClassDefinition;
 import com.maxifier.mxcache.instrumentation.InstrumentationStage;
 import com.maxifier.mxcache.asm.commons.AdviceAdapter;

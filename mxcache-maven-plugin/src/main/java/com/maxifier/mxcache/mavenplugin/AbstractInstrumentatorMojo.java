@@ -101,7 +101,7 @@ public abstract class AbstractInstrumentatorMojo extends AbstractInstrumentator 
         byte[] instrumentedBytecode = result.getInstrumentedBytecode();
         File dir = file.getParentFile();
         for (ClassDefinition additionalClass : additionalClasses) {
-            String className = additionalClass.getType().getClassName();
+            String className = additionalClass.getName();
             int index = className.lastIndexOf('.');
             String classFileName = className.substring(index + 1) + ".class";
             File f = new File(dir, classFileName);
