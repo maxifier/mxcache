@@ -1,6 +1,5 @@
 package com.maxifier.mxcache.instrumentation;
 
-import com.maxifier.mxcache.instrumentation.current.InstrumentatorImpl;
 import com.maxifier.mxcache.util.CodegenHelper;
 import org.apache.commons.io.input.ClassLoaderObjectInputStream;
 import org.testng.Assert;
@@ -21,7 +20,7 @@ public final class InstrumentationTestHelper {
     }
 
     public static Class<?> instrumentClass(Class<?> srcClass) throws IOException, ClassNotFoundException {
-        return instrumentClass(srcClass, InstrumentatorImpl.LAST_VERSION, null);
+        return instrumentClass(srcClass, InstrumentatorProvider.getPreferredVersion(), null);
     }
 
     public static Class<?> instrumentClass(Class<?> srcClass, Instrumentator instrumentator, ClassLoader cl) throws IOException, ClassNotFoundException {

@@ -5,7 +5,6 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.ClassFileTransformer;
 import java.security.ProtectionDomain;
 
-import com.maxifier.mxcache.instrumentation.current.InstrumentatorImpl;
 import com.maxifier.mxcache.util.CodegenHelper;
 
 /**
@@ -28,7 +27,7 @@ public class DynamicInstrumentator implements ClassFileTransformer {
     }
 
     public static void premain(String agentArgs, Instrumentation inst) {
-        inst.addTransformer(new DynamicInstrumentator(InstrumentatorImpl.LAST_VERSION), true);
+        inst.addTransformer(new DynamicInstrumentator(InstrumentatorProvider.getPreferredVersion()), true);
     }
 
     @Override
