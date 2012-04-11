@@ -1,5 +1,6 @@
 package com.maxifier.mxcache.instrumentation;
 
+import com.maxifier.mxcache.MxCache;
 import com.maxifier.mxcache.instrumentation.current.InstrumentatorImpl;
 import gnu.trove.THashMap;
 
@@ -28,8 +29,6 @@ public class InstrumentatorProvider {
     }
 
     public static Instrumentator getPreferredVersion() {
-        return getAvailableVersions().get("2.2.9");
-        // todo
-//        return InstrumentatorImpl.LAST_VERSION;
+        return getAvailableVersions().get(MxCache.getCompatibleVersion());
     }
 }

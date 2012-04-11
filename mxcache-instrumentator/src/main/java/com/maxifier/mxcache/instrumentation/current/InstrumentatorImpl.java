@@ -70,8 +70,6 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
         }
     } };
 
-//    public static final Instrumentator LAST_VERSION = VERSIONS[VERSIONS.length - 1];
-
     private final String version;
 
     private final boolean addMarkerAnnotations;

@@ -285,6 +285,7 @@ mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/Cached
 mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/DynamicInstrumentationFTest.java -text
 mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/ExplicitDependencyTest.java -text
 mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/InstrumentationTestHelper.java -text
+mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/InstrumentatorProviderUTest.java -text
 mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/NonCachedShortcut.java -text
 mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/NotCached.java -text
 mxcache-instrumentator/src/test/java/com/maxifier/mxcache/instrumentation/ResourceInstrumentationFTest.java -text
