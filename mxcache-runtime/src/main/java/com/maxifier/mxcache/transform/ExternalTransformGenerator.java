@@ -33,16 +33,16 @@ public class ExternalTransformGenerator extends ScalarTransformGenerator {
     @NotNull
     private final Type ownerType;
     @NotNull
-    private final Method method;
+    private final java.lang.reflect.Method method;
     @Nullable
     private final Type keyType;
 
-    public ExternalTransformGenerator(@NotNull InvocationType invocationType, @NotNull Type ownerType, @NotNull Method method) {
+    public ExternalTransformGenerator(@NotNull InvocationType invocationType, @NotNull Class owner, @NotNull java.lang.reflect.Method method) {
         this.invocationType = invocationType;
-        this.ownerType = ownerType;
+        this.ownerType = Type.getType(owner);
         this.method = method;
 
-        Type[] argTypes = method.getArgumentTypes();
+        Type[] argTypes = Type.getArgumentTypes(method);
         if (invocationType == InvocationType.KEY_INTERFACE || invocationType == InvocationType.KEY_VIRTUAL) {
             if (argTypes.length != 0) {
                 throw new IllegalArgumentException("Transformator method of key should have no arguments");
@@ -54,7 +54,7 @@ public class ExternalTransformGenerator extends ScalarTransformGenerator {
             }
             keyType = argTypes[0];
         }
-        if (method.getReturnType() == Type.VOID_TYPE) {
+        if (method.getReturnType() == void.class) {
             throw new IllegalArgumentException("Transformator method shouldn't return void");
         }
     }
@@ -71,7 +71,7 @@ public class ExternalTransformGenerator extends ScalarTransformGenerator {
             method.getField(thisType, TRANSFORMATOR_FIELD + fieldIndex, ownerType);
             method.swap(keyType, OBJECT_TYPE);
         }
-        method.visitMethodInsn(invocationType.getOpcode(), ownerType.getInternalName(), this.method.getName(), this.method.getDescriptor());
+        method.visitMethodInsn(invocationType.getOpcode(), ownerType.getInternalName(), this.method.getName(), Type.getMethodDescriptor(this.method));
     }
 
     @Override
@@ -106,7 +106,7 @@ public class ExternalTransformGenerator extends ScalarTransformGenerator {
 
     @Override
     public Class getTransformedType(Class in) {
-        return toClass(method.getReturnType());
+        return method.getReturnType();
     }
 
     @Override
@@ -137,6 +137,6 @@ public class ExternalTransformGenerator extends ScalarTransformGenerator {
 
     @Override
     public String toString() {
-        return invocationType + " " + ownerType.getClassName() + "." + method.toString();
+        return invocationType + " " + ownerType.getClassName() + "." + method;
     }
 }

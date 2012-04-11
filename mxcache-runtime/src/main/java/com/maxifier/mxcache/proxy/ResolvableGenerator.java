@@ -69,7 +69,7 @@ public final class ResolvableGenerator {
         for (int i = 0; i < arguments.length; i++) {
             Type arg = genericArguments[i];
             if (tg != null) {
-                stored[i] = Type.getType(tg[i].getTransformedType(toClass(arg)));
+                stored[i] = Type.getType(tg[i].getTransformedType(toClass(classLoader, arg)));
             } else {
                 stored[i] = arg;
             }
@@ -89,7 +89,7 @@ public final class ResolvableGenerator {
     private static TransformGenerator[] getKeyTransformers(Class ownerClass, Method method) {
         TransformGeneratorFactory tgf = TransformGeneratorFactoryImpl.getInstance();
 
-        Class[] params = CodegenHelper.getClasses(method.getArgumentTypes());
+        Class[] params = CodegenHelper.getClasses(ownerClass.getClassLoader(), method.getArgumentTypes());
         Annotation[][] annotations;
         try {
             annotations = ownerClass.getDeclaredMethod(method.getName(), params).getParameterAnnotations();

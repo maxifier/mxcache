@@ -27,11 +27,10 @@ public final class InstrumentationTestHelper {
     public static Class<?> instrumentClass(Class<?> srcClass, Instrumentator instrumentator, ClassLoader cl) throws IOException, ClassNotFoundException {
         cl = new ClassLoader(cl == null ? ClassLoader.getSystemClassLoader() : cl) {};
         byte[] bytes = CodegenHelper.getByteCode(srcClass);
-        instrumentAndLoad(instrumentator, cl, bytes);
-        return cl.loadClass(srcClass.getCanonicalName());
+        return instrumentAndLoad(instrumentator, cl, bytes);
     }
 
-    private static void instrumentAndLoad(Instrumentator instrumentator, ClassLoader cl, byte[] bytes) {
+    public static Class instrumentAndLoad(Instrumentator instrumentator, ClassLoader cl, byte[] bytes) {
         ClassInstrumentationResult res = instrumentator.instrument(bytes);
         for (ClassDefinition classDefinition : res.getAdditionalClasses()) {
             if (instrumentator.getVersion().equals("2.2.9")) {
@@ -42,7 +41,7 @@ public final class InstrumentationTestHelper {
         if (instrumentator.getVersion().equals("2.2.9")) {
             Assert.assertNull(instrumentator.instrument(res.getInstrumentedBytecode()));
         }
-        CodegenHelper.loadClass(cl, res.getInstrumentedBytecode());
+        return CodegenHelper.loadClass(cl, res.getInstrumentedBytecode());
 //        CodegenHelper.dumpClass(res.getInstrumentedBytecode());
     }
 

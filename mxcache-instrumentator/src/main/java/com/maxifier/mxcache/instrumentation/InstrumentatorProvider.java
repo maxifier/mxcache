@@ -26,4 +26,10 @@ public class InstrumentatorProvider {
     public static Map<String, Instrumentator> getAvailableVersions() {
         return INSTRUMENTATORS;
     }
+
+    public static Instrumentator getPreferredVersion() {
+        return getAvailableVersions().get("2.2.9");
+        // todo
+//        return InstrumentatorImpl.LAST_VERSION;
+    }
 }

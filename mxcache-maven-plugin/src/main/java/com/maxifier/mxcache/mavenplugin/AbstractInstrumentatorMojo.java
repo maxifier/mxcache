@@ -2,7 +2,7 @@ package com.maxifier.mxcache.mavenplugin;
 
 import com.maxifier.mxcache.MxCache;
 import com.maxifier.mxcache.instrumentation.Instrumentator;
-import com.maxifier.mxcache.instrumentation.current.InstrumentatorImpl;
+import com.maxifier.mxcache.instrumentation.InstrumentatorProvider;
 import com.maxifier.mxcache.instrumentation.ClassInstrumentationResult;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.commons.io.FileUtils;
@@ -23,7 +23,7 @@ import com.maxifier.mxcache.instrumentation.ClassDefinition;
  * Time: 16:33:58
  */
 public abstract class AbstractInstrumentatorMojo extends AbstractInstrumentator {
-    private static final Instrumentator INSTRUMENTATOR = InstrumentatorImpl.LAST_VERSION;
+    private static final Instrumentator INSTRUMENTATOR = InstrumentatorProvider.getPreferredVersion();
     private static final int MIN_FILES_PER_THREAD = 10;
     private static final int MAX_THREADS_PER_CORE = 2;
 

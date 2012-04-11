@@ -1,10 +1,12 @@
 package com.maxifier.mxcache.util;
 
 import com.maxifier.mxcache.asm.Type;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
+
+import static com.maxifier.mxcache.asm.Opcodes.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,20 +19,41 @@ public class CodegenHelperUTest {
     @Test
     public void testGetClassName() throws Exception {
         byte[] bytecode = CodegenHelper.getByteCode(CodegenHelperUTest.class);
-        assert Type.getType(CodegenHelperUTest.class).getInternalName().equals(CodegenHelper.getClassName(bytecode));
+        assertEquals(Type.getType(CodegenHelperUTest.class).getInternalName(), CodegenHelper.getClassName(bytecode));
     }
 
     @Test
     public void testLoadClass() throws Exception {
         byte[] bytecode = CodegenHelper.getByteCode(TestClassImpl.class);
         TestClass instance = (TestClass) CodegenHelper.loadClass(new ClassLoader() {}, bytecode).newInstance();
-        assert instance.test().equals("testString");
+        assertEquals(instance.test(), "testString");
     }
 
     @Test
     public void testGetMethod() throws Exception {
         Method waitMethod = Object.class.getDeclaredMethod("wait", long.class, int.class);
-        assert CodegenHelper.getMethod(Object.class, "wait", "(JI)V").equals(waitMethod);
+        assertEquals(CodegenHelper.getMethod(Object.class, "wait", "(JI)V"), waitMethod);
+    }
+
+    @Test
+    public void testGetMethodAnotherClassLoader() throws Exception {
+        ClassLoader x = new ClassLoader() {};
+
+        ClassGenerator g1 = new ClassGenerator(ACC_PUBLIC, "$test1", Object.class);
+        g1.defineDefaultConstructor();
+        Class<Object> g1c = CodegenHelper.loadClass(x, g1.toByteArray());
+
+        ClassGenerator g2 = new ClassGenerator(ACC_PUBLIC, "$test2", Object.class);
+        g2.defineDefaultConstructor();
+        MxGeneratorAdapter m = g2.defineMethod(ACC_PUBLIC, "x", g1.getThisType(), g1.getThisType());
+        m.start();
+        m.pushNull();
+        m.returnValue();
+        m.endMethod();
+
+        Class g2c = CodegenHelper.loadClass(x, g2.toByteArray());
+
+        assertEquals(CodegenHelper.getMethod(g2c, "x", "(L$test1;)L$test1;"), g2c.getMethod("x", g1c));
     }
 
     private static class InnerTest {}
@@ -64,15 +87,15 @@ public class CodegenHelperUTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testFailedToClass() throws ClassNotFoundException {
-        CodegenHelper.toClass(Type.getObjectType("xxx"));
+        CodegenHelper.toClass(getClass().getClassLoader(), Type.getObjectType("xxx"));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testFailedArrayToClass() throws ClassNotFoundException {
-        CodegenHelper.toClass(Type.getType("[Lxxx;"));
+        CodegenHelper.toClass(getClass().getClassLoader(), Type.getType("[Lxxx;"));
     }
 
     private void testToClass(Class x) {
-        Assert.assertEquals(CodegenHelper.toClass(Type.getType(x)), x);
+        assertEquals(CodegenHelper.toClass(getClass().getClassLoader(), Type.getType(x)), x);
     }
 }

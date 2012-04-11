@@ -155,33 +155,33 @@ public final class CodegenHelper {
     public static java.lang.reflect.Method getMethod(Class owner, String name, String desc) {
         try {
             Type[] types = Type.getArgumentTypes(desc);
-            Class[] args = toClass(types);
+            Class[] args = toClass(owner.getClassLoader(), types);
             return owner.getDeclaredMethod(name, args);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
-    private static Class[] toClass(Type[] types) {
+    private static Class[] toClass(ClassLoader classLoader, Type[] types) {
         Class[] args = new Class[types.length];
         for (int i = 0; i<types.length; i++) {
-            args[i] = toClass(types[i]);
+            args[i] = toClass(classLoader, types[i]);
         }
         return args;
     }
 
-    public static Class<?> toClass(Type type) {
+    public static Class<?> toClass(ClassLoader classLoader, Type type) {
         int sort = type.getSort();
         if (sort == Type.ARRAY) {
             try {
-                return Class.forName(getBinaryName(type));
+                return Class.forName(getBinaryName(type), true, classLoader);
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(e);
             }
         }
         if (sort == Type.OBJECT) {
             try {
-                return Class.forName(type.getClassName());
+                return Class.forName(type.getClassName(), true, classLoader);
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(e);
             }
@@ -235,10 +235,10 @@ public final class CodegenHelper {
         return types;
     }
 
-    public static Class[] getClasses(Type[] types) {
+    public static Class[] getClasses(ClassLoader classLoader, Type[] types) {
         Class[] classes = new Class[types.length];
         for (int i = 0; i < types.length; i++) {
-            classes[i] = toClass(types[i]);
+            classes[i] = toClass(classLoader, types[i]);
         }
         return classes;
     }

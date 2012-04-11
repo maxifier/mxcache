@@ -1,12 +1,11 @@
 package com.maxifier.mxcache.transform;
 
 import com.maxifier.mxcache.CacheFactory;
-import com.maxifier.mxcache.asm.Type;
-import com.maxifier.mxcache.asm.commons.Method;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +31,7 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
 
     @Override
     @NotNull
-    public TransformGenerator forMethod(java.lang.reflect.Method method) throws InvalidTransformAnnotations {
+    public TransformGenerator forMethod(Method method) throws InvalidTransformAnnotations {
         try {
             Class[] params = method.getParameterTypes();
             switch (params.length) {
@@ -256,14 +255,12 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
         if (keyInstanceMethods) {
             owner = paramType;
         }
-        java.lang.reflect.Method method = findMethod(owner, name, paramType, keyInstanceMethods);
+        Method method = findMethod(owner, name, paramType, keyInstanceMethods);
         InvocationType invocationType = getKeyInvocationType(owner, method, keyInstanceMethods);
-        Method forward = Method.getMethod(method);
-        Type ownerType = Type.getType(owner);
-        return new ExternalTransformGenerator(invocationType, ownerType, forward);
+        return new ExternalTransformGenerator(invocationType, owner, method);
     }
 
-    private InvocationType getKeyInvocationType(Class owner, java.lang.reflect.Method forwardMethod, boolean keyInstanceMethods) {
+    private InvocationType getKeyInvocationType(Class owner, Method forwardMethod, boolean keyInstanceMethods) {
         switch (forwardMethod.getParameterTypes().length) {
             case 0:
                 return getZeroArgKeyInvocationType(owner, forwardMethod, keyInstanceMethods);
@@ -274,14 +271,14 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
         }
     }
 
-    private InvocationType getZeroArgKeyInvocationType(Class owner, java.lang.reflect.Method forwardMethod, boolean keyInstanceMethods) {
+    private InvocationType getZeroArgKeyInvocationType(Class owner, Method forwardMethod, boolean keyInstanceMethods) {
         if (!keyInstanceMethods) {
             throw new IllegalArgumentException("Invalid transform found: " + forwardMethod);
         }
         return owner.isInterface() ? KEY_INTERFACE : KEY_VIRTUAL;
     }
 
-    private InvocationType getSingleArgKeyInvocationType(Class owner, java.lang.reflect.Method forwardMethod, boolean keyInstanceMethods) {
+    private InvocationType getSingleArgKeyInvocationType(Class owner, Method forwardMethod, boolean keyInstanceMethods) {
         if (Modifier.isStatic(forwardMethod.getModifiers())) {
             return STATIC;
         }
@@ -292,9 +289,9 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
         return owner.isInterface() ? INTERFACE : VIRTUAL;
     }
 
-    static java.lang.reflect.Method findMethod(Class owner, String name, Class paramType, boolean keyInstanceMethods) {
-        java.lang.reflect.Method[] methods = owner.getMethods();
-        List<java.lang.reflect.Method> suitable = getSuitableMethods(name, paramType, keyInstanceMethods, methods);
+    static Method findMethod(Class owner, String name, Class paramType, boolean keyInstanceMethods) {
+        Method[] methods = owner.getMethods();
+        List<Method> suitable = getSuitableMethods(name, paramType, keyInstanceMethods, methods);
         if (suitable.isEmpty()) {
             String ref = owner + "." + (name == null ? "<only public>" : name);
             throw new IllegalArgumentException("No such public method " + ref + "(? super " + paramType.getCanonicalName() + (keyInstanceMethods ? ") or " + ref + "()" : ")"));
@@ -306,9 +303,9 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
         return suitable.get(0);
     }
 
-    private static List<java.lang.reflect.Method> getSuitableMethods(String name, Class paramType, boolean keyInstanceMethods, java.lang.reflect.Method[] methods) {
-        List<java.lang.reflect.Method> suitable = new ArrayList<java.lang.reflect.Method>();
-        for (java.lang.reflect.Method method : methods) {
+    private static List<Method> getSuitableMethods(String name, Class paramType, boolean keyInstanceMethods, Method[] methods) {
+        List<Method> suitable = new ArrayList<Method>();
+        for (Method method : methods) {
             if (nameMatches(name, method) && isParamsSuites(paramType, keyInstanceMethods, method)) {
                 suitable.add(method);
             }
@@ -316,7 +313,7 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
         return suitable;
     }
 
-    private static boolean isParamsSuites(Class paramType, boolean keyInstanceMethods, java.lang.reflect.Method method) {
+    private static boolean isParamsSuites(Class paramType, boolean keyInstanceMethods, Method method) {
         Class<?>[] params = method.getParameterTypes();
         switch (params.length) {
             case 0:
@@ -331,14 +328,14 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
         }
     }
 
-    private static boolean nameMatches(String name, java.lang.reflect.Method method) {
+    private static boolean nameMatches(String name, Method method) {
         return name == null ? !isObjectMethod(method) : method.getName().equals(name);
     }
 
-    private static boolean isObjectMethod(java.lang.reflect.Method method) {
+    private static boolean isObjectMethod(Method method) {
         String name = method.getName();
         Class<?>[] parameters = method.getParameterTypes();
-        for (java.lang.reflect.Method o : Object.class.getMethods()) {
+        for (Method o : Object.class.getMethods()) {
             if (name.equals(o.getName()) && Arrays.equals(parameters, o.getParameterTypes())) {
                 return true;
             }

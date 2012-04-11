@@ -421,7 +421,7 @@ public final class Wrapping {
                 return NO_TRANSFORM;
             }
             if (to.isPrimitive() && !from.isPrimitive() && from.isAssignableFrom(getBoxedType(to))) {
-                return new UnboxTransformGenerator(Type.getType(to));
+                return new UnboxTransformGenerator(to);
             }
             if (from.isPrimitive() && !to.isPrimitive() && to.isAssignableFrom(getBoxedType(from))) {
                 return new BoxTransformGenerator(Type.getType(from));

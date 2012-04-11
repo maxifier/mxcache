@@ -68,7 +68,7 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
         protected ResourceInstrumentationStage createResourceStage(ClassVisitor visitor, ClassVisitor detector) {
             return new ResourceInstrumentationStage2228(this, visitor, detector);
         }
-    }};
+    } };
 
     public static final Instrumentator LAST_VERSION = VERSIONS[VERSIONS.length - 1];
 

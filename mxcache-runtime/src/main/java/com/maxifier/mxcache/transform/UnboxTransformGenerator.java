@@ -4,8 +4,6 @@ import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
 import com.maxifier.mxcache.util.ClassGenerator;
 
-import static com.maxifier.mxcache.util.CodegenHelper.toClass;
-
 /**
 * Created by IntelliJ IDEA.
 * User: dalex
@@ -13,10 +11,15 @@ import static com.maxifier.mxcache.util.CodegenHelper.toClass;
 * Time: 12:29:20
 */
 public class UnboxTransformGenerator extends ScalarTransformGenerator {
+    private final Class cls;
     private final Type type;
 
-    public UnboxTransformGenerator(Type type) {
-        this.type = type;
+    public UnboxTransformGenerator(Class cls) {
+        if (!cls.isPrimitive()) {
+            throw new IllegalArgumentException("Only primitives can be boxed");
+        }
+        this.cls = cls;
+        this.type = Type.getType(cls);
     }
 
     @Override
@@ -44,7 +47,7 @@ public class UnboxTransformGenerator extends ScalarTransformGenerator {
 
     @Override
     public Class getTransformedType(Class in) {
-        return toClass(type);
+        return cls;
     }
 
     @Override
@@ -57,17 +60,17 @@ public class UnboxTransformGenerator extends ScalarTransformGenerator {
         }
 
         UnboxTransformGenerator that = (UnboxTransformGenerator) o;
-        return type.equals(that.type);
+        return cls.equals(that.cls);
 
     }
 
     @Override
     public int hashCode() {
-        return type.hashCode();
+        return cls.hashCode();
     }
 
     @Override
     public String toString() {
-        return "unbox " + type.getClassName();
+        return "unbox " + cls.getSimpleName();
     }
 }

@@ -1,6 +1,7 @@
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.*;
+import com.maxifier.mxcache.asm.AnnotationVisitor;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.context.CacheContext;
@@ -17,7 +18,9 @@ import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.provider.CacheProvider;
 import com.maxifier.mxcache.resource.MxResource;
+import com.maxifier.mxcache.util.ClassGenerator;
 import com.maxifier.mxcache.util.CodegenHelper;
+import com.maxifier.mxcache.util.MxGeneratorAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.testng.Assert;
@@ -31,6 +34,9 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.maxifier.mxcache.asm.Opcodes.ACC_PUBLIC;
+import static com.maxifier.mxcache.asm.Opcodes.IADD;
+import static com.maxifier.mxcache.asm.Type.*;
 import static com.maxifier.mxcache.instrumentation.InstrumentationTestHelper.*;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
@@ -125,6 +131,61 @@ public class DynamicInstrumentationFTest {
 
     private TestProxied loadProxied(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         return (TestProxied) instrumentClass(TestProxiedImpl.class, instrumentator, cl).newInstance();
+    }
+
+    @Test(dataProvider = "all")
+    public void testAnotherClassLoader(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        cl = new ClassLoader() {};
+
+        ClassGenerator g1 = new ClassGenerator(ACC_PUBLIC, "$test1", Object.class);
+        g1.defineDefaultConstructor();
+        Class<Object> g1c = CodegenHelper.loadClass(cl, g1.toByteArray());
+
+        ClassGenerator g2 = new ClassGenerator(ACC_PUBLIC, "$test2", Object.class);
+        g2.defineField(ACC_PUBLIC, "i", INT_TYPE);
+        g2.defineDefaultConstructor();
+        MxGeneratorAdapter m = g2.defineMethod(ACC_PUBLIC, "x", INT_TYPE, g1.getThisType());
+
+        AnnotationVisitor v = m.visitAnnotation("Lcom/maxifier/mxcache/Cached;", true);
+        v.visitArray("tags");
+        v.visit("group", "");
+        v.visit("name", "");
+        v.visit("activity", "");
+
+        m.start();
+        int i = m.newLocal(INT_TYPE);
+        m.loadThis();
+        m.getField(g2.getThisType(), "i", INT_TYPE);
+        m.storeLocal(i);
+        m.loadThis();
+        m.push(1);
+        m.loadLocal(i);
+        m.visitInsn(IADD);
+        m.putField(g2.getThisType(), "i", INT_TYPE);
+
+        m.loadLocal(i);
+        m.returnValue();
+        m.endMethod();
+
+        Class g2c = instrumentAndLoad(instrumentator, cl, g2.toByteArray());
+
+        Object o = g2c.newInstance();
+
+        Method r = g2c.getDeclaredMethod("x", g1c);
+
+        Object v1 = g1c.newInstance();
+        Object v2 = g1c.newInstance();
+        Object v3 = g1c.newInstance();
+
+        assertEquals(r.invoke(o, v1), 0);
+        assertEquals(r.invoke(o, v2), 1);
+        assertEquals(r.invoke(o, v3), 2);
+        assertEquals(r.invoke(o, v1), 0);
+        assertEquals(r.invoke(o, v1), 0);
+        assertEquals(r.invoke(o, v2), 1);
+        assertEquals(r.invoke(o, v2), 1);
+        assertEquals(r.invoke(o, v3), 2);
+        assertEquals(r.invoke(o, v3), 2);
     }
 
     @Test(dataProvider = "all")

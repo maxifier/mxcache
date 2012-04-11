@@ -55,7 +55,7 @@ final class ProxyMappingKey {
 
     public Method getMethod() {
         try {
-            return owner.getDeclaredMethod(name, CodegenHelper.getClasses(Type.getArgumentTypes(desc)));
+            return owner.getDeclaredMethod(name, CodegenHelper.getClasses(owner.getClassLoader(), Type.getArgumentTypes(desc)));
         } catch (NoSuchMethodException e) {
             logger.error("Cannot create proxy factory for " + this, e);
             return null;
