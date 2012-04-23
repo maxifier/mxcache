@@ -7,7 +7,6 @@ import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.lang.ref.WeakReference;
 
 import com.maxifier.mxcache.caches.Cache;
 
@@ -103,14 +102,8 @@ final class ClassCleanableInstanceList<T> extends WeakList<T> implements Cleanab
     public void getCaches(List<CleaningNode> caches) {
         ClassCleanableInstanceList<? super T> list = this.parent;
         while (list != null) {
-            for (Iterator<WeakReference<T>> it = this.iterator(); it.hasNext();) {
-                WeakReference<T> reference = it.next();
-                T t = reference.get();
-                if (t == null) {
-                    it.remove();
-                } else {
-                    list.cleanable.appendInstanceCachesTo(caches, t);
-                }
+            for (T t : this) {
+                list.cleanable.appendInstanceCachesTo(caches, t);
             }
             list = list.parent;
         }
@@ -119,14 +112,8 @@ final class ClassCleanableInstanceList<T> extends WeakList<T> implements Cleanab
 
     private void getCachesHierarchically(List<CleaningNode> caches) {
         cleanable.appendStaticCachesTo(caches);
-        for (Iterator<WeakReference<T>> it = iterator(); it.hasNext();) {
-            WeakReference<T> reference = it.next();
-            T t = reference.get();
-            if (t == null) {
-                it.remove();
-            } else {
-                cleanable.appendInstanceCachesTo(caches, t);
-            }
+        for (T t : this) {
+            cleanable.appendInstanceCachesTo(caches, t);
         }
         for (ClassCleanableInstanceList<? extends T> child : children) {
             child.getCachesHierarchically(caches);

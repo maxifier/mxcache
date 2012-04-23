@@ -1,10 +1,12 @@
 package com.maxifier.mxcache.clean;
 
-import java.util.List;
-import java.util.LinkedList;
+import com.maxifier.mxcache.LightweightLock;
+import com.maxifier.mxcache.transform.SmartReference;
+import com.maxifier.mxcache.transform.SmartReferenceManager;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Iterator;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.Lock;
+import java.util.NoSuchElementException;
 import java.lang.ref.WeakReference;
 
 /**
@@ -19,30 +21,64 @@ import java.lang.ref.WeakReference;
  *
  * @author ELectronic ENgine
  */
-class WeakList<T> implements Iterable<WeakReference<T>> {
-    private final List<WeakReference<T>> internalList;
+class WeakList<T> implements Iterable<T> {
+    private final LightweightLock lock;
 
-    private final Lock lock;
-
+    private volatile InstanceReference head;
     private volatile int version;
+    private volatile int size;
 
     public WeakList() {
-        //noinspection CollectionWithoutInitialCapacity
-        internalList = new LinkedList<WeakReference<T>>();
-        lock = new ReentrantLock();
+        lock = new LightweightLock();
     }
 
-    public boolean add(Object t) {
+    /**
+     * @param ref ссылка для удаления
+     * @return ссылка на следующий элемент
+     */
+    private InstanceReference remove(InstanceReference ref) {
         lock.lock();
         try {
-            version++;
-            //noinspection unchecked
-            return internalList.add(new WeakReference<T>((T) t));
+            size--;
+            InstanceReference prev = ref.prev;
+            InstanceReference next = ref.next;
+            if (prev == null) {
+                head = next;
+                if (next != null) {
+                    next.prev = null;
+                }
+            } else {
+                prev.next = next;
+                if (next != null) {
+                    next.prev = prev;
+                }
+            }
+            return next;
         } finally {
             lock.unlock();
         }
     }
 
+    public void add(@NotNull Object t) {
+        lock.lock();
+        try {
+            version++;
+            size++;
+            //noinspection unchecked
+            InstanceReference ref = new InstanceReference((T) t);
+            ref.next = head;
+            if (head != null) {
+                head.prev = ref;
+            }
+            head = ref;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * @return версию коллекции - число операций добавления элементов
+     */
     public int lock() {
         lock.lock();
         return version;
@@ -53,15 +89,69 @@ class WeakList<T> implements Iterable<WeakReference<T>> {
     }
 
     @Override
-    public Iterator<WeakReference<T>> iterator() {
-        return internalList.iterator();
+    public Iterator<T> iterator() {
+        assert lock.isHeldByCurrentThread();
+        return new InstanceIterator();
     }
 
     public int size() {
-        return internalList.size();
+        return size;
     }
 
     public boolean isEmpty() {
-        return internalList.isEmpty();
+        return size == 0;
+    }
+
+    private class InstanceReference extends WeakReference<T> implements SmartReference, Runnable {
+        private volatile InstanceReference next;
+        private volatile InstanceReference prev;
+
+        InstanceReference(T referent) {
+            super(referent, SmartReferenceManager.getReferenceQueue());
+        }
+
+        @Override
+        public Runnable getCallback() {
+            return this;
+        }
+
+        @Override
+        public void setCallback(Runnable callback) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void run() {
+            remove(this);
+        }
+    }
+
+    private class InstanceIterator implements Iterator<T> {
+        private InstanceReference nextReference = head;
+        private T instance;
+
+        @Override
+        public boolean hasNext() {
+            while (nextReference != null && (instance = nextReference.get()) == null) {
+                nextReference = WeakList.this.remove(nextReference);
+            }
+            return nextReference != null;
+        }
+
+        @Override
+        public T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            T res = instance;
+            nextReference = nextReference.next;
+            instance = null;
+            return res;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
 }

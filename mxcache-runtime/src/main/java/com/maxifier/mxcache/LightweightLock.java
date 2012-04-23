@@ -96,4 +96,8 @@ public class LightweightLock extends AbstractQueuedSynchronizer implements Lock 
     public void unlock() {
         release(1);
     }
+
+    public boolean isHeldByCurrentThread() {
+        return super.getExclusiveOwnerThread() == Thread.currentThread();
+    }
 }

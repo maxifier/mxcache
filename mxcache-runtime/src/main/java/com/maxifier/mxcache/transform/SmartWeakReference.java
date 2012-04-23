@@ -2,8 +2,6 @@ package com.maxifier.mxcache.transform;
 
 import com.maxifier.mxcache.util.HashWeakReference;
 
-import java.lang.ref.ReferenceQueue;
-
 /**
 * Created by IntelliJ IDEA.
 * User: dalex
@@ -14,8 +12,8 @@ class SmartWeakReference<T> extends HashWeakReference<T> implements SmartReferen
     private Runnable callback;
 
     @SuppressWarnings({ "unchecked" })
-    public SmartWeakReference(T referent, ReferenceQueue queue) {
-        super(referent, queue);
+    public SmartWeakReference(T referent) {
+        super(referent, SmartReferenceManager.<T>getReferenceQueue());
     }
 
     @Override

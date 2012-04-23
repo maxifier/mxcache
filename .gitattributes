@@ -1387,6 +1387,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/JavaSourceFactory.j
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/ReversibleTransform.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/ScalarTransformGenerator.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/SmartReference.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/SmartReferenceManager.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/SmartSoftReference.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/SmartWeakReference.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/SoftKey.java -text

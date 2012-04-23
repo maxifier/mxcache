@@ -2,12 +2,10 @@ package com.maxifier.mxcache.clean;
 
 import com.maxifier.mxcache.caches.CleaningNode;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.lang.ref.WeakReference;
 
 /**
  * Project: Maxifier
@@ -98,15 +96,9 @@ final class CustomCleanableInstanceList implements CleanableInstanceList {
             for (int id : staticIds) {
                 caches.add(cleanable.getStaticCache(id));
             }
-            for (Iterator<WeakReference<T>> it = classList.iterator(); it.hasNext();) {
-                WeakReference<T> reference = it.next();
-                T t = reference.get();
-                if (t == null) {
-                    it.remove();
-                } else {
-                    for (int id : instanceIds) {
-                        caches.add(cleanable.getInstanceCache(t, id));
-                    }
+            for (T t : classList) {
+                for (int id : instanceIds) {
+                    caches.add(cleanable.getInstanceCache(t, id));
                 }
             }
         }

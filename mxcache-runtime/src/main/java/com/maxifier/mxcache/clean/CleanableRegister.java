@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.lang.annotation.Annotation;
@@ -139,11 +138,8 @@ public final class CleanableRegister implements CacheCleaner {
                 return Collections.emptyList();
             }
             List<Cache> instances = new ArrayList<Cache>(list.size());
-            for (WeakReference<?> reference : list) {
-                Object instance = reference.get();
-                if (instance != null) {
-                    instances.add(cleanable.getInstanceCache(instance, descriptor.getId()));
-                }
+            for (Object instance : list) {
+                instances.add(cleanable.getInstanceCache(instance, descriptor.getId()));
             }
             return instances;
         } finally {
