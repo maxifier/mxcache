@@ -1,5 +1,6 @@
 package com.maxifier.mxcache.impl.resource;
 
+import com.maxifier.mxcache.InternalProbeFailedError;
 import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.util.HashWeakReference;
@@ -21,7 +22,9 @@ public final class DependencyTracker {
     private static final ThreadLocal<DependencyNode> NODE = new ThreadLocal<DependencyNode>();
 
     /** ???? ???? ????????????, ???? ?? ????? ???????????????? ???????????? */
-    public static final DependencyNode DUMMY_NODE = new DummyDependencyNode();
+    public static final DependencyNode DUMMY_NODE = new DummyDependencyNode("<DUMMY>");
+
+    public static final DependencyNode PROBE_NODE = new DummyDependencyNode("<PROBE>");
 
     private DependencyTracker() {
     }
@@ -47,6 +50,9 @@ public final class DependencyTracker {
     public static DependencyNode track(DependencyNode node) {
         DependencyNode oldNode = NODE.get();
         assert oldNode == null || node != null: "Could not reassign node to null";
+        if (oldNode == PROBE_NODE) {
+            throw new InternalProbeFailedError();
+        }
         if (node != DUMMY_NODE) {
             track(node, oldNode);
             NODE.set(node);
@@ -109,7 +115,12 @@ public final class DependencyTracker {
     }
 
     private static class DummyDependencyNode implements DependencyNode {
-        private Reference<DependencyNode> selfReference = new HashWeakReference<DependencyNode>(this);
+        private final Reference<DependencyNode> selfReference = new HashWeakReference<DependencyNode>(this);
+        private final String name;
+
+        private DummyDependencyNode(String name) {
+            this.name = name;
+        }
 
         @Override
         public void visitDependantNodes(DependencyNodeVisitor visitor) {
@@ -133,7 +144,7 @@ public final class DependencyTracker {
 
         @Override
         public String toString() {
-            return "<DUMMY>";
+            return name;
         }
 
         @Override

@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.ideaplugin;
 
-import com.maxifier.mxcache.MxCache;
+import com.maxifier.mxcache.Version;
 import com.maxifier.mxcache.instrumentation.Instrumentator;
 
 import java.util.Map;
@@ -14,5 +14,5 @@ import java.util.Map;
 public interface InstrumentatorBundle {
     Map<String, Instrumentator> getAvailableVersions();
     
-    MxCache.Version getVersion();
+    Version getVersion();
 }

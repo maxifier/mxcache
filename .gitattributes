@@ -389,11 +389,13 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/DependencyTracking.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/EvictionPolicyEnum.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/GenericContextResolver.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/InstanceProvider.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/InternalProbeFailedError.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/LightweightLock.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/MxCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/MxCacheException.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/NoSuchInstanceException.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/NonInstrumentedCacheException.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/ProbeFailedException.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/ResourceInstrumented.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/StatisticsMode.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/StatisticsModeEnum.java -text
@@ -401,6 +403,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/Strategy.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/UseProxyInstrumented.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/UseStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/UseStorageFactory.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/Version.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/activity/Activity.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/activity/ActivityImpl.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/activity/ActivityListener.java -text

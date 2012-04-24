@@ -1,6 +1,7 @@
 package com.maxifier.mxcache.ideaplugin;
 
 import com.maxifier.mxcache.MxCache;
+import com.maxifier.mxcache.Version;
 import com.maxifier.mxcache.instrumentation.Instrumentator;
 
 import java.lang.reflect.Method;
@@ -37,13 +38,13 @@ public class JarInstrumentatorBundle implements InstrumentatorBundle {
     }
 
     @Override
-    public MxCache.Version getVersion() {
+    public Version getVersion() {
         try {
             Class<?> cls = findClass(MxCache.class);
             Method method = cls.getDeclaredMethod("getVersionString");
-            return new MxCache.Version((String)method.invoke(null));
+            return new Version((String)method.invoke(null));
         } catch (Exception e) {
-            return MxCache.Version.UNKNOWN;
+            return Version.UNKNOWN;
         }
     }
     

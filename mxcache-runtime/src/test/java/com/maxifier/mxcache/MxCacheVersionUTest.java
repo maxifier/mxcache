@@ -31,22 +31,22 @@ public class MxCacheVersionUTest {
     }
     
     private static void less(String s1, String s2) {
-        MxCache.Version v1 = v(s1);
-        MxCache.Version v2 = v(s2);
+        Version v1 = v(s1);
+        Version v2 = v(s2);
         Assert.assertEquals(v1.compareTo(v2), -1);
         Assert.assertEquals(v2.compareTo(v1),  1);
     }
 
     private static void eq(String s1, String s2) {
-        MxCache.Version v1 = v(s1);
-        MxCache.Version v2 = v(s2);
+        Version v1 = v(s1);
+        Version v2 = v(s2);
         Assert.assertEquals(v1, v2);
         Assert.assertEquals(v2, v1);
         Assert.assertEquals(v1.compareTo(v2),  0);
         Assert.assertEquals(v2.compareTo(v1),  0);
     }
 
-    private static MxCache.Version v(String s) {
-        return new MxCache.Version(s);
+    private static Version v(String s) {
+        return new Version(s);
     }
 }

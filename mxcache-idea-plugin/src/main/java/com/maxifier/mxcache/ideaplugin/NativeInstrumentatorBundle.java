@@ -1,6 +1,7 @@
 package com.maxifier.mxcache.ideaplugin;
 
 import com.maxifier.mxcache.MxCache;
+import com.maxifier.mxcache.Version;
 import com.maxifier.mxcache.instrumentation.Instrumentator;
 import com.maxifier.mxcache.instrumentation.InstrumentatorProvider;
 
@@ -19,7 +20,7 @@ public class NativeInstrumentatorBundle implements InstrumentatorBundle {
     }
 
     @Override
-    public MxCache.Version getVersion() {
+    public Version getVersion() {
         return MxCache.getVersion();
     }
 }

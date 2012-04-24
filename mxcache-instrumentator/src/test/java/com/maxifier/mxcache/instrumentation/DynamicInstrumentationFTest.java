@@ -33,6 +33,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static com.maxifier.mxcache.asm.Opcodes.ACC_PUBLIC;
 import static com.maxifier.mxcache.asm.Opcodes.IADD;
@@ -446,9 +447,9 @@ public class DynamicInstrumentationFTest {
     @Test(dataProvider = "v229")
     public void testMarkerAnnotations(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         Class<?> c = instrumentClass(TestProxiedImpl.class, instrumentator, cl);
-        Assert.assertEquals(new MxCache.Version(c.getAnnotation(CachedInstrumented.class).version()), MxCache.getVersion());
+        Assert.assertEquals(new Version(c.getAnnotation(CachedInstrumented.class).version()), MxCache.getVersion());
         Assert.assertEquals(c.getAnnotation(CachedInstrumented.class).compatibleVersion(), MxCache.getCompatibleVersion());
-        Assert.assertEquals(new MxCache.Version(c.getAnnotation(UseProxyInstrumented.class).version()), MxCache.getVersion());
+        Assert.assertEquals(new Version(c.getAnnotation(UseProxyInstrumented.class).version()), MxCache.getVersion());
         Assert.assertEquals(c.getAnnotation(UseProxyInstrumented.class).compatibleVersion(), MxCache.getCompatibleVersion());
     }
 
@@ -502,6 +503,48 @@ public class DynamicInstrumentationFTest {
         assert t.get(2) == 7;
         assert t.get(2) == 7;
     }
+
+    @Test(dataProvider = "all")
+    public void testProbe(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        final TestCached t = loadCached(instrumentator, cl);
+        assertFalse(MxCache.probe(new Runnable() {
+            @Override
+            public void run() {
+                t.get();
+            }
+        }));
+        t.get();
+        assertTrue(MxCache.probe(new Runnable() {
+            @Override
+            public void run() {
+                assertEquals(t.get(), 0);
+            }
+        }));
+    }
+
+    @Test(dataProvider = "all")
+    public void testProbeCallable(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        final TestCached t = loadCached(instrumentator, cl);
+        try {
+            MxCache.probe(new Callable<Integer>() {
+                @Override
+                public Integer call() {
+                    return t.get();
+                }
+            });
+            fail();
+        } catch (ProbeFailedException e) {
+            // expected
+        }
+        t.get();
+        assertEquals(MxCache.probe(new Callable<Integer>() {
+            @Override
+            public Integer call() {
+                return t.get();
+            }
+        }).intValue(), 0);
+    }
+
 
     @Test(dataProvider = "all")
     public void testReadWriteCached(Instrumentator instrumentator, ClassLoader cl) throws Exception {

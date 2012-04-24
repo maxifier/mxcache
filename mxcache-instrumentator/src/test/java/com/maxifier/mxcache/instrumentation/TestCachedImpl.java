@@ -1,12 +1,14 @@
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.Cached;
+import com.maxifier.mxcache.DependencyTracking;
 import com.maxifier.mxcache.Strategy;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.context.CacheContextImpl;
 import com.maxifier.mxcache.context.UseCacheContext;
 import com.maxifier.mxcache.resource.ResourceReader;
 import com.maxifier.mxcache.resource.ResourceWriter;
+import com.maxifier.mxcache.resource.TrackDependency;
 import com.maxifier.mxcache.transform.Ignore;
 import com.maxifier.mxcache.transform.Transform;
 import com.maxifier.mxcache.transform.WeakKey;
@@ -52,6 +54,7 @@ public class TestCachedImpl implements TestCached, Serializable {
     }
 
     @Cached (group = "g")
+    @TrackDependency(DependencyTracking.INSTANCE)
     public int get() {
         return i++;
     }
