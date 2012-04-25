@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 @Test
 public class MxCacheVersionUTest {
     public void testFormat() {
-        Assert.assertTrue(MxCache.getVersionString().matches("\\d+\\.\\d+\\.\\d+(-SNAPSHOT)?"));
+        Assert.assertTrue(MxCache.getVersion().matches("\\d+\\.\\d+\\.\\d+(-SNAPSHOT)?"));
     }
 
     public void testCompareVersion() {

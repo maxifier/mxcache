@@ -35,7 +35,7 @@ public abstract class AbstractInstrumentatorMojo extends AbstractInstrumentator 
         int instrumented = instrumentAll(files, executorThreads);
 
         long end = System.currentTimeMillis();
-        getLog().info("MxCache instrumentator " + INSTRUMENTATOR + " examined " + files.length + " classes, instrumented " + instrumented + " classes in " + (end-start) + " ms [" + MxCache.getVersion() + ", " + executorThreads + " threads]");
+        getLog().info("MxCache instrumentator " + INSTRUMENTATOR + " examined " + files.length + " classes, instrumented " + instrumented + " classes in " + (end-start) + " ms [" + MxCache.getVersionObject() + ", " + executorThreads + " threads]");
     }
 
     private int instrumentAll(final File[] files, int executorThreads) throws MojoExecutionException {

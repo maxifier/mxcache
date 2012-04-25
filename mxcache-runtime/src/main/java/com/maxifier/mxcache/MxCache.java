@@ -52,11 +52,11 @@ public final class MxCache {
     /**
      * @return Current version of runtime
      */
-    public static Version getVersion() {
+    public static Version getVersionObject() {
         return PROJECT_VERSION;
     }
     
-    public static String getVersionString() {
+    public static String getVersion() {
         return PROJECT_VERSION.toString();
     }
 

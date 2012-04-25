@@ -88,7 +88,7 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
         if (addMarkerAnnotations) {
             AnnotationVisitor visitor = classVisitor.visitAnnotation(annotationType.getDescriptor(), true);
             visitor.visit("compatibleVersion", MxCache.getCompatibleVersion());
-            visitor.visit("version", MxCache.getVersionString());
+            visitor.visit("version", MxCache.getVersion());
             visitor.visitEnd();
         }
     }

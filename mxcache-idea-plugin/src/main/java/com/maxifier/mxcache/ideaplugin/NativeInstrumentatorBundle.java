@@ -21,6 +21,6 @@ public class NativeInstrumentatorBundle implements InstrumentatorBundle {
 
     @Override
     public Version getVersion() {
-        return MxCache.getVersion();
+        return MxCache.getVersionObject();
     }
 }
