@@ -3,6 +3,7 @@ package com.maxifier.mxcache.instrumentation;
 import com.maxifier.mxcache.*;
 import com.maxifier.mxcache.asm.AnnotationVisitor;
 import com.maxifier.mxcache.caches.Cache;
+import com.maxifier.mxcache.caches.Calculable;
 import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.context.CacheContextImpl;
@@ -21,6 +22,8 @@ import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.util.ClassGenerator;
 import com.maxifier.mxcache.util.CodegenHelper;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
+import gnu.trove.THashMap;
+import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.testng.Assert;
@@ -31,8 +34,7 @@ import java.io.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 import static com.maxifier.mxcache.asm.Opcodes.ACC_PUBLIC;
@@ -505,6 +507,75 @@ public class DynamicInstrumentationFTest {
     }
 
     @Test(dataProvider = "all")
+    public void testBatchList(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        final TestCached t = loadCached(instrumentator, cl);
+        t.setS("A");
+        assertEquals(t.getBatch(Arrays.asList("1", "2", "3")).toArray(), new Object[] {"1A", "2A", "3A"});
+
+        t.setS("B");
+        assertEquals(t.getBatch(Arrays.asList("X", "1", "Y", "2", "Z")).toArray(), new Object[] {"XB", "1A", "YB", "2A", "ZB"});
+
+        t.setS("C");
+        assertEquals(t.getBatch(Arrays.asList("1", "2", "X")).toArray(), new Object[] {"1A", "2A", "XB"});
+        assertEquals(t.getBatch(Arrays.asList("2", "X", "1")).toArray(), new Object[] {"2A", "XB", "1A"});
+    }
+
+    @Test(dataProvider = "all")
+    public void testBatchArray(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        final TestCached t = loadCached(instrumentator, cl);
+        t.setS("A");
+        assertEquals(t.getBatch("1", "2", "3"), new Object[] {"1A", "2A", "3A"});
+
+        t.setS("B");
+        assertEquals(t.getBatch("X", "1", "Y", "2", "Z"), new Object[] {"XB", "1A", "YB", "2A", "ZB"});
+
+        t.setS("C");
+        assertEquals(t.getBatch("1", "2", "X"), new Object[] {"1A", "2A", "XB"});
+        assertEquals(t.getBatch("2", "X", "1"), new Object[] {"2A", "XB", "1A"});
+    }
+
+    private static Set<String> set(String... s) {
+        Set<String> res = new THashSet<String>(s.length);
+        Collections.addAll(res, s);
+        return res;
+    }
+    
+    private static Map<String, String> map(String... s) {
+        Map<String, String> res = new THashMap<String, String>(s.length / 2);
+        for (int i = 0; i<s.length; i += 2) {
+            res.put(s[i], s[i+1]);
+        }
+        return res;
+    }
+
+    @Test(dataProvider = "all")
+    public void testBatchMap(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        final TestCached t = loadCached(instrumentator, cl);
+        t.setS("A");
+        assertEquals(t.getBatch(set("1", "2", "3")), map("1", "1A", "2", "2A", "3", "3A"));
+
+        t.setS("B");
+        assertEquals(t.getBatch(set("X", "1", "Y", "2", "Z")), map("X", "XB", "1", "1A", "Y", "YB", "2", "2A", "Z", "ZB"));
+
+        t.setS("C");
+        assertEquals(t.getBatch(set("1", "2", "X")), map("1", "1A", "2", "2A", "X", "XB"));
+    }
+
+    @Test(dataProvider = "all")
+    public void testBatchArrayToMap(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        final TestCached t = loadCached(instrumentator, cl);
+        t.setS("A");
+        assertEquals(t.getBatchArrayToMap("1", "2", "3"), map("1", "1A", "2", "2A", "3", "3A"));
+
+        t.setS("B");
+        assertEquals(t.getBatchArrayToMap("X", "1", "Y", "2", "Z"), map("X", "XB", "1", "1A", "Y", "YB", "2", "2A", "Z", "ZB"));
+
+        t.setS("C");
+        assertEquals(t.getBatchArrayToMap("1", "2", "X"), map("1", "1A", "2", "2A", "X", "XB"));
+    }
+
+
+    @Test(dataProvider = "all")
     public void testProbe(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         final TestCached t = loadCached(instrumentator, cl);
         assertFalse(MxCache.probe(new Runnable() {
@@ -922,7 +993,7 @@ public class DynamicInstrumentationFTest {
         }
 
         @Override
-        public <T> void registerCache(Class<T> cacheOwner, int cacheId, Class keyType, Class valueType, String group, String[] tags, Object calculable, String methodName, String methodDesc, @Nullable String cacheName) {
+        public <T> void registerCache(Class<T> cacheOwner, int cacheId, Class keyType, Class valueType, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, @Nullable String cacheName) {
             queries.add(new Object[] {"registerCache", cacheOwner, cacheId, keyType, valueType, group, tags, calculable, methodName, methodDesc, cacheName});
             provider0.registerCache(cacheOwner, cacheId, keyType, valueType, group, tags, calculable, methodName, methodDesc, cacheName);
         }

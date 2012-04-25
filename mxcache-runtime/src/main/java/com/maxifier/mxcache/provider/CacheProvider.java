@@ -1,6 +1,7 @@
 package com.maxifier.mxcache.provider;
 
 import com.maxifier.mxcache.caches.Cache;
+import com.maxifier.mxcache.caches.Calculable;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.impl.CacheId;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +32,7 @@ public interface CacheProvider {
      * @param methodDesc дескриптор метода
      * @param cacheName name of cache, may be null (used by some strategies)
      */
-    <T> void registerCache(Class<T> cacheOwner, int cacheId, Class keyType, Class valueType, String group, String[] tags, Object calculable, String methodName, String methodDesc, @Nullable String cacheName);
+    <T> void registerCache(Class<T> cacheOwner, int cacheId, Class keyType, Class valueType, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, @Nullable String cacheName);
 
     /**
      * Для статических кэшей вызывается после загрузки класса в секции инициализации, для нестатических - в

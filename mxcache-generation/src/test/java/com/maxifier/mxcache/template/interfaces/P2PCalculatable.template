@@ -10,8 +10,8 @@ package com.maxifier.mxcache.caches;
  * Magenta Technology proprietary and confidential.
  * Use is subject to license terms.
  *
- * @author ELectronic ENgine
+ * GENERATED FROM #SOURCE#
  */
-public interface #EG##FG#Calculatable {
+public interface #EG##FG#Calculatable extends Calculable {
     #fg# calculate(Object owner#IF_E#, #eg# o#ENDIF#);
 }

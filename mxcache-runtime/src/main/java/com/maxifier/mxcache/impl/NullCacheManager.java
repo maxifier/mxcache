@@ -20,8 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
@@ -157,11 +155,6 @@ public class NullCacheManager<T> implements CacheManager<T> {
     @Override
     public Cache createCache(@Nullable T owner) {
         return staticInstance == null ? createCacheInstance(owner) : staticInstance;
-    }
-
-    @Override
-    public List<Cache> getInstances() {
-        return Collections.emptyList();
     }
 
     @Override

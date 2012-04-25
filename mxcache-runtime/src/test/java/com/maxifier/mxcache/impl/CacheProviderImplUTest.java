@@ -132,11 +132,6 @@ public class CacheProviderImplUTest {
             }
 
             @Override
-            public List<Cache> getInstances() {
-                return Collections.emptyList();
-            }
-
-            @Override
             public String getImplementationDetails() {
                 return IntCache.class.getCanonicalName();
             }

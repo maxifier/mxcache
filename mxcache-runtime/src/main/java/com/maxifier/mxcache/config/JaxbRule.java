@@ -100,9 +100,7 @@ class JaxbRule implements Rule {
             if (resourceDependencies == null) {
                 resourceDependencies = new THashSet<String>();
             }
-            for (String d : dependency.value()) {
-                resourceDependencies.add(d);
-            }
+            Collections.addAll(resourceDependencies, dependency.value());
         }
     }
 

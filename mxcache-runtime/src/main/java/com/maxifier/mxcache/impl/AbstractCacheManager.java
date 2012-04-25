@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -195,11 +194,6 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
 
     @NotNull
     protected abstract Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws InstantiationException, IllegalAccessException, InvocationTargetException;
-
-    @Override
-    public List<Cache> getInstances() {
-        return CacheFactory.getCaches(descriptor);
-    }
 
     @Override
     public CacheDescriptor<T> getDescriptor() {

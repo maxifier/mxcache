@@ -451,6 +451,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/caches/ByteObjectCalculatable
 mxcache-runtime/src/main/java/com/maxifier/mxcache/caches/ByteShortCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/caches/ByteShortCalculatable.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/caches/Cache.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/caches/Calculable.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/caches/CharacterBooleanCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/caches/CharacterBooleanCalculatable.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/caches/CharacterByteCache.java -text
@@ -826,6 +827,17 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/abs/elementlocked
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/abs/elementlocked/AbstractShortObjectCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/abs/elementlocked/AbstractShortShortCache.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/abs/elementlocked/ElementLockedStorage.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/batch/ArrayKeyStrategy.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/batch/ArrayValueStrategy.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/batch/BatchCache.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/batch/BatchFactory.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/batch/BatchObjectObjectStorage.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/batch/CollectionKeyStrategy.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/batch/KeyStrategy.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/batch/ListKeyStrategy.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/batch/ListValueStrategy.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/batch/MapValueStrategy.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/batch/ValueStrategy.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/BooleanBooleanTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/BooleanByteTroveStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/impl/caches/def/BooleanCharacterTroveStorage.java -text
@@ -1212,6 +1224,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/storage/ByteLongStorage.java 
 mxcache-runtime/src/main/java/com/maxifier/mxcache/storage/ByteObjectStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/storage/ByteShortStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/storage/ByteStorage.java -text
+mxcache-runtime/src/main/java/com/maxifier/mxcache/storage/CalculableInterceptor.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/storage/CharacterBooleanStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/storage/CharacterByteStorage.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/storage/CharacterCharacterStorage.java -text
@@ -1403,6 +1416,7 @@ mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/TransformGeneratorF
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/TupleTransformGenerator.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/UnboxTransformGenerator.java -text
 mxcache-runtime/src/main/java/com/maxifier/mxcache/transform/WeakKey.java -text
+mxcache-runtime/src/main/resources/META-INF/mxcache.xml -text
 mxcache-runtime/src/main/resources/com/maxifier/mxcache/config/jaxb.index -text
 mxcache-runtime/src/main/resources/com/maxifier/mxcache/mxcache-version -text
 mxcache-runtime/src/test/java/com/maxifier/mxcache/CacheFactoryUTest.java -text

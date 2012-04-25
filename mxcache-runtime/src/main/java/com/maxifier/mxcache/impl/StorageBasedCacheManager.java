@@ -14,6 +14,7 @@ import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.impl.caches.storage.WrapperFactory;
 import com.maxifier.mxcache.impl.caches.storage.Wrapping;
 import com.maxifier.mxcache.provider.StorageFactory;
+import com.maxifier.mxcache.storage.CalculableInterceptor;
 import com.maxifier.mxcache.storage.Storage;
 import com.maxifier.mxcache.storage.elementlocked.ElementLockedStorage;
 import com.maxifier.mxcache.util.TIdentityHashSet;
@@ -45,7 +46,12 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
         this.storageFactory = storageFactory;
         cacheSignature = descriptor.getSignature();
         // проверка идет по классу, а не instanceof потому что наследники могут переопределить поведение
-        inlineCache = storageFactory.getClass() == DefaultStorageFactory.class && descriptor.getSignature().getContainer() == null;
+        inlineCache = canInlineCache(descriptor, storageFactory);
+    }
+
+    private boolean canInlineCache(CacheDescriptor<T> descriptor, StorageFactory<T> storageFactory) {
+        return storageFactory.getClass() == DefaultStorageFactory.class &&
+                descriptor.getSignature().getContainer() == null;
     }
 
     @NotNull
@@ -67,15 +73,19 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
                 break;
             case STATIC_OR_STORAGE:
                 if (storage instanceof StatisticsHolder) {
-                    Statistics stat = ((StatisticsHolder) storage).getStatistics();
-                    if (stat instanceof MutableStatistics) {
-                        statistics = (MutableStatistics) stat;
+                    Statistics storageStatistics = ((StatisticsHolder) storage).getStatistics();
+                    if (storageStatistics instanceof MutableStatistics) {
+                        statistics = (MutableStatistics) storageStatistics;
                     }
                 }
                 break;
         }
+        Calculable calculable = getDescriptor().getCalculable();
+        if (storage instanceof CalculableInterceptor) {
+            calculable = ((CalculableInterceptor)storage).createInterceptedCalculable(calculable);
+        }
         Cache cache = getWrapperFactory(storage instanceof ElementLockedStorage, Signature.ofStorage(storage.getClass()))
-                .wrap(owner, getDescriptor().getCalculable(), storage, statistics);
+                .wrap(owner, calculable, storage, statistics);
         cache.setDependencyNode(dependencyNode);
         return cache;
     }
@@ -92,7 +102,7 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
         assert inlineCache;
         CacheDescriptor<T> descriptor = getDescriptor();
         Class valueType = descriptor.getSignature().getValue();
-        Object calculable = descriptor.getCalculable();
+        Calculable calculable = descriptor.getCalculable();
         if (valueType == boolean.class) {
             return new BooleanInlineCacheImpl(owner, (BooleanCalculatable) calculable, statistics);
         }
@@ -125,7 +135,7 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
         assert inlineCache;
         CacheDescriptor<T> descriptor = getDescriptor();
         Class valueType = descriptor.getSignature().getValue();
-        Object calculable = descriptor.getCalculable();
+        Calculable calculable = descriptor.getCalculable();
         if (valueType == boolean.class) {
             return new BooleanInlineDependencyCache(owner, (BooleanCalculatable) calculable, statistics);
         }

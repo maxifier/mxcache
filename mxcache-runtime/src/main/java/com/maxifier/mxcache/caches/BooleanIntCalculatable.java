@@ -10,8 +10,8 @@ package com.maxifier.mxcache.caches;
  * Magenta Technology proprietary and confidential.
  * Use is subject to license terms.
  *
- * @author ELectronic ENgine
+ * GENERATED FROM P2PCalculatable.template
  */
-public interface BooleanIntCalculatable {
+public interface BooleanIntCalculatable extends Calculable {
     int calculate(Object owner, boolean o);
 }

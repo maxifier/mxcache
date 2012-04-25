@@ -2,6 +2,7 @@ package com.maxifier.mxcache.provider;
 
 import com.maxifier.mxcache.*;
 import com.maxifier.mxcache.caches.Cache;
+import com.maxifier.mxcache.caches.Calculable;
 import com.maxifier.mxcache.config.Rule;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.proxy.UseProxy;
@@ -41,7 +42,7 @@ public class CacheDescriptor<T> {
     private final Class<T> ownerClass;
     private final Signature signature;
     private final Signature transformedSignature;
-    private final Object calculable;
+    private final Calculable calculable;
     private final int id;
     private final Method method;
     private final String group;
@@ -53,15 +54,15 @@ public class CacheDescriptor<T> {
 
     private final PropertyOverrides overrides;
 
-    public CacheDescriptor(Class<T> ownerClass, int id, Class keyType, Class valueType, Object calculable, String methodName, String methodDesc, String cacheName, String group, String[] tags, ProxyFactory proxyFactory) {
+    public CacheDescriptor(Class<T> ownerClass, int id, Class keyType, Class valueType, Calculable calculable, String methodName, String methodDesc, String cacheName, String group, String[] tags, ProxyFactory proxyFactory) {
         this(ownerClass, id, keyType, valueType, calculable, methodName, methodDesc, cacheName, group, tags, CacheFactory.getConfiguration().getRule(ownerClass, group, tags), proxyFactory);
     }
 
-    public CacheDescriptor(Class<T> ownerClass, int id, Class keyType, Class valueType, Object calculable, String methodName, String methodDesc, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory) {
+    public CacheDescriptor(Class<T> ownerClass, int id, Class keyType, Class valueType, Calculable calculable, String methodName, String methodDesc, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory) {
         this(ownerClass, id, keyType, valueType, calculable, CodegenHelper.getMethod(ownerClass, methodName, methodDesc), cacheName, group, tags, rule, proxyFactory);
     }
 
-    private CacheDescriptor(Class<T> ownerClass, int id, Class keyType, Class valueType, Object calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory) {
+    private CacheDescriptor(Class<T> ownerClass, int id, Class keyType, Class valueType, Calculable calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory) {
         this(ownerClass, id, signature(keyType, valueType, method), calculable, method, cacheName, group, tags, rule, proxyFactory, null);
     }
 
@@ -73,11 +74,11 @@ public class CacheDescriptor<T> {
         return new Signature(method.getParameterTypes(), keyType, valueType);
     }
 
-    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Object calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory, @Nullable PropertyOverrides overrides) {
+    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory, @Nullable PropertyOverrides overrides) {
         this(ownerClass, id, signature, calculable, method, cacheName, group, tags, rule, proxyFactory, TransformGeneratorFactoryImpl.getInstance().forMethod(method), TransformGenerator.NO_TRANSFORM, overrides);
     }
 
-    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Object calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, PropertyOverrides overrides) {
+    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, PropertyOverrides overrides) {
         this(ownerClass, id, signature, calculable, method, cacheName, group, tags, rule, proxyFactory, keyTransform, valueTransform, getTransformedSignature(signature, keyTransform, valueTransform), overrides);
     }
 
@@ -85,7 +86,7 @@ public class CacheDescriptor<T> {
         return valueTransform.transformValue(keyTransform.transformKey(signature));
     }
 
-    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Object calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, Signature transformedSignature, PropertyOverrides overrides) {
+    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, Signature transformedSignature, PropertyOverrides overrides) {
         this.method = method;
         this.group = group;
         this.ownerClass = ownerClass;
@@ -103,7 +104,7 @@ public class CacheDescriptor<T> {
     }
 
     @PublicAPI
-    public CacheDescriptor<T> overrideCalculable(Object calculatable) {
+    public CacheDescriptor<T> overrideCalculable(Calculable calculatable) {
         Class<?> calculatableInterface = getCalculatableInterface();
         if (!calculatableInterface.isInstance(calculatable)) {
             throw new IllegalArgumentException("Calculatable for " + this + " should implement " + calculatableInterface.getName());
@@ -135,7 +136,7 @@ public class CacheDescriptor<T> {
      * @return "вычислятель" значений кэша. Должен реализовавыть корректный интерфейс XxxYyyCalculatable,
      * соответствующий значению KeyType и ValueType
      */
-    public Object getCalculable() {
+    public Calculable getCalculable() {
         return calculable;
     }
 

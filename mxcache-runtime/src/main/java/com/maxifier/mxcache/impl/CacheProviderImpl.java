@@ -1,5 +1,6 @@
 package com.maxifier.mxcache.impl;
 
+import com.maxifier.mxcache.caches.Calculable;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.mbean.CacheControl;
 import com.maxifier.mxcache.provider.CacheDescriptor;
@@ -48,7 +49,7 @@ public class CacheProviderImpl implements CacheProvider {
     }
 
     @Override
-    public synchronized <T> void registerCache(Class<T> cacheOwner, int cacheId, Class key, Class value, String group, String[] tags, Object calculable, String methodName, String methodDesc, String cacheName) {
+    public synchronized <T> void registerCache(Class<T> cacheOwner, int cacheId, Class key, Class value, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, String cacheName) {
         if (logger.isTraceEnabled()) {
             logger.trace("Register: owner = {}, method = {}, name = {}, id = {}, type = {} -> {}, group = {}, tags = {}", new Object[] {cacheOwner, methodName + methodDesc, cacheName, cacheId, key, value, group, Arrays.toString(tags)});
         }

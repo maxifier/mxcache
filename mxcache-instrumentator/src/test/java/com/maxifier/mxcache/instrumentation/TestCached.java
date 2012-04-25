@@ -4,6 +4,9 @@ import com.maxifier.mxcache.context.CacheContextImpl;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,4 +58,14 @@ public interface TestCached extends Serializable {
     void readStatic();
 
     void writeStatic();
+
+    List<String> getBatch(List<String> in);
+
+    String[] getBatch(String... in);
+
+    Map<String, String> getBatch(Set<String> in);
+
+    Map<String, String> getBatchArrayToMap(String... in);
+
+    void setS(String s);
 }

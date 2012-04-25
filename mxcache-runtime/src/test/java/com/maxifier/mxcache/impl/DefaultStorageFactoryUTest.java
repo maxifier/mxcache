@@ -127,7 +127,7 @@ public class DefaultStorageFactoryUTest {
 
         CacheManager<T> d = createDefaultManager(desc);
         ObjectObjectCache<int[], int[]> c = (ObjectObjectCache) d.createCache(INSTANCE);
-        assertEquals(d.getInstances().size(), 1);
+        assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
         // it should be empty
         assertEquals(c.getSize(), 0);
         // and also it should have lock assigned
@@ -171,7 +171,7 @@ public class DefaultStorageFactoryUTest {
 
         CacheManager<T> d = createDefaultManager(desc);
         ObjectObjectCache<String, String> c = (ObjectObjectCache) d.createCache(INSTANCE);
-        assertEquals(d.getInstances().size(), 1);
+        assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
         // it should be empty
         assert c.getSize() == 0;
         // and also it should have lock assigned
@@ -194,7 +194,7 @@ public class DefaultStorageFactoryUTest {
 
         CacheManager<T> d = createDefaultManager(desc);
         ObjectObjectCache<String, String> c = (ObjectObjectCache) d.createCache(INSTANCE);
-        assertEquals(d.getInstances().size(), 1);
+        assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
         // it should be empty
         assert c.getSize() == 0;
         // and also it should have lock assigned
@@ -222,7 +222,7 @@ public class DefaultStorageFactoryUTest {
         CacheDescriptor<T> desc = new CacheDescriptor<T>(T.class, 0, String.class, String.class, calculatable, "q", "(Ljava/lang/String;)Ljava/lang/String;", null, null, null, new TestProxyFactory());
         CacheManager<T> d = createDefaultManager(desc);
         ObjectObjectCache cache = (ObjectObjectCache) d.createCache(INSTANCE);
-        assertEquals(d.getInstances().size(), 1);
+        assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
         assertEquals(cache.getOrCreate("?"), "!proxied");
     }
 
@@ -235,7 +235,7 @@ public class DefaultStorageFactoryUTest {
         
         CacheManager<T> d = createDefaultManager(desc);
         Cache c = d.createCache(INSTANCE);
-        assertEquals(d.getInstances().size(), 1);
+        assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
         // it should be empty
         assertEquals(c.getSize(), 0);
         // and also it should have lock assigned
@@ -292,7 +292,7 @@ public class DefaultStorageFactoryUTest {
         CacheManager<T> d = createDefaultManager(descriptor);
         @SuppressWarnings({"UnusedDeclaration"})
         Cache cache = d.createCache(null);
-        assertEquals(d.getInstances().size(), 1);
+        assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
     }
 
     public void testTransformToPrimitive() throws InterruptedException {

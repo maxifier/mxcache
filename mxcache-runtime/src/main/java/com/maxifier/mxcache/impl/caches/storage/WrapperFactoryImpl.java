@@ -1,6 +1,7 @@
 package com.maxifier.mxcache.impl.caches.storage;
 
 import com.maxifier.mxcache.caches.Cache;
+import com.maxifier.mxcache.caches.Calculable;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.storage.Storage;
 
@@ -22,7 +23,7 @@ class WrapperFactoryImpl implements WrapperFactory {
 
     @SuppressWarnings({ "unchecked" })
     @Override
-    public Cache wrap(Object owner, Object calculable, Storage storage, MutableStatistics statistics) {
+    public Cache wrap(Object owner, Calculable calculable, Storage storage, MutableStatistics statistics) {
         try {
             Cache cache = constructor.newInstance(owner, calculable, statistics);
             ((StorageHolder)cache).setStorage(storage);

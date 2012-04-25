@@ -51,10 +51,10 @@ public class CacheControl implements CacheControlMXBean {
     public List<CacheInfo> getCaches() {
         List<CacheManager> caches = provider.getCaches();
         List<CacheInfo> res = new ArrayList<CacheInfo>(caches.size());
-        for (CacheManager<?> cache : caches) {
+        for (CacheManager<?> cacheManager : caches) {
             String impl;
             try {
-                impl = cache.getImplementationDetails();
+                impl = cacheManager.getImplementationDetails();
             } catch (RuntimeException e) {
                 impl = "Error: " + e.getMessage();
             }
@@ -65,7 +65,7 @@ public class CacheControl implements CacheControlMXBean {
             double averageCalculation = 0.0;
             Set<Statistics> statisticsSet = new TIdentityHashSet<Statistics>();
             try {
-                for (Cache c : cache.getInstances()) {
+                for (Cache c : CacheFactory.getCaches(cacheManager.getDescriptor())) {
                     count++;
                     total += c.getSize();
                     Statistics stat = c.getStatistics();
@@ -74,16 +74,16 @@ public class CacheControl implements CacheControlMXBean {
                     }
                 }
             } catch (Exception e) {
-                // ignore it, if a cache fails to get it's data, it's not our problem
+                // ignore it, if a cacheManager fails to get it's data, it's not our problem
             }
             for (Statistics statistics : statisticsSet) {
                 totalHits += statistics.getHits();
                 totalMisses += statistics.getMisses();
                 averageCalculation  += statistics.getTotalCalculationTime();
             }
-            CacheDescriptor<?> descriptor = cache.getDescriptor();
+            CacheDescriptor<?> descriptor = cacheManager.getDescriptor();
             Class<?> ownerClass = descriptor.getOwnerClass();
-            CacheContext context = cache.getContext();
+            CacheContext context = cacheManager.getContext();
             res.add(new CacheInfo(context == null ? "<no context>" : context.toString(), descriptor.getKeyType() == null ? null : getDisplayName(descriptor.getKeyType()),
                                   getDisplayName(descriptor.getValueType()),
                                   descriptor.getMethod().toGenericString(),

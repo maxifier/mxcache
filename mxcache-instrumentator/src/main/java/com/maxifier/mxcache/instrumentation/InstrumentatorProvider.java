@@ -13,7 +13,9 @@ import java.util.Map;
  * Date: 05.03.12
  * Time: 21:54
  */
-public class InstrumentatorProvider {
+public final class InstrumentatorProvider {
+    private InstrumentatorProvider() {}
+
     private static final Map<String, Instrumentator> INSTRUMENTATORS = createMap();
 
     private static Map<String, Instrumentator> createMap() {

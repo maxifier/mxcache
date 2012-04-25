@@ -114,7 +114,7 @@ public final class DependencyTracker {
         return result;
     }
 
-    private static class DummyDependencyNode implements DependencyNode {
+    private static final class DummyDependencyNode implements DependencyNode {
         private final Reference<DependencyNode> selfReference = new HashWeakReference<DependencyNode>(this);
         private final String name;
 

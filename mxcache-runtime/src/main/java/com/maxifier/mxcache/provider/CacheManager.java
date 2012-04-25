@@ -4,8 +4,6 @@ import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.context.CacheContext;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 /**
  * Created by IntelliJ IDEA.
  * User: dalex
@@ -24,12 +22,6 @@ public interface CacheManager<T> {
      * @return экземпляр кэша
      */
     Cache createCache(@Nullable T owner);
-
-    /**
-     * Этот метод нужен только для мониторинга (JMX).
-     * @return список ссылок на экземпляры кэша
-     */
-    List<Cache> getInstances();
 
     /**
      * @return implementation details, e.g. class name of storage/cache
