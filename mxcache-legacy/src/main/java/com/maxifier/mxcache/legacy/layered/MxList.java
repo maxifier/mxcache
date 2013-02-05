@@ -12,9 +12,9 @@ public final class MxList<T extends MxList.Element<T>> {
     private int size;
 
     public static class Element<T extends Element> {
-        private boolean inList;
-        private T prev;
-        private T next;
+        boolean inList;
+        T prev;
+        T next;
 
         public boolean isInList() {
             return inList;

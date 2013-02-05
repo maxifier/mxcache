@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.maxifier.mxcache</groupId>
     <artifactId>mxcache</artifactId>
-    <version>2.2.33-SNAPSHOT</version>
+    <version>2.2.34-SNAPSHOT</version>
     <name>MxCache</name>
 
     <parent>
@@ -34,7 +34,7 @@
     </modules>
 
     <scm>
-        <connection>scm:svn:svn://svn.maxifier.com/maxifier-projects/mxcache/trunk</connection>
+        <connection>scm:git:ssh://git.maxifier.com/mxcache.git</connection>
     </scm>
 
     <properties>
@@ -113,12 +113,9 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.2.1</version>
                 <configuration>
-                    <tagBase>svn://svn.maxifier.com/maxifier-projects/mxcache/tags</tagBase>
-                    <branchBase>svn://svn.maxifier.com/maxifier-projects/mxcache/branches</branchBase>
+                    <tagNameFormat>mxcache-@{project.version}</tagNameFormat>
                     <preparationGoals>clean install</preparationGoals>
-                    <goals>deploy sonar:sonar</goals>
-                    <releaseProfiles>release</releaseProfiles>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <goals>deploy sonar:sonar -Prelease</goals>
                 </configuration>
             </plugin>
 
