@@ -23,26 +23,26 @@
             <artifactId>mxcache-instrumentator</artifactId>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>com.intellij</groupId>-->
-            <!--<artifactId>openapi</artifactId>-->
-            <!--<version>8.1</version>-->
-            <!--<scope>compile</scope>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>openapi</artifactId>
+            <version>8.1</version>
+            <scope>compile</scope>
+        </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>com.intellij</groupId>-->
-            <!--<artifactId>util</artifactId>-->
-            <!--<version>8.1</version>-->
-            <!--<scope>compile</scope>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>util</artifactId>
+            <version>8.1</version>
+            <scope>compile</scope>
+        </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>com.intellij</groupId>-->
-            <!--<artifactId>extensions</artifactId>-->
-            <!--<version>8.1</version>-->
-            <!--<scope>compile</scope>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>extensions</artifactId>
+            <version>8.1</version>
+            <scope>compile</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.jdom</groupId>
