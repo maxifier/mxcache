@@ -1,17 +1,20 @@
 package com.maxifier.mxcache.proxy;
 
+import com.maxifier.mxcache.asm.Opcodes;
+import com.maxifier.mxcache.asm.Type;
+import com.maxifier.mxcache.asm.commons.Method;
+import com.maxifier.mxcache.util.*;
 import gnu.trove.THashMap;
 import gnu.trove.THashSet;
-import org.apache.bcel.Constants;
-import org.apache.bcel.generic.*;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.*;
+
+import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,8 +25,8 @@ import java.util.*;
 public final class MxGenericProxyFactory<T, C> extends MxAbstractProxyFactory {
     private static final Logger logger = LoggerFactory.getLogger(MxGenericProxyFactory.class);
 
-    private static final String VALUE_FIELD_NAME = "value";
-    private static final String SUPER_CLASS_NAME = MxGenericProxy.class.getName();
+    private static final Type MX_GENERIC_PROXY_TYPE = Type.getType(MxGenericProxy.class);
+    private static final Method MX_GENERIC_PROXY_CTOR = new Method(CONSTRUCTOR_NAME, Type.VOID_TYPE, new Type[]{RESOLVABLE_TYPE, CLASS_TYPE, CLASS_TYPE, CLASS_TYPE});
 
     private final Class<T> sourceInterface;
     private final Class<C> containerClass;
@@ -86,12 +89,12 @@ public final class MxGenericProxyFactory<T, C> extends MxAbstractProxyFactory {
     }
 
     private final class MethodInfo {
-        private final Type[] argTypes;
-        private final Type returnType;
+        private final Class[] argTypes;
+        private final Class returnType;
         private final String name;
         private final int hash;
 
-        MethodInfo(Type[] argTypes, Type returnType, String name) {
+        MethodInfo(Class[] argTypes, Class returnType, String name) {
             this.argTypes = argTypes;
             this.returnType = returnType;
             this.name = name;
@@ -113,8 +116,10 @@ public final class MxGenericProxyFactory<T, C> extends MxAbstractProxyFactory {
                 return false;
             }
             MethodInfo info = (MethodInfo) obj;
-            return hash == info.hash && Arrays.equals(argTypes, info.argTypes) &&
-                    returnType.equals(info.returnType) && name.equals(info.name);
+            return hash == info.hash &&
+                    returnType == info.returnType &&
+                    name.equals(info.name) &&
+                    Arrays.equals(argTypes, info.argTypes);
         }
     }
 
@@ -126,17 +131,14 @@ public final class MxGenericProxyFactory<T, C> extends MxAbstractProxyFactory {
             String proxyClassName = createProxyClassName(sourceClass);
             Type containerType = Type.getType(containerClass);
 
-            ConstantPoolGen cpg = new ConstantPoolGen();
-            ClassGen proxyClass = new ClassGen(proxyClassName, SUPER_CLASS_NAME, "<generated>", Constants.ACC_PUBLIC | Constants.ACC_SUPER, getInterfaceNames(interfaces), cpg);
+            ClassGenerator proxyClass = new ClassGenerator(Opcodes.ACC_PUBLIC | Opcodes.ACC_SUPER, proxyClassName, MxGenericProxy.class, interfaces.toArray(new Class[interfaces.size()]));
 
-            InstructionFactory factory = new InstructionFactory(proxyClass);
+            createProxyConstructor(sourceClass, containerClass, proxyClass, containerType);
 
-            proxyClass.addMethod(createProxyConstructor(sourceClass, containerClass, cpg, proxyClassName, SUPER_CLASS_NAME, containerType, factory));
-
-            createMethodProxies(containerClass, interfaces, cpg, proxyClassName, SUPER_CLASS_NAME, containerType, proxyClass, factory);
+            createMethodProxies(containerClass, interfaces, proxyClass, containerType);
 
             //noinspection unchecked
-            Class<T> newClass = (Class<T>) loadClass(sourceClass, proxyClass);
+            Class<T> newClass = proxyClass.toClass(sourceClass.getClassLoader());
 
             long end = System.currentTimeMillis();
 
@@ -148,38 +150,21 @@ public final class MxGenericProxyFactory<T, C> extends MxAbstractProxyFactory {
         }
     }
 
-    private void createMethodProxies(Class<C> containerClass, Set<Class<? extends T>> interfaces, ConstantPoolGen cpg, String proxyClassName, String superClassName, Type containerType, ClassGen proxyClass, InstructionFactory factory) {
+    private void createMethodProxies(Class<C> containerClass, Set<Class<? extends T>> interfaces, ClassGenerator generator, Type containerType) {
         Set<MethodInfo> methods = new THashSet<MethodInfo>();
 
         for (Class<? extends T> intf : interfaces) {
-            for (Method sourceMethod : intf.getMethods()) {
+            for (java.lang.reflect.Method sourceMethod : intf.getMethods()) {
                 if (sourceMethod.getDeclaringClass().equals(intf)) {
-                    Type returnType = Type.getType(sourceMethod.getReturnType());
-                    Type[] argTypes = getTypes(sourceMethod.getParameterTypes());
+                    Class<?> returnType = sourceMethod.getReturnType();
+                    Class<?>[] args = sourceMethod.getParameterTypes();
 
-                    if (methods.add(new MethodInfo(argTypes, returnType, sourceMethod.getName()))) {
-                        proxyClass.addMethod(createProxyMethod(containerClass, cpg, proxyClassName, superClassName, containerType, factory, intf, sourceMethod, returnType, argTypes));
+                    if (methods.add(new MethodInfo(args, returnType, sourceMethod.getName()))) {
+                        createProxyMethod(containerClass, generator, containerType, intf, sourceMethod);
                     }
                 }
             }
         }
-    }
-
-    private Type[] getTypes(Class[] params) {
-        Type[] argTypes = new Type[params.length];
-        for (int i = 0; i < params.length; i++) {
-            argTypes[i] = Type.getType(params[i]);
-        }
-        return argTypes;
-    }
-
-    private String[] getInterfaceNames(Set<Class<? extends T>> interfaces) {
-        String[] interfaceNames = new String[interfaces.size()];
-        int iid = 0;
-        for (Class<? extends T> anInterface : interfaces) {
-            interfaceNames[iid++] = anInterface.getName();
-        }
-        return interfaceNames;
     }
 
     private Set<Class<? extends T>> getAllProxiedInterfaces(Class<? extends T> sourceClass) {
@@ -191,6 +176,7 @@ public final class MxGenericProxyFactory<T, C> extends MxAbstractProxyFactory {
             //noinspection unchecked
             interfaces.add(sourceClass);
         }
+        //noinspection ManualArrayToCollectionCopy
         for (Class cls : sourceInterface.getInterfaces()) {
             //noinspection unchecked
             interfaces.add(cls);
@@ -213,42 +199,32 @@ public final class MxGenericProxyFactory<T, C> extends MxAbstractProxyFactory {
         return interfaces;
     }
 
-    private org.apache.bcel.classfile.Method createProxyMethod(Class<C> containerClass, ConstantPoolGen cpg, String proxyClassName, String superClassName, Type containerType, InstructionFactory factory, Class<? extends T> intf, Method sourceMethod, Type returnType, Type[] argTypes) {
-        InstructionList methodCode = new InstructionList();
-        methodCode.append(InstructionFactory.createLoad(containerType, 0));
-        methodCode.append(factory.createGetField(superClassName, VALUE_FIELD_NAME, RESOLVABLE_TYPE));
-        methodCode.append(factory.createCast(Type.OBJECT, containerType));
-        methodCode.append(factory.createInvoke(containerClass.getName(), GETTER_NAME, Type.OBJECT, EMPTY_TYPES, Constants.INVOKEVIRTUAL));
-        for (int i = 0; i < argTypes.length; i++) {
-            methodCode.append(InstructionFactory.createLoad(argTypes[i], i + 1));
-        }
-        methodCode.append(factory.createInvoke(intf.getName(), sourceMethod.getName(), returnType, argTypes, Constants.INVOKEINTERFACE));
-        methodCode.append(InstructionFactory.createReturn(returnType));
+    private void createProxyMethod(Class<C> containerClass, ClassGenerator generator, Type containerType, Class<? extends T> intf, java.lang.reflect.Method sourceMethod) {
+        Method sourceMethod0 = Method.getMethod(sourceMethod);
+        MxGeneratorAdapter method = generator.defineMethod(Opcodes.ACC_PUBLIC, sourceMethod0);
+        method.start();
 
-        MethodGen method = new MethodGen(Constants.ACC_PUBLIC, returnType, argTypes, null, sourceMethod.getName(), proxyClassName, methodCode, cpg);
-        method.setMaxStack(argTypes.length + 2);
-
-        return method.getMethod();
+        method.loadThis();
+        method.getField(MX_GENERIC_PROXY_TYPE, VALUE_FIELD_NAME, RESOLVABLE_TYPE);
+        method.checkCast(containerType);
+        method.invokeVirtual(Type.getType(containerClass), GETTER);
+        method.loadArgs();
+        method.invokeInterface(Type.getType(intf), sourceMethod0);
+        method.returnValue();
+        method.endMethod();
     }
 
-    private org.apache.bcel.classfile.Method createProxyConstructor(Class<? extends T> sourceClass, Class<C> containerClass, ConstantPoolGen cpg, String proxyClassName, String superClassName, Type containerType, InstructionFactory factory) {
-        InstructionList constructorBody = new InstructionList();
-        constructorBody.append(InstructionFactory.createLoad(containerType, 0));
-        constructorBody.append(InstructionFactory.createLoad(containerType, 1));
-        constructorBody.append(factory.createConstant(sourceClass.getName()));
-        constructorBody.append(factory.createInvoke(Class.class.getName(), "forName", Type.CLASS, new Type[]{ Type.STRING}, Constants.INVOKESTATIC));
-        constructorBody.append(factory.createConstant(containerClass.getName()));
-        constructorBody.append(factory.createInvoke(Class.class.getName(), "forName", Type.CLASS, new Type[]{ Type.STRING}, Constants.INVOKESTATIC));
-        constructorBody.append(factory.createConstant(sourceInterface.getName()));
-        constructorBody.append(factory.createInvoke(Class.class.getName(), "forName", Type.CLASS, new Type[]{ Type.STRING}, Constants.INVOKESTATIC));
-        constructorBody.append(factory.createInvoke(superClassName, Constants.CONSTRUCTOR_NAME, Type.VOID, new Type[]{ RESOLVABLE_TYPE, Type.CLASS, Type.CLASS, Type.CLASS}, Constants.INVOKESPECIAL));
-        constructorBody.append(InstructionFactory.createReturn(Type.VOID));
-
-        MethodGen constructor = new MethodGen(Constants.ACC_PUBLIC, Type.VOID, new Type[]{containerType}, new String[]{VALUE_FIELD_NAME}, Constants.CONSTRUCTOR_NAME, proxyClassName, constructorBody, cpg);
-
-        constructor.setMaxStack(5);
-
-        return constructor.getMethod();
+    private void createProxyConstructor(Class<? extends T> sourceClass, Class<C> containerClass, ClassGenerator generator, Type containerType) {
+        MxConstructorGenerator ctor = generator.defineConstructor(Opcodes.ACC_PUBLIC, containerType);
+        ctor.start();
+        ctor.loadThis();
+        ctor.loadArg(0);
+        ctor.push(Type.getType(sourceClass));
+        ctor.push(Type.getType(containerClass));
+        ctor.push(Type.getType(sourceInterface));
+        ctor.invokeConstructor(MX_GENERIC_PROXY_TYPE, MX_GENERIC_PROXY_CTOR);
+        ctor.returnValue();
+        ctor.endMethod();
     }
 
     @Override

@@ -1,13 +1,18 @@
 package com.maxifier.mxcache.proxy;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.generic.*;
+import com.maxifier.mxcache.asm.Opcodes;
+import com.maxifier.mxcache.asm.Type;
+import com.maxifier.mxcache.asm.commons.Method;
+import com.maxifier.mxcache.util.ClassGenerator;
+import com.maxifier.mxcache.util.MxConstructorGenerator;
+import com.maxifier.mxcache.util.MxGeneratorAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
+
+import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,13 +23,13 @@ import java.lang.reflect.Method;
 public final class MxProxyFactory<T, C extends Resolvable<T>> extends MxAbstractProxyFactory {
     private static final Logger logger = LoggerFactory.getLogger(MxProxyGenerator.class);
 
-    private static final String VALUE_FIELD_NAME = "value";
+    private static final Method MX_ABSTRACT_PROXY_CTOR = new Method(CONSTRUCTOR_NAME, Type.VOID_TYPE, new Type[]{RESOLVABLE_TYPE, CLASS_TYPE, CLASS_TYPE});
+    private static final Type MX_ABSTRACT_PROXY_TYPE = Type.getType(MxAbstractProxy.class);
 
     private final Class<T> sourceInterface;
     private final Class<C> containerClass;
 
     private volatile Constructor<T> proxyConstructor;
-    private static final String SUPER_CLASS_NAME = MxAbstractProxy.class.getName();
 
     MxProxyFactory(@NotNull Class<T> sourceInterface, @NotNull Class<C> containerClass) {
         if (!sourceInterface.isInterface()) {
@@ -86,23 +91,16 @@ public final class MxProxyFactory<T, C extends Resolvable<T>> extends MxAbstract
     private static <T, C extends Resolvable<T>> Class<T> createProxyClass(Class<T> sourceClass, Class<C> containerClass) {
         long start = System.currentTimeMillis();
         try {
-            String proxyClassName = createProxyClassName(sourceClass);
             Type containerType = Type.getType(containerClass);
 
-            ConstantPoolGen cpg = new ConstantPoolGen();
-            ClassGen proxyClass = new ClassGen(proxyClassName, SUPER_CLASS_NAME, "<generated>", Constants.ACC_PUBLIC | Constants.ACC_SUPER, new String[]{sourceClass.getName()}, cpg);
-
-            InstructionFactory factory = new InstructionFactory(proxyClass);
-
-            proxyClass.addMethod(createProxyConstructor(sourceClass, containerClass, cpg, proxyClassName, containerType, factory));
-
-            for (Method sourceMethod : sourceClass.getMethods()) {
-                proxyClass.addMethod(createMethodProxy(sourceClass, containerClass, cpg, proxyClassName, containerType, factory, sourceMethod));
+            ClassGenerator proxyClass = new ClassGenerator(Opcodes.ACC_PUBLIC | Opcodes.ACC_SUPER, createProxyClassName(sourceClass), MxAbstractProxy.class, sourceClass);
+            createProxyConstructor(sourceClass, containerClass, proxyClass, containerType);
+            for (java.lang.reflect.Method sourceMethod : sourceClass.getMethods()) {
+                createMethodProxy(sourceClass, proxyClass, containerType, sourceMethod);
             }
+            proxyClass.defineDefaultConstructor();
 
-            proxyClass.addEmptyConstructor(Constants.ACC_PUBLIC);
-
-            return loadClass(sourceClass, proxyClass);
+            return proxyClass.toClass(sourceClass.getClassLoader());
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -112,47 +110,33 @@ public final class MxProxyFactory<T, C extends Resolvable<T>> extends MxAbstract
         }
     }
 
-    private static <T, C extends Resolvable<T>> org.apache.bcel.classfile.Method createProxyConstructor(Class<T> sourceClass, Class<C> containerClass, ConstantPoolGen cpg, String proxyClassName, Type containerType, InstructionFactory factory) {
-        InstructionList constructorBody = new InstructionList();
-        constructorBody.append(InstructionFactory.createLoad(containerType, 0));
-        constructorBody.append(InstructionFactory.createLoad(containerType, 1));
-        constructorBody.append(factory.createConstant(sourceClass.getName()));
-        constructorBody.append(factory.createInvoke(Class.class.getName(), "forName", Type.CLASS, new Type[]{Type.STRING}, Constants.INVOKESTATIC));
-        constructorBody.append(factory.createConstant(containerClass.getName()));
-        constructorBody.append(factory.createInvoke(Class.class.getName(), "forName", Type.CLASS, new Type[]{Type.STRING}, Constants.INVOKESTATIC));
-        constructorBody.append(factory.createInvoke(SUPER_CLASS_NAME, Constants.CONSTRUCTOR_NAME, Type.VOID, new Type[]{ RESOLVABLE_TYPE, Type.CLASS, Type.CLASS}, Constants.INVOKESPECIAL));
-        constructorBody.append(InstructionFactory.createReturn(Type.VOID));
-
-        MethodGen constructor = new MethodGen(Constants.ACC_PUBLIC, Type.VOID, new Type[]{containerType}, new String[]{VALUE_FIELD_NAME}, Constants.CONSTRUCTOR_NAME, proxyClassName, constructorBody, cpg);
-
-        constructor.setMaxStack(4);
-        return constructor.getMethod();
+    private static <T, C extends Resolvable<T>> void createProxyConstructor(Class<T> sourceClass, Class<C> containerClass, ClassGenerator generator, Type containerType) {
+        MxConstructorGenerator ctor = generator.defineConstructor(Opcodes.ACC_PUBLIC, containerType);
+        ctor.start();
+        ctor.loadThis();
+        ctor.loadArg(0);
+        ctor.push(Type.getType(sourceClass));
+        ctor.push(Type.getType(containerClass));
+        ctor.invokeConstructor(MX_ABSTRACT_PROXY_TYPE, MX_ABSTRACT_PROXY_CTOR);
+        ctor.returnValue();
+        ctor.endMethod();
     }
 
-    private static <T, C extends Resolvable<T>> org.apache.bcel.classfile.Method createMethodProxy(Class<T> sourceClass, Class<C> containerClass, ConstantPoolGen cpg, String proxyClassName, Type containerType, InstructionFactory factory, Method sourceMethod) {
-        Type returnType = Type.getType(sourceMethod.getReturnType());
+    private static <T> void createMethodProxy(Class<T> sourceClass, ClassGenerator cpg, Type containerType, java.lang.reflect.Method sourceMethod) {
+        Method sourceMethod0 = Method.getMethod(sourceMethod);
+        MxGeneratorAdapter method = cpg.defineMethod(Opcodes.ACC_PUBLIC, sourceMethod0);
 
-        Class[] params = sourceMethod.getParameterTypes();
-        Type[] argTypes = new Type[params.length];
-
-        for (int i = 0; i < params.length; i++) {
-            argTypes[i] = Type.getType(params[i]);
+        method.start();
+        method.loadThis();
+        method.getField(MX_ABSTRACT_PROXY_TYPE, VALUE_FIELD_NAME, RESOLVABLE_TYPE);
+        method.checkCast(containerType);
+        method.invokeVirtual(containerType, GETTER);
+        for (int i = 0; i < sourceMethod.getParameterTypes().length; i++) {
+            method.loadArg(i);
         }
-
-        InstructionList methodCode = new InstructionList();
-        methodCode.append(InstructionFactory.createLoad(containerType, 0));
-        methodCode.append(factory.createGetField(SUPER_CLASS_NAME, VALUE_FIELD_NAME, RESOLVABLE_TYPE));
-        methodCode.append(factory.createCast(Type.OBJECT, containerType));
-        methodCode.append(factory.createInvoke(containerClass.getName(), GETTER_NAME, Type.OBJECT, EMPTY_TYPES, Constants.INVOKEVIRTUAL));
-        for (int i = 0; i < params.length; i++) {
-            methodCode.append(InstructionFactory.createLoad(argTypes[i], i + 1));
-        }
-        methodCode.append(factory.createInvoke(sourceClass.getName(), sourceMethod.getName(), returnType, argTypes, Constants.INVOKEINTERFACE));
-        methodCode.append(InstructionFactory.createReturn(returnType));
-
-        MethodGen method = new MethodGen(Constants.ACC_PUBLIC, returnType, argTypes, null, sourceMethod.getName(), proxyClassName, methodCode, cpg);
-        method.setMaxStack(params.length + 2);
-        return method.getMethod();        
+        method.invokeInterface(Type.getType(sourceClass), sourceMethod0);
+        method.returnValue();
+        method.endMethod();
     }
 
     @Override
@@ -168,7 +152,6 @@ public final class MxProxyFactory<T, C extends Resolvable<T>> extends MxAbstract
         if (!(o instanceof MxProxyFactory)) {
             return false;
         }
-
         MxProxyFactory that = (MxProxyFactory) o;
         return containerClass == that.containerClass && sourceInterface == that.sourceInterface;
 
