@@ -3,15 +3,14 @@ package com.maxifier.mxcache.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.management.JMException;
-import javax.management.ObjectName;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.StringReader;
-import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.util.*;
+
+import static com.maxifier.mxcache.impl.CacheProviderImpl.registerMBean;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,17 +23,9 @@ public class MxCacheConfigProviderImpl implements MxCacheConfigProvider {
 
     private final Map<ClassLoader, MxCacheConfig> configs = new WeakHashMap<ClassLoader, MxCacheConfig>();
 
-    public MxCacheConfigProviderImpl(boolean registerMBean) {
-        if (registerMBean) {
-            registerMBean();
-        }
-    }
-
-    private void registerMBean() {
-        try {
-            ManagementFactory.getPlatformMBeanServer().registerMBean(new ConfigurationControl(this), new ObjectName("com.maxifier.mxcache:service=ConfigurationControl"));
-        } catch (JMException e) {
-            logger.error("Cannot register MxCache mbean", e);
+    public MxCacheConfigProviderImpl(boolean needsMBean) {
+        if (needsMBean) {
+            registerMBean(new ConfigurationControl(this), "com.maxifier.mxcache:service=ConfigurationControl");
         }
     }
 

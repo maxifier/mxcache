@@ -36,13 +36,19 @@ public class CacheProviderImpl implements CacheProvider {
 
     public CacheProviderImpl(boolean needsMBean) {
         if (needsMBean) {
-            registerMBean();
+            registerMBean(new CacheControl(this), "com.maxifier.mxcache:service=CacheControl");
         }
     }
 
-    private void registerMBean() {
+    public static void registerMBean(Object mbean, String name) {
         try {
-            ManagementFactory.getPlatformMBeanServer().registerMBean(new CacheControl(this), new ObjectName("com.maxifier.mxcache:service=CacheControl"));
+            try {
+                ManagementFactory.getPlatformMBeanServer().registerMBean(mbean, new ObjectName(name));
+            } catch (InstanceAlreadyExistsException e) {
+                // if there are two or more instances of MxCache on classloader we don't want to fail
+                logger.warn("MxCache MBean is already registered ({}), will use unique name fallback", name, e.getMessage());
+                ManagementFactory.getPlatformMBeanServer().registerMBean(mbean, new ObjectName(name + "-" + UUID.randomUUID()));
+            }
         } catch (JMException e) {
             logger.error("Cannot register MxCache mbean", e);
         }
