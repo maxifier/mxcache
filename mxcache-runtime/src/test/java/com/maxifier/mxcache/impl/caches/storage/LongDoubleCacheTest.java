@@ -1,6 +1,7 @@
 package com.maxifier.mxcache.impl.caches.storage;
 
 import com.maxifier.mxcache.caches.*;
+import com.maxifier.mxcache.impl.wrapping.Wrapping;
 import com.maxifier.mxcache.storage.LongDoubleStorage;
 import com.maxifier.mxcache.storage.elementlocked.LongDoubleElementLockedStorage;
 import com.maxifier.mxcache.provider.Signature;

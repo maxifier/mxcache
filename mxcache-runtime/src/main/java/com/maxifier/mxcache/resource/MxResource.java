@@ -66,7 +66,7 @@ public interface MxResource extends Serializable {
     void waitForEndOfModification() throws ResourceModificationException;
 
     /**
-     * Очищает все кэши, которые зависят от данного ресурса.
+     * Переводит ресурс в состояние записи и очищает все кэши, которые зависят от данного ресурса.
      */
     void clearDependentCaches();
 }

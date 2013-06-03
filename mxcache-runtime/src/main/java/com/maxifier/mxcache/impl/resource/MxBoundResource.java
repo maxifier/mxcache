@@ -11,11 +11,9 @@ import org.jetbrains.annotations.NotNull;
  * No equals or hash code: each resource is unique!
  */
 class MxBoundResource extends MxResourceImpl {
-    private final Object owner;
 
     public MxBoundResource(@NotNull Object owner, @NotNull String name) {
-        super(name);
-        this.owner = owner;
+        super(owner, name);
     }
 
     @Override

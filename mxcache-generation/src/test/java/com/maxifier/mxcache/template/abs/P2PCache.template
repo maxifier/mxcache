@@ -24,50 +24,51 @@ import com.maxifier.mxcache.storage.*;
 public abstract class Abstract#EG##FG#Cache extends AbstractCache implements #EG##FG#Cache, #EG##FG#Storage {
     private final #EG##FG#Calculatable calculatable;
 
-    private final Object owner;
-
     public Abstract#E##F#Cache(Object owner, #EG##FG#Calculatable calculatable, MutableStatistics statistics) {
-        super(statistics);
-        this.owner = owner;
+        super(owner, statistics);
         this.calculatable = calculatable;
     }
 
     @Override
     public #fg# getOrCreate(#IF_E##eg# o#ENDIF#) {
-        lock();
-        try {
-            if (isCalculated(#IF_E#o#ENDIF#)) {
-                DependencyTracker.mark(getDependencyNode());
-                hit();
-                return load(#IF_E#o#ENDIF#);
-            }
-            DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
+        if (DependencyTracker.isBypassCaches()) {
+            return calculatable.calculate(owner#IF_E#, o#ENDIF#);
+        } else {
+            lock();
             try {
-                while(true) {
-                    try {
-                        return create(#IF_E#o#ENDIF#);
-                    } catch (ResourceOccupied e) {
-                        if (callerNode != null) {
-                            throw e;
-                        } else {
-                            unlock();
-                            try {
-                                e.getResource().waitForEndOfModification();
-                            } finally {
-                                lock();
-                            }
-                            if (isCalculated(#IF_E#o#ENDIF#)) {
-                                hit();
-                                return load(#IF_E#o#ENDIF#);
+                if (isCalculated(#IF_E#o#ENDIF#)) {
+                    DependencyTracker.mark(getDependencyNode());
+                    hit();
+                    return load(#IF_E#o#ENDIF#);
+                }
+                DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
+                try {
+                    while(true) {
+                        try {
+                            return create(#IF_E#o#ENDIF#);
+                        } catch (ResourceOccupied e) {
+                            if (callerNode != null) {
+                                throw e;
+                            } else {
+                                unlock();
+                                try {
+                                    e.getResource().waitForEndOfModification();
+                                } finally {
+                                    lock();
+                                }
+                                if (isCalculated(#IF_E#o#ENDIF#)) {
+                                    hit();
+                                    return load(#IF_E#o#ENDIF#);
+                                }
                             }
                         }
                     }
+                } finally {
+                    DependencyTracker.exit(callerNode);
                 }
             } finally {
-                DependencyTracker.exit(callerNode);
+                unlock();
             }
-        } finally {
-            unlock();
         }
     }
 

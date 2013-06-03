@@ -24,4 +24,6 @@ public interface CleaningNode {
     void clear();
 
     DependencyNode getDependencyNode();
+
+    Object getCacheOwner();
 }

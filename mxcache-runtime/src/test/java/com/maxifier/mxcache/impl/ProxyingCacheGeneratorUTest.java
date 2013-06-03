@@ -33,6 +33,9 @@ import static org.testng.Assert.assertEquals;
 public class ProxyingCacheGeneratorUTest {
     private static final int SIZE = 62780;
     private static final Statistics STATISTICS = mock(Statistics.class);
+    private static final String OWNER1 = "owner1";
+    private static final String OWNER2 = "owner2";
+    private static final String OWNER3 = "owner3";
 
     private static final Lock TEST_LOCK = new ReentrantLock();
 
@@ -69,11 +72,13 @@ public class ProxyingCacheGeneratorUTest {
 
         assertEquals(cache.getSize(), SIZE);
         assertSame(cache.getStatistics(), STATISTICS);
+        assertEquals(cache.getCacheOwner(), OWNER1);
 
         cache.clear();
         verify(calculatable).clear();
         verify(calculatable).getSize();
         verify(calculatable).getStatistics();
+        verify(calculatable).getCacheOwner();
         verifyNoMoreInteractions(calculatable);
     }
 
@@ -100,11 +105,13 @@ public class ProxyingCacheGeneratorUTest {
 
         assertEquals(cache.getSize(), SIZE);
         assertSame(cache.getStatistics(), STATISTICS);
+        assertEquals(cache.getCacheOwner(), OWNER1);
 
         cache.clear();
         verify(calculatable).clear();
         verify(calculatable).getSize();
         verify(calculatable).getStatistics();
+        verify(calculatable).getCacheOwner();
         verifyNoMoreInteractions(calculatable);
 
         DefaultInstanceProvider.getInstance().clearBinding(Transformator.class);
@@ -124,9 +131,12 @@ public class ProxyingCacheGeneratorUTest {
         assertEquals(cache.getSize(), SIZE);
         assertSame(cache.getStatistics(), STATISTICS);
         assertSame(cache.getLock(), TEST_LOCK);
+        assertEquals(cache.getCacheOwner(), OWNER2);
+
         verify(calculatable).getLock();
         verify(calculatable).getSize();
         verify(calculatable).getStatistics();
+        verify(calculatable).getCacheOwner();
         cache.clear();
         verify(calculatable).clear();
         verifyNoMoreInteractions(calculatable);
@@ -146,9 +156,12 @@ public class ProxyingCacheGeneratorUTest {
         assertEquals(cache.getSize(), SIZE);
         assertSame(cache.getStatistics(), STATISTICS);
         assertSame(cache.getLock(), TEST_LOCK);
+        assertEquals(cache.getCacheOwner(), OWNER3);
+
         verify(calculatable).getLock();
         verify(calculatable).getSize();
         verify(calculatable).getStatistics();
+        verify(calculatable).getCacheOwner();
         cache.clear();
         verify(calculatable).clear();
         verifyNoMoreInteractions(calculatable);
@@ -200,6 +213,11 @@ public class ProxyingCacheGeneratorUTest {
         public DependencyNode getDependencyNode() {
             return DependencyTracker.DUMMY_NODE;
         }
+
+        @Override
+        public Object getCacheOwner() {
+            return OWNER1;
+        }
     }
 
     private static class TestCalculatable2 implements LongObjectCache<String> {
@@ -241,6 +259,11 @@ public class ProxyingCacheGeneratorUTest {
         public DependencyNode getDependencyNode() {
             return DependencyTracker.DUMMY_NODE;
         }
+
+        @Override
+        public Object getCacheOwner() {
+            return OWNER2;
+        }
     }
 
     private static class TestCalculatable3 implements ObjectCache<String> {
@@ -281,6 +304,11 @@ public class ProxyingCacheGeneratorUTest {
         @Override
         public DependencyNode getDependencyNode() {
             return DependencyTracker.DUMMY_NODE;
+        }
+
+        @Override
+        public Object getCacheOwner() {
+            return OWNER3;
         }
     }
 }

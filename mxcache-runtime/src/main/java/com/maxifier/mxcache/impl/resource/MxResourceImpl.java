@@ -1,13 +1,14 @@
 package com.maxifier.mxcache.impl.resource;
 
 import java.util.Collections;
-import java.util.Set;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.io.Serializable;
 
-import com.maxifier.mxcache.CacheFactory;
 import com.maxifier.mxcache.caches.CleaningNode;
+import com.maxifier.mxcache.clean.CleaningHelper;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.resource.ResourceModificationException;
 import com.maxifier.mxcache.util.TIdentityHashSet;
@@ -26,6 +27,7 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
 
     private static final long serialVersionUID = 100L;
 
+    protected final Object owner;
     @NotNull
     private final String name;
 
@@ -33,7 +35,8 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
     private final Lock readLock;
     private final Lock writeLock;
 
-    public MxResourceImpl(@NotNull String name) {
+    public MxResourceImpl(Object owner, @NotNull String name) {
+        this.owner = owner;
         this.name = name;
         lock = new ReentrantReadWriteLock();
         readLock = lock.readLock();
@@ -63,8 +66,8 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
             // мы добавляем зависимость, только если мы можем прочитать ресурс.
             // если же его кто-то пишет, то нет необходимости добавлять зависимость, потому что прочитать мы ничего
             // пока не сможем, следовательно чистить пока нечего.
-            if (node != DependencyTracker.DUMMY_NODE) {
-                // DUMMY_NODE означает, что отслеживание зависимостей не нужно
+            if (!DependencyTracker.isDummyNode(node)) {
+                //Dummy node означает, что отслеживание зависимостей не нужно
                 trackDependency(node);
             }
         }
@@ -85,8 +88,7 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
 
     @Override
     public void writeEnd() {
-        clearDependentCaches();
-        writeLock.unlock();
+        clearDependentCachesInternal();
     }
 
     @NotNull
@@ -120,10 +122,65 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
         }
     }
 
+    private void clearDependentCachesInternal() {
+        assert lock.isWriteLockedByCurrentThread();
+
+        boolean readLockAcquired = false;
+        TIdentityHashSet<CleaningNode> elementsAndDependent = null;
+        try {
+            try {
+                elementsAndDependent = CleaningHelper.lockRecursive(this);
+                readLock.lock();
+                readLockAcquired = true;
+            } finally {
+                writeLock.unlock();
+            }
+
+            //elementsAndDependent will be changed during the invocation
+            TIdentityHashSet<CleaningNode> changedDependentNodes = narrowDependenciesSet(elementsAndDependent);
+
+            //clear changed nodes
+            for (CleaningNode element : changedDependentNodes) {
+                element.clear();
+            }
+        } finally {
+            CleaningHelper.unlock(CleaningHelper.getLocks(elementsAndDependent));
+
+            if (readLockAcquired) {
+                readLock.unlock();
+            }
+        }
+    }
+
+    private TIdentityHashSet<CleaningNode> narrowDependenciesSet(TIdentityHashSet<CleaningNode> elementsAndDependent) {
+        TIdentityHashSet<CleaningNode> changedDependentNodes = DependencyTracker.getChangedDependentNodes(Collections.<DependencyNode>singleton(this));
+
+        //remove new nodes
+        for (Iterator<CleaningNode> it = changedDependentNodes.iterator(); it.hasNext(); ) {
+            CleaningNode node = it.next();
+            if (!elementsAndDependent.contains(node)) {
+                it.remove();
+            }
+        }
+
+        //unlock not changed nodes
+        for (Iterator<CleaningNode> it = elementsAndDependent.iterator(); it.hasNext(); ) {
+            CleaningNode element = it.next();
+            if (!changedDependentNodes.contains(element)) {
+                Lock lock = element.getLock();
+                if (lock != null) {
+                    it.remove();
+                    lock.unlock();
+                }
+            }
+        }
+        return changedDependentNodes;
+    }
+
     @Override
     public void clearDependentCaches() {
-        Set<CleaningNode> elements = DependencyTracker.getAllDependentNodes(Collections.<DependencyNode>singleton(this));
-        CacheFactory.getCleaner().clearAll(elements);
+        writeLock.lock();
+        clearDependentCachesInternal();
     }
 
     @Override
@@ -155,5 +212,10 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
     @Override
     public DependencyNode getDependencyNode() {
         return this;
+    }
+
+    @Override
+    public Object getCacheOwner() {
+        return owner;
     }
 }

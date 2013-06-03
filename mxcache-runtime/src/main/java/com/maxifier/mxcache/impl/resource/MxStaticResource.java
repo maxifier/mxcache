@@ -12,7 +12,7 @@ import java.io.ObjectStreamException;
  */
 public class MxStaticResource extends MxResourceImpl {
     public MxStaticResource(@NotNull String name) {
-        super(name);
+        super(null, name);
     }
 
     @Override

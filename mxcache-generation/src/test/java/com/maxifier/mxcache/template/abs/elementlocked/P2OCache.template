@@ -27,62 +27,63 @@ import java.util.concurrent.locks.Lock;
 public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache implements #EG##FG#Cache, #EG##FG#ElementLockedStorage {
     private final #EG##FG#Calculatable calculatable;
 
-    private final Object owner;
-
     public Abstract#E##F#Cache(Object owner, #EG##FG#Calculatable calculatable, MutableStatistics statistics) {
-        super(statistics);
-        this.owner = owner;
+        super(owner, statistics);
         this.calculatable = calculatable;
     }
 
     @Override
     @SuppressWarnings({ "unchecked" })
     public #fg# getOrCreate(#IF_E##eg# o#ENDIF#) {
-        #IF_E#lock(o);#ELSE#Lock lock = getLock();
-        if (lock != null) {
-            lock.lock();
-        }#ENDIF#
-        try {
-            Object v = load(#IF_E#o#ENDIF#);
-            if (v != UNDEFINED) {
-                DependencyTracker.mark(getDependencyNode());
-                hit();
-                return (#fg#)v;
-            }
-            DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
+        if (DependencyTracker.isBypassCaches()) {
+            return calculatable.calculate(owner#IF_E#, o#ENDIF#);
+        } else {
+            #IF_E#lock(o);#ELSE#Lock lock = getLock();
+            if (lock != null) {
+                lock.lock();
+            }#ENDIF#
             try {
-                while(true) {
-                    try {
-                        return create(#IF_E#o#ENDIF#);
-                    } catch (ResourceOccupied e) {
-                        if (callerNode != null) {
-                            throw e;
-                        } else {
-                            #IF_E#unlock(o);#ELSE#if (lock != null) {
-                                lock.unlock();
-                            }#ENDIF#
-                            try {
-                                e.getResource().waitForEndOfModification();
-                            } finally {
-                                #IF_E#lock(o);#ELSE#if (lock != null) {
-                                    lock.lock();
+                Object v = load(#IF_E#o#ENDIF#);
+                if (v != UNDEFINED) {
+                    DependencyTracker.mark(getDependencyNode());
+                    hit();
+                    return (#fg#)v;
+                }
+                DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
+                try {
+                    while(true) {
+                        try {
+                            return create(#IF_E#o#ENDIF#);
+                        } catch (ResourceOccupied e) {
+                            if (callerNode != null) {
+                                throw e;
+                            } else {
+                                #IF_E#unlock(o);#ELSE#if (lock != null) {
+                                    lock.unlock();
                                 }#ENDIF#
-                            }
-                            v = load(#IF_E#o#ENDIF#);
-                            if (v != UNDEFINED) {
-                                hit();
-                                return (#fg#)v;
+                                try {
+                                    e.getResource().waitForEndOfModification();
+                                } finally {
+                                    #IF_E#lock(o);#ELSE#if (lock != null) {
+                                        lock.lock();
+                                    }#ENDIF#
+                                }
+                                v = load(#IF_E#o#ENDIF#);
+                                if (v != UNDEFINED) {
+                                    hit();
+                                    return (#fg#)v;
+                                }
                             }
                         }
                     }
+                } finally {
+                    DependencyTracker.exit(callerNode);
                 }
             } finally {
-                DependencyTracker.exit(callerNode);
+                #IF_E#unlock(o);#ELSE#if (lock != null) {
+                    lock.unlock();
+                }#ENDIF#
             }
-        } finally {
-            #IF_E#unlock(o);#ELSE#if (lock != null) {
-                lock.unlock();
-            }#ENDIF#
         }
     }
 

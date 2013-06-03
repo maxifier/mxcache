@@ -56,4 +56,9 @@ class CacheWithLock implements Cache {
     public DependencyNode getDependencyNode() {
         return DependencyTracker.DUMMY_NODE;
     }
+
+    @Override
+    public Object getCacheOwner() {
+        throw new UnsupportedOperationException();
+    }
 }

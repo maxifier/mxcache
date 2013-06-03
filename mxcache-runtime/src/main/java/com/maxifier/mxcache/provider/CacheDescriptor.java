@@ -177,6 +177,10 @@ public class CacheDescriptor<T> {
         return Modifier.isStatic(method.getModifiers());
     }
 
+    public boolean isResourceView() {
+        return method.getAnnotation(ResourceView.class) != null;
+    }
+
     /**
      * @return класс, содержащий описываемый метод.
      */

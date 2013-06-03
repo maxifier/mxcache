@@ -24,53 +24,54 @@ import com.maxifier.mxcache.storage.*;
 public abstract class AbstractCharacterObjectCache<F> extends AbstractCache implements CharacterObjectCache<F>, CharacterObjectStorage<F> {
     private final CharacterObjectCalculatable<F> calculatable;
 
-    private final Object owner;
-
     public AbstractCharacterObjectCache(Object owner, CharacterObjectCalculatable<F> calculatable, MutableStatistics statistics) {
-        super(statistics);
-        this.owner = owner;
+        super(owner, statistics);
         this.calculatable = calculatable;
     }
 
     @Override
     @SuppressWarnings({ "unchecked" })
     public F getOrCreate(char o) {
-        lock();
-        try {
-            Object v = load(o);
-            if (v != UNDEFINED) {
-                DependencyTracker.mark(getDependencyNode());
-                hit();
-                return (F)v;
-            }
-            DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
+        if (DependencyTracker.isBypassCaches()) {
+            return calculatable.calculate(owner, o);
+        } else {
+            lock();
             try {
-                while(true) {
-                    try {
-                        return create(o);
-                    } catch (ResourceOccupied e) {
-                        if (callerNode != null) {
-                            throw e;
-                        } else {
-                            unlock();
-                            try {
-                                e.getResource().waitForEndOfModification();
-                            } finally {
-                                lock();
-                            }
-                            v = load(o);
-                            if (v != UNDEFINED) {
-                                hit();
-                                return (F)v;
+                Object v = load(o);
+                if (v != UNDEFINED) {
+                    DependencyTracker.mark(getDependencyNode());
+                    hit();
+                    return (F)v;
+                }
+                DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
+                try {
+                    while(true) {
+                        try {
+                            return create(o);
+                        } catch (ResourceOccupied e) {
+                            if (callerNode != null) {
+                                throw e;
+                            } else {
+                                unlock();
+                                try {
+                                    e.getResource().waitForEndOfModification();
+                                } finally {
+                                    lock();
+                                }
+                                v = load(o);
+                                if (v != UNDEFINED) {
+                                    hit();
+                                    return (F)v;
+                                }
                             }
                         }
                     }
+                } finally {
+                    DependencyTracker.exit(callerNode);
                 }
             } finally {
-                DependencyTracker.exit(callerNode);
+                unlock();
             }
-        } finally {
-            unlock();
         }
     }
 

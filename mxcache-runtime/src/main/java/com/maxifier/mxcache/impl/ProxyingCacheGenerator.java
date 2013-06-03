@@ -43,6 +43,7 @@ public final class ProxyingCacheGenerator {
 
     private static final Method GET_STATISTICS_METHOD = new Method("getStatistics", STATISTICS_TYPE, EMPTY_TYPES);
     private static final Method SIZE_METHOD = new Method("getSize", INT_TYPE, EMPTY_TYPES);
+    private static final Method OWNER_METHOD = new Method("getCacheOwner", OBJECT_TYPE, EMPTY_TYPES);
     private static final Method GET_LOCK_METHOD = new Method("getLock", LOCK_TYPE, EMPTY_TYPES);
     private static final Method CLEAR_METHOD = Method.getMethod("void clear()");
     private static final Method PROXY_METHOD = new Method("proxy", OBJECT_TYPE, new Type[] { CLASS_TYPE, RESOLVABLE_TYPE });
@@ -106,6 +107,8 @@ public final class ProxyingCacheGenerator {
 
         generateSize(writer, cacheField);
 
+        generateOwner(writer, cacheField);
+
         generateGetStatistics(writer, cacheField);
 
         generateCtor(writer, cacheField, proxyFactoryField);
@@ -138,6 +141,15 @@ public final class ProxyingCacheGenerator {
         size.visitCode();
         size.get(cacheField);
         size.invokeInterface(cacheField.getType(), SIZE_METHOD);
+        size.returnValue();
+        size.endMethod();
+    }
+
+    private static void generateOwner(ClassGenerator writer, MxField cacheField) {
+        MxGeneratorAdapter size = writer.defineMethod(ACC_PUBLIC, OWNER_METHOD);
+        size.visitCode();
+        size.get(cacheField);
+        size.invokeInterface(cacheField.getType(), OWNER_METHOD);
         size.returnValue();
         size.endMethod();
     }

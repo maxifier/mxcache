@@ -26,12 +26,15 @@ public final class DependencyTracker {
 
     public static final DependencyNode PROBE_NODE = new DummyDependencyNode("<PROBE>");
 
+    public static final DependencyNode NOCACHE_NODE = new DummyDependencyNode("<NOCACHE>");
+
     private DependencyTracker() {
     }
 
     /**
      * This method marks current top of stack dependency node as dependant of given node; it doesn't push given node to
      * stack. It is equivalent to <code>exit(track(node))</code> sequence, but works much faster.
+     *
      * @param node dependency node
      */
     public static void mark(DependencyNode node) {
@@ -44,12 +47,13 @@ public final class DependencyTracker {
      * This method pushes given node to top of stack, and marks current on-stack node as dependant of given node.
      * This method returns current stack top; later it should be passed as an argument to
      * {@link DependencyTracker#exit(DependencyNode)}.
+     *
      * @param node node to push
      * @return previous on-stack dependency node
      */
     public static DependencyNode track(DependencyNode node) {
         DependencyNode oldNode = NODE.get();
-        assert oldNode == null || node != null: "Could not reassign node to null";
+        assert oldNode == null || node != null : "Could not reassign node to null";
         if (oldNode == PROBE_NODE) {
             throw new InternalProbeFailedError();
         }
@@ -83,7 +87,7 @@ public final class DependencyTracker {
 
     public static void addExplicitDependency(DependencyNode node, MxResource resource) {
         if (resource instanceof MxResourceImpl) {
-            ((MxResourceImpl)resource).trackDependency(node);
+            ((MxResourceImpl) resource).trackDependency(node);
         } else {
             throw new UnsupportedOperationException("Current implementation of dependency tracker cannot deal with resource class " + resource.getClass());
         }
@@ -108,6 +112,41 @@ public final class DependencyTracker {
         }
         TIdentityHashSet<CleaningNode> result = new TIdentityHashSet<CleaningNode>(nodes.size() + initial.size());
         result.addAll(initial);
+        for (DependencyNode node : nodes) {
+            node.appendNodes(result);
+        }
+        return result;
+    }
+
+    public static boolean isDummyNode(DependencyNode node) {
+        return node instanceof DummyDependencyNode;
+    }
+
+    public static boolean isBypassCaches() {
+        return NOCACHE_NODE.equals(get());
+    }
+
+    /**
+     * Finds dependent caches taking ResourceView annotation into account.
+     *
+     * @param src list of dependency nodes to start searching dependent caches from
+     * @return set of dependent caches
+     */
+    public static TIdentityHashSet<CleaningNode> getChangedDependentNodes(Iterable<DependencyNode> src) {
+        Set<DependencyNode> nodes = new THashSet<DependencyNode>();
+        Queue<DependencyNode> queue = new LinkedList<DependencyNode>();
+
+        DependencyNodeVisitor visitor = new CollectingChangedDependencyNodeVisitor(nodes, queue);
+
+        // we enqueue this but we don't add it cause we don't want to call it's appendElements(Set)
+        for (DependencyNode node : src) {
+            node.visitDependantNodes(visitor);
+        }
+        while (!queue.isEmpty()) {
+            queue.poll().visitDependantNodes(visitor);
+        }
+
+        TIdentityHashSet<CleaningNode> result = new TIdentityHashSet<CleaningNode>(nodes.size());
         for (DependencyNode node : nodes) {
             node.appendNodes(result);
         }

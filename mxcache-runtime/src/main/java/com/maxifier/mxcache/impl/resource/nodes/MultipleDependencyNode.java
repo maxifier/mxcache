@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
  * Time: 12:32:45
  */
 public class MultipleDependencyNode extends AbstractDependencyNode {
-    private final List<WeakReference<CleaningNode>> instances = new ArrayList<WeakReference<CleaningNode>>();
+    protected final List<WeakReference<CleaningNode>> instances = new ArrayList<WeakReference<CleaningNode>>();
 
     @Override
     public synchronized void addNode(@NotNull CleaningNode node) {

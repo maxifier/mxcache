@@ -116,6 +116,7 @@ public final class Generate {
         generateElementLockedStorageCacheImpl();
 
         generateImpl();
+        generateDependencyNode();
         generateImplTests();
 
         logger.debug("Generation complete.");
@@ -269,6 +270,24 @@ public final class Generate {
         generate("PInlineDependencyCache.template", "", "InlineDependencyCache.java", inputPathImpl, outputPathImpl, WRAPPERS_OBJECT);
     }
 
+    private static void generateDependencyNode() throws IOException {
+        File inputPath = new File(TEMPLATE_PATH + "/resource/nodes");
+        if (!inputPath.exists()) {
+            throw new FileNotFoundException("\"" + inputPath + "\" does not exist");
+        }
+
+        File outputPath = new File(MODULE + "/src/main/java/com/maxifier/mxcache/impl/resource/nodes");
+        if (!outputPath.exists()) {
+            throw new FileNotFoundException("\"" + outputPath + "\" does not exist");
+        }
+
+        generateP("ViewableMultipleP2ODependencyNode.template", "ViewableMultiple", "DependencyNode.java", inputPath, outputPath, ONLY_OBJECT);
+        generateP("ViewableMultipleP2PDependencyNode.template", "ViewableMultiple", "DependencyNode.java", inputPath, outputPath, WRAPPERS_NO_OBJECT);
+
+        generateP("ViewableSingletonP2ODependencyNode.template", "ViewableSingleton", "DependencyNode.java", inputPath, outputPath, ONLY_OBJECT);
+        generateP("ViewableSingletonP2PDependencyNode.template", "ViewableSingleton", "DependencyNode.java", inputPath, outputPath, WRAPPERS_NO_OBJECT);
+    }
+
     private static void generateImplTests() throws IOException {
         File inputPathImpl = new File(TEMPLATE_PATH + "/impl");
         if (!inputPathImpl.exists()) {
@@ -349,9 +368,21 @@ public final class Generate {
                         "////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\n" + out;
                 */
 
+                out = out.replace("#SOURCE#", templateName);
+
                 String outFile = pathPrefix + e.getShortName() + f.getShortName() + pathSuffix;
                 writeFile(outFile, out, outputPath);
             }
+        }
+    }
+
+    private static void generateP(String templateName, String pathPrefix, String pathSuffix, File inputPath, File outputPath, WrapperInfo[] wrappers) throws IOException {
+        String template = readFile(templateName, inputPath);
+        for (WrapperInfo f : wrappers) {
+            String out = f.replaceF(template);
+
+            String outFile = pathPrefix + f.getShortName() + pathSuffix;
+            writeFile(outFile, out, outputPath);
         }
     }
 

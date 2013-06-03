@@ -20,8 +20,10 @@ abstract class AbstractCache extends LightweightLock implements Cache, Storage {
     private final MutableStatistics statistics;
 
     private DependencyNode node;
+    protected final Object owner;
 
-    protected AbstractCache(@Nullable MutableStatistics statistics) {
+    protected AbstractCache(Object owner, @Nullable MutableStatistics statistics) {
+        this.owner = owner;
         this.statistics = statistics;
     }
 
@@ -65,5 +67,10 @@ abstract class AbstractCache extends LightweightLock implements Cache, Storage {
     @Override
     public DependencyNode getDependencyNode() {
         return node;
+    }
+
+    @Override
+    public Object getCacheOwner() {
+        return owner;
     }
 }

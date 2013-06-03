@@ -14,11 +14,13 @@ import java.util.concurrent.locks.Lock;
  * Time: 9:51:52
  */
 abstract class AbstractElementLockedCache implements Cache, ElementLockedStorage {
+    protected final Object owner;
     private final MutableStatistics statistics;
 
     private DependencyNode node;
 
-    protected AbstractElementLockedCache(MutableStatistics statistics) {
+    protected AbstractElementLockedCache(Object owner, MutableStatistics statistics) {
+        this.owner = owner;
         this.statistics = statistics;
     }
 
@@ -58,4 +60,11 @@ abstract class AbstractElementLockedCache implements Cache, ElementLockedStorage
     public DependencyNode getDependencyNode() {
         return node;
     }
+
+
+    @Override
+    public Object getCacheOwner() {
+        return owner;
+    }
+
 }

@@ -25,53 +25,54 @@ import com.maxifier.mxcache.storage.elementlocked.*;
 public abstract class AbstractLongObjectCache<F> extends AbstractElementLockedCache implements LongObjectCache<F>, LongObjectElementLockedStorage<F> {
     private final LongObjectCalculatable<F> calculatable;
 
-    private final Object owner;
-
     public AbstractLongObjectCache(Object owner, LongObjectCalculatable<F> calculatable, MutableStatistics statistics) {
-        super(statistics);
-        this.owner = owner;
+        super(owner, statistics);
         this.calculatable = calculatable;
     }
 
     @Override
     @SuppressWarnings({ "unchecked" })
     public F getOrCreate(long o) {
-        lock(o);
-        try {
-            Object v = load(o);
-            if (v != UNDEFINED) {
-                DependencyTracker.mark(getDependencyNode());
-                hit();
-                return (F)v;
-            }
-            DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
+        if (DependencyTracker.isBypassCaches()) {
+            return calculatable.calculate(owner, o);
+        } else {
+            lock(o);
             try {
-                while(true) {
-                    try {
-                        return create(o);
-                    } catch (ResourceOccupied e) {
-                        if (callerNode != null) {
-                            throw e;
-                        } else {
-                            unlock(o);
-                            try {
-                                e.getResource().waitForEndOfModification();
-                            } finally {
-                                lock(o);
-                            }
-                            v = load(o);
-                            if (v != UNDEFINED) {
-                                hit();
-                                return (F)v;
+                Object v = load(o);
+                if (v != UNDEFINED) {
+                    DependencyTracker.mark(getDependencyNode());
+                    hit();
+                    return (F)v;
+                }
+                DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
+                try {
+                    while(true) {
+                        try {
+                            return create(o);
+                        } catch (ResourceOccupied e) {
+                            if (callerNode != null) {
+                                throw e;
+                            } else {
+                                unlock(o);
+                                try {
+                                    e.getResource().waitForEndOfModification();
+                                } finally {
+                                    lock(o);
+                                }
+                                v = load(o);
+                                if (v != UNDEFINED) {
+                                    hit();
+                                    return (F)v;
+                                }
                             }
                         }
                     }
+                } finally {
+                    DependencyTracker.exit(callerNode);
                 }
             } finally {
-                DependencyTracker.exit(callerNode);
+                unlock(o);
             }
-        } finally {
-            unlock(o);
         }
     }
 

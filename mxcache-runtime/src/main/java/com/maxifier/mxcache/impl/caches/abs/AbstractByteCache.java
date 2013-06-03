@@ -24,50 +24,51 @@ import com.maxifier.mxcache.storage.*;
 public abstract class AbstractByteCache extends AbstractCache implements ByteCache, ByteStorage {
     private final ByteCalculatable calculatable;
 
-    private final Object owner;
-
     public AbstractByteCache(Object owner, ByteCalculatable calculatable, MutableStatistics statistics) {
-        super(statistics);
-        this.owner = owner;
+        super(owner, statistics);
         this.calculatable = calculatable;
     }
 
     @Override
     public byte getOrCreate() {
-        lock();
-        try {
-            if (isCalculated()) {
-                DependencyTracker.mark(getDependencyNode());
-                hit();
-                return load();
-            }
-            DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
+        if (DependencyTracker.isBypassCaches()) {
+            return calculatable.calculate(owner);
+        } else {
+            lock();
             try {
-                while(true) {
-                    try {
-                        return create();
-                    } catch (ResourceOccupied e) {
-                        if (callerNode != null) {
-                            throw e;
-                        } else {
-                            unlock();
-                            try {
-                                e.getResource().waitForEndOfModification();
-                            } finally {
-                                lock();
-                            }
-                            if (isCalculated()) {
-                                hit();
-                                return load();
+                if (isCalculated()) {
+                    DependencyTracker.mark(getDependencyNode());
+                    hit();
+                    return load();
+                }
+                DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
+                try {
+                    while(true) {
+                        try {
+                            return create();
+                        } catch (ResourceOccupied e) {
+                            if (callerNode != null) {
+                                throw e;
+                            } else {
+                                unlock();
+                                try {
+                                    e.getResource().waitForEndOfModification();
+                                } finally {
+                                    lock();
+                                }
+                                if (isCalculated()) {
+                                    hit();
+                                    return load();
+                                }
                             }
                         }
                     }
+                } finally {
+                    DependencyTracker.exit(callerNode);
                 }
             } finally {
-                DependencyTracker.exit(callerNode);
+                unlock();
             }
-        } finally {
-            unlock();
         }
     }
 

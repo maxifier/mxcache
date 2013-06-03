@@ -7,7 +7,7 @@ import com.maxifier.mxcache.legacy.converters.ConverterException;
 import com.maxifier.mxcache.legacy.converters.MxAbstractResourceConverter;
 import com.maxifier.mxcache.legacy.converters.MxConverter;
 import com.maxifier.mxcache.storage.Storage;
-import com.maxifier.mxcache.impl.caches.storage.Wrapping;
+import com.maxifier.mxcache.impl.wrapping.Wrapping;
 import com.maxifier.mxcache.legacy.converters.MxConvertType;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.Signature;

@@ -2,6 +2,7 @@ package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.util.HashWeakReference;
 import gnu.trove.THashSet;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.Reference;
 import java.util.*;
@@ -55,5 +56,9 @@ public abstract class AbstractDependencyNode implements DependencyNode {
             dependentNodes = new THashSet<Reference<DependencyNode>>();
         }
         dependentNodes.add(node.getSelfReference());
+    }
+
+    protected static boolean equal(@Nullable Object a, @Nullable Object b) {
+        return a == b || (a != null && a.equals(b));
     }
 }

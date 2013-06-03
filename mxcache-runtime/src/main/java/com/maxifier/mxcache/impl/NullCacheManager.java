@@ -88,6 +88,12 @@ public class NullCacheManager<T> implements CacheManager<T> {
         getOrCreate.returnValue();
         getOrCreate.endMethod();
 
+        MxGeneratorAdapter getOwner = cw.defineMethod(ACC_PUBLIC, new Method("getCacheOwner", OBJECT_TYPE, EMPTY_TYPES));
+        getOwner.visitCode();
+        getOwner.get(owner);
+        getOwner.returnValue();
+        getOwner.endMethod();
+
         MxGeneratorAdapter clear = cw.defineMethod(ACC_PUBLIC, "clear", Type.VOID_TYPE);
         clear.visitCode();
         clear.returnValue();

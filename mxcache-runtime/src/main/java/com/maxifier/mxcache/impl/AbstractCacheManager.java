@@ -2,13 +2,12 @@ package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.*;
 import com.maxifier.mxcache.context.CacheContext;
+import com.maxifier.mxcache.impl.wrapping.Wrapping;
 import com.maxifier.mxcache.impl.resource.MxResourceFactory;
-import com.maxifier.mxcache.impl.resource.nodes.SingletonDependencyNode;
 import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
-import com.maxifier.mxcache.impl.resource.nodes.MultipleDependencyNode;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.resource.MxResource;
 import org.jetbrains.annotations.Nullable;
@@ -99,14 +98,15 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
 
     /**
      * Создает и регистрирует узел для статических зависимостей. Должен зарегистрировать явные зависимости с помощью registerExplicitDependencies.
+     *
      * @return узел зависимостей
      */
     protected DependencyNode createStaticNode() {
         DependencyNode node;
         if (descriptor.isStatic()) {
-            node = new SingletonDependencyNode();
+            node = Wrapping.getSingletonNode(descriptor);
         } else {
-            node = new MultipleDependencyNode();
+            node = Wrapping.getMultipleNode(descriptor);
         }
         registerExplicitDependencies(node);
         return node;
@@ -114,10 +114,11 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
 
     /**
      * Создает узел зависимостей для отдельного экземпляра. Должен зарегистрировать явные зависимости с помощью registerExplicitDependencies.
+     *
      * @return узел
      */
     protected DependencyNode createInstanceNode() {
-        DependencyNode node = new SingletonDependencyNode();
+        DependencyNode node = Wrapping.getSingletonNode(descriptor);
         registerExplicitDependencies(node);
         return node;
     }
@@ -135,6 +136,7 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
 
     /**
      * Добавляет статические зависимости от ресурсов, заданные через аннотации
+     *
      * @param node ухед зависимостей
      */
     protected void registerExplicitDependencies(DependencyNode node) {

@@ -4,6 +4,8 @@ import com.maxifier.mxcache.PublicAPI;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.impl.caches.abs.elementlocked.ElementLockedStorage;
+import com.maxifier.mxcache.impl.resource.nodes.MultipleDependencyNode;
+import com.maxifier.mxcache.impl.resource.nodes.SingletonDependencyNode;
 import com.maxifier.mxcache.storage.Storage;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
@@ -23,10 +25,12 @@ public class Signature {
     private static final String CACHES_PACKAGE_NAME = "com.maxifier.mxcache.caches.";
     private static final String STORAGE_PACKAGE_NAME = "com.maxifier.mxcache.storage.";
     private static final String LOCKED_STORAGE_PACKAGE_NAME = "com.maxifier.mxcache.storage.elementlocked.";
+    private static final String SINGLETON_NODES_PACKAGE_NAME = "com.maxifier.mxcache.impl.resource.nodes.ViewableSingleton";
+    private static final String MULTIPLE_NODES_PACKAGE_NAME = "com.maxifier.mxcache.impl.resource.nodes.ViewableMultiple";
     private static final int PRIMITIVE_TYPE_COUNT = 8;
 
-    private static final Class[] BASIC_TYPES = { boolean.class, byte.class, short.class, char.class,
-            int.class, long.class, float.class, double.class, Object.class, null };
+    private static final Class[] BASIC_TYPES = {boolean.class, byte.class, short.class, char.class,
+            int.class, long.class, float.class, double.class, Object.class, null};
 
     private static final Map<Class, Map<Class, Signature>> BASIC;
     private static final Map<Class, Signature> CACHE;
@@ -46,6 +50,10 @@ public class Signature {
                     CACHE.put(s.getCalculableInterface(), s);
                     CACHE.put(s.getStorageInterface(), s);
                     CACHE.put(s.getElementLockedStorageInterface(), s);
+                    if (e == null) {
+                        CACHE.put(s.getSingletonDependencyNodeInterface(), s);
+                        CACHE.put(s.getMultipleDependencyNodeInterface(), s);
+                    }
                     byValue.put(f, s);
                 }
             }
@@ -73,7 +81,7 @@ public class Signature {
     private final Class container;
 
     private final Class value;
-    
+
     private final Signature erased;
 
     public Signature erased() {
@@ -177,7 +185,7 @@ public class Signature {
     public Class getContainer() {
         return container;
     }
-    
+
     public Type getContainerType() {
         return container == null ? null : Type.getType(container);
     }
@@ -255,7 +263,7 @@ public class Signature {
     public Class getKey(int index) {
         return keys[index];
     }
-    
+
     public int getKeyCount() {
         return keys.length;
     }
@@ -268,20 +276,30 @@ public class Signature {
         return erased.getCalculableInterface();
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({"unchecked"})
     public Class<? extends Storage> getStorageInterface() {
         return erased.getStorageInterface();
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({"unchecked"})
     public Class<? extends ElementLockedStorage> getElementLockedStorageInterface() {
         return erased.getElementLockedStorageInterface();
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public Class<? extends SingletonDependencyNode> getSingletonDependencyNodeInterface() {
+        return erased.getSingletonDependencyNodeInterface();
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public Class<? extends MultipleDependencyNode> getMultipleDependencyNodeInterface() {
+        return erased.getMultipleDependencyNodeInterface();
     }
 
     /**
      * @param other other signature
      * @return true only if object with other signature can be transparently replaced with object with this signature,
-     * false if additional transformation is required.
+     *         false if additional transformation is required.
      */
     public boolean isWider(Signature other) {
         return (container == other.container || (container != null && other.container != null && container.isAssignableFrom(other.container))) &&
@@ -317,6 +335,8 @@ public class Signature {
         private final Class<? extends Storage> storageInterface;
         private final Class<?> calculatableInterface;
         private final Class<? extends ElementLockedStorage> elementLockedStorageInterface;
+        private final Class<? extends SingletonDependencyNode> singletonDependencyNode;
+        private final Class<? extends MultipleDependencyNode> multipleDependencyNode;
 
         BasicSignature(Class key, Class value) {
             super(key, value);
@@ -324,6 +344,8 @@ public class Signature {
             storageInterface = (Class<? extends Storage>) getImplementationClass(STORAGE_PACKAGE_NAME, "Storage");
             calculatableInterface = getImplementationClass(CACHES_PACKAGE_NAME, "Calculatable");
             elementLockedStorageInterface = (Class<? extends ElementLockedStorage>) getImplementationClass(LOCKED_STORAGE_PACKAGE_NAME, "ElementLockedStorage");
+            singletonDependencyNode = key == null ? (Class<? extends SingletonDependencyNode>) getImplementationClass(SINGLETON_NODES_PACKAGE_NAME, "DependencyNode") : null;
+            multipleDependencyNode = key == null ? (Class<? extends MultipleDependencyNode>) getImplementationClass(MULTIPLE_NODES_PACKAGE_NAME, "DependencyNode") : null;
         }
 
         @Override
@@ -344,6 +366,16 @@ public class Signature {
         @Override
         public Class<? extends ElementLockedStorage> getElementLockedStorageInterface() {
             return elementLockedStorageInterface;
+        }
+
+        @Override
+        public Class<? extends SingletonDependencyNode> getSingletonDependencyNodeInterface() {
+            return singletonDependencyNode;
+        }
+
+        @Override
+        public Class<? extends MultipleDependencyNode> getMultipleDependencyNodeInterface() {
+            return multipleDependencyNode;
         }
 
         public String getImplementationClassName(String prefix, String postfix) {

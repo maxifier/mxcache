@@ -10,7 +10,7 @@ import com.maxifier.mxcache.impl.resource.ResourceOccupied;
 import static org.testng.Assert.*;
 
 import com.maxifier.mxcache.provider.Signature;
-import com.maxifier.mxcache.impl.caches.storage.Wrapping;
+import com.maxifier.mxcache.impl.wrapping.Wrapping;
 
 import static org.mockito.Mockito.*;
 

@@ -35,6 +35,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import static com.maxifier.mxcache.asm.Opcodes.ACC_PUBLIC;
@@ -134,6 +135,10 @@ public class DynamicInstrumentationFTest {
 
     private TestProxied loadProxied(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         return (TestProxied) instrumentClass(TestProxiedImpl.class, instrumentator, cl).newInstance();
+    }
+
+    private Point loadPoint(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        return (Point) instrumentClass(PointImpl.class, instrumentator, cl).newInstance();
     }
 
     @Test(dataProvider = "all")
@@ -1063,5 +1068,22 @@ public class DynamicInstrumentationFTest {
             bis.close();
             bos.close();
         }
+    }
+
+    @Test(dataProvider = "all")
+    public void testView(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        Point p = loadPoint(instrumentator, cl);
+        p.setX(3L);
+        p.setY(4L);
+        assertEquals(p.getRadius(), 5.0);
+
+        p.setNewXY(4L, 3L);
+        assertEquals(p.getRadius(), 5.0);
+
+        p.setX(4L);
+        assertEquals(p.getRadius(), 5.0);
+
+        p.setX(0L);
+        assertEquals(p.getRadius(), 3.0);
     }
 }

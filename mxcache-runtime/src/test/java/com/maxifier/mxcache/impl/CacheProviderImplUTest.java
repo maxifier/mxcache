@@ -88,7 +88,7 @@ public class CacheProviderImplUTest {
             }
 
             @Override
-            public Cache createCache(@Nullable T owner) {
+            public Cache createCache(final @Nullable T owner) {
                 return new IntCache() {
                     @Override
                     public int getOrCreate() {
@@ -127,6 +127,11 @@ public class CacheProviderImplUTest {
                     @Override
                     public DependencyNode getDependencyNode() {
                         return DependencyTracker.DUMMY_NODE;
+                    }
+
+                    @Override
+                    public Object getCacheOwner() {
+                        return owner;
                     }
                 };
             }

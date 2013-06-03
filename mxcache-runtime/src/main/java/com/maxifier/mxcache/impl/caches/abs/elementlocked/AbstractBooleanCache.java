@@ -27,59 +27,60 @@ import java.util.concurrent.locks.Lock;
 public abstract class AbstractBooleanCache extends AbstractElementLockedCache implements BooleanCache, BooleanElementLockedStorage {
     private final BooleanCalculatable calculatable;
 
-    private final Object owner;
-
     public AbstractBooleanCache(Object owner, BooleanCalculatable calculatable, MutableStatistics statistics) {
-        super(statistics);
-        this.owner = owner;
+        super(owner, statistics);
         this.calculatable = calculatable;
     }
 
     @Override
     public boolean getOrCreate() {
-        Lock lock = getLock();
-        if (lock != null) {
-            lock.lock();
-        }
-        try {
-            if (isCalculated()) {
-                DependencyTracker.mark(getDependencyNode());
-                hit();
-                return load();
+        if (DependencyTracker.isBypassCaches()) {
+            return calculatable.calculate(owner);
+        } else {
+            Lock lock = getLock();
+            if (lock != null) {
+                lock.lock();
             }
-
-            DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
             try {
-                while(true) {
-                    try {
-                        return create();
-                    } catch (ResourceOccupied e) {
-                        if (callerNode != null) {
-                            throw e;
-                        } else {
-                            if (lock != null) {
-                                lock.unlock();
-                            }
-                            try {
-                                e.getResource().waitForEndOfModification();
-                            } finally {
+                if (isCalculated()) {
+                    DependencyTracker.mark(getDependencyNode());
+                    hit();
+                    return load();
+                }
+
+                DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
+                try {
+                    while(true) {
+                        try {
+                            return create();
+                        } catch (ResourceOccupied e) {
+                            if (callerNode != null) {
+                                throw e;
+                            } else {
                                 if (lock != null) {
-                                    lock.lock();
+                                    lock.unlock();
                                 }
-                            }
-                            if (isCalculated()) {
-                                hit();
-                                return load();
+                                try {
+                                    e.getResource().waitForEndOfModification();
+                                } finally {
+                                    if (lock != null) {
+                                        lock.lock();
+                                    }
+                                }
+                                if (isCalculated()) {
+                                    hit();
+                                    return load();
+                                }
                             }
                         }
                     }
+                } finally {
+                    DependencyTracker.exit(callerNode);
                 }
             } finally {
-                DependencyTracker.exit(callerNode);
-            }
-        } finally {
-            if (lock != null) {
-                lock.unlock();
+                if (lock != null) {
+                    lock.unlock();
+                }
             }
         }
     }

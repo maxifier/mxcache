@@ -27,61 +27,62 @@ import java.util.concurrent.locks.Lock;
 public abstract class AbstractObjectCache<F> extends AbstractElementLockedCache implements ObjectCache<F>, ObjectElementLockedStorage<F> {
     private final ObjectCalculatable<F> calculatable;
 
-    private final Object owner;
-
     public AbstractObjectCache(Object owner, ObjectCalculatable<F> calculatable, MutableStatistics statistics) {
-        super(statistics);
-        this.owner = owner;
+        super(owner, statistics);
         this.calculatable = calculatable;
     }
 
     @Override
     @SuppressWarnings({ "unchecked" })
     public F getOrCreate() {
-        Lock lock = getLock();
-        if (lock != null) {
-            lock.lock();
-        }
-        try {
-            Object v = load();
-            if (v != UNDEFINED) {
-                DependencyTracker.mark(getDependencyNode());
-                hit();
-                return (F)v;
+        if (DependencyTracker.isBypassCaches()) {
+            return calculatable.calculate(owner);
+        } else {
+            Lock lock = getLock();
+            if (lock != null) {
+                lock.lock();
             }
-            DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
             try {
-                while(true) {
-                    try {
-                        return create();
-                    } catch (ResourceOccupied e) {
-                        if (callerNode != null) {
-                            throw e;
-                        } else {
-                            if (lock != null) {
-                                lock.unlock();
-                            }
-                            try {
-                                e.getResource().waitForEndOfModification();
-                            } finally {
+                Object v = load();
+                if (v != UNDEFINED) {
+                    DependencyTracker.mark(getDependencyNode());
+                    hit();
+                    return (F)v;
+                }
+                DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
+                try {
+                    while(true) {
+                        try {
+                            return create();
+                        } catch (ResourceOccupied e) {
+                            if (callerNode != null) {
+                                throw e;
+                            } else {
                                 if (lock != null) {
-                                    lock.lock();
+                                    lock.unlock();
                                 }
-                            }
-                            v = load();
-                            if (v != UNDEFINED) {
-                                hit();
-                                return (F)v;
+                                try {
+                                    e.getResource().waitForEndOfModification();
+                                } finally {
+                                    if (lock != null) {
+                                        lock.lock();
+                                    }
+                                }
+                                v = load();
+                                if (v != UNDEFINED) {
+                                    hit();
+                                    return (F)v;
+                                }
                             }
                         }
                     }
+                } finally {
+                    DependencyTracker.exit(callerNode);
                 }
             } finally {
-                DependencyTracker.exit(callerNode);
-            }
-        } finally {
-            if (lock != null) {
-                lock.unlock();
+                if (lock != null) {
+                    lock.unlock();
+                }
             }
         }
     }

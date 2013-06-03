@@ -11,8 +11,8 @@ import com.maxifier.mxcache.interfaces.StatisticsHolder;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.caches.Cache;
-import com.maxifier.mxcache.impl.caches.storage.WrapperFactory;
-import com.maxifier.mxcache.impl.caches.storage.Wrapping;
+import com.maxifier.mxcache.impl.wrapping.WrapperFactory;
+import com.maxifier.mxcache.impl.wrapping.Wrapping;
 import com.maxifier.mxcache.provider.StorageFactory;
 import com.maxifier.mxcache.storage.CalculableInterceptor;
 import com.maxifier.mxcache.storage.Storage;
@@ -51,7 +51,8 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
 
     private boolean canInlineCache(CacheDescriptor<T> descriptor, StorageFactory<T> storageFactory) {
         return storageFactory.getClass() == DefaultStorageFactory.class &&
-                descriptor.getSignature().getContainer() == null;
+                descriptor.getSignature().getContainer() == null &&
+                !descriptor.isResourceView();
     }
 
     @NotNull

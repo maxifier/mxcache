@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SingletonDependencyNode extends AbstractDependencyNode {
     // we don't need to store reference here cause this node exists only if object itself is not gc'ed
-    private CleaningNode instance;
+    protected CleaningNode instance;
 
     public SingletonDependencyNode() {
         // do nothing - instance is set by addNode.

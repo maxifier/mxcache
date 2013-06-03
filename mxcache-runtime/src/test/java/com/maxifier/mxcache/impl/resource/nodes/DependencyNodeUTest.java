@@ -88,6 +88,11 @@ public class DependencyNodeUTest {
         }
 
         @Override
+        public Object getCacheOwner() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public String toString() {
             return name;
         }

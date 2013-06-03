@@ -21,7 +21,7 @@ import java.util.concurrent.locks.Lock;
  *
  * @author ELectronic ENgine
  */
-final class CleaningHelper {
+public final class CleaningHelper {
 
     private CleaningHelper() {
     }
@@ -146,10 +146,27 @@ final class CleaningHelper {
         }
     }
 
+    public static TIdentityHashSet<CleaningNode> lockRecursive(DependencyNode initial) {
+        TIdentityHashSet<CleaningNode> elements = DependencyTracker.getAllDependentNodes(Collections.singleton(initial));
+        TIdentityHashSet<CleaningNode> elementsAndDependent = elements;
+        Iterable<DependencyNode> nodes = nodeMapping(elements);
+        while (true) {
+            List<Lock> locks = getLocks(elementsAndDependent);
+            lock(locks);
+            TIdentityHashSet<CleaningNode> newElements = DependencyTracker.getAllDependentNodes(nodes, elements);
+            if (!newElements.equals(elementsAndDependent)) {
+                // набор зависимых кэшей изменился, придется еще раз все блокировать заново
+                elementsAndDependent = newElements;
+                continue;
+            }
+            return elementsAndDependent;
+        }
+    }
+
     public static void lockAndClear(Collection<? extends CleaningNode> elements) {
         Iterable<DependencyNode> nodes = nodeMapping(elements);
         TIdentityHashSet<CleaningNode> elementsAndDependent = DependencyTracker.getAllDependentNodes(nodes, elements);
-        while(true) {
+        while (true) {
             List<Lock> locks = getLocks(elementsAndDependent);
             lock(locks);
             try {
@@ -171,10 +188,10 @@ final class CleaningHelper {
 
     private static Iterable<DependencyNode> nodeMapping(final Collection<? extends CleaningNode> elements) {
         return new MappingIterable<CleaningNode, DependencyNode>(elements) {
-                @Override
-                public DependencyNode map(CleaningNode cleaningNode) {
-                    return cleaningNode.getDependencyNode();
-                }
-            };
+            @Override
+            public DependencyNode map(CleaningNode cleaningNode) {
+                return cleaningNode.getDependencyNode();
+            }
+        };
     }
 }

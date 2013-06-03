@@ -72,6 +72,17 @@ public final class MxCache {
             DependencyTracker.exit(prevNode);
         }
     }
+
+    @PublicAPI
+    public static boolean withoutCache(Runnable task) {
+        DependencyNode prevNode = DependencyTracker.track(DependencyTracker.NOCACHE_NODE);
+        try {
+            task.run();
+            return true;
+        } finally {
+            DependencyTracker.exit(prevNode);
+        }
+    }
     
     @PublicAPI
     public static <T> T probe(Callable<T> task) throws ProbeFailedException {

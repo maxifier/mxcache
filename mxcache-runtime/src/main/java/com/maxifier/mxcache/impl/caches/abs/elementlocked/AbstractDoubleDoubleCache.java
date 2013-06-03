@@ -25,51 +25,52 @@ import com.maxifier.mxcache.storage.elementlocked.*;
 public abstract class AbstractDoubleDoubleCache extends AbstractElementLockedCache implements DoubleDoubleCache, DoubleDoubleElementLockedStorage {
     private final DoubleDoubleCalculatable calculatable;
 
-    private final Object owner;
-
     public AbstractDoubleDoubleCache(Object owner, DoubleDoubleCalculatable calculatable, MutableStatistics statistics) {
-        super(statistics);
-        this.owner = owner;
+        super(owner, statistics);
         this.calculatable = calculatable;
     }
 
     @Override
     public double getOrCreate(double o) {
-        lock(o);
-        try {
-            if (isCalculated(o)) {
-                DependencyTracker.mark(getDependencyNode());
-                hit();
-                return load(o);
-            }
-
-            DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
+        if (DependencyTracker.isBypassCaches()) {
+            return calculatable.calculate(owner, o);
+        } else {
+            lock(o);
             try {
-                while(true) {
-                    try {
-                        return create(o);
-                    } catch (ResourceOccupied e) {
-                        if (callerNode != null) {
-                            throw e;
-                        } else {
-                            unlock(o);
-                            try {
-                                e.getResource().waitForEndOfModification();
-                            } finally {
-                                lock(o);
-                            }
-                            if (isCalculated(o)) {
-                                hit();
-                                return load(o);
+                if (isCalculated(o)) {
+                    DependencyTracker.mark(getDependencyNode());
+                    hit();
+                    return load(o);
+                }
+
+                DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
+                try {
+                    while(true) {
+                        try {
+                            return create(o);
+                        } catch (ResourceOccupied e) {
+                            if (callerNode != null) {
+                                throw e;
+                            } else {
+                                unlock(o);
+                                try {
+                                    e.getResource().waitForEndOfModification();
+                                } finally {
+                                    lock(o);
+                                }
+                                if (isCalculated(o)) {
+                                    hit();
+                                    return load(o);
+                                }
                             }
                         }
                     }
+                } finally {
+                    DependencyTracker.exit(callerNode);
                 }
             } finally {
-                DependencyTracker.exit(callerNode);
+                unlock(o);
             }
-        } finally {
-            unlock(o);
         }
     }
 
