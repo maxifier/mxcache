@@ -82,6 +82,17 @@ final class StubMethodFactory {
         }
 
         methodVisitor.get(cacheFieldName, cacheType);
+
+        methodVisitor.dup();
+        Label cacheInitialized = new Label();
+        methodVisitor.ifNonNull(cacheInitialized);
+
+        methodVisitor.throwException(Type.getType(IllegalStateException.class), "@Cached method " + thisClass.getClassName() + "#" + methodName + methodDescriptor + " is called before cache is initialized.\n" +
+                "It usually happens when @Cached method overrides superclass method, and this method is called from superclass constructor somehow before\n" +
+                "constructor of class containing the cache finished, e.g. when superclass constructor invokes SwingWorker that makes use of this cached method");
+
+        methodVisitor.mark(cacheInitialized);
+
         Type[] getOrCreateArgTypes = generatePrepareGetOrCreateArgs(methodVisitor, args, keyType);
         methodVisitor.invokeInterface(cacheType, new Method("getOrCreate", eraseType(returnType), getOrCreateArgTypes));
         if (isReferenceType(returnType)) {
