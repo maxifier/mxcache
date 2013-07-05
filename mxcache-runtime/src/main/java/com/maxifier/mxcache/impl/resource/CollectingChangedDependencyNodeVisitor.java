@@ -33,4 +33,14 @@ public class CollectingChangedDependencyNodeVisitor implements DependencyNodeVis
             queue.add(node);
         }
     }
+
+    @Override
+    public Set<DependencyNode> getNodes() {
+        return nodes;
+    }
+
+    @Override
+    public Queue<DependencyNode> getQueue() {
+        return queue;
+    }
 }

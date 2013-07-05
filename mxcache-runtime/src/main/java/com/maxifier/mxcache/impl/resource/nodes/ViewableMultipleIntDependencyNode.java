@@ -46,7 +46,7 @@ public class ViewableMultipleIntDependencyNode extends MultipleDependencyNode im
                     if (node instanceof IntStorage && node instanceof IntCache) {
                         IntStorage storage = (IntStorage) node;
                         IntCache cache = (IntCache) node;
-                        if (storage.isCalculated() && cache.getOrCreate() != storage.load()) {
+                        if (storage.isCalculated() && !DependencyTracker.isDependentResourceView(cache) && cache.getOrCreate() != storage.load()) {
                             return true;
                         }
                     } else {

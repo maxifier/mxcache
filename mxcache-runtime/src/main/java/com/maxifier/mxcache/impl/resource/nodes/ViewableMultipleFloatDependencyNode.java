@@ -46,7 +46,7 @@ public class ViewableMultipleFloatDependencyNode extends MultipleDependencyNode 
                     if (node instanceof FloatStorage && node instanceof FloatCache) {
                         FloatStorage storage = (FloatStorage) node;
                         FloatCache cache = (FloatCache) node;
-                        if (storage.isCalculated() && cache.getOrCreate() != storage.load()) {
+                        if (storage.isCalculated() && !DependencyTracker.isDependentResourceView(cache) && cache.getOrCreate() != storage.load()) {
                             return true;
                         }
                     } else {

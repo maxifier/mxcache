@@ -46,7 +46,7 @@ public class ViewableMultipleDoubleDependencyNode extends MultipleDependencyNode
                     if (node instanceof DoubleStorage && node instanceof DoubleCache) {
                         DoubleStorage storage = (DoubleStorage) node;
                         DoubleCache cache = (DoubleCache) node;
-                        if (storage.isCalculated() && cache.getOrCreate() != storage.load()) {
+                        if (storage.isCalculated() && !DependencyTracker.isDependentResourceView(cache) && cache.getOrCreate() != storage.load()) {
                             return true;
                         }
                     } else {

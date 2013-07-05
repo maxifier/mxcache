@@ -46,7 +46,7 @@ public class ViewableMultipleLongDependencyNode extends MultipleDependencyNode i
                     if (node instanceof LongStorage && node instanceof LongCache) {
                         LongStorage storage = (LongStorage) node;
                         LongCache cache = (LongCache) node;
-                        if (storage.isCalculated() && cache.getOrCreate() != storage.load()) {
+                        if (storage.isCalculated() && !DependencyTracker.isDependentResourceView(cache) && cache.getOrCreate() != storage.load()) {
                             return true;
                         }
                     } else {

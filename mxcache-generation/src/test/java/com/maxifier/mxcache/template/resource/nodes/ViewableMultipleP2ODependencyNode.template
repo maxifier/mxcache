@@ -46,7 +46,7 @@ public class ViewableMultiple#FT#DependencyNode extends MultipleDependencyNode i
                     if (node instanceof #FT#Storage && node instanceof #FT#Cache) {
                         #FT#Storage storage = (#FT#Storage) node;
                         #FT#Cache cache = (#FT#Cache) node;
-                        if (!equal(cache.getOrCreate(), storage.load())) {
+                        if (!DependencyTracker.isDependentResourceView(cache) && !equal(cache.getOrCreate(), storage.load())) {
                             return true;
                         }
                     } else {

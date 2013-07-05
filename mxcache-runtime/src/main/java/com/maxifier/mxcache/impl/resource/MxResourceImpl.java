@@ -2,7 +2,6 @@ package com.maxifier.mxcache.impl.resource;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.io.Serializable;
@@ -34,6 +33,8 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
     private final ReentrantReadWriteLock lock;
     private final Lock readLock;
     private final Lock writeLock;
+
+    private TIdentityHashSet<CleaningNode> oldDependentResourceViewNodes;
 
     public MxResourceImpl(Object owner, @NotNull String name) {
         this.owner = owner;
@@ -84,6 +85,7 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
             throw new ResourceModificationException("Resource \"" + name + "\" modification is required while cache " + DependencyTracker.get() + " is found on the stack");
         }
         writeLock.lock();
+        oldDependentResourceViewNodes = DependencyTracker.saveResourceViewNodes(this);
     }
 
     @Override
@@ -133,6 +135,8 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
                 readLock.lock();
                 readLockAcquired = true;
             } finally {
+                DependencyTracker.exitDependentResourceView(oldDependentResourceViewNodes);
+                oldDependentResourceViewNodes = null;
                 writeLock.unlock();
             }
 
@@ -153,7 +157,7 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
     }
 
     private TIdentityHashSet<CleaningNode> narrowDependenciesSet(TIdentityHashSet<CleaningNode> elementsAndDependent) {
-        TIdentityHashSet<CleaningNode> changedDependentNodes = DependencyTracker.getChangedDependentNodes(Collections.<DependencyNode>singleton(this));
+        TIdentityHashSet<CleaningNode> changedDependentNodes = DependencyTracker.getChangedDependentNodes(this);
 
         //remove new nodes
         for (Iterator<CleaningNode> it = changedDependentNodes.iterator(); it.hasNext(); ) {

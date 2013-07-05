@@ -41,7 +41,7 @@ public class ViewableSingletonLongDependencyNode extends SingletonDependencyNode
             LongCache cache = (LongCache) instance;
             DependencyNode prevNode = DependencyTracker.track(DependencyTracker.NOCACHE_NODE);
             try {
-                return storage.isCalculated() && cache.getOrCreate() != storage.load();
+                return storage.isCalculated() && !DependencyTracker.isDependentResourceView(cache) && cache.getOrCreate() != storage.load();
             } finally {
                 DependencyTracker.exit(prevNode);
             }

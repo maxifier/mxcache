@@ -41,7 +41,7 @@ public class ViewableSingletonByteDependencyNode extends SingletonDependencyNode
             ByteCache cache = (ByteCache) instance;
             DependencyNode prevNode = DependencyTracker.track(DependencyTracker.NOCACHE_NODE);
             try {
-                return storage.isCalculated() && cache.getOrCreate() != storage.load();
+                return storage.isCalculated() && !DependencyTracker.isDependentResourceView(cache) && cache.getOrCreate() != storage.load();
             } finally {
                 DependencyTracker.exit(prevNode);
             }

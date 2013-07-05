@@ -46,7 +46,7 @@ public class ViewableMultipleCharacterDependencyNode extends MultipleDependencyN
                     if (node instanceof CharacterStorage && node instanceof CharacterCache) {
                         CharacterStorage storage = (CharacterStorage) node;
                         CharacterCache cache = (CharacterCache) node;
-                        if (storage.isCalculated() && cache.getOrCreate() != storage.load()) {
+                        if (storage.isCalculated() && !DependencyTracker.isDependentResourceView(cache) && cache.getOrCreate() != storage.load()) {
                             return true;
                         }
                     } else {

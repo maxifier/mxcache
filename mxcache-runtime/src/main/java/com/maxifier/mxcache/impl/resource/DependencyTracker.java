@@ -20,6 +20,7 @@ import java.util.*;
  */
 public final class DependencyTracker {
     private static final ThreadLocal<DependencyNode> NODE = new ThreadLocal<DependencyNode>();
+    private static final ThreadLocal<TIdentityHashSet<CleaningNode>> RESOURCE_VIEW_NODES = new ThreadLocal<TIdentityHashSet<CleaningNode>>();
 
     /** ???? ???? ????????????, ???? ?? ????? ???????????????? ???????????? */
     public static final DependencyNode DUMMY_NODE = new DummyDependencyNode("<DUMMY>");
@@ -93,6 +94,21 @@ public final class DependencyTracker {
         }
     }
 
+    public static TIdentityHashSet<CleaningNode> saveResourceViewNodes(DependencyNode node) {
+        TIdentityHashSet<CleaningNode> oldNodes = RESOURCE_VIEW_NODES.get();
+        RESOURCE_VIEW_NODES.set(DependencyTracker.getResourceViewDependentNodes(node));
+        return oldNodes;
+    }
+
+    public static boolean isDependentResourceView(CleaningNode node) {
+        TIdentityHashSet<CleaningNode> cleaningNodes = RESOURCE_VIEW_NODES.get();
+        return cleaningNodes != null && cleaningNodes.contains(node);
+    }
+
+    public static void exitDependentResourceView(TIdentityHashSet<CleaningNode> oldNodes) {
+        RESOURCE_VIEW_NODES.set(oldNodes);
+    }
+
     public static TIdentityHashSet<CleaningNode> getAllDependentNodes(Iterable<DependencyNode> src) {
         return getAllDependentNodes(src, Collections.<CleaningNode>emptySet());
     }
@@ -103,13 +119,50 @@ public final class DependencyTracker {
 
         DependencyNodeVisitor visitor = new CollectingDependencyNodeVisitor(nodes, queue);
 
+        return getDependentNodes(src, initial, visitor);
+    }
+
+    /**
+     * Finds only dependent caches with ResourceView annotation.
+     *
+     * @param sourceNode initial dependency node to start searching dependent caches from
+     * @return set of dependent caches
+     */
+    public static TIdentityHashSet<CleaningNode> getResourceViewDependentNodes(DependencyNode sourceNode) {
+        Set<DependencyNode> resourceViewableNodes = new THashSet<DependencyNode>();
+        Queue<DependencyNode> queue = new LinkedList<DependencyNode>();
+
+        DependencyNodeVisitor visitor = new ResourceViewDependencyNodeVisitor(resourceViewableNodes, queue);
+
+        return getDependentNodes(Collections.singleton(sourceNode), Collections.<CleaningNode>emptySet(), visitor);
+    }
+
+    /**
+     * Finds dependent caches taking ResourceView annotation into account.
+     *
+     * @param sourceNode initial dependency node to start searching dependent caches from
+     * @return set of dependent caches
+     */
+    public static TIdentityHashSet<CleaningNode> getChangedDependentNodes(DependencyNode sourceNode) {
+        Set<DependencyNode> nodes = new THashSet<DependencyNode>();
+        Queue<DependencyNode> queue = new LinkedList<DependencyNode>();
+
+        DependencyNodeVisitor visitor = new CollectingChangedDependencyNodeVisitor(nodes, queue);
+
+        return getDependentNodes(Collections.singleton(sourceNode), Collections.<CleaningNode>emptySet(), visitor);
+    }
+
+    private static TIdentityHashSet<CleaningNode> getDependentNodes(Iterable<DependencyNode> src, Collection<? extends CleaningNode> initial, DependencyNodeVisitor visitor) {
         // we enqueue this but we don't add it cause we don't want to call it's appendElements(Set)
         for (DependencyNode node : src) {
             node.visitDependantNodes(visitor);
         }
+
+        Queue<DependencyNode> queue = visitor.getQueue();
         while (!queue.isEmpty()) {
             queue.poll().visitDependantNodes(visitor);
         }
+        Set<DependencyNode> nodes = visitor.getNodes();
         TIdentityHashSet<CleaningNode> result = new TIdentityHashSet<CleaningNode>(nodes.size() + initial.size());
         result.addAll(initial);
         for (DependencyNode node : nodes) {
@@ -124,33 +177,6 @@ public final class DependencyTracker {
 
     public static boolean isBypassCaches() {
         return NOCACHE_NODE.equals(get());
-    }
-
-    /**
-     * Finds dependent caches taking ResourceView annotation into account.
-     *
-     * @param src list of dependency nodes to start searching dependent caches from
-     * @return set of dependent caches
-     */
-    public static TIdentityHashSet<CleaningNode> getChangedDependentNodes(Iterable<DependencyNode> src) {
-        Set<DependencyNode> nodes = new THashSet<DependencyNode>();
-        Queue<DependencyNode> queue = new LinkedList<DependencyNode>();
-
-        DependencyNodeVisitor visitor = new CollectingChangedDependencyNodeVisitor(nodes, queue);
-
-        // we enqueue this but we don't add it cause we don't want to call it's appendElements(Set)
-        for (DependencyNode node : src) {
-            node.visitDependantNodes(visitor);
-        }
-        while (!queue.isEmpty()) {
-            queue.poll().visitDependantNodes(visitor);
-        }
-
-        TIdentityHashSet<CleaningNode> result = new TIdentityHashSet<CleaningNode>(nodes.size());
-        for (DependencyNode node : nodes) {
-            node.appendNodes(result);
-        }
-        return result;
     }
 
     private static final class DummyDependencyNode implements DependencyNode {

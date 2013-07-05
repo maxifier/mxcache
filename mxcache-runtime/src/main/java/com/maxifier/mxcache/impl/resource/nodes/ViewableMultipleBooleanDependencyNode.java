@@ -46,7 +46,7 @@ public class ViewableMultipleBooleanDependencyNode extends MultipleDependencyNod
                     if (node instanceof BooleanStorage && node instanceof BooleanCache) {
                         BooleanStorage storage = (BooleanStorage) node;
                         BooleanCache cache = (BooleanCache) node;
-                        if (storage.isCalculated() && cache.getOrCreate() != storage.load()) {
+                        if (storage.isCalculated() && !DependencyTracker.isDependentResourceView(cache) && cache.getOrCreate() != storage.load()) {
                             return true;
                         }
                     } else {

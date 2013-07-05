@@ -46,7 +46,7 @@ public class ViewableMultipleByteDependencyNode extends MultipleDependencyNode i
                     if (node instanceof ByteStorage && node instanceof ByteCache) {
                         ByteStorage storage = (ByteStorage) node;
                         ByteCache cache = (ByteCache) node;
-                        if (storage.isCalculated() && cache.getOrCreate() != storage.load()) {
+                        if (storage.isCalculated() && !DependencyTracker.isDependentResourceView(cache) && cache.getOrCreate() != storage.load()) {
                             return true;
                         }
                     } else {

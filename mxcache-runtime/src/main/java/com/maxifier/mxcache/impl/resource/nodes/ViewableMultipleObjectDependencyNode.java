@@ -46,7 +46,7 @@ public class ViewableMultipleObjectDependencyNode extends MultipleDependencyNode
                     if (node instanceof ObjectStorage && node instanceof ObjectCache) {
                         ObjectStorage storage = (ObjectStorage) node;
                         ObjectCache cache = (ObjectCache) node;
-                        if (!equal(cache.getOrCreate(), storage.load())) {
+                        if (!DependencyTracker.isDependentResourceView(cache) && !equal(cache.getOrCreate(), storage.load())) {
                             return true;
                         }
                     } else {

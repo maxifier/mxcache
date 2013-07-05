@@ -9,6 +9,9 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: kochurov
@@ -342,8 +345,76 @@ public class CacheDependencyTrackingUTest {
         Assert.assertEquals(point.getViewCount6(), 4);
     }
 
+    @Test
+    public void testDoubleDependency() {
+        PointStorage storage = new PointStorage();
+        PointImpl p1 = storage.createPoint(4L, 3L);
+        PointImpl p2 = storage.createPoint(0L, 3L);
+
+        Assert.assertEquals(p1.getRadius(), 5.0);
+        Assert.assertEquals(p2.getRadius(), 3.0);
+        Assert.assertEquals(storage.getAverageRadius(), 4.0);
+        Assert.assertTrue(p1.isGreaterAvgRadius());
+        Assert.assertFalse(p2.isGreaterAvgRadius());
+        Assert.assertEquals(p1.getViewCount7(), 1);
+        Assert.assertEquals(p2.getViewCount7(), 1);
+
+        storage.resource.writeStart();
+        try {
+            p1.setX(0L);
+            Assert.assertEquals(p1.getViewCount7(), 1);
+            Assert.assertEquals(p2.getViewCount7(), 1);
+            Assert.assertEquals(p1.getRadius(), 3.0);
+            Assert.assertEquals(p2.getRadius(), 3.0);
+        } finally {
+            storage.resource.writeEnd();
+        }
+
+        Assert.assertEquals(p1.getRadius(), 3.0);
+        Assert.assertEquals(p2.getRadius(), 3.0);
+        Assert.assertEquals(storage.getAverageRadius(), 3.0);
+        Assert.assertEquals(p1.getViewCount7(), 2);
+        Assert.assertEquals(p2.getViewCount7(), 2);
+
+        Assert.assertFalse(p1.isGreaterAvgRadius());
+        Assert.assertFalse(p2.isGreaterAvgRadius());
+        Assert.assertEquals(p1.getViewCount7(), 3);
+        Assert.assertEquals(p2.getViewCount7(), 2);
+    }
+
+    static class PointStorage {
+        protected final MxResource resource = MxResourceFactory.getResource("storage");
+
+        private List<PointImpl> points = new ArrayList<PointImpl>();
+
+        public PointImpl createPoint(long x, long y) {
+            resource.writeStart();
+            try {
+                PointImpl point = new PointImpl(x, y, this);
+                points.add(point);
+                return point;
+            } finally {
+                resource.writeEnd();
+            }
+        }
+
+        public double getAverageRadius() {
+            double radius = 0.0;
+            resource.readStart();
+            try {
+                for (PointImpl point : points) {
+                    radius += point.getRadius();
+                }
+                return radius / points.size();
+            } finally {
+                resource.readEnd();
+            }
+        }
+    }
+
     static class PointImpl {
         protected final MxResource xyRes = MxResourceFactory.getResource("xy");
+        private final PointStorage storage;
 
         private int viewCount1 = 0;
         private int viewCount2 = 0;
@@ -351,15 +422,28 @@ public class CacheDependencyTrackingUTest {
         private int viewCount4 = 0;
         private int viewCount5 = 0;
         private int viewCount6 = 0;
+        private int viewCount7 = 0;
 
         public long x;
         public long y;
 
         public PointImpl(long x, long y) {
+            this.storage = null;
             xyRes.writeStart();
             try {
                 this.x = x;
-            this.y = y;
+                this.y = y;
+            } finally {
+                xyRes.writeEnd();
+            }
+        }
+
+        public PointImpl(long x, long y, PointStorage storage) {
+            this.storage = storage;
+            xyRes.writeStart();
+            try {
+                this.x = x;
+                this.y = y;
             } finally {
                 xyRes.writeEnd();
             }
@@ -387,6 +471,10 @@ public class CacheDependencyTrackingUTest {
 
         public int getViewCount6() {
             return viewCount6;
+        }
+
+        public int getViewCount7() {
+            return viewCount7;
         }
 
         public void setY(long y) {
@@ -447,6 +535,14 @@ public class CacheDependencyTrackingUTest {
             long y1 = getY();
             viewCount1++;
             return Math.sqrt(x1 * x1 + y1 * y1);
+        }
+
+        @Cached
+        @TrackDependency(DependencyTracking.INSTANCE)
+        @ResourceView
+        boolean isGreaterAvgRadius() {
+            viewCount7++;
+            return getRadius() - storage.getAverageRadius() > 0;
         }
 
         @Cached
