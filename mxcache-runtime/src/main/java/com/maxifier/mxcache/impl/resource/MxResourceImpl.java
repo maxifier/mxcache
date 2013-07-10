@@ -148,7 +148,9 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
                 element.clear();
             }
         } finally {
-            CleaningHelper.unlock(CleaningHelper.getLocks(elementsAndDependent));
+            if (elementsAndDependent != null) {
+                CleaningHelper.unlock(CleaningHelper.getLocks(elementsAndDependent));
+            }
 
             if (readLockAcquired) {
                 readLock.unlock();
