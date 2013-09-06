@@ -100,6 +100,7 @@ class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheManager<T
         try {
             return getManager(context).createCache(instance);
         } catch (RuntimeException e) {
+            logger.error("Cannot create cache for " + instance + ", DefaultStrategy will be used", e);
             return DefaultStrategy.getInstance().getManager(context, descriptor).createCache(instance);
         }
     }

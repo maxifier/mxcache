@@ -3,10 +3,13 @@ package com.maxifier.mxcache.impl.wrapping;
 import com.maxifier.mxcache.asm.ClassWriter;
 import com.maxifier.mxcache.asm.Label;
 import com.maxifier.mxcache.asm.MethodVisitor;
+import com.maxifier.mxcache.asm.Opcodes;
 import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
 import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.caches.Cache;
+import com.maxifier.mxcache.caches.ObjectObjectCache;
+import com.maxifier.mxcache.caches.ObjectObjectCalculatable;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.caches.storage.StorageHolder;
 import com.maxifier.mxcache.impl.resource.AbstractDependencyNode;
@@ -20,11 +23,17 @@ import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.transform.*;
 import com.maxifier.mxcache.tuple.*;
 import com.maxifier.mxcache.util.ClassGenerator;
+import com.maxifier.mxcache.util.CodegenHelper;
+import com.maxifier.mxcache.util.ExceptionHelper;
+import com.maxifier.mxcache.util.MxConstructorGenerator;
+import com.maxifier.mxcache.util.MxField;
+import com.maxifier.mxcache.util.MxGeneratorAdapter;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
@@ -79,6 +88,10 @@ public final class Wrapping {
     private static final Map<Tuple, WrapperFactory> PLAIN_CACHE = new THashMap<Tuple, WrapperFactory>();
     private static final Map<CacheImplementationSignature, WrapperFactory> CONVERTING_CACHE = new THashMap<CacheImplementationSignature, WrapperFactory>();
 
+    private static final Map<Signature, Constructor<Cache>> CACHE_WRAPPER_CONSTRUCTORS_CACHE =
+            new THashMap<Signature, Constructor<Cache>>();
+    private static final Map<Signature, Constructor<ObjectObjectCalculatable>> CALCULABLE_WRAPPER_CONSTRUCTORS_CACHE =
+            new THashMap<Signature, Constructor<ObjectObjectCalculatable>>();
 
     public static WrapperFactory getFactory(Signature storageSignature, Signature cacheSignature, boolean perElementLocking) {
         return getFactory(storageSignature, cacheSignature, null, null, perElementLocking);
@@ -492,6 +505,131 @@ public final class Wrapping {
         public void loadStorage(Type wrapperType, Type storageType) {
             loadThis();
             getField(wrapperType, STORAGE_FIELD, storageType);
+        }
+    }
+
+    private static Constructor<Cache> generateObjectObjectCacheWrapperConstructor(Signature signature) throws NoSuchMethodException {
+        Constructor<Cache> result = CACHE_WRAPPER_CONSTRUCTORS_CACHE.get(signature);
+        if (result != null) {
+            return result;
+        }
+
+        Class<? extends Cache> cacheInterface = signature.getCacheInterface();
+        ClassGenerator v = new ClassGenerator(Opcodes.ACC_PUBLIC, Type.getInternalName(Wrapping.class) + "$cache$" + WRAPPER_ID.getAndIncrement(), AbstractObjectObjectCacheWrapper.class, cacheInterface);
+
+        Type objectCacheType = Type.getType(ObjectObjectCache.class);
+
+        MxConstructorGenerator ctor = v.defineConstructor(Opcodes.ACC_PUBLIC, objectCacheType);
+        ctor.start();
+        ctor.callSuper(objectCacheType);
+        ctor.returnValue();
+        ctor.endMethod();
+
+        MxGeneratorAdapter calculate;
+        Type containerType = signature.getContainerType();
+        if (containerType == null) {
+            calculate = v.defineMethod(Opcodes.ACC_PUBLIC, "getOrCreate", Type.getType(signature.getValue()));
+        } else {
+            calculate = v.defineMethod(Opcodes.ACC_PUBLIC, "getOrCreate", Type.getType(signature.getValue()), containerType);
+        }
+        calculate.start();
+        calculate.loadThis();
+        calculate.getField(v.getThisType(), "delegate", objectCacheType);
+        if (containerType == null) {
+            calculate.pushNull();
+        } else {
+            calculate.loadArg(0);
+            calculate.box(containerType);
+        }
+        calculate.invokeInterface(objectCacheType, new Method("getOrCreate", CodegenHelper.OBJECT_TYPE, new Type[]{CodegenHelper.OBJECT_TYPE}));
+        calculate.unbox(Type.getType(signature.getValue()));
+        calculate.returnValue();
+        calculate.endMethod();
+
+        v.visitEnd();
+        //noinspection unchecked
+        result = v.toClass(Wrapping.class.getClassLoader()).getConstructor(ObjectObjectCache.class);
+        CACHE_WRAPPER_CONSTRUCTORS_CACHE.put(signature, result);
+        return result;
+    }
+
+    public static <K, V> Cache getObjectObjectCacheWrapper(ObjectObjectCache<K, V> cache) {
+        Signature signature = cache.getDescriptor().getSignature().erased();
+        if (signature.getContainer() == Object.class && signature.getValue() == Object.class) {
+            return cache;
+        }
+        try {
+            return generateObjectObjectCacheWrapperConstructor(signature).newInstance(cache);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            return ExceptionHelper.rethrowInvocationTargetException(e);
+        }
+    }
+
+    private static Constructor<ObjectObjectCalculatable> generateCalculatableWrapperConstructor(Signature signature) throws NoSuchMethodException {
+        Constructor<ObjectObjectCalculatable> result = CALCULABLE_WRAPPER_CONSTRUCTORS_CACHE.get(signature);
+        if (result != null) {
+            return result;
+        }
+
+        ClassGenerator v = new ClassGenerator(Opcodes.ACC_PUBLIC, Type.getInternalName(Wrapping.class) + "$calculableWrapper$" + WRAPPER_ID.getAndIncrement(), Object.class, ObjectObjectCalculatable.class);
+
+        Class<?> calculableInterface = signature.getCalculableInterface();
+        Type calculableType = Type.getType(calculableInterface);
+
+        MxField delegateField = v.defineField(Opcodes.ACC_PRIVATE | Opcodes.ACC_FINAL, "calculable", calculableType);
+
+        MxConstructorGenerator ctor = v.defineConstructor(Opcodes.ACC_PUBLIC, calculableType);
+        ctor.start();
+        ctor.callSuper();
+        ctor.initFields(delegateField);
+        ctor.returnValue();
+        ctor.endMethod();
+
+        MxGeneratorAdapter calculate = v.defineMethod(Opcodes.ACC_PUBLIC, "calculate", CodegenHelper.OBJECT_TYPE, CodegenHelper.OBJECT_TYPE, CodegenHelper.OBJECT_TYPE);
+        calculate.start();
+        calculate.get(delegateField);
+        calculate.loadArg(0);
+        Type containerType = signature.getContainerType();
+        if (containerType == null) {
+            calculate.invokeInterface(calculableType, new Method("calculate", Type.getType(signature.getValue()), new Type[]{CodegenHelper.OBJECT_TYPE}));
+        } else {
+            calculate.loadArg(1);
+            calculate.unbox(containerType);
+            calculate.invokeInterface(calculableType, new Method("calculate", Type.getType(signature.getValue()), new Type[]{CodegenHelper.OBJECT_TYPE, containerType}));
+        }
+        calculate.box(Type.getType(signature.getValue()));
+        calculate.returnValue();
+        calculate.endMethod();
+
+        v.visitEnd();
+
+        //noinspection unchecked
+        result = v.toClass(Wrapping.class.getClassLoader()).getConstructor(calculableInterface);
+        CALCULABLE_WRAPPER_CONSTRUCTORS_CACHE.put(signature, result);
+        return result;
+    }
+
+    public static ObjectObjectCalculatable getCalculableWrapper(Signature signature, Object calculable) {
+        if (calculable instanceof ObjectObjectCalculatable) {
+            //noinspection unchecked
+            return (ObjectObjectCalculatable) calculable;
+        }
+        try {
+            return Wrapping.generateCalculatableWrapperConstructor(signature).newInstance(calculable);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            return ExceptionHelper.rethrowInvocationTargetException(e);
         }
     }
 }

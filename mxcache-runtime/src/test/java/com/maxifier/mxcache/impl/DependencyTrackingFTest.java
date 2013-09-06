@@ -43,6 +43,7 @@ public class DependencyTrackingFTest {
 
         @Cached
         @ResourceDependency("DependencyTrackingFTest.manualTracking")
+        @TrackDependency(DependencyTracking.NONE)
         public int manualTracking(int x) {
             return x;
         }

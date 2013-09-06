@@ -23,7 +23,7 @@ import java.util.Set;
  * Time: 19:15:05
  */
 public abstract class AbstractCacheManager<T> implements CacheManager<T> {
-    private static final DependencyTracking DEFAULT_DEPENDENCY_TRACKING_VALUE = DependencyTracking.NONE;
+    private static final DependencyTracking DEFAULT_DEPENDENCY_TRACKING_VALUE = DependencyTracking.INSTANCE;
     private static final StatisticsModeEnum DEFAULT_STATISTICS_MODE = StatisticsModeEnum.STATIC_OR_STORAGE;
 
     private final CacheDescriptor<T> descriptor;

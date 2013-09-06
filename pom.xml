@@ -31,6 +31,7 @@
         <module>mxcache-guice-integration</module>
         <module>mxcache-ehcache-integration</module>
         <module>jconsole-stub</module>
+        <module>mxcache-guava-integration</module>
     </modules>
 
     <scm>
@@ -102,6 +103,11 @@
             <dependency>
                 <groupId>com.maxifier.mxcache</groupId>
                 <artifactId>mxcache-ds11-integration</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>mxcache-guava-integration</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

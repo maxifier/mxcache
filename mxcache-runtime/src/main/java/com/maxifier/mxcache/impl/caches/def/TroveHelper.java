@@ -15,4 +15,14 @@ public final class TroveHelper {
     };
 
     private TroveHelper() {}
+
+    public static <T> T unboxNull(T res) {
+        //noinspection unchecked
+        return res == NULL_REPLACEMENT ? null : res;
+    }
+
+    public static <T> T boxNull(T res) {
+        //noinspection unchecked
+        return res == null ? (T) NULL_REPLACEMENT : res;
+    }
 }
