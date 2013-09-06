@@ -26,7 +26,7 @@ public class DependencyTrackerUTest {
         TestDependencyNode b = new TestDependencyNode(a);
         TestDependencyNode c = new TestDependencyNode(b);
         TestDependencyNode d = new TestDependencyNode(c);
-        // DUMMY_NODE сохраняется в стене, только если он первый. Иначе стек будет неизменным. 
+        // DUMMY_NODE СЃРѕС…СЂР°РЅСЏРµС‚СЃСЏ РІ СЃС‚РµРЅРµ, С‚РѕР»СЊРєРѕ РµСЃР»Рё РѕРЅ РїРµСЂРІС‹Р№. РРЅР°С‡Рµ СЃС‚РµРє Р±СѓРґРµС‚ РЅРµРёР·РјРµРЅРЅС‹Рј. 
         assertEquals(DependencyTracker.track(DUMMY_NODE), null);
         assertTrue(DependencyTracker.hasUnderlyingNode());
         assertEquals(DependencyTracker.track(a), DUMMY_NODE);

@@ -382,9 +382,9 @@ public class CacheProviderImplUTest {
 
         DefaultInstanceProvider.getInstance().bind(X.class).toInstance(new X(77));
 
-        // для стратегий действует позднее связывание
-        IntCache с = (IntCache) p.createCache(this.getClass(), 0, this, CacheFactory.getDefaultContext());
-        assert с.getOrCreate() == 77;
+        // РґР»СЏ СЃС‚СЂР°С‚РµРіРёР№ РґРµР№СЃС‚РІСѓРµС‚ РїРѕР·РґРЅРµРµ СЃРІСЏР·С‹РІР°РЅРёРµ
+        IntCache СЃ = (IntCache) p.createCache(this.getClass(), 0, this, CacheFactory.getDefaultContext());
+        assert СЃ.getOrCreate() == 77;
 
         DefaultInstanceProvider.getInstance().clearBinding(X.class);
     }
@@ -398,7 +398,7 @@ public class CacheProviderImplUTest {
             }
         }, "y", "()I", null);
 
-        // создаем кэщ, чтобы избежать позднего связывания
+        // СЃРѕР·РґР°РµРј РєСЌС‰, С‡С‚РѕР±С‹ РёР·Р±РµР¶Р°С‚СЊ РїРѕР·РґРЅРµРіРѕ СЃРІСЏР·С‹РІР°РЅРёСЏ
         Cache c = p.createCache(this.getClass(), 0, this, CacheFactory.getDefaultContext());
 
         // we will test cache getCaches()
@@ -420,9 +420,9 @@ public class CacheProviderImplUTest {
             }
         }, "y", "()I", null);
         
-        IntCache с = (IntCache) p.createCache(this.getClass(), 0, this, CacheFactory.getDefaultContext());
-        assert с.getOrCreate() == 132;
-        assert с.getOrCreate() == 132;
+        IntCache СЃ = (IntCache) p.createCache(this.getClass(), 0, this, CacheFactory.getDefaultContext());
+        assert СЃ.getOrCreate() == 132;
+        assert СЃ.getOrCreate() == 132;
     }
 
     private static class TestStorage implements IntStorage {
@@ -477,7 +477,7 @@ public class CacheProviderImplUTest {
         CacheContextImpl context = spy(new CacheContextImpl(sp));
         p.createCache(getClass(), 0, this, context);
         p.createCache(getClass(), 0, new CacheProviderImplUTest(), context);
-        // вызывается один раз, потому что после этого менеджер сохраняется в related
+        // РІС‹Р·С‹РІР°РµС‚СЃСЏ РѕРґРёРЅ СЂР°Р·, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РїРѕСЃР»Рµ СЌС‚РѕРіРѕ РјРµРЅРµРґР¶РµСЂ СЃРѕС…СЂР°РЅСЏРµС‚СЃСЏ РІ related
         verify(sp, times(1)).forClass(X.class);
         //noinspection unchecked
         verify(context, times(1)).setRelated(any(CacheContext.ContextRelatedItem.class), any());

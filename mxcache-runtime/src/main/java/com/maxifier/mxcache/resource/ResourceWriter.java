@@ -12,6 +12,6 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Retention (RetentionPolicy.CLASS)
 public @interface ResourceWriter {
-    /** @return cписок имен ресурсов */
+    /** @return cРїРёСЃРѕРє РёРјРµРЅ СЂРµСЃСѓСЂСЃРѕРІ */
     String[] value();
 }

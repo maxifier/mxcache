@@ -117,17 +117,17 @@ public class DynamicInstrumentationFTest {
     }
 
     /**
-     * Делает хитрый финт ушами для запуска теста из-под мавена.
-     * Т.к. при запуске теста из-под мавена не удается корректно запустить динамическую инструментацию,
-     * она пускается вручную.
-     * Для этого грузится байт-код класса, инструментируется, и грузится отдельным classLoader-ом.
-     * Конфликта не возникает, т.к. этот класс и исходный (не инструментированный) загружены разными класс-лоадерами,
-     * хоть и имеют одинаковое имя.
+     * Р”РµР»Р°РµС‚ С…РёС‚СЂС‹Р№ С„РёРЅС‚ СѓС€Р°РјРё РґР»СЏ Р·Р°РїСѓСЃРєР° С‚РµСЃС‚Р° РёР·-РїРѕРґ РјР°РІРµРЅР°.
+     * Рў.Рє. РїСЂРё Р·Р°РїСѓСЃРєРµ С‚РµСЃС‚Р° РёР·-РїРѕРґ РјР°РІРµРЅР° РЅРµ СѓРґР°РµС‚СЃСЏ РєРѕСЂСЂРµРєС‚РЅРѕ Р·Р°РїСѓСЃС‚РёС‚СЊ РґРёРЅР°РјРёС‡РµСЃРєСѓСЋ РёРЅСЃС‚СЂСѓРјРµРЅС‚Р°С†РёСЋ,
+     * РѕРЅР° РїСѓСЃРєР°РµС‚СЃСЏ РІСЂСѓС‡РЅСѓСЋ.
+     * Р”Р»СЏ СЌС‚РѕРіРѕ РіСЂСѓР·РёС‚СЃСЏ Р±Р°Р№С‚-РєРѕРґ РєР»Р°СЃСЃР°, РёРЅСЃС‚СЂСѓРјРµРЅС‚РёСЂСѓРµС‚СЃСЏ, Рё РіСЂСѓР·РёС‚СЃСЏ РѕС‚РґРµР»СЊРЅС‹Рј classLoader-РѕРј.
+     * РљРѕРЅС„Р»РёРєС‚Р° РЅРµ РІРѕР·РЅРёРєР°РµС‚, С‚.Рє. СЌС‚РѕС‚ РєР»Р°СЃСЃ Рё РёСЃС…РѕРґРЅС‹Р№ (РЅРµ РёРЅСЃС‚СЂСѓРјРµРЅС‚РёСЂРѕРІР°РЅРЅС‹Р№) Р·Р°РіСЂСѓР¶РµРЅС‹ СЂР°Р·РЅС‹РјРё РєР»Р°СЃСЃ-Р»РѕР°РґРµСЂР°РјРё,
+     * С…РѕС‚СЊ Рё РёРјРµСЋС‚ РѕРґРёРЅР°РєРѕРІРѕРµ РёРјСЏ.
      *
      * @param instrumentator instrumentator
      * @param cl class loader
-     * @return экземпляр
-     * @throws Exception если что-то не так
+     * @return СЌРєР·РµРјРїР»СЏСЂ
+     * @throws Exception РµСЃР»Рё С‡С‚Рѕ-С‚Рѕ РЅРµ С‚Р°Рє
      */
     private TestCached loadCached(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         return (TestCached) instrumentClass(TestCachedImpl.class, instrumentator, cl).newInstance();
@@ -231,9 +231,9 @@ public class DynamicInstrumentationFTest {
     @SuppressWarnings({ "UnusedDeclaration" })
     @Test(dataProvider = "all")
     public void testNonCached(Instrumentator instrumentator, ClassLoader cl) throws Exception {
-        // тут сработает отсечение на дескриптор
+        // С‚СѓС‚ СЃСЂР°Р±РѕС‚Р°РµС‚ РѕС‚СЃРµС‡РµРЅРёРµ РЅР° РґРµСЃРєСЂРёРїС‚РѕСЂ
         assert instrumentator.instrument(CodegenHelper.getByteCode(NonCachedShortcut.class)) == null;
-        // а тут сработает отсечение на отсутствие кэшированных методов
+        // Р° С‚СѓС‚ СЃСЂР°Р±РѕС‚Р°РµС‚ РѕС‚СЃРµС‡РµРЅРёРµ РЅР° РѕС‚СЃСѓС‚СЃС‚РІРёРµ РєСЌС€РёСЂРѕРІР°РЅРЅС‹С… РјРµС‚РѕРґРѕРІ
         assert instrumentator.instrument(CodegenHelper.getByteCode(NotCached.class)) == null;
     }
 
@@ -855,7 +855,7 @@ public class DynamicInstrumentationFTest {
 
     @Test(dataProvider = "all")
     public void testProxiedInvalid(Instrumentator instrumentator, ClassLoader cl) throws Exception {
-        // если нельзя инстанцировать фабрику проксей, будет использоваться пустая фабрика
+        // РµСЃР»Рё РЅРµР»СЊР·СЏ РёРЅСЃС‚Р°РЅС†РёСЂРѕРІР°С‚СЊ С„Р°Р±СЂРёРєСѓ РїСЂРѕРєСЃРµР№, Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РїСѓСЃС‚Р°СЏ С„Р°Р±СЂРёРєР°
         TestProxied t = loadProxied(instrumentator, cl);
         assertEquals(t.testInvalid(), "123");
         assertEquals(t.testInvalid(), "123");

@@ -190,7 +190,7 @@ class PooledElement<T> extends MultiLock.Sublock {
         }
     }
 
-    /** Предсказывает (по крайней мере, пытается) число обращений к этому элементу. */
+    /** РџСЂРµРґСЃРєР°Р·С‹РІР°РµС‚ (РїРѕ РєСЂР°Р№РЅРµР№ РјРµСЂРµ, РїС‹С‚Р°РµС‚СЃСЏ) С‡РёСЃР»Рѕ РѕР±СЂР°С‰РµРЅРёР№ Рє СЌС‚РѕРјСѓ СЌР»РµРјРµРЅС‚Сѓ. */
     void updateForecastCalls() {
         assert owner.isHeldByCurrentThread();
         forecast = PooledReusageForecast.getCallForecast(confidence, calls, periods, owner.getPeriod(), lastUsePeriod);

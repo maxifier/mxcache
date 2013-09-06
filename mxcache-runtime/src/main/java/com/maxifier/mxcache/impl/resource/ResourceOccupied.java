@@ -10,10 +10,10 @@ import org.jetbrains.annotations.NotNull;
  * Time: 10:47:47
  *
  * <p>
- * Эту ошибку никто не должен поймать кроме нас, поэтому не RuntimeException, а Error - слишком много любителей
- * отловить все Exception'ы.
+ * Р­С‚Сѓ РѕС€РёР±РєСѓ РЅРёРєС‚Рѕ РЅРµ РґРѕР»Р¶РµРЅ РїРѕР№РјР°С‚СЊ РєСЂРѕРјРµ РЅР°СЃ, РїРѕСЌС‚РѕРјСѓ РЅРµ RuntimeException, Р° Error - СЃР»РёС€РєРѕРј РјРЅРѕРіРѕ Р»СЋР±РёС‚РµР»РµР№
+ * РѕС‚Р»РѕРІРёС‚СЊ РІСЃРµ Exception'С‹.
  * <p>
- * <b>Этот эксепшн не заполняет stack trace!!!</b>
+ * <b>Р­С‚РѕС‚ СЌРєСЃРµРїС€РЅ РЅРµ Р·Р°РїРѕР»РЅСЏРµС‚ stack trace!!!</b>
  */
 public class ResourceOccupied extends Error {
     private final MxResource resource;

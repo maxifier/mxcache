@@ -13,13 +13,13 @@ import java.util.concurrent.locks.Lock;
  */
 public interface CleaningNode {
     /**
-     * @return лок, если он есть, null - если нет.
+     * @return Р»РѕРє, РµСЃР»Рё РѕРЅ РµСЃС‚СЊ, null - РµСЃР»Рё РЅРµС‚.
      */
     @Nullable
     Lock getLock();
 
     /**
-     * Очищает кэш.
+     * РћС‡РёС‰Р°РµС‚ РєСЌС€.
      */
     void clear();
 

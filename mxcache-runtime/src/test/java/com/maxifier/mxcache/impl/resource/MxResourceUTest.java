@@ -43,7 +43,7 @@ public class MxResourceUTest {
 
     @Test(expectedExceptions = IllegalMonitorStateException.class)
     public void testWriteButEndRead() {
-        // этот тест тестирует ReentrantReadWriteLock, но кто знает, может появится другая реализация
+        // СЌС‚РѕС‚ С‚РµСЃС‚ С‚РµСЃС‚РёСЂСѓРµС‚ ReentrantReadWriteLock, РЅРѕ РєС‚Рѕ Р·РЅР°РµС‚, РјРѕР¶РµС‚ РїРѕСЏРІРёС‚СЃСЏ РґСЂСѓРіР°СЏ СЂРµР°Р»РёР·Р°С†РёСЏ
         MxResource r = MxResourceFactory.getResource("testResource");
         r.writeStart();
         try {
@@ -57,17 +57,17 @@ public class MxResourceUTest {
     public void testEquality() {
         MxResource r1 = MxResourceFactory.getResource("testResource");
         MxResource r2 = MxResourceFactory.getResource("testResource");
-        // конечно лучше не сравнивать так ресурсы, однако раз MxResourceFactory гарантирует это,
-        // то надо убедиться
+        // РєРѕРЅРµС‡РЅРѕ Р»СѓС‡С€Рµ РЅРµ СЃСЂР°РІРЅРёРІР°С‚СЊ С‚Р°Рє СЂРµСЃСѓСЂСЃС‹, РѕРґРЅР°РєРѕ СЂР°Р· MxResourceFactory РіР°СЂР°РЅС‚РёСЂСѓРµС‚ СЌС‚Рѕ,
+        // С‚Рѕ РЅР°РґРѕ СѓР±РµРґРёС‚СЊСЃСЏ
         assert r1 == r2;
 
-        // авось
+        // Р°РІРѕСЃСЊ
         assert r1.equals(r2);
 
-        // на всякий случай
+        // РЅР° РІСЃСЏРєРёР№ СЃР»СѓС‡Р°Р№
         assert r1.getName().equals("testResource");
 
-        // эти строки имеют одинаковый хэш, но это не важно
+        // СЌС‚Рё СЃС‚СЂРѕРєРё РёРјРµСЋС‚ РѕРґРёРЅР°РєРѕРІС‹Р№ С…СЌС€, РЅРѕ СЌС‚Рѕ РЅРµ РІР°Р¶РЅРѕ
         MxResource r3 = MxResourceFactory.getResource("0-42L");
         MxResource r4 = MxResourceFactory.getResource("0-43-");
         assert !r3.equals(r4);
@@ -92,7 +92,7 @@ public class MxResourceUTest {
         } finally {
             ois.close();
         }
-        // сериализация не должна приводить к ложным дубликатам ресурсов
+        // СЃРµСЂРёР°Р»РёР·Р°С†РёСЏ РЅРµ РґРѕР»Р¶РЅР° РїСЂРёРІРѕРґРёС‚СЊ Рє Р»РѕР¶РЅС‹Рј РґСѓР±Р»РёРєР°С‚Р°Рј СЂРµСЃСѓСЂСЃРѕРІ
         assert r1 == r2;
     }
 
@@ -126,9 +126,9 @@ public class MxResourceUTest {
     }
 
     /**
-     * Здесь мы должны получить именно ResourceModificationException, поскольку сам кэш не может такую зависимость
-     * разрешить: это означает, что при модификации ресурса произошло обращение к кэшу, зависящему от этого самого
-     * ресурса. 
+     * Р—РґРµСЃСЊ РјС‹ РґРѕР»Р¶РЅС‹ РїРѕР»СѓС‡РёС‚СЊ РёРјРµРЅРЅРѕ ResourceModificationException, РїРѕСЃРєРѕР»СЊРєСѓ СЃР°Рј РєСЌС€ РЅРµ РјРѕР¶РµС‚ С‚Р°РєСѓСЋ Р·Р°РІРёСЃРёРјРѕСЃС‚СЊ
+     * СЂР°Р·СЂРµС€РёС‚СЊ: СЌС‚Рѕ РѕР·РЅР°С‡Р°РµС‚, С‡С‚Рѕ РїСЂРё РјРѕРґРёС„РёРєР°С†РёРё СЂРµСЃСѓСЂСЃР° РїСЂРѕРёР·РѕС€Р»Рѕ РѕР±СЂР°С‰РµРЅРёРµ Рє РєСЌС€Сѓ, Р·Р°РІРёСЃСЏС‰РµРјСѓ РѕС‚ СЌС‚РѕРіРѕ СЃР°РјРѕРіРѕ
+     * СЂРµСЃСѓСЂСЃР°. 
      */
     @Test (expectedExceptions = ResourceModificationException.class)
     public void testReadInCacheWhileWriteFromSameThread() {
@@ -148,8 +148,8 @@ public class MxResourceUTest {
     }
 
     /**
-     * А тут имеем чистой воды ResourceOccupied.
-     * @throws InterruptedException ой! 
+     * Рђ С‚СѓС‚ РёРјРµРµРј С‡РёСЃС‚РѕР№ РІРѕРґС‹ ResourceOccupied.
+     * @throws InterruptedException РѕР№! 
      */
     public void testReadInCacheWhileWriteFromOtherThread() throws InterruptedException {
         MxResource r = MxResourceFactory.getResource("testResource");
@@ -163,7 +163,7 @@ public class MxResourceUTest {
 
         lock.lock();
         try {
-            // дождемся, пока ресурс будет заблокирован записью
+            // РґРѕР¶РґРµРјСЃСЏ, РїРѕРєР° СЂРµСЃСѓСЂСЃ Р±СѓРґРµС‚ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ Р·Р°РїРёСЃСЊСЋ
             startCondition.awaitUninterruptibly();
         } finally {
             lock.unlock();
@@ -175,14 +175,14 @@ public class MxResourceUTest {
                 r.readStart();
                 Assert.fail("ResourceOccupied expected");
             } catch (ResourceOccupied e) {
-                // Должен быть установлен ресурс!
+                // Р”РѕР»Р¶РµРЅ Р±С‹С‚СЊ СѓСЃС‚Р°РЅРѕРІР»РµРЅ СЂРµСЃСѓСЂСЃ!
                 assert e.getResource().equals(r);
             }
         } finally {
             DependencyTracker.exit(null);
             lock.lock();
             try {
-                // все, можно запись завершить
+                // РІСЃРµ, РјРѕР¶РЅРѕ Р·Р°РїРёСЃСЊ Р·Р°РІРµСЂС€РёС‚СЊ
                 endCondition.signal();
             } finally {
                 lock.unlock();

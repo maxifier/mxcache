@@ -65,7 +65,7 @@ public class DependencyTrackingFTest {
     }
 
     public void testManualTracking() {
-        // мы используем уникальное имя ресурса, чтобы никто другой не мог использовать его
+        // РјС‹ РёСЃРїРѕР»СЊР·СѓРµРј СѓРЅРёРєР°Р»СЊРЅРѕРµ РёРјСЏ СЂРµСЃСѓСЂСЃР°, С‡С‚РѕР±С‹ РЅРёРєС‚Рѕ РґСЂСѓРіРѕР№ РЅРµ РјРѕРі РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РµРіРѕ
         MxResource r = MxResourceFactory.getResource("DependencyTrackingFTest.manualTracking");
 
         CacheDescriptor<MyClass> d = new CacheDescriptor<MyClass>(MyClass.class, 0, int.class, int.class, new MyIntIntCalculatable(r), "manualTracking", "(I)I", null, null, null, null);
@@ -86,7 +86,7 @@ public class DependencyTrackingFTest {
     }
 
     public void testStaticMethodWithStaticTracking() {
-        // мы используем уникальное имя ресурса, чтобы никто другой не мог использовать его
+        // РјС‹ РёСЃРїРѕР»СЊР·СѓРµРј СѓРЅРёРєР°Р»СЊРЅРѕРµ РёРјСЏ СЂРµСЃСѓСЂСЃР°, С‡С‚РѕР±С‹ РЅРёРєС‚Рѕ РґСЂСѓРіРѕР№ РЅРµ РјРѕРі РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РµРіРѕ
         MxResource r = MxResourceFactory.getResource("DependencyTrackingFTest#staticMethodWithStaticTracking");
 
         CacheDescriptor<MyClass> d = new CacheDescriptor<MyClass>(MyClass.class, 0, int.class, int.class, new MyIntIntCalculatable(r), "staticMethodWithStaticTracking", "(I)I", null, null, null, null);
@@ -104,13 +104,13 @@ public class DependencyTrackingFTest {
         TIdentityHashSet<CleaningNode> elements = new TIdentityHashSet<CleaningNode>();
         node.appendNodes(elements);
         assert elements.size() == 1;
-        // элемент тут должен быть только один
+        // СЌР»РµРјРµРЅС‚ С‚СѓС‚ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ С‚РѕР»СЊРєРѕ РѕРґРёРЅ
         CleaningNode element = elements.iterator().next();
         assert element == t.cache;
     }
 
     public void testInstanceMethodWithStaticTracking() {
-        // мы используем уникальное имя ресурса, чтобы никто другой не мог использовать его
+        // РјС‹ РёСЃРїРѕР»СЊР·СѓРµРј СѓРЅРёРєР°Р»СЊРЅРѕРµ РёРјСЏ СЂРµСЃСѓСЂСЃР°, С‡С‚РѕР±С‹ РЅРёРєС‚Рѕ РґСЂСѓРіРѕР№ РЅРµ РјРѕРі РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РµРіРѕ
         MxResource r = MxResourceFactory.getResource("DependencyTrackingFTest#testInstanceMethodWithStaticTracking");
 
         CacheDescriptor<MyClass> d = new CacheDescriptor<MyClass>(MyClass.class, 1, int.class, int.class, new MyIntIntCalculatable(r), "instanceMethodWithStaticTracking", "(I)I", null, null, null, null);
@@ -128,13 +128,13 @@ public class DependencyTrackingFTest {
         TIdentityHashSet<CleaningNode> elements = new TIdentityHashSet<CleaningNode>();
         node.appendNodes(elements);
         assert elements.size() == 1;
-        // элемент тут должен быть только один
+        // СЌР»РµРјРµРЅС‚ С‚СѓС‚ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ С‚РѕР»СЊРєРѕ РѕРґРёРЅ
         CleaningNode element = elements.iterator().next();
         assert element == t.cache;
     }
 
     public void testInstanceMethodWithInstanceTracking() {
-        // мы используем уникальное имя ресурса, чтобы никто другой не мог использовать его
+        // РјС‹ РёСЃРїРѕР»СЊР·СѓРµРј СѓРЅРёРєР°Р»СЊРЅРѕРµ РёРјСЏ СЂРµСЃСѓСЂСЃР°, С‡С‚РѕР±С‹ РЅРёРєС‚Рѕ РґСЂСѓРіРѕР№ РЅРµ РјРѕРі РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РµРіРѕ
         MxResource r = MxResourceFactory.getResource("DependencyTrackingFTest#testInstanceMethodWithInstanceTracking");
 
         CacheDescriptor<MyClass> d = new CacheDescriptor<MyClass>(MyClass.class, 2, int.class, int.class, new MyIntIntCalculatable(r), "instanceMethodWithInstanceTracking", "(I)I", null, null, null, null);
@@ -152,7 +152,7 @@ public class DependencyTrackingFTest {
         TIdentityHashSet<CleaningNode> elements = new TIdentityHashSet<CleaningNode>();
         node.appendNodes(elements);
         assert elements.size() == 1;
-        // элемент тут должен быть только один
+        // СЌР»РµРјРµРЅС‚ С‚СѓС‚ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ С‚РѕР»СЊРєРѕ РѕРґРёРЅ
         CleaningNode element = elements.iterator().next();
         assert element == t.cache;
     }

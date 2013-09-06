@@ -45,7 +45,7 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
         super(context, descriptor);
         this.storageFactory = storageFactory;
         cacheSignature = descriptor.getSignature();
-        // проверка идет по классу, а не instanceof потому что наследники могут переопределить поведение
+        // РїСЂРѕРІРµСЂРєР° РёРґРµС‚ РїРѕ РєР»Р°СЃСЃСѓ, Р° РЅРµ instanceof РїРѕС‚РѕРјСѓ С‡С‚Рѕ РЅР°СЃР»РµРґРЅРёРєРё РјРѕРіСѓС‚ РїРµСЂРµРѕРїСЂРµРґРµР»РёС‚СЊ РїРѕРІРµРґРµРЅРёРµ
         inlineCache = canInlineCache(descriptor, storageFactory);
     }
 

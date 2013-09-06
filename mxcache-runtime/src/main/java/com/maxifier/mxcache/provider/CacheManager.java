@@ -12,14 +12,14 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface CacheManager<T> {
     /**
-     * @return дескриптор, переданный при создании
+     * @return РґРµСЃРєСЂРёРїС‚РѕСЂ, РїРµСЂРµРґР°РЅРЅС‹Р№ РїСЂРё СЃРѕР·РґР°РЅРёРё
      */
     CacheDescriptor<T> getDescriptor();
 
     /**
-     * Создает экземпляр кэша
-     * @param owner вдаделец кэша
-     * @return экземпляр кэша
+     * РЎРѕР·РґР°РµС‚ СЌРєР·РµРјРїР»СЏСЂ РєСЌС€Р°
+     * @param owner РІРґР°РґРµР»РµС† РєСЌС€Р°
+     * @return СЌРєР·РµРјРїР»СЏСЂ РєСЌС€Р°
      */
     Cache createCache(@Nullable T owner);
 

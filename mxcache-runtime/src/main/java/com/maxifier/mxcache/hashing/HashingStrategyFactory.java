@@ -12,9 +12,9 @@ import java.lang.reflect.Method;
  */
 public interface HashingStrategyFactory {
     /**
-     * @param context контекст запроса
-     * @param method метод
-     * @return подходящую стратегию хэширования, или null, если достаточно стандартной
+     * @param context РєРѕРЅС‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР°
+     * @param method РјРµС‚РѕРґ
+     * @return РїРѕРґС…РѕРґСЏС‰СѓСЋ СЃС‚СЂР°С‚РµРіРёСЋ С…СЌС€РёСЂРѕРІР°РЅРёСЏ, РёР»Рё null, РµСЃР»Рё РґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃС‚Р°РЅРґР°СЂС‚РЅРѕР№
      */
     Object createHashingStrategy(CacheContext context, Method method);
 }

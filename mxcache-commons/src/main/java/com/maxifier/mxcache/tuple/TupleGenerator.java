@@ -68,7 +68,7 @@ public final class TupleGenerator {
     private static final Method EQUALS_OBJECT_OBJECT_METHOD = Method.getMethod("boolean equals(Object, Object)");
 
     static {
-        // Мы вынуждены использовать строки, а не классы, потому что в составе idea поставляется старая версия trove
+        // РњС‹ РІС‹РЅСѓР¶РґРµРЅС‹ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЃС‚СЂРѕРєРё, Р° РЅРµ РєР»Р°СЃСЃС‹, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РІ СЃРѕСЃС‚Р°РІРµ idea РїРѕСЃС‚Р°РІР»СЏРµС‚СЃСЏ СЃС‚Р°СЂР°СЏ РІРµСЂСЃРёСЏ trove
         STRATEGY_TYPE.put(Type.BYTE, Type.getObjectType("gnu/trove/TByteHashingStrategy"));
         STRATEGY_TYPE.put(Type.SHORT, Type.getObjectType("gnu/trove/TShortHashingStrategy"));
         STRATEGY_TYPE.put(Type.INT, Type.getObjectType("gnu/trove/TIntHashingStrategy"));
@@ -278,7 +278,7 @@ public final class TupleGenerator {
 
                 Type strategyType = STRATEGY_TYPE.get(type.getSort());
                 if (strategyType != null) {
-                    // для boolean нет стратегий, поэтому разрешенное значение - только null.
+                    // РґР»СЏ boolean РЅРµС‚ СЃС‚СЂР°С‚РµРіРёР№, РїРѕСЌС‚РѕРјСѓ СЂР°Р·СЂРµС€РµРЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ - С‚РѕР»СЊРєРѕ null.
                     visitor.loadArg(1);
                     visitor.push(i);
                     visitor.arrayLoad(OBJECT_TYPE);

@@ -37,15 +37,15 @@ public final class CleanableRegister implements CacheCleaner {
 
     private static final Cleanable<?> EMPTY_CLEANABLE = new EmptyCleanable();
 
-    //---- Вызывается в секции статической инициализации инструментированного класса -----------------------------------
+    //---- Р’С‹Р·С‹РІР°РµС‚СЃСЏ РІ СЃРµРєС†РёРё СЃС‚Р°С‚РёС‡РµСЃРєРѕР№ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РёРЅСЃС‚СЂСѓРјРµРЅС‚РёСЂРѕРІР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР° -----------------------------------
 
     /**
-     * Метод вызывается в секции статической инициализации класса с кешем для регистрации.
-     * @param clazz - регистрируемый класс
-     * @param cleanable - чистильшик класса
-     * @param groups - id кешей по группам
-     * @param tags - id кешей по тегам
-     * @param <T> - тип класса
+     * РњРµС‚РѕРґ РІС‹Р·С‹РІР°РµС‚СЃСЏ РІ СЃРµРєС†РёРё СЃС‚Р°С‚РёС‡РµСЃРєРѕР№ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РєР»Р°СЃСЃР° СЃ РєРµС€РµРј РґР»СЏ СЂРµРіРёСЃС‚СЂР°С†РёРё.
+     * @param clazz - СЂРµРіРёСЃС‚СЂРёСЂСѓРµРјС‹Р№ РєР»Р°СЃСЃ
+     * @param cleanable - С‡РёСЃС‚РёР»СЊС€РёРє РєР»Р°СЃСЃР°
+     * @param groups - id РєРµС€РµР№ РїРѕ РіСЂСѓРїРїР°Рј
+     * @param tags - id РєРµС€РµР№ РїРѕ С‚РµРіР°Рј
+     * @param <T> - С‚РёРї РєР»Р°СЃСЃР°
      */
     public synchronized <T> void registerClass(Class<T> clazz, Cleanable<T> cleanable, @Nullable Map<String, ClassCacheIds> groups, @Nullable Map<String, ClassCacheIds> tags) {
         if (clazz.isInterface()) {
@@ -111,7 +111,7 @@ public final class CleanableRegister implements CacheCleaner {
         }
     }
 
-    //---- Вызывается в модифицированном конструкторе инструментированного класса---------------------------------------
+    //---- Р’С‹Р·С‹РІР°РµС‚СЃСЏ РІ РјРѕРґРёС„РёС†РёСЂРѕРІР°РЅРЅРѕРј РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРµ РёРЅСЃС‚СЂСѓРјРµРЅС‚РёСЂРѕРІР°РЅРЅРѕРіРѕ РєР»Р°СЃСЃР°---------------------------------------
 
     public void registerInstance(Object o, Class<?> aClass) {
         ClassCleanableInstanceList<?> instanceList = getListByClass(aClass);
@@ -151,7 +151,7 @@ public final class CleanableRegister implements CacheCleaner {
         return classCleanMap.get(aClass);
     }
 
-    //---- Вызывется по запросу пользователя ---------------------------------------------------------------------------
+    //---- Р’С‹Р·С‹РІРµС‚СЃСЏ РїРѕ Р·Р°РїСЂРѕСЃСѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ ---------------------------------------------------------------------------
 
 
     @Override
@@ -266,7 +266,7 @@ public final class CleanableRegister implements CacheCleaner {
     }
 
     /**
-     * Из-за особенностей реализации, метод эквивалентен очистке по тегу <code>@полное.имя.класса.Аннотации</code>.
+     * РР·-Р·Р° РѕСЃРѕР±РµРЅРЅРѕСЃС‚РµР№ СЂРµР°Р»РёР·Р°С†РёРё, РјРµС‚РѕРґ СЌРєРІРёРІР°Р»РµРЅС‚РµРЅ РѕС‡РёСЃС‚РєРµ РїРѕ С‚РµРіСѓ <code>@РїРѕР»РЅРѕРµ.РёРјСЏ.РєР»Р°СЃСЃР°.РђРЅРЅРѕС‚Р°С†РёРё</code>.
      */
     @Override
     public void clearCacheByAnnotation(Class<? extends Annotation> annotationClass) {

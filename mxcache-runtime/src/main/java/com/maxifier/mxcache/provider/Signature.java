@@ -96,7 +96,7 @@ public class Signature {
         }
         Signature signature = byValue.get(value);
         if (signature == null) {
-            // мы не сохраняем!
+            // РјС‹ РЅРµ СЃРѕС…СЂР°РЅСЏРµРј!
             return new Signature(container, value);
         }
         return signature;

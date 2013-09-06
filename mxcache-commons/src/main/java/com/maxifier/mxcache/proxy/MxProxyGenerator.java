@@ -12,11 +12,11 @@ public final class MxProxyGenerator {
     }
 
     /**
-     * Создает фабрику проксей заданного типа.
+     * РЎРѕР·РґР°РµС‚ С„Р°Р±СЂРёРєСѓ РїСЂРѕРєСЃРµР№ Р·Р°РґР°РЅРЅРѕРіРѕ С‚РёРїР°.
      *
-     * @param sourceClass    исходный интерфейс
-     * @param containerClass класс/интерфейс контейнера
-     * @return фабрику проксей для заданного типа объектов и контейнеров.
+     * @param sourceClass    РёСЃС…РѕРґРЅС‹Р№ РёРЅС‚РµСЂС„РµР№СЃ
+     * @param containerClass РєР»Р°СЃСЃ/РёРЅС‚РµСЂС„РµР№СЃ РєРѕРЅС‚РµР№РЅРµСЂР°
+     * @return С„Р°Р±СЂРёРєСѓ РїСЂРѕРєСЃРµР№ РґР»СЏ Р·Р°РґР°РЅРЅРѕРіРѕ С‚РёРїР° РѕР±СЉРµРєС‚РѕРІ Рё РєРѕРЅС‚РµР№РЅРµСЂРѕРІ.
      */
     public static synchronized <T, C extends Resolvable<T>> MxProxyFactory<T, C> getProxyFactory(Class<T> sourceClass, Class<C> containerClass) {
         MxProxyFactory<T, C> proxy = new MxProxyFactory<T, C>(sourceClass, containerClass);
@@ -30,13 +30,13 @@ public final class MxProxyGenerator {
     }
 
     /**
-     * Создает generic фабрику проксей заданного типа.
-     * Отличасется тем, что возвращаемые прокси помимо самого исходного интерфейса реализуют также все его
-     * интерфейсы-наследники, которые реализует исходный объект
+     * РЎРѕР·РґР°РµС‚ generic С„Р°Р±СЂРёРєСѓ РїСЂРѕРєСЃРµР№ Р·Р°РґР°РЅРЅРѕРіРѕ С‚РёРїР°.
+     * РћС‚Р»РёС‡Р°СЃРµС‚СЃСЏ С‚РµРј, С‡С‚Рѕ РІРѕР·РІСЂР°С‰Р°РµРјС‹Рµ РїСЂРѕРєСЃРё РїРѕРјРёРјРѕ СЃР°РјРѕРіРѕ РёСЃС…РѕРґРЅРѕРіРѕ РёРЅС‚РµСЂС„РµР№СЃР° СЂРµР°Р»РёР·СѓСЋС‚ С‚Р°РєР¶Рµ РІСЃРµ РµРіРѕ
+     * РёРЅС‚РµСЂС„РµР№СЃС‹-РЅР°СЃР»РµРґРЅРёРєРё, РєРѕС‚РѕСЂС‹Рµ СЂРµР°Р»РёР·СѓРµС‚ РёСЃС…РѕРґРЅС‹Р№ РѕР±СЉРµРєС‚
      *
-     * @param sourceClass    исходный интерфейс
-     * @param containerClass класс/интерфейс контейнера
-     * @return фабрику проксей для заданного типа объектов и контейнеров.
+     * @param sourceClass    РёСЃС…РѕРґРЅС‹Р№ РёРЅС‚РµСЂС„РµР№СЃ
+     * @param containerClass РєР»Р°СЃСЃ/РёРЅС‚РµСЂС„РµР№СЃ РєРѕРЅС‚РµР№РЅРµСЂР°
+     * @return С„Р°Р±СЂРёРєСѓ РїСЂРѕРєСЃРµР№ РґР»СЏ Р·Р°РґР°РЅРЅРѕРіРѕ С‚РёРїР° РѕР±СЉРµРєС‚РѕРІ Рё РєРѕРЅС‚РµР№РЅРµСЂРѕРІ.
      */
     public static synchronized <T, C extends Resolvable<T>> MxGenericProxyFactory<T, C> getGenericProxyFactory(Class<T> sourceClass, Class<C> containerClass) {
         MxGenericProxyFactory<T, C> proxy = new MxGenericProxyFactory<T, C>(sourceClass, containerClass);

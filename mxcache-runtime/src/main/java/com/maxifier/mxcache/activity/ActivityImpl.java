@@ -174,7 +174,7 @@ public class ActivityImpl implements Activity, Serializable {
     @Override
     public synchronized void removeListener(ActivityListener listener) {
         if (listeners != null) {
-            // если список не создан, то и удалять нечего
+            // РµСЃР»Рё СЃРїРёСЃРѕРє РЅРµ СЃРѕР·РґР°РЅ, С‚Рѕ Рё СѓРґР°Р»СЏС‚СЊ РЅРµС‡РµРіРѕ
             listeners.remove(listener);
         }
     }

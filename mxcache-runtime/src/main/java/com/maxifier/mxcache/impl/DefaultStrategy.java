@@ -17,7 +17,7 @@ import java.lang.reflect.Constructor;
  * Date: 22.04.2010
  * Time: 18:28:26
  * <p>
- * Стратегия кэширования по умолчанию.
+ * РЎС‚СЂР°С‚РµРіРёСЏ РєСЌС€РёСЂРѕРІР°РЅРёСЏ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ.
  */
 public class DefaultStrategy implements CachingStrategy {
     private static final Logger logger = LoggerFactory.getLogger(DefaultStrategy.class);

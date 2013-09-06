@@ -33,8 +33,8 @@ class WeakList<T> implements Iterable<T> {
     }
 
     /**
-     * @param ref ссылка для удаления
-     * @return ссылка на следующий элемент
+     * @param ref СЃСЃС‹Р»РєР° РґР»СЏ СѓРґР°Р»РµРЅРёСЏ
+     * @return СЃСЃС‹Р»РєР° РЅР° СЃР»РµРґСѓСЋС‰РёР№ СЌР»РµРјРµРЅС‚
      */
     private InstanceReference remove(InstanceReference ref) {
         lock.lock();
@@ -77,7 +77,7 @@ class WeakList<T> implements Iterable<T> {
     }
 
     /**
-     * @return версию коллекции - число операций добавления элементов
+     * @return РІРµСЂСЃРёСЋ РєРѕР»Р»РµРєС†РёРё - С‡РёСЃР»Рѕ РѕРїРµСЂР°С†РёР№ РґРѕР±Р°РІР»РµРЅРёСЏ СЌР»РµРјРµРЅС‚РѕРІ
      */
     public int lock() {
         lock.lock();

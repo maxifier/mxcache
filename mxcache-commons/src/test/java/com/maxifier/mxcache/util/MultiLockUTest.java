@@ -102,10 +102,10 @@ public class MultiLockUTest {
         barrier(barrier);
 
         try {
-            // вот тут мы пропускаем другой поток
+            // РІРѕС‚ С‚СѓС‚ РјС‹ РїСЂРѕРїСѓСЃРєР°РµРј РґСЂСѓРіРѕР№ РїРѕС‚РѕРє
             part.lock();
             try {
-                // проверяем, что пропустили
+                // РїСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ РїСЂРѕРїСѓСЃС‚РёР»Рё
                 assertTrue(notification.get());
             } finally {
                 part.lock();
@@ -150,10 +150,10 @@ public class MultiLockUTest {
             lock.lock();
             try {
                 barrier(barrier);
-                // вот тут мы пропускаем другой поток
+                // РІРѕС‚ С‚СѓС‚ РјС‹ РїСЂРѕРїСѓСЃРєР°РµРј РґСЂСѓРіРѕР№ РїРѕС‚РѕРє
                 part.lock();
                 try {
-                    // проверяем, что пропустили
+                    // РїСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ РїСЂРѕРїСѓСЃС‚РёР»Рё
                     assertTrue(notification.get());
                 } finally {
                     part.lock();

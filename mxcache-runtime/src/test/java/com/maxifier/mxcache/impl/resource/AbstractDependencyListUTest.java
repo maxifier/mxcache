@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference;
  */
 @Test
 public class AbstractDependencyListUTest {
-    // да ничо особо тут не проверяется - так, на всякий случай
+    // РґР° РЅРёС‡Рѕ РѕСЃРѕР±Рѕ С‚СѓС‚ РЅРµ РїСЂРѕРІРµСЂСЏРµС‚СЃСЏ - С‚Р°Рє, РЅР° РІСЃСЏРєРёР№ СЃР»СѓС‡Р°Р№
     public void testSelfDependenct() {
         TestNode a = new TestNode("A");
         a.trackDependency(a);
@@ -37,7 +37,7 @@ public class AbstractDependencyListUTest {
         a.trackDependency(d);
         b.trackDependency(c);
 
-        // тут примерные размер известен точно, потому что все элементы живы
+        // С‚СѓС‚ РїСЂРёРјРµСЂРЅС‹Рµ СЂР°Р·РјРµСЂ РёР·РІРµСЃС‚РµРЅ С‚РѕС‡РЅРѕ, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РІСЃРµ СЌР»РµРјРµРЅС‚С‹ Р¶РёРІС‹
         assert a.getApproxSize() == 2;
         assert b.getApproxSize() == 1;
         assert c.getApproxSize() == 0;
@@ -48,7 +48,7 @@ public class AbstractDependencyListUTest {
         assert nodes.contains(c);
         assert nodes.contains(d);
 
-        // ссылка на b сохраняется в списке, поэтому его тоже надо удалить
+        // СЃСЃС‹Р»РєР° РЅР° b СЃРѕС…СЂР°РЅСЏРµС‚СЃСЏ РІ СЃРїРёСЃРєРµ, РїРѕСЌС‚РѕРјСѓ РµРіРѕ С‚РѕР¶Рµ РЅР°РґРѕ СѓРґР°Р»РёС‚СЊ
         //noinspection UnusedAssignment,ReuseOfLocalVariable
         nodes = null;
 
@@ -60,11 +60,11 @@ public class AbstractDependencyListUTest {
             Thread.sleep(10);
         }
 
-        // тут мы можем только сказать, что новых узлов нет. старый мог и не быть удален
+        // С‚СѓС‚ РјС‹ РјРѕР¶РµРј С‚РѕР»СЊРєРѕ СЃРєР°Р·Р°С‚СЊ, С‡С‚Рѕ РЅРѕРІС‹С… СѓР·Р»РѕРІ РЅРµС‚. СЃС‚Р°СЂС‹Р№ РјРѕРі Рё РЅРµ Р±С‹С‚СЊ СѓРґР°Р»РµРЅ
         assert a.getApproxSize() <= 2;
 
         Set<DependencyNode> nodes2 = DependencyTestHelper.getAllDependentNodes(a);
-        // теперь все связи через b разорваны.
+        // С‚РµРїРµСЂСЊ РІСЃРµ СЃРІСЏР·Рё С‡РµСЂРµР· b СЂР°Р·РѕСЂРІР°РЅС‹.
         assert nodes2.size() == 1;
         assert nodes2.contains(d);
     }
@@ -92,7 +92,7 @@ public class AbstractDependencyListUTest {
         Set<DependencyNode> nodes = DependencyTestHelper.getAllDependentNodes(a);
 
         Assert.assertEquals(nodes.size(), 5);
-        // сам узел тоже попадает, потому что зависит от D
+        // СЃР°Рј СѓР·РµР» С‚РѕР¶Рµ РїРѕРїР°РґР°РµС‚, РїРѕС‚РѕРјСѓ С‡С‚Рѕ Р·Р°РІРёСЃРёС‚ РѕС‚ D
         Assert.assertTrue(nodes.contains(a));
         Assert.assertTrue(nodes.contains(b));
         Assert.assertTrue(nodes.contains(c));
@@ -111,7 +111,7 @@ public class AbstractDependencyListUTest {
         Set<DependencyNode> nodes3 = DependencyTestHelper.getAllDependentNodes(c);
 
         Assert.assertEquals(nodes3.size(), 1);
-        // а сам узел C не попал.
+        // Р° СЃР°Рј СѓР·РµР» C РЅРµ РїРѕРїР°Р».
         Assert.assertTrue(nodes3.contains(e));
     }
 

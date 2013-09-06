@@ -10,7 +10,7 @@ import java.lang.annotation.Annotation;
  * Date: 30.04.2010
  * Time: 19:36:29
  * <p>
- * Представляет собой свойство пользовательской стратегии.
+ * РџСЂРµРґСЃС‚Р°РІР»СЏРµС‚ СЃРѕР±РѕР№ СЃРІРѕР№СЃС‚РІРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРѕР№ СЃС‚СЂР°С‚РµРіРёРё.
  * @see CacheDescriptor#getProperty(StrategyProperty)
  * @see CacheDescriptor#getProperty(AnnotationProperty)
  * @see AnnotationProperty 
@@ -23,9 +23,9 @@ public class StrategyProperty<T> {
     private final T defaultValue;
 
     /**
-     * @param name название
-     * @param type тип
-     * @param defaultValue значение по умолчанию
+     * @param name РЅР°Р·РІР°РЅРёРµ
+     * @param type С‚РёРї
+     * @param defaultValue Р·РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
      */
     public StrategyProperty(@NotNull String name, @NotNull Class<T> type, T defaultValue) {
         if (defaultValue != null && !type.isInstance(defaultValue)) {
@@ -37,10 +37,10 @@ public class StrategyProperty<T> {
     }
 
     /**
-     * Создает свойство со значение по умолчанию null.
+     * РЎРѕР·РґР°РµС‚ СЃРІРѕР№СЃС‚РІРѕ СЃРѕ Р·РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ null.
      *
-     * @param name название
-     * @param type тип
+     * @param name РЅР°Р·РІР°РЅРёРµ
+     * @param type С‚РёРї
      */
     public StrategyProperty(String name, Class<T> type) {
         this(name, type, null);
@@ -63,21 +63,21 @@ public class StrategyProperty<T> {
     }
 
     /**
-     * @return название (под которым свойство записывается в mxcache.xml)
+     * @return РЅР°Р·РІР°РЅРёРµ (РїРѕРґ РєРѕС‚РѕСЂС‹Рј СЃРІРѕР№СЃС‚РІРѕ Р·Р°РїРёСЃС‹РІР°РµС‚СЃСЏ РІ mxcache.xml)
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @return тип свойства
+     * @return С‚РёРї СЃРІРѕР№СЃС‚РІР°
      */
     public Class<T> getType() {
         return type;
     }
 
     /**
-     * @return Значение по умолчанию
+     * @return Р—РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
      */
     public T getDefaultValue() {
         return defaultValue;

@@ -41,8 +41,8 @@ public final class MxCacheLayer<T> implements MxConvertState<T> {
     }
 
 //    /**
-//     * Должен вызываться только с синхронизацией на менеджера.
-//     * @param newIntencity добавочная интенсивность
+//     * Р”РѕР»Р¶РµРЅ РІС‹Р·С‹РІР°С‚СЊСЃСЏ С‚РѕР»СЊРєРѕ СЃ СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРµР№ РЅР° РјРµРЅРµРґР¶РµСЂР°.
+//     * @param newIntencity РґРѕР±Р°РІРѕС‡РЅР°СЏ РёРЅС‚РµРЅСЃРёРІРЅРѕСЃС‚СЊ
 //     */
 //    void addIntencity(float newIntencity) {
 //        intencity += newIntencity;

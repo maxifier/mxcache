@@ -45,7 +45,7 @@ public class TupleGeneratorUTest {
     public void testCustomStrategy() throws Exception {
         TObjectIdentityHashingStrategy<String> strategy = new TObjectIdentityHashingStrategy<String>();
         Tuple tuple = createTuple(array(String.class, int.class), "Test", 3);
-        // у int hashCode равен ему самому
+        // Сѓ int hashCode СЂР°РІРµРЅ РµРјСѓ СЃР°РјРѕРјСѓ
         int sample = Arrays.hashCode(new int[] { System.identityHashCode("Test"), 3});
         assert tuple.hashCode(strategy, null) == sample;
 
@@ -72,7 +72,7 @@ public class TupleGeneratorUTest {
         };
 
         Tuple tuple = createTuple(array(int.class, boolean.class), 3, true);
-        // у int hashCode равен ему самому
+        // Сѓ int hashCode СЂР°РІРµРЅ РµРјСѓ СЃР°РјРѕРјСѓ
         int sample = Arrays.hashCode(new int[] { -1, Boolean.TRUE.hashCode()});
         assert tuple.hashCode(constIntHashing, null) == sample;
 

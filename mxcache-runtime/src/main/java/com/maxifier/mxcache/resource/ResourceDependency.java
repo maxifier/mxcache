@@ -12,6 +12,6 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ResourceDependency {
-    /** @return cписок имен ресурсов */
+    /** @return cРїРёСЃРѕРє РёРјРµРЅ СЂРµСЃСѓСЂСЃРѕРІ */
     String[] value();
 }

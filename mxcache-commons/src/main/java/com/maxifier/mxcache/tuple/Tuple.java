@@ -12,7 +12,7 @@ import java.util.Iterator;
  * Time: 18:55:04
  *
  * <p>
- * Класс кортежа. Не стоит его реализовавыть вручную.
+ * РљР»Р°СЃСЃ РєРѕСЂС‚РµР¶Р°. РќРµ СЃС‚РѕРёС‚ РµРіРѕ СЂРµР°Р»РёР·РѕРІР°РІС‹С‚СЊ РІСЂСѓС‡РЅСѓСЋ.
  * @see TupleGenerator
  */
 public abstract class Tuple implements Serializable, Iterable<Object> {
@@ -129,8 +129,8 @@ public abstract class Tuple implements Serializable, Iterable<Object> {
      *
      * @param obj object
      *
-     * @param hashingStrategies стратегии хэширования; размер массива должен совпадать с размером кортежа; null означает
-     * использование стратегии по-умолчанию
+     * @param hashingStrategies СЃС‚СЂР°С‚РµРіРёРё С…СЌС€РёСЂРѕРІР°РЅРёСЏ; СЂР°Р·РјРµСЂ РјР°СЃСЃРёРІР° РґРѕР»Р¶РµРЅ СЃРѕРІРїР°РґР°С‚СЊ СЃ СЂР°Р·РјРµСЂРѕРј РєРѕСЂС‚РµР¶Р°; null РѕР·РЅР°С‡Р°РµС‚
+     * РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ СЃС‚СЂР°С‚РµРіРёРё РїРѕ-СѓРјРѕР»С‡Р°РЅРёСЋ
      * @return true if obj is tuple and this tuple is equal to obj.
      */
     public abstract boolean equals(Object obj, Object... hashingStrategies);

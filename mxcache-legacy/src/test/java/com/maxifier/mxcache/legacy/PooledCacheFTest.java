@@ -147,7 +147,7 @@ public class PooledCacheFTest {
 
         manager.getConfiguration().clearTo(0.5);
 
-        // вычищается только один элемент
+        // РІС‹С‡РёС‰Р°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РѕРґРёРЅ СЌР»РµРјРµРЅС‚
         assertEquals(manager.getYoungCount(), 1);
         assertEquals(cache.getSize(), 2);
 
@@ -157,7 +157,7 @@ public class PooledCacheFTest {
         assertEquals(cache.getOrCreate("test"), new Value("new test"));
         assertEquals(cache.getOrCreate("maxifier"), new Value("cool"));
 
-        // test используется чаще, но young зависит только от последнего добавленного 
+        // test РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ С‡Р°С‰Рµ, РЅРѕ young Р·Р°РІРёСЃРёС‚ С‚РѕР»СЊРєРѕ РѕС‚ РїРѕСЃР»РµРґРЅРµРіРѕ РґРѕР±Р°РІР»РµРЅРЅРѕРіРѕ 
         verify(calculatable).calculate(null, "test");
         verifyNoMoreInteractions(calculatable);
     }
@@ -185,7 +185,7 @@ public class PooledCacheFTest {
         when(calculatable.calculate(null, "maxifier")).thenReturn(new Value("cool"));
 
         for (int i = 0; i<5; i++) {
-            // нам нужно загнать элементы в пул
+            // РЅР°Рј РЅСѓР¶РЅРѕ Р·Р°РіРЅР°С‚СЊ СЌР»РµРјРµРЅС‚С‹ РІ РїСѓР»
             long start = System.nanoTime();
             manager.periodStart(new MxStageStartEvent(STAGE, start));
             assertEquals(cache.getOrCreate("test"), new Value("test"));
@@ -208,7 +208,7 @@ public class PooledCacheFTest {
 
         manager.getConfiguration().clearTo(0.5);
 
-        // вычищается только один элемент
+        // РІС‹С‡РёС‰Р°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РѕРґРёРЅ СЌР»РµРјРµРЅС‚
         assertEquals(manager.getOldCount(), 1);
         assertEquals(cache.getSize(), 2);
 
@@ -218,7 +218,7 @@ public class PooledCacheFTest {
         assertEquals(cache.getOrCreate("test"), new Value("test"));
         assertEquals(cache.getOrCreate("maxifier"), new Value("new cool"));
 
-        // test используется чаще, поэтому выживет
+        // test РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ С‡Р°С‰Рµ, РїРѕСЌС‚РѕРјСѓ РІС‹Р¶РёРІРµС‚
         verify(calculatable).calculate(null, "maxifier");
         verifyNoMoreInteractions(calculatable);
     }

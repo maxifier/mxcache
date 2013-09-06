@@ -172,7 +172,7 @@ public class MxCachePoolManager<T> extends ElementOwner<T> implements MxStateHan
         }
     }
 
-    //************************* Настройна параметров *******************************************************************
+    //************************* РќР°СЃС‚СЂРѕР№РЅР° РїР°СЂР°РјРµС‚СЂРѕРІ *******************************************************************
 
 
     public Configuration getConfiguration() {
@@ -427,7 +427,7 @@ public class MxCachePoolManager<T> extends ElementOwner<T> implements MxStateHan
         }
     }
 
-    //Вызывается в потоке flusher`а, W не включён - включается внутри
+    //Р’С‹Р·С‹РІР°РµС‚СЃСЏ РІ РїРѕС‚РѕРєРµ flusher`Р°, W РЅРµ РІРєР»СЋС‡С‘РЅ - РІРєР»СЋС‡Р°РµС‚СЃСЏ РІРЅСѓС‚СЂРё
     @Override
     public void stateHandler() {
         Lock wholeLock = lock.getWholeLock();
@@ -457,9 +457,9 @@ public class MxCachePoolManager<T> extends ElementOwner<T> implements MxStateHan
     }
 
     /**
-     * Вызывается в потоке flusher`а, W не включён - включается внутри
+     * Р’С‹Р·С‹РІР°РµС‚СЃСЏ РІ РїРѕС‚РѕРєРµ flusher`Р°, W РЅРµ РІРєР»СЋС‡С‘РЅ - РІРєР»СЋС‡Р°РµС‚СЃСЏ РІРЅСѓС‚СЂРё
      *
-     * @return true, если период закончился
+     * @return true, РµСЃР»Рё РїРµСЂРёРѕРґ Р·Р°РєРѕРЅС‡РёР»СЃСЏ
      */
     private boolean processEvents() {
         assert isHeldByCurrentThread();
@@ -509,7 +509,7 @@ public class MxCachePoolManager<T> extends ElementOwner<T> implements MxStateHan
 
     //------------------------------------------------------------------------------------------------------------------
 
-    // Проверяет переполнение кэша и в случае необходимости его очищает.
+    // РџСЂРѕРІРµСЂСЏРµС‚ РїРµСЂРµРїРѕР»РЅРµРЅРёРµ РєСЌС€Р° Рё РІ СЃР»СѓС‡Р°Рµ РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё РµРіРѕ РѕС‡РёС‰Р°РµС‚.
 
     @Override
     void update() {
@@ -609,7 +609,7 @@ public class MxCachePoolManager<T> extends ElementOwner<T> implements MxStateHan
         element.setInPool(true);
     }
 
-    //--- К Э Ш О О Ч И С Т И Т Е Л И    Д Л Я    О Б О И Х    П О Т О К О В -------------------------------------------
+    //--- Рљ Р­ РЁ Рћ Рћ Р§ Р РЎ Рў Р Рў Р• Р› Р    Р” Р› РЇ    Рћ Р‘ Рћ Р РҐ    Рџ Рћ Рў Рћ Рљ Рћ Р’ -------------------------------------------
 
     private void clearTo(double rate) {
         assert isHeldByCurrentThread();
@@ -648,7 +648,7 @@ public class MxCachePoolManager<T> extends ElementOwner<T> implements MxStateHan
             if (logger.isTraceEnabled()) {
                 long end = System.nanoTime();
                 if (end - start > 30000000) {
-                    // если дольше 30 миллисекунд, то выведем сообщение
+                    // РµСЃР»Рё РґРѕР»СЊС€Рµ 30 РјРёР»Р»РёСЃРµРєСѓРЅРґ, С‚Рѕ РІС‹РІРµРґРµРј СЃРѕРѕР±С‰РµРЅРёРµ
                     logger.trace(String.format("slow clear (from %.2f to %.2f / %.2f = %.2f cleared) in %d ms", oldSize, size, limit, (oldSize - size), (end - start) / 1000000));
                 }
             }

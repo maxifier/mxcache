@@ -15,8 +15,8 @@ import java.util.Map;
  * Date: 01.07.2010
  * Time: 15:04:56
  * <p>
- * Этот класс необходимо расширять, если вы хотите сделать поддержку собственных аннотаций для указания стратегии
- * хэширования. Для этого перекройте метод {@link AbstractHashingStrategyFactory#findStrategyClass(com.maxifier.mxcache.context.CacheContext, Class, java.lang.annotation.Annotation[])}.
+ * Р­С‚РѕС‚ РєР»Р°СЃСЃ РЅРµРѕР±С…РѕРґРёРјРѕ СЂР°СЃС€РёСЂСЏС‚СЊ, РµСЃР»Рё РІС‹ С…РѕС‚РёС‚Рµ СЃРґРµР»Р°С‚СЊ РїРѕРґРґРµСЂР¶РєСѓ СЃРѕР±СЃС‚РІРµРЅРЅС‹С… Р°РЅРЅРѕС‚Р°С†РёР№ РґР»СЏ СѓРєР°Р·Р°РЅРёСЏ СЃС‚СЂР°С‚РµРіРёРё
+ * С…СЌС€РёСЂРѕРІР°РЅРёСЏ. Р”Р»СЏ СЌС‚РѕРіРѕ РїРµСЂРµРєСЂРѕР№С‚Рµ РјРµС‚РѕРґ {@link AbstractHashingStrategyFactory#findStrategyClass(com.maxifier.mxcache.context.CacheContext, Class, java.lang.annotation.Annotation[])}.
  */
 public abstract class AbstractHashingStrategyFactory implements HashingStrategyFactory {
     private static final Logger logger = LoggerFactory.getLogger(AbstractHashingStrategyFactory.class);
@@ -86,12 +86,12 @@ public abstract class AbstractHashingStrategyFactory implements HashingStrategyF
     }
 
     /**
-     * Этот метод должен создавать подходяшую стратегию хэширования.
+     * Р­С‚РѕС‚ РјРµС‚РѕРґ РґРѕР»Р¶РµРЅ СЃРѕР·РґР°РІР°С‚СЊ РїРѕРґС…РѕРґСЏС€СѓСЋ СЃС‚СЂР°С‚РµРіРёСЋ С…СЌС€РёСЂРѕРІР°РЅРёСЏ.
      * @param context context of instance
-     * @param paramType тип параметра, который должен сравниваться
-     * @param annotations аннотации параметра, среди которых необходимо найти аннотацию
-     * @return стратегию хэширования, или null, если стратегия не найдена; рекоммендуется возвратить null и вывести
-     * сообщение в лог, если указана неправильная аннотация или класс стратегии.
+     * @param paramType С‚РёРї РїР°СЂР°РјРµС‚СЂР°, РєРѕС‚РѕСЂС‹Р№ РґРѕР»Р¶РµРЅ СЃСЂР°РІРЅРёРІР°С‚СЊСЃСЏ
+     * @param annotations Р°РЅРЅРѕС‚Р°С†РёРё РїР°СЂР°РјРµС‚СЂР°, СЃСЂРµРґРё РєРѕС‚РѕСЂС‹С… РЅРµРѕР±С…РѕРґРёРјРѕ РЅР°Р№С‚Рё Р°РЅРЅРѕС‚Р°С†РёСЋ
+     * @return СЃС‚СЂР°С‚РµРіРёСЋ С…СЌС€РёСЂРѕРІР°РЅРёСЏ, РёР»Рё null, РµСЃР»Рё СЃС‚СЂР°С‚РµРіРёСЏ РЅРµ РЅР°Р№РґРµРЅР°; СЂРµРєРѕРјРјРµРЅРґСѓРµС‚СЃСЏ РІРѕР·РІСЂР°С‚РёС‚СЊ null Рё РІС‹РІРµСЃС‚Рё
+     * СЃРѕРѕР±С‰РµРЅРёРµ РІ Р»РѕРі, РµСЃР»Рё СѓРєР°Р·Р°РЅР° РЅРµРїСЂР°РІРёР»СЊРЅР°СЏ Р°РЅРЅРѕС‚Р°С†РёСЏ РёР»Рё РєР»Р°СЃСЃ СЃС‚СЂР°С‚РµРіРёРё.
      */
     protected abstract Object findStrategyClass(CacheContext context, Class paramType, Annotation[] annotations);
 }

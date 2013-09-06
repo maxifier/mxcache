@@ -36,7 +36,7 @@ public abstract class AbstractDependencyNode implements DependencyNode {
     }
 
     /**
-     * @return примерный размер (примерный - потому что может включать некоторые мертвые ссылки)
+     * @return РїСЂРёРјРµСЂРЅС‹Р№ СЂР°Р·РјРµСЂ (РїСЂРёРјРµСЂРЅС‹Р№ - РїРѕС‚РѕРјСѓ С‡С‚Рѕ РјРѕР¶РµС‚ РІРєР»СЋС‡Р°С‚СЊ РЅРµРєРѕС‚РѕСЂС‹Рµ РјРµСЂС‚РІС‹Рµ СЃСЃС‹Р»РєРё)
      */
     public synchronized int getApproxSize() {
         return dependentNodes == null ? 0 : dependentNodes.size();

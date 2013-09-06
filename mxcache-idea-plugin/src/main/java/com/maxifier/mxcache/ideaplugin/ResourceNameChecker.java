@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
  * Date: 29.02.12
  * Time: 22:55
  *
- * Этот класс вынесен из ResourceNamingInspection чтобы его можно было тестировать - иначе падает при статической
- * инициализации.
+ * Р­С‚РѕС‚ РєР»Р°СЃСЃ РІС‹РЅРµСЃРµРЅ РёР· ResourceNamingInspection С‡С‚РѕР±С‹ РµРіРѕ РјРѕР¶РЅРѕ Р±С‹Р»Рѕ С‚РµСЃС‚РёСЂРѕРІР°С‚СЊ - РёРЅР°С‡Рµ РїР°РґР°РµС‚ РїСЂРё СЃС‚Р°С‚РёС‡РµСЃРєРѕР№
+ * РёРЅРёС†РёР°Р»РёР·Р°С†РёРё.
  */
 public final class ResourceNameChecker {
     private static final Pattern NAME_PATTERN = Pattern.compile("#?([a-zA-Z_][\\w_]*\\.)*([a-zA-Z_][\\w_]*)");

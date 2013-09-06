@@ -41,7 +41,7 @@ class PooledCache<Key, Value, ElementType extends MxConvertType> implements Obje
             int removed = 0;
             for (Iterator<Map.Entry<Key, PooledElement<Value>>> it = cache.entrySet().iterator(); it.hasNext();) {
                 PooledElement<Value> element = it.next().getValue();
-                // если элемент заблокирован, значит он где-то редактируется
+                // РµСЃР»Рё СЌР»РµРјРµРЅС‚ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ, Р·РЅР°С‡РёС‚ РѕРЅ РіРґРµ-С‚Рѕ СЂРµРґР°РєС‚РёСЂСѓРµС‚СЃСЏ
                 if (!element.isLocked() && !element.isConfident() && !element.isInPool()) {
                     it.remove();
                     removed++;

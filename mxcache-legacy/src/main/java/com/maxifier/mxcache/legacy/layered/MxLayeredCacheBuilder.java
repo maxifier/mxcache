@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * Date: 29.01.2009
  * Time: 14:44:00
  * <p>
- * Используйте конфигурацию (MxLayeredCacheConfiguration) вместо этого класса.
+ * РСЃРїРѕР»СЊР·СѓР№С‚Рµ РєРѕРЅС„РёРіСѓСЂР°С†РёСЋ (MxLayeredCacheConfiguration) РІРјРµСЃС‚Рѕ СЌС‚РѕРіРѕ РєР»Р°СЃСЃР°.
  * @see MxLayeredCacheConfiguration
  * @see MxLayeredCache#MxLayeredCache(MxLayeredCacheConfiguration, com.maxifier.mxcache.legacy.MBeanRegistrator , MxLayeredCacheSerializator, MxCacheFlusher)
  */

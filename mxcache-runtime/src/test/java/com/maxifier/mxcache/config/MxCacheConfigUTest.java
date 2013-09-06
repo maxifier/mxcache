@@ -42,7 +42,7 @@ public class MxCacheConfigUTest {
             "        <selector>\n" +
             "            <annotated>SomeAnnotation1</annotated>\n" +
             "        </selector>\n" +
-            // DEFAULT не влияет на наследование 
+            // DEFAULT РЅРµ РІР»РёСЏРµС‚ РЅР° РЅР°СЃР»РµРґРѕРІР°РЅРёРµ 
             "        <trackDependency>DEFAULT</trackDependency>\n" +
             "        <resourceDependency>testResource</resourceDependency>\n" +
             "    </rule>\n" +
@@ -51,7 +51,7 @@ public class MxCacheConfigUTest {
             "        <selector>\n" +
             "            <annotated>SomeAnnotation2</annotated>\n" +
             "        </selector>\n" +
-            // определенные позднее значения перекрывают более ранние
+            // РѕРїСЂРµРґРµР»РµРЅРЅС‹Рµ РїРѕР·РґРЅРµРµ Р·РЅР°С‡РµРЅРёСЏ РїРµСЂРµРєСЂС‹РІР°СЋС‚ Р±РѕР»РµРµ СЂР°РЅРЅРёРµ
             "        <trackDependency>STATIC</trackDependency>\n" +
             "    </rule>\n" +
 
@@ -63,31 +63,31 @@ public class MxCacheConfigUTest {
             "        <selector>\n" +
             "            <annotated>SomeAnnotation2</annotated>\n" +
             "        </selector>\n" +
-            // этот конфиг должен перекрыть предыдущие
+            // СЌС‚РѕС‚ РєРѕРЅС„РёРі РґРѕР»Р¶РµРЅ РїРµСЂРµРєСЂС‹С‚СЊ РїСЂРµРґС‹РґСѓС‰РёРµ
             "        <trackDependency>INSTANCE</trackDependency>\n" +
             "    </rule>\n" +
 
             "    <rule name=\"r5\">\n" +
             "        <selector>\n" +
-            // этот конфиг нам не подойдет из-за класса - должно быть полное имя
+            // СЌС‚РѕС‚ РєРѕРЅС„РёРі РЅР°Рј РЅРµ РїРѕРґРѕР№РґРµС‚ РёР·-Р·Р° РєР»Р°СЃСЃР° - РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ РїРѕР»РЅРѕРµ РёРјСЏ
             "            <class>Test*</class>\n" +
             "        </selector>\n" +
-            // этот конфиг должен перекрыть предыдущие
+            // СЌС‚РѕС‚ РєРѕРЅС„РёРі РґРѕР»Р¶РµРЅ РїРµСЂРµРєСЂС‹С‚СЊ РїСЂРµРґС‹РґСѓС‰РёРµ
             "        <trackDependency>NONE</trackDependency>\n" +
             "    </rule>\n" +
 
             "    <rule name=\"r6\">\n" +
             "        <selector>\n" +
-            // а этот - подойдет
+            // Р° СЌС‚РѕС‚ - РїРѕРґРѕР№РґРµС‚
             "            <class>com.maxifier.mxcache.config.Test*</class>\n" +
             "        </selector>\n" +
-            // этот конфиг должен перекрыть предыдущие
+            // СЌС‚РѕС‚ РєРѕРЅС„РёРі РґРѕР»Р¶РµРЅ РїРµСЂРµРєСЂС‹С‚СЊ РїСЂРµРґС‹РґСѓС‰РёРµ
             "        <trackDependency>DEFAULT</trackDependency>\n" +
             "    </rule>\n" +
 
             "    <rule name=\"r7\">\n" +
             "        <selector>\n" +
-            // группа другая! был баг, когда этот конфиг проходил
+            // РіСЂСѓРїРїР° РґСЂСѓРіР°СЏ! Р±С‹Р» Р±Р°Рі, РєРѕРіРґР° СЌС‚РѕС‚ РєРѕРЅС„РёРі РїСЂРѕС…РѕРґРёР»
             "            <group>JustAnotherGroup</group>\n" +
             "        </selector>\n" +
             "        <trackDependency>STATIC</trackDependency>\n" +

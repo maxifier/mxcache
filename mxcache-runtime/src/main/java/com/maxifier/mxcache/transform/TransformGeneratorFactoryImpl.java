@@ -283,7 +283,7 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
             return STATIC;
         }
         if (keyInstanceMethods) {
-            // у ключа не статические методы мы не смотрим!
+            // Сѓ РєР»СЋС‡Р° РЅРµ СЃС‚Р°С‚РёС‡РµСЃРєРёРµ РјРµС‚РѕРґС‹ РјС‹ РЅРµ СЃРјРѕС‚СЂРёРј!
             throw new IllegalArgumentException("Invalid transform found: " + forwardMethod);
         }
         return owner.isInterface() ? INTERFACE : VIRTUAL;
@@ -319,11 +319,11 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
             case 0:
                 return keyInstanceMethods && !Modifier.isStatic(method.getModifiers());
             case 1:
-                // в качестве трансформаторов у самого ключа могут применяться ТОЛЬКО статические методы
-                // (было бы странно брать экземпляр ключа откуда-то, когда ты сам ключ!)
+                // РІ РєР°С‡РµСЃС‚РІРµ С‚СЂР°РЅСЃС„РѕСЂРјР°С‚РѕСЂРѕРІ Сѓ СЃР°РјРѕРіРѕ РєР»СЋС‡Р° РјРѕРіСѓС‚ РїСЂРёРјРµРЅСЏС‚СЊСЃСЏ РўРћР›Р¬РљРћ СЃС‚Р°С‚РёС‡РµСЃРєРёРµ РјРµС‚РѕРґС‹
+                // (Р±С‹Р»Рѕ Р±С‹ СЃС‚СЂР°РЅРЅРѕ Р±СЂР°С‚СЊ СЌРєР·РµРјРїР»СЏСЂ РєР»СЋС‡Р° РѕС‚РєСѓРґР°-С‚Рѕ, РєРѕРіРґР° С‚С‹ СЃР°Рј РєР»СЋС‡!)
                 return (!keyInstanceMethods || Modifier.isStatic(method.getModifiers())) && params[0].isAssignableFrom(paramType);
             default:
-                // методы с большим числом аргументов мы не рассматриваем
+                // РјРµС‚РѕРґС‹ СЃ Р±РѕР»СЊС€РёРј С‡РёСЃР»РѕРј Р°СЂРіСѓРјРµРЅС‚РѕРІ РјС‹ РЅРµ СЂР°СЃСЃРјР°С‚СЂРёРІР°РµРј
                 return false;
         }
     }

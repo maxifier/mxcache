@@ -110,14 +110,14 @@ public final class CleaningHelper {
                 unlockLists(lists);
             }
             TIdentityHashSet<CleaningNode> elementsAndDependent = DependencyTracker.getAllDependentNodes(nodes, elements);
-            // цикл проверки модификации зависимостей
+            // С†РёРєР» РїСЂРѕРІРµСЂРєРё РјРѕРґРёС„РёРєР°С†РёРё Р·Р°РІРёСЃРёРјРѕСЃС‚РµР№
             while (true) {
                 List<Lock> locks = getLocks(elementsAndDependent);
                 lock(locks);
                 try {
                     TIdentityHashSet<CleaningNode> newElements = DependencyTracker.getAllDependentNodes(nodes, elements);
                     if (!newElements.equals(elementsAndDependent)) {
-                        // набор зависимых кэшей изменился, придется еще раз все блокировать заново
+                        // РЅР°Р±РѕСЂ Р·Р°РІРёСЃРёРјС‹С… РєСЌС€РµР№ РёР·РјРµРЅРёР»СЃСЏ, РїСЂРёРґРµС‚СЃСЏ РµС‰Рµ СЂР°Р· РІСЃРµ Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ Р·Р°РЅРѕРІРѕ
                         elementsAndDependent = newElements;
                         continue;
                     }
@@ -155,7 +155,7 @@ public final class CleaningHelper {
             lock(locks);
             TIdentityHashSet<CleaningNode> newElements = DependencyTracker.getAllDependentNodes(nodes, elements);
             if (!newElements.equals(elementsAndDependent)) {
-                // набор зависимых кэшей изменился, придется еще раз все блокировать заново
+                // РЅР°Р±РѕСЂ Р·Р°РІРёСЃРёРјС‹С… РєСЌС€РµР№ РёР·РјРµРЅРёР»СЃСЏ, РїСЂРёРґРµС‚СЃСЏ РµС‰Рµ СЂР°Р· РІСЃРµ Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ Р·Р°РЅРѕРІРѕ
                 elementsAndDependent = newElements;
                 continue;
             }
@@ -172,7 +172,7 @@ public final class CleaningHelper {
             try {
                 TIdentityHashSet<CleaningNode> newElements = DependencyTracker.getAllDependentNodes(nodes, elements);
                 if (!newElements.equals(elementsAndDependent)) {
-                    // набор зависимых кэшей изменился, придется еще раз все блокировать заново
+                    // РЅР°Р±РѕСЂ Р·Р°РІРёСЃРёРјС‹С… РєСЌС€РµР№ РёР·РјРµРЅРёР»СЃСЏ, РїСЂРёРґРµС‚СЃСЏ РµС‰Рµ СЂР°Р· РІСЃРµ Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ Р·Р°РЅРѕРІРѕ
                     elementsAndDependent = newElements;
                     continue;
                 }

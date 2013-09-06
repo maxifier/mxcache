@@ -19,7 +19,7 @@ public class ClassGeneratorUTest {
     public static void testGenerateEmptyConstructor() throws Exception {
         ClassGenerator w = new ClassGenerator(ACC_PUBLIC, TEST_CLASS_IMPL_TYPE.getInternalName() + "2", TEST_CLASS_IMPL_TYPE);
         w.defineDefaultConstructor();
-        // если конструктор создан неправильно, тут должно упасть
+        // РµСЃР»Рё РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ СЃРѕР·РґР°РЅ РЅРµРїСЂР°РІРёР»СЊРЅРѕ, С‚СѓС‚ РґРѕР»Р¶РЅРѕ СѓРїР°СЃС‚СЊ
         TestClass instance = (TestClass) w.toClass(new ClassLoader() {}).newInstance();
         assert instance.test().equals("testString");
     }

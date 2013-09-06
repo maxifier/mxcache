@@ -26,10 +26,10 @@ public final class MxConvertHelper {
     private final MxConverter[][] converters;
     private final int[][][] converts;
 
-    /* Время в наносекундах */
+    /* Р’СЂРµРјСЏ РІ РЅР°РЅРѕСЃРµРєСѓРЅРґР°С… */
     private final long[][][] convertTime;
 
-    /* Время в миллисекундах */
+    /* Р’СЂРµРјСЏ РІ РјРёР»Р»РёСЃРµРєСѓРЅРґР°С… */
     private final float[][][] predefinedTimes;
     private final MxResource statistics;
 

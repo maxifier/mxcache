@@ -97,9 +97,9 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     }
 
     /**
-     * Создает и регистрирует узел для статических зависимостей. Должен зарегистрировать явные зависимости с помощью registerExplicitDependencies.
+     * РЎРѕР·РґР°РµС‚ Рё СЂРµРіРёСЃС‚СЂРёСЂСѓРµС‚ СѓР·РµР» РґР»СЏ СЃС‚Р°С‚РёС‡РµСЃРєРёС… Р·Р°РІРёСЃРёРјРѕСЃС‚РµР№. Р”РѕР»Р¶РµРЅ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°С‚СЊ СЏРІРЅС‹Рµ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё СЃ РїРѕРјРѕС‰СЊСЋ registerExplicitDependencies.
      *
-     * @return узел зависимостей
+     * @return СѓР·РµР» Р·Р°РІРёСЃРёРјРѕСЃС‚РµР№
      */
     protected DependencyNode createStaticNode() {
         DependencyNode node;
@@ -113,9 +113,9 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     }
 
     /**
-     * Создает узел зависимостей для отдельного экземпляра. Должен зарегистрировать явные зависимости с помощью registerExplicitDependencies.
+     * РЎРѕР·РґР°РµС‚ СѓР·РµР» Р·Р°РІРёСЃРёРјРѕСЃС‚РµР№ РґР»СЏ РѕС‚РґРµР»СЊРЅРѕРіРѕ СЌРєР·РµРјРїР»СЏСЂР°. Р”РѕР»Р¶РµРЅ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°С‚СЊ СЏРІРЅС‹Рµ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё СЃ РїРѕРјРѕС‰СЊСЋ registerExplicitDependencies.
      *
-     * @return узел
+     * @return СѓР·РµР»
      */
     protected DependencyNode createInstanceNode() {
         DependencyNode node = Wrapping.getSingletonNode(descriptor);
@@ -135,9 +135,9 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     }
 
     /**
-     * Добавляет статические зависимости от ресурсов, заданные через аннотации
+     * Р”РѕР±Р°РІР»СЏРµС‚ СЃС‚Р°С‚РёС‡РµСЃРєРёРµ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЂРµСЃСѓСЂСЃРѕРІ, Р·Р°РґР°РЅРЅС‹Рµ С‡РµСЂРµР· Р°РЅРЅРѕС‚Р°С†РёРё
      *
-     * @param node ухед зависимостей
+     * @param node СѓС…РµРґ Р·Р°РІРёСЃРёРјРѕСЃС‚РµР№
      */
     protected void registerExplicitDependencies(DependencyNode node) {
         if (resourceDependencies != null) {

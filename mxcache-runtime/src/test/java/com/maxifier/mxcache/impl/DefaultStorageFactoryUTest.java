@@ -258,7 +258,7 @@ public class DefaultStorageFactoryUTest {
     public void testMapCaches() {
         test(int.class, int.class, IntIntCache.class);
 
-        //некоторые кэши не поддерживаются
+        //РЅРµРєРѕС‚РѕСЂС‹Рµ РєСЌС€Рё РЅРµ РїРѕРґРґРµСЂР¶РёРІР°СЋС‚СЃСЏ
         test(int.class, boolean.class, IntBooleanCache.class);
         test(int.class, byte.class, IntByteCache.class);
         test(int.class, char.class, IntCharacterCache.class);

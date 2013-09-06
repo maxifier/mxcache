@@ -16,7 +16,7 @@ import java.util.Set;
 public class DependencyTestHelper {
     /**
      * @param node resource
-     * @return список всех узлов, зависящих от данного, в том числе транзитивные зависимости.
+     * @return СЃРїРёСЃРѕРє РІСЃРµС… СѓР·Р»РѕРІ, Р·Р°РІРёСЃСЏС‰РёС… РѕС‚ РґР°РЅРЅРѕРіРѕ, РІ С‚РѕРј С‡РёСЃР»Рµ С‚СЂР°РЅР·РёС‚РёРІРЅС‹Рµ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё.
      */
     public static Set<DependencyNode> getAllDependentNodes(MxResource node) {
         return getAllDependentNodes((DependencyNode)node);
@@ -24,7 +24,7 @@ public class DependencyTestHelper {
 
     /**
      * @param node node
-     * @return список всех узлов, зависящих от данного, в том числе транзитивные зависимости.
+     * @return СЃРїРёСЃРѕРє РІСЃРµС… СѓР·Р»РѕРІ, Р·Р°РІРёСЃСЏС‰РёС… РѕС‚ РґР°РЅРЅРѕРіРѕ, РІ С‚РѕРј С‡РёСЃР»Рµ С‚СЂР°РЅР·РёС‚РёРІРЅС‹Рµ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё.
      */
     public static Set<DependencyNode> getAllDependentNodes(DependencyNode node) {
         final Set<DependencyNode> nodes = new THashSet<DependencyNode>();

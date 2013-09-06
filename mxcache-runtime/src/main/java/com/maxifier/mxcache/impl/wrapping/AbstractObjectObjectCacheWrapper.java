@@ -14,7 +14,7 @@ import java.util.concurrent.locks.Lock;
 *
 * @author Aleksey Dergunov (aleksey.dergunov@maxifier.com) (06.09.13 16:31)
 */
-abstract class AbstractObjectObjectCacheWrapper<K, V> implements Cache {
+public abstract class AbstractObjectObjectCacheWrapper<K, V> implements Cache {
     protected final ObjectObjectCache<K, V> delegate;
 
     AbstractObjectObjectCacheWrapper(ObjectObjectCache<K, V> delegate) {

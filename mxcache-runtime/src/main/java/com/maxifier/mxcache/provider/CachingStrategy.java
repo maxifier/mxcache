@@ -12,9 +12,9 @@ import org.jetbrains.annotations.NotNull;
 public interface CachingStrategy {
     /**
      * @param context context
-     * @param descriptor дескриптор требуемого менеджера
-     * @param <T> тип класса-владельца кэша
-     * @return менеджер кэша для заданного дескриптора 
+     * @param descriptor РґРµСЃРєСЂРёРїС‚РѕСЂ С‚СЂРµР±СѓРµРјРѕРіРѕ РјРµРЅРµРґР¶РµСЂР°
+     * @param <T> С‚РёРї РєР»Р°СЃСЃР°-РІР»Р°РґРµР»СЊС†Р° РєСЌС€Р°
+     * @return РјРµРЅРµРґР¶РµСЂ РєСЌС€Р° РґР»СЏ Р·Р°РґР°РЅРЅРѕРіРѕ РґРµСЃРєСЂРёРїС‚РѕСЂР° 
      */
     @NotNull
     <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor);

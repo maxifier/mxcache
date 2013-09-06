@@ -12,7 +12,7 @@ import gnu.trove.TObjectHashingStrategy;
 public final class TupleHashingStrategy implements TObjectHashingStrategy<Tuple> {
     private static final long serialVersionUID = 100L;
 
-    /** Большое простое число, просто хэш для null */
+    /** Р‘РѕР»СЊС€РѕРµ РїСЂРѕСЃС‚РѕРµ С‡РёСЃР»Рѕ, РїСЂРѕСЃС‚Рѕ С…СЌС€ РґР»СЏ null */
     private static final int NULL_HASH = 30029;
 
     private final Object[] strategies;

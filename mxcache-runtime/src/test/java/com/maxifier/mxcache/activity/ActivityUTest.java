@@ -175,7 +175,7 @@ public class ActivityUTest {
 
         a.start(ActivityScope.GLOBAL);
         a.finish(ActivityScope.GLOBAL);
-        // удалили слушателя - размер не меняется
+        // СѓРґР°Р»РёР»Рё СЃР»СѓС€Р°С‚РµР»СЏ - СЂР°Р·РјРµСЂ РЅРµ РјРµРЅСЏРµС‚СЃСЏ
         assert events.size() == 4;
     }
 
@@ -201,17 +201,17 @@ public class ActivityUTest {
     public void testEquality() {
         Activity r1 = ActivityTracker.getActivity("test");
         Activity r2 = ActivityTracker.getActivity("test");
-        // конечно лучше не сравнивать так, однако раз ActivityTracker гарантирует это,
-        // то надо убедиться
+        // РєРѕРЅРµС‡РЅРѕ Р»СѓС‡С€Рµ РЅРµ СЃСЂР°РІРЅРёРІР°С‚СЊ С‚Р°Рє, РѕРґРЅР°РєРѕ СЂР°Р· ActivityTracker РіР°СЂР°РЅС‚РёСЂСѓРµС‚ СЌС‚Рѕ,
+        // С‚Рѕ РЅР°РґРѕ СѓР±РµРґРёС‚СЊСЃСЏ
         assert r1 == r2;
 
-        // авось
+        // Р°РІРѕСЃСЊ
         assert r1.equals(r2);
 
-        // на всякий случай
+        // РЅР° РІСЃСЏРєРёР№ СЃР»СѓС‡Р°Р№
         assert r1.getName().equals("test");
 
-        // эти строки имеют одинаковый хэш, но это не важно
+        // СЌС‚Рё СЃС‚СЂРѕРєРё РёРјРµСЋС‚ РѕРґРёРЅР°РєРѕРІС‹Р№ С…СЌС€, РЅРѕ СЌС‚Рѕ РЅРµ РІР°Р¶РЅРѕ
         Activity r3 = ActivityTracker.getActivity("0-42L");
         Activity r4 = ActivityTracker.getActivity("0-43-");
         assert !r3.equals(r4);
@@ -236,7 +236,7 @@ public class ActivityUTest {
         } finally {
             ois.close();
         }
-        // сериализация не должна приводить к ложным дубликатам ресурсов
+        // СЃРµСЂРёР°Р»РёР·Р°С†РёСЏ РЅРµ РґРѕР»Р¶РЅР° РїСЂРёРІРѕРґРёС‚СЊ Рє Р»РѕР¶РЅС‹Рј РґСѓР±Р»РёРєР°С‚Р°Рј СЂРµСЃСѓСЂСЃРѕРІ
         assert r1 == r2;
     }
 
