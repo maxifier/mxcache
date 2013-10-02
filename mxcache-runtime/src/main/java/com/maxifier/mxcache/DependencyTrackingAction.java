@@ -36,6 +36,15 @@ public abstract class DependencyTrackingAction {
         }
     }
 
+    public <T> T trackDependencies(CallableWithoutExceptions<T> callable) {
+        DependencyNode oldNode = DependencyTracker.track(dependencyNode);
+        try {
+            return callable.call();
+        } finally {
+            DependencyTracker.exit(oldNode);
+        }
+    }
+
     public void trackDependencies(Runnable callable) {
         DependencyNode oldNode = DependencyTracker.track(dependencyNode);
         try {
