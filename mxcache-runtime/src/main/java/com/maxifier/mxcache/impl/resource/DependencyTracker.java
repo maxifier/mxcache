@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.*;
 
 /**
@@ -26,8 +27,8 @@ public final class DependencyTracker {
     public static final DependencyNode DUMMY_NODE = new DummyDependencyNode("<DUMMY>");
 
     public static final DependencyNode PROBE_NODE = new DummyDependencyNode("<PROBE>");
-
     public static final DependencyNode NOCACHE_NODE = new DummyDependencyNode("<NOCACHE>");
+    public static final DependencyNode HIDDEN_CALLER_NODE = new HiddenCallerDependencyNode();
 
     private DependencyTracker() {
     }
@@ -218,4 +219,37 @@ public final class DependencyTracker {
         }
     }
 
+    private static class HiddenCallerDependencyNode implements DependencyNode {
+        private final Reference<DependencyNode> thisReference = new WeakReference<DependencyNode>(this);
+
+        @Override
+        public Reference<DependencyNode> getSelfReference() {
+            return thisReference;
+        }
+
+        @Override
+        public void visitDependantNodes(DependencyNodeVisitor visitor) {
+            // do nothing
+        }
+
+        @Override
+        public void appendNodes(TIdentityHashSet<CleaningNode> elements) {
+            // do nothing
+        }
+
+        @Override
+        public void trackDependency(DependencyNode node) {
+            // do nothing
+        }
+
+        @Override
+        public void addNode(@NotNull CleaningNode cache) {
+            // do nothing
+        }
+
+        @Override
+        public String toString() {
+            return "HiddenCaller - see MxCache.hideCallerDependencies";
+        }
+    }
 }

@@ -99,4 +99,36 @@ public final class MxCache {
             DependencyTracker.exit(prevNode);
         }
     }
+
+    /**
+     * Use this method if you want to hide dependencies from some resource or cache without breaking dependency
+     * tracking completely. Just wrap your code with Callable and pass it to this method.
+     * <br />
+     * The callable will be invoked immediately in the same thread, the result will be returned to you.
+     */
+    @PublicAPI
+    public static <T> T hideCallerDependencies(Callable<T> callable) throws Exception {
+        DependencyNode node = DependencyTracker.track(DependencyTracker.HIDDEN_CALLER_NODE);
+        try {
+            return callable.call();
+        } finally {
+            DependencyTracker.exit(node);
+        }
+    }
+
+    /**
+     * Use this method if you want to hide dependencies from some resource or cache without breaking dependency
+     * tracking completely. Just wrap your code with Callable and pass it to this method.
+     * <br />
+     * The runnable will be invoked immediately in the same thread.
+     */
+    @PublicAPI
+    public static void hideCallerDependencies(Runnable runnable) {
+        DependencyNode node = DependencyTracker.track(DependencyTracker.HIDDEN_CALLER_NODE);
+        try {
+            runnable.run();
+        } finally {
+            DependencyTracker.exit(node);
+        }
+    }
 }
