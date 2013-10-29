@@ -148,18 +148,19 @@ public final class CleaningHelper {
 
     public static TIdentityHashSet<CleaningNode> lockRecursive(DependencyNode initial) {
         TIdentityHashSet<CleaningNode> elements = DependencyTracker.getAllDependentNodes(Collections.singleton(initial));
-        TIdentityHashSet<CleaningNode> elementsAndDependent = elements;
         Iterable<DependencyNode> nodes = nodeMapping(elements);
         while (true) {
-            List<Lock> locks = getLocks(elementsAndDependent);
+            List<Lock> locks = getLocks(elements);
             lock(locks);
             TIdentityHashSet<CleaningNode> newElements = DependencyTracker.getAllDependentNodes(nodes, elements);
-            if (!newElements.equals(elementsAndDependent)) {
-                // набор зависимых кэшей изменился, придется еще раз все блокировать заново
-                elementsAndDependent = newElements;
+            if (!newElements.equals(elements)) {
+                // we have to unlock all locks and lock them again among with new ones as advanced locking algorithm
+                // locks guarantees the absence of deadlocks only if all locks are locked at once.
+                unlock(locks);
+                elements.addAll(newElements);
                 continue;
             }
-            return elementsAndDependent;
+            return elements;
         }
     }
 
