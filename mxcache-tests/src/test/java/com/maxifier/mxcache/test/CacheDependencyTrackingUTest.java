@@ -180,24 +180,24 @@ public class CacheDependencyTrackingUTest {
         Assert.assertEquals(point.getViewCount1(), 1);
 
         point.setX(3L);
-        Assert.assertEquals(point.getViewCount1(), 3);
+        Assert.assertEquals(point.getViewCount1(), 2);
         Assert.assertEquals(point.getX(), 3L);
         Assert.assertEquals(point.getY(), 4L);
         Assert.assertEquals(point.getRadius(), 5.0);
-        Assert.assertEquals(point.getViewCount1(), 3);
+        Assert.assertEquals(point.getViewCount1(), 2);
 
         point.setNewXY(4L, 3L);
-        Assert.assertEquals(point.getViewCount1(), 5);
+        Assert.assertEquals(point.getViewCount1(), 3);
         Assert.assertEquals(point.getX(), 4L);
         Assert.assertEquals(point.getY(), 3L);
         Assert.assertEquals(point.getRadius(), 5.0);
-        Assert.assertEquals(point.getViewCount1(), 5);
+        Assert.assertEquals(point.getViewCount1(), 3);
 
         point.setY(0L);
-        Assert.assertEquals(point.getViewCount1(), 6);
+        Assert.assertEquals(point.getViewCount1(), 4);
         Assert.assertEquals(point.getY(), 0L);
         Assert.assertEquals(point.getRadius(), 4.0);
-        Assert.assertEquals(point.getViewCount1(), 7);
+        Assert.assertEquals(point.getViewCount1(), 5);
     }
 
     @Test
@@ -209,24 +209,24 @@ public class CacheDependencyTrackingUTest {
         Assert.assertEquals(point.getViewCount2(), 1);
 
         point.setX(3L);
-        Assert.assertEquals(point.getViewCount2(), 3);
+        Assert.assertEquals(point.getViewCount2(), 2);
         Assert.assertEquals(point.getX(), 3L);
         Assert.assertEquals(point.getY(), 4L);
         Assert.assertEquals(point.getPerimeter(), 14L);
-        Assert.assertEquals(point.getViewCount2(), 3);
+        Assert.assertEquals(point.getViewCount2(), 2);
 
         point.setNewXY(4L, 3L);
-        Assert.assertEquals(point.getViewCount2(), 5);
+        Assert.assertEquals(point.getViewCount2(), 3);
         Assert.assertEquals(point.getX(), 4L);
         Assert.assertEquals(point.getY(), 3L);
         Assert.assertEquals(point.getPerimeter(), 14L);
-        Assert.assertEquals(point.getViewCount2(), 5);
+        Assert.assertEquals(point.getViewCount2(), 3);
 
         point.setY(0L);
-        Assert.assertEquals(point.getViewCount2(), 6);
+        Assert.assertEquals(point.getViewCount2(), 4);
         Assert.assertEquals(point.getY(), 0L);
         Assert.assertEquals(point.getPerimeter(), 8L);
-        Assert.assertEquals(point.getViewCount2(), 7);
+        Assert.assertEquals(point.getViewCount2(), 5);
     }
 
 
@@ -266,24 +266,24 @@ public class CacheDependencyTrackingUTest {
         Assert.assertEquals(point.getViewCount4(), 1);
 
         point.setX(3L);
-        Assert.assertEquals(point.getViewCount4(), 3);
+        Assert.assertEquals(point.getViewCount4(), 2);
         Assert.assertEquals(point.toString(), "PointImpl{radius=5.0}");
-        Assert.assertEquals(point.getViewCount4(), 3);
+        Assert.assertEquals(point.getViewCount4(), 2);
 
         point.setNewXY(4L, 3L);
-        Assert.assertEquals(point.getViewCount4(), 5);
+        Assert.assertEquals(point.getViewCount4(), 3);
         Assert.assertEquals(point.toString(), "PointImpl{radius=5.0}");
-        Assert.assertEquals(point.getViewCount4(), 5);
+        Assert.assertEquals(point.getViewCount4(), 3);
 
         point.setY(0L);
-        Assert.assertEquals(point.getViewCount4(), 6);
+        Assert.assertEquals(point.getViewCount4(), 4);
         Assert.assertEquals(point.toString(), "PointImpl{radius=4.0}");
-        Assert.assertEquals(point.getViewCount4(), 7);
+        Assert.assertEquals(point.getViewCount4(), 5);
 
         point.setNewXY(4L, 3L);
-        Assert.assertEquals(point.getViewCount4(), 8);
+        Assert.assertEquals(point.getViewCount4(), 6);
         Assert.assertEquals(point.toString(), "PointImpl{radius=5.0}");
-        Assert.assertEquals(point.getViewCount4(), 9);
+        Assert.assertEquals(point.getViewCount4(), 7);
     }
 
     @Test
