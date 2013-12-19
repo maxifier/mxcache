@@ -7,6 +7,7 @@ import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.impl.resource.AbstractDependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
+import com.maxifier.mxcache.impl.resource.ResourceOccupied;
 import com.maxifier.mxcache.util.TIdentityHashSet;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,35 +23,70 @@ import java.util.concurrent.locks.Lock;
  *     <li>Wrap all your code that creates dependencies to Callable or Runnable and pass it to trackDependencies() of instance</li>
  * </ul>
  *
+ * This class may be also used to prevent deadlocks. If the code you invoke with trackDependencies makes use of any
+ * resource which is being written at the moment MxCache will unroll the stack by throwing ResourceOccupied error
+ * and then it will apply your change again.
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com) (2012-10-26 15:44)
  */
-public abstract class DependencyTrackingAction {
+public class DependencyTrackingAction {
     private final DependencyNode dependencyNode = new DependencyNodeImpl();
 
     public <T> T trackDependencies(Callable<T> callable) throws Exception {
-        DependencyNode oldNode = DependencyTracker.track(dependencyNode);
-        try {
-            return callable.call();
-        } finally {
-            DependencyTracker.exit(oldNode);
+        while (true) {
+            DependencyNode oldNode = null;
+            try {
+                oldNode = DependencyTracker.track(dependencyNode);
+                try {
+                    return callable.call();
+                } finally {
+                    DependencyTracker.exit(oldNode);
+                }
+            } catch (ResourceOccupied e) {
+                if (oldNode != null) {
+                    throw e;
+                }
+                e.getResource().waitForEndOfModification();
+            }
         }
     }
 
     public <T> T trackDependencies(CallableWithoutExceptions<T> callable) {
-        DependencyNode oldNode = DependencyTracker.track(dependencyNode);
-        try {
-            return callable.call();
-        } finally {
-            DependencyTracker.exit(oldNode);
+        while (true) {
+            DependencyNode oldNode = null;
+            try {
+                oldNode = DependencyTracker.track(dependencyNode);
+                try {
+                    return callable.call();
+                } finally {
+                    DependencyTracker.exit(oldNode);
+                }
+            } catch (ResourceOccupied e) {
+                if (oldNode != null) {
+                    throw e;
+                }
+                e.getResource().waitForEndOfModification();
+            }
         }
     }
 
     public void trackDependencies(Runnable callable) {
-        DependencyNode oldNode = DependencyTracker.track(dependencyNode);
-        try {
-            callable.run();
-        } finally {
-            DependencyTracker.exit(oldNode);
+        while (true) {
+            DependencyNode oldNode = null;
+            try {
+                oldNode = DependencyTracker.track(dependencyNode);
+                try {
+                    callable.run();
+                    return;
+                } finally {
+                    DependencyTracker.exit(oldNode);
+                }
+            } catch (ResourceOccupied e) {
+                if (oldNode != null) {
+                    throw e;
+                }
+                e.getResource().waitForEndOfModification();
+            }
         }
     }
 
@@ -58,7 +94,10 @@ public abstract class DependencyTrackingAction {
         DependencyTracker.mark(dependencyNode);
     }
 
-    protected abstract void onClear();
+    /** Override this method if you want to clear any caches */
+    protected void onClear() {
+        // do nothing
+    }
 
     private class DependencyNodeImpl extends AbstractDependencyNode implements CleaningNode {
         private final Lock lock = new LightweightLock();

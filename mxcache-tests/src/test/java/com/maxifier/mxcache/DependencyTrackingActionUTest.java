@@ -5,6 +5,7 @@ package com.maxifier.mxcache;
 
 import com.maxifier.mxcache.impl.resource.MxResourceFactory;
 import com.maxifier.mxcache.resource.MxResource;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.concurrent.Callable;
@@ -133,5 +134,40 @@ public class DependencyTrackingActionUTest {
         assertEquals(anotherClears.get(), 1);
         // cache(String) is not cleared as it doesn't depend on resource
         assertEquals(cacheWAction(anotherAction), "test01");
+    }
+
+    // add timeout of 1m because in case of deadlock it will hang forever
+    @Test(timeOut = 60000)
+    public void testResourceBlocked() throws Exception {
+        final MxResource r = MxResourceFactory.getResource("test");
+        final AtomicInteger state = new AtomicInteger();
+        new Thread() {
+            @Override
+            public void run() {
+                r.writeStart();
+                state.incrementAndGet();
+                while (state.get() == 1);
+                state.incrementAndGet();
+                r.writeEnd();
+            }
+        }.start();
+        final AtomicInteger tries = new AtomicInteger();
+        while (state.get() == 0);
+        DependencyTrackingAction action = new DependencyTrackingAction();
+        Boolean res = action.trackDependencies(new CallableWithoutExceptions<Boolean>() {
+            @Override
+            public Boolean call() {
+                if (tries.incrementAndGet() == 1) {
+                    state.incrementAndGet();
+                }
+                r.readStart();
+                r.readEnd();
+                return true;
+            }
+        });
+
+        Assert.assertTrue(res);
+        Assert.assertEquals(state.get(), 3);
+        Assert.assertEquals(tries.get(), 2);
     }
 }
