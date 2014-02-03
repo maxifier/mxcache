@@ -3,13 +3,14 @@ package com.maxifier.mxcache.impl.caches.storage;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.caches.abs.*;
 import com.maxifier.mxcache.caches.*;
-import com.maxifier.mxcache.impl.resource.*;
 import com.maxifier.mxcache.storage.*;
 
 import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.interfaces.StatisticsHolder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 
 /**
  * Project: Maxifier
@@ -28,12 +29,12 @@ public class StorageObjectByteCacheImpl<E> extends AbstractObjectByteCache<E> im
 
     private ObjectByteStorage<E> storage;
 
-    public StorageObjectByteCacheImpl(Object owner, ObjectByteCalculatable<E> calculatable, @NotNull MutableStatistics statistics) {
+    public StorageObjectByteCacheImpl(Object owner, ObjectByteCalculatable<E> calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@NotNull ObjectByteStorage<E> storage) {
+    public void setStorage(@Nonnull ObjectByteStorage<E> storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }

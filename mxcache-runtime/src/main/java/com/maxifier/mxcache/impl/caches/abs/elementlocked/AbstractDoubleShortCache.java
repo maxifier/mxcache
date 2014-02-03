@@ -74,7 +74,7 @@ public abstract class AbstractDoubleShortCache extends AbstractElementLockedCach
         }
     }
 
-    private short create(double key) {
+    protected short create(double key) {
         long start = System.nanoTime();
         short t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

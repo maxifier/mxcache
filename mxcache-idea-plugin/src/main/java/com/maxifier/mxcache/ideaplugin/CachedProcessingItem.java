@@ -4,7 +4,8 @@ import com.intellij.openapi.compiler.FileProcessingCompiler;
 import com.intellij.openapi.compiler.ValidityState;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.maxifier.mxcache.instrumentation.Instrumentator;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +29,7 @@ class CachedProcessingItem implements FileProcessingCompiler.ProcessingItem {
     }
 
     @Override
-    @NotNull
+    @Nonnull
     public VirtualFile getFile() {
         return file;
     }

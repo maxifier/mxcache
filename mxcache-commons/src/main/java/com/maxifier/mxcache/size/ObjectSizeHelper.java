@@ -1,7 +1,8 @@
 package com.maxifier.mxcache.size;
 
 import gnu.trove.*;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.*;
 
@@ -50,7 +51,7 @@ public final class ObjectSizeHelper {
 
     private static final SizeCalculator<Object> EMPTY_CALCULATOR = new SizeCalculator<Object>() {
         @Override
-        public int getApproximateSize(@NotNull Object o, @NotNull SizeIterator iterator) {
+        public int getApproximateSize(@Nonnull Object o, @Nonnull SizeIterator iterator) {
             return 0;
         }
     };
@@ -61,57 +62,57 @@ public final class ObjectSizeHelper {
         ComplexSizeCalculatorBuilder<Object> builder = new ComplexSizeCalculatorBuilder<Object>();
         builder.registerSizeCalculator(boolean[].class, new SizeCalculator<boolean[]>() {
             @Override
-            public int getApproximateSize(@NotNull boolean[] o, @NotNull SizeIterator iterator) {
+            public int getApproximateSize(@Nonnull boolean[] o, @Nonnull SizeIterator iterator) {
                 //noinspection PointlessArithmeticExpression
                 return ARRAY_HEADER_SIZE + alignTo4(o.length * BOOLEAN_FIELD_SIZE);
             }
         });
         builder.registerSizeCalculator(byte[].class, new SizeCalculator<byte[]>() {
             @Override
-            public int getApproximateSize(@NotNull byte[] o, @NotNull SizeIterator iterator) {
+            public int getApproximateSize(@Nonnull byte[] o, @Nonnull SizeIterator iterator) {
                 //noinspection PointlessArithmeticExpression
                 return ARRAY_HEADER_SIZE + alignTo4(o.length * BYTE_FIELD_SIZE);
             }
         });
         builder.registerSizeCalculator(char[].class, new SizeCalculator<char[]>() {
             @Override
-            public int getApproximateSize(@NotNull char[] o, @NotNull SizeIterator iterator) {
+            public int getApproximateSize(@Nonnull char[] o, @Nonnull SizeIterator iterator) {
                 return ARRAY_HEADER_SIZE + alignTo4(o.length * CHAR_FIELD_SIZE);
             }
         });
         builder.registerSizeCalculator(short[].class, new SizeCalculator<short[]>() {
             @Override
-            public int getApproximateSize(@NotNull short[] o, @NotNull SizeIterator iterator) {
+            public int getApproximateSize(@Nonnull short[] o, @Nonnull SizeIterator iterator) {
                 return ARRAY_HEADER_SIZE + alignTo4(o.length * SHORT_FIELD_SIZE);
             }
         });
         builder.registerSizeCalculator(int[].class, new SizeCalculator<int[]>() {
             @Override
-            public int getApproximateSize(@NotNull int[] o, @NotNull SizeIterator iterator) {
+            public int getApproximateSize(@Nonnull int[] o, @Nonnull SizeIterator iterator) {
                 return ARRAY_HEADER_SIZE + o.length * INT_FIELD_SIZE;
             }
         });
         builder.registerSizeCalculator(long[].class, new SizeCalculator<long[]>() {
             @Override
-            public int getApproximateSize(@NotNull long[] o, @NotNull SizeIterator iterator) {
+            public int getApproximateSize(@Nonnull long[] o, @Nonnull SizeIterator iterator) {
                 return LONG_ARRAY_HEADER_SIZE + o.length * LONG_FIELD_SIZE;
             }
         });
         builder.registerSizeCalculator(float[].class, new SizeCalculator<float[]>() {
             @Override
-            public int getApproximateSize(@NotNull float[] o, @NotNull SizeIterator iterator) {
+            public int getApproximateSize(@Nonnull float[] o, @Nonnull SizeIterator iterator) {
                 return ARRAY_HEADER_SIZE + o.length * FLOAT_FIELD_SIZE;
             }
         });
         builder.registerSizeCalculator(double[].class, new SizeCalculator<double[]>() {
             @Override
-            public int getApproximateSize(@NotNull double[] o, @NotNull SizeIterator iterator) {
+            public int getApproximateSize(@Nonnull double[] o, @Nonnull SizeIterator iterator) {
                 return LONG_ARRAY_HEADER_SIZE + o.length * DOUBLE_FIELD_SIZE;
             }
         });
         builder.registerSizeCalculator(Object[].class, new SizeCalculator<Object[]>() {
             @Override
-            public int getApproximateSize(@NotNull Object[] o, @NotNull SizeIterator iterator) {
+            public int getApproximateSize(@Nonnull Object[] o, @Nonnull SizeIterator iterator) {
                 for (Object r : o) {
                     iterator.pass("[Array element] (" + (r == null ? "null" : r.getClass().getSimpleName()) + ")", r);
                 }
@@ -120,7 +121,7 @@ public final class ObjectSizeHelper {
         });
         builder.registerSizeCalculator(Date.class, new SizeCalculator<Date>() {
             @Override
-            public int getApproximateSize(@NotNull Date o, @NotNull SizeIterator iterator) {
+            public int getApproximateSize(@Nonnull Date o, @Nonnull SizeIterator iterator) {
                 return OBJECT_HEADER_SIZE + OBJREF_SIZE + LONG_FIELD_SIZE;
             }
         });

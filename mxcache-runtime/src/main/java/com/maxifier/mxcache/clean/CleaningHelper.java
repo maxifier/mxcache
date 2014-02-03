@@ -4,7 +4,8 @@ import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.util.TIdentityHashSet;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
@@ -87,7 +88,7 @@ public final class CleaningHelper {
         }
     }
 
-    public static void clear(@NotNull CleanableInstanceList list) {
+    public static void clear(@Nonnull CleanableInstanceList list) {
         List<WeakList<?>> lists = new ArrayList<WeakList<?>>();
         List<CleaningNode> elements = new ArrayList<CleaningNode>();
 

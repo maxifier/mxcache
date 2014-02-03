@@ -74,7 +74,7 @@ public abstract class AbstractIntLongCache extends AbstractElementLockedCache im
         }
     }
 
-    private long create(int key) {
+    protected long create(int key) {
         long start = System.nanoTime();
         long t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

@@ -3,7 +3,8 @@ package com.maxifier.mxcache.transform;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
 import com.maxifier.mxcache.util.ClassGenerator;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
 * Created by IntelliJ IDEA.
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public class BoxTransformGenerator extends ScalarTransformGenerator {
     private final Type type;
 
-    public BoxTransformGenerator(@NotNull Type type) {
+    public BoxTransformGenerator(@Nonnull Type type) {
         this.type = type;
     }
 

@@ -1,7 +1,8 @@
 package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.resource.MxResource;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class ResourceOccupied extends Error {
     private final MxResource resource;
 
-    public ResourceOccupied(@NotNull MxResource resource) {
+    public ResourceOccupied(@Nonnull MxResource resource) {
         this.resource = resource;
     }
 

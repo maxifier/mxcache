@@ -10,7 +10,9 @@ import com.maxifier.mxcache.impl.NullCacheManager;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.provider.CachingStrategy;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -23,7 +25,7 @@ import org.testng.annotations.Test;
 @Test
 public class GuiceIntegrationUTest {
     public static class TestStrategy implements CachingStrategy {
-        @NotNull
+        @Nonnull
         @Override
         public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
             return new NullCacheManager<T>(descriptor);
@@ -31,7 +33,7 @@ public class GuiceIntegrationUTest {
     }
 
     public static class StrategyOverride extends TestStrategy {
-        @NotNull
+        @Nonnull
         @Override
         public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
             return DefaultStrategy.getInstance().getManager(context, descriptor);

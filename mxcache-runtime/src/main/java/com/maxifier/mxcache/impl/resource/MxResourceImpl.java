@@ -1,6 +1,5 @@
 package com.maxifier.mxcache.impl.resource;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -11,7 +10,9 @@ import com.maxifier.mxcache.clean.CleaningHelper;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.resource.ResourceModificationException;
 import com.maxifier.mxcache.util.TIdentityHashSet;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,7 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
     private static final long serialVersionUID = 100L;
 
     protected final Object owner;
-    @NotNull
+    @Nonnull
     private final String name;
 
     private final ReentrantReadWriteLock lock;
@@ -36,7 +37,7 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
 
     private TIdentityHashSet<CleaningNode> oldDependentResourceViewNodes;
 
-    public MxResourceImpl(Object owner, @NotNull String name) {
+    public MxResourceImpl(Object owner, @Nonnull String name) {
         this.owner = owner;
         this.name = name;
         lock = new ReentrantReadWriteLock();
@@ -93,7 +94,7 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
         clearDependentCachesInternal();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getName() {
         return name;
@@ -201,7 +202,7 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
     }
 
     @Override
-    public void addNode(@NotNull CleaningNode cache) {
+    public void addNode(@Nonnull CleaningNode cache) {
         throw new UnsupportedOperationException();
     }
 

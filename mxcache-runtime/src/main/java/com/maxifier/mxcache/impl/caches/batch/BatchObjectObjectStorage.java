@@ -4,7 +4,7 @@ import com.maxifier.mxcache.caches.Calculable;
 import com.maxifier.mxcache.caches.ObjectObjectCalculatable;
 import com.maxifier.mxcache.storage.CalculableInterceptor;
 import com.maxifier.mxcache.storage.ObjectObjectStorage;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * Created by IntelliJ IDEA.

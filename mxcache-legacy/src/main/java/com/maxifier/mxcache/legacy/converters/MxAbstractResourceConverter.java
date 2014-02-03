@@ -2,8 +2,10 @@ package com.maxifier.mxcache.legacy.converters;
 
 import com.maxifier.mxcache.legacy.MxResource;
 import com.maxifier.mxcache.legacy.MxResourceManager;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 
 import java.util.Random;
 
@@ -43,7 +45,7 @@ public abstract class MxAbstractResourceConverter<T> implements MxConverter<T, M
         this(resourceManager, null);
     }
 
-    private static String getClassAbr(@NotNull Class cls) {
+    private static String getClassAbr(@Nonnull Class cls) {
         String s = cls.getName();
         StringBuilder b = new StringBuilder();
         for (int i = 0; i < s.length() && b.length() <= MAX_ABBREVIATION_LENGTH; i++) {
@@ -55,7 +57,7 @@ public abstract class MxAbstractResourceConverter<T> implements MxConverter<T, M
         return b.toString();
     }
 
-    protected MxResource createUniqueCacheFile(@NotNull Class cls) {
+    protected MxResource createUniqueCacheFile(@Nonnull Class cls) {
         synchronized (RANDOM) {
             MxResource cacheFile;
             String resourceName = generateName(cls);

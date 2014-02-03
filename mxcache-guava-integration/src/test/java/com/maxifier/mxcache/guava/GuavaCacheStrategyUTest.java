@@ -8,7 +8,7 @@ import com.maxifier.mxcache.Cached;
 import com.maxifier.mxcache.MxCache;
 import com.maxifier.mxcache.impl.resource.MxResourceFactory;
 import com.maxifier.mxcache.resource.MxResource;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

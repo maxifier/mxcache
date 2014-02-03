@@ -1,7 +1,8 @@
 package com.maxifier.mxcache.impl.wrapping;
 
 import com.maxifier.mxcache.transform.TransformGenerator;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
 * Created by IntelliJ IDEA.
@@ -13,15 +14,15 @@ class CacheImplementationSignature {
     private final Class cacheClass;
     private final Class calculatableClass;
     private final Class storageClass;
-    @NotNull
+    @Nonnull
     private final TransformGenerator userKeyTransformer;
-    @NotNull
+    @Nonnull
     private final TransformGenerator userValueTransformer;
     private final boolean perElementLocking;
 
     private final int hash;
 
-    public CacheImplementationSignature(Class cacheClass, Class calculatableClass, Class storageClass, @NotNull TransformGenerator userKeyTransformer, @NotNull TransformGenerator userValueTransformer, boolean perElementLocking) {
+    public CacheImplementationSignature(Class cacheClass, Class calculatableClass, Class storageClass, @Nonnull TransformGenerator userKeyTransformer, @Nonnull TransformGenerator userValueTransformer, boolean perElementLocking) {
         this.cacheClass = cacheClass;
         this.calculatableClass = calculatableClass;
         this.storageClass = storageClass;

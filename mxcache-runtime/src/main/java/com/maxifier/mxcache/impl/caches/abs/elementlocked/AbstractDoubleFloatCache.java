@@ -74,7 +74,7 @@ public abstract class AbstractDoubleFloatCache extends AbstractElementLockedCach
         }
     }
 
-    private float create(double key) {
+    protected float create(double key) {
         long start = System.nanoTime();
         float t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

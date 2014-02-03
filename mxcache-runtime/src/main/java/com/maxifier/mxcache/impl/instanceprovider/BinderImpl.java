@@ -1,7 +1,8 @@
 package com.maxifier.mxcache.impl.instanceprovider;
 
 import com.maxifier.mxcache.InstanceProvider;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.Map;
 
@@ -23,12 +24,12 @@ class BinderImpl<T> implements Binder<T> {
     }
 
     @Override
-    public void toProvider(@NotNull Provider<T> provider) {
+    public void toProvider(@Nonnull Provider<T> provider) {
         registry.put(cls, provider);
     }
 
     @Override
-    public void toInstance(@NotNull T instance) {
+    public void toInstance(@Nonnull T instance) {
         if (!cls.isInstance(instance)) {
             throw new IllegalArgumentException("Cannot bind " + cls + " to instance of " + instance.getClass());
         }
@@ -36,7 +37,7 @@ class BinderImpl<T> implements Binder<T> {
     }
 
     @Override
-    public void toClass(@NotNull Class<? extends T> cls) {
+    public void toClass(@Nonnull Class<? extends T> cls) {
         if (cls == this.cls) {
             throw new IllegalArgumentException("Cannot bind " + this.cls + " to itself");
         }

@@ -3,14 +3,14 @@ package com.maxifier.mxcache.clean;
 import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.impl.resource.AbstractDependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
-import com.maxifier.mxcache.impl.resource.DependencyNodeVisitor;
 import com.maxifier.mxcache.impl.resource.MxStaticResource;
 import com.maxifier.mxcache.impl.resource.nodes.SingletonDependencyNode;
 import com.maxifier.mxcache.util.TIdentityHashSet;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+
 import org.testng.annotations.Test;
 
-import java.lang.ref.Reference;
 import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -94,7 +94,7 @@ public class CleaningHelperUTest {
             }
 
             @Override
-            public void addNode(@NotNull CleaningNode cache) {
+            public void addNode(@Nonnull CleaningNode cache) {
                 throw new UnsupportedOperationException();
             }
         };
@@ -144,7 +144,7 @@ public class CleaningHelperUTest {
             }
 
             @Override
-            public void addNode(@NotNull CleaningNode cache) {
+            public void addNode(@Nonnull CleaningNode cache) {
                 throw new UnsupportedOperationException();
             }
         };

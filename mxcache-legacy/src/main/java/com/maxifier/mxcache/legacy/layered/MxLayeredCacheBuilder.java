@@ -6,7 +6,8 @@ import com.maxifier.mxcache.legacy.MxResourceManager;
 import com.maxifier.mxcache.legacy.converters.MxConvertState;
 import com.maxifier.mxcache.legacy.converters.MxConvertType;
 import com.maxifier.mxcache.legacy.converters.MxConverter;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,19 +23,19 @@ import org.jetbrains.annotations.NotNull;
 public final class MxLayeredCacheBuilder<T> {
     private final MxLayeredCacheConfiguration<T> configuration;
 
-    public MxLayeredCacheBuilder(@NotNull String name, Class<T> elementClass, MxConvertType... convertTypes) {
+    public MxLayeredCacheBuilder(@Nonnull String name, Class<T> elementClass, MxConvertType... convertTypes) {
         configuration = new MxLayeredCacheConfiguration<T>(name, elementClass, convertTypes);
     }
 
-    public <T> MxCacheLayer<T> addLayer(@NotNull String name, int maxLongtimeSize, int maxLongtimeLive, float preferenceFactor) {
+    public <T> MxCacheLayer<T> addLayer(@Nonnull String name, int maxLongtimeSize, int maxLongtimeLive, float preferenceFactor) {
         return configuration.addLayer(name, maxLongtimeSize, maxLongtimeLive, preferenceFactor);
     }
 
-    public <T> MxCacheLayer<T> addStableLayer(MxResourceManager rm, @NotNull String name, float preferenceFactor) {
+    public <T> MxCacheLayer<T> addStableLayer(MxResourceManager rm, @Nonnull String name, float preferenceFactor) {
         return configuration.addStableLayer(rm, name, preferenceFactor);
     }
 
-    public <F, T> void addConverter(@NotNull MxConvertState<F> from, @NotNull MxCacheLayer<T> to, @NotNull MxConverter<F, T> converter, float avgLoadtime) {
+    public <F, T> void addConverter(@Nonnull MxConvertState<F> from, @Nonnull MxCacheLayer<T> to, @Nonnull MxConverter<F, T> converter, float avgLoadtime) {
         configuration.addConverter(from, to, converter, avgLoadtime);
     }
 

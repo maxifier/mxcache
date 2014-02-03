@@ -72,7 +72,7 @@ public abstract class AbstractLongShortCache extends AbstractCache implements Lo
         }
     }
 
-    private short create(long o) {
+    protected short create(long o) {
         long start = System.nanoTime();
         short t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

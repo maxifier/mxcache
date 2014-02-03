@@ -72,7 +72,7 @@ public abstract class AbstractFloatDoubleCache extends AbstractCache implements 
         }
     }
 
-    private double create(float o) {
+    protected double create(float o) {
         long start = System.nanoTime();
         double t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

@@ -24,8 +24,10 @@ import com.maxifier.mxcache.util.CodegenHelper;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
 import gnu.trove.THashMap;
 import gnu.trove.THashSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -981,7 +983,7 @@ public class DynamicInstrumentationFTest {
     }
 
     private static class DefaultTestStrategy extends TestStrategy {
-        @NotNull
+        @Nonnull
         @Override
         public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
             return DefaultStrategy.getInstance().getManager(context, descriptor);
@@ -1004,7 +1006,7 @@ public class DynamicInstrumentationFTest {
         }
 
         @Override
-        public Cache createCache(@NotNull Class cacheOwner, int cacheId, @Nullable Object instance, CacheContext context) {
+        public Cache createCache(@Nonnull Class cacheOwner, int cacheId, @Nullable Object instance, CacheContext context) {
             queries.add(new Object[] {"createCache", cacheOwner, cacheId, instance, context});
             return provider0.createCache(cacheOwner, cacheId, instance, context);
         }
@@ -1026,9 +1028,9 @@ public class DynamicInstrumentationFTest {
 
     private class OverrideInstanceProvider implements InstanceProvider {
         @SuppressWarnings( { "unchecked" })
-        @NotNull
+        @Nonnull
         @Override
-        public <T> T forClass(@NotNull Class<T> cls) {
+        public <T> T forClass(@Nonnull Class<T> cls) {
             if (cls == TestStrategy.class) {
                 return (T) new DefaultTestStrategy();
             }

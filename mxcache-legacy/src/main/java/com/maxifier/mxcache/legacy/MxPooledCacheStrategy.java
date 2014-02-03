@@ -5,7 +5,8 @@ import com.maxifier.mxcache.legacy.converters.MxConvertType;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.provider.CachingStrategy;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  * Time: 9:56:18
  */
 public abstract class MxPooledCacheStrategy<Value, ElementType extends MxConvertType> implements CachingStrategy {
-    @NotNull
+    @Nonnull
     @Override
     public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
         checkDescriptor(descriptor);

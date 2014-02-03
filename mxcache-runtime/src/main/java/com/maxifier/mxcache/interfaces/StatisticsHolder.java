@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.interfaces;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * Created by IntelliJ IDEA.

@@ -5,8 +5,10 @@ import com.maxifier.mxcache.NonInstrumentedCacheException;
 import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import gnu.trove.THashMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,7 +124,7 @@ public final class CleanableRegister implements CacheCleaner {
     }
 
     @SuppressWarnings({"unchecked"})
-    public List<Cache> getCaches(@NotNull CacheDescriptor descriptor) {
+    public List<Cache> getCaches(@Nonnull CacheDescriptor descriptor) {
         ClassCleanableInstanceList<?> list = getListByClass(descriptor.getOwnerClass());
         if (list == null) {
             logger.error("Unknown class required: " + descriptor.getOwnerClass());

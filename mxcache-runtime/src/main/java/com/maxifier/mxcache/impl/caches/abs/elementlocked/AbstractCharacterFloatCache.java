@@ -74,7 +74,7 @@ public abstract class AbstractCharacterFloatCache extends AbstractElementLockedC
         }
     }
 
-    private float create(char key) {
+    protected float create(char key) {
         long start = System.nanoTime();
         float t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

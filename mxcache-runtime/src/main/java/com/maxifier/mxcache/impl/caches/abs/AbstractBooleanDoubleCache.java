@@ -72,7 +72,7 @@ public abstract class AbstractBooleanDoubleCache extends AbstractCache implement
         }
     }
 
-    private double create(boolean o) {
+    protected double create(boolean o) {
         long start = System.nanoTime();
         double t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

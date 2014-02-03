@@ -6,8 +6,10 @@ import com.maxifier.mxcache.util.FormatHelper;
 import com.maxifier.mxcache.util.MultiLock;
 import com.maxifier.mxcache.util.TIdentityHashSet;
 import gnu.trove.THashMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -183,7 +185,7 @@ public class MxCachePoolManager<T> extends ElementOwner<T> implements MxStateHan
         return converter;
     }
 
-    @NotNull
+    @Nonnull
     public PooledConverter<T> getConverter(MxConvertType t) {
         PooledConverter<T> c = converters.get(t);
         if (c == null) {

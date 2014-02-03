@@ -9,7 +9,8 @@ import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.impl.resource.ResourceOccupied;
 import com.maxifier.mxcache.util.TIdentityHashSet;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.locks.Lock;
@@ -108,7 +109,7 @@ public class DependencyTrackingAction {
         }
 
         @Override
-        public void addNode(@NotNull CleaningNode cache) {
+        public void addNode(@Nonnull CleaningNode cache) {
             throw new UnsupportedOperationException();
         }
 

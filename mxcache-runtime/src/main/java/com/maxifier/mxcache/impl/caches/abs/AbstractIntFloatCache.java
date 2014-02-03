@@ -72,7 +72,7 @@ public abstract class AbstractIntFloatCache extends AbstractCache implements Int
         }
     }
 
-    private float create(int o) {
+    protected float create(int o) {
         long start = System.nanoTime();
         float t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

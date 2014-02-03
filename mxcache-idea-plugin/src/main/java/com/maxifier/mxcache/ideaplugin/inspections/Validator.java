@@ -1,6 +1,7 @@
 package com.maxifier.mxcache.ideaplugin.inspections;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.InspectionToolProvider;
 import com.intellij.openapi.components.ApplicationComponent;
 
@@ -12,7 +13,7 @@ import com.intellij.openapi.components.ApplicationComponent;
  */
 public class Validator implements ApplicationComponent, InspectionToolProvider {
 
-    @NotNull
+    @Nonnull
     public String getComponentName() {
         return "MxCache inspection";
     }

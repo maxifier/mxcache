@@ -85,7 +85,7 @@ public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache i
         }
     }
 
-    private #fg# create(#IF_E##eg# key#ENDIF#) {
+    protected #fg# create(#IF_E##eg# key#ENDIF#) {
         long start = System.nanoTime();
         #fg# t = calculatable.calculate(owner#IF_E#, key#ENDIF#);
         long end = System.nanoTime();

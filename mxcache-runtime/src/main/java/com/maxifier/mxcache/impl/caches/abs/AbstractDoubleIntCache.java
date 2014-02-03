@@ -72,7 +72,7 @@ public abstract class AbstractDoubleIntCache extends AbstractCache implements Do
         }
     }
 
-    private int create(double o) {
+    protected int create(double o) {
         long start = System.nanoTime();
         int t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

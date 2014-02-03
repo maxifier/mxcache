@@ -5,7 +5,9 @@ import com.maxifier.mxcache.hashing.DefaultHashingStrategyFactory;
 import com.maxifier.mxcache.hashing.HashingStrategyFactory;
 import com.maxifier.mxcache.provider.*;
 import com.maxifier.mxcache.provider.CacheManager;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +42,7 @@ public class DefaultStrategy implements CachingStrategy {
         this.hashingStrategyFactory = hashingStrategyFactory;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
         return new StorageBasedCacheManager<T>(context, descriptor, new DefaultStorageFactory<T>(context, hashingStrategyFactory, descriptor));

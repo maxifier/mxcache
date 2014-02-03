@@ -5,7 +5,8 @@ import com.maxifier.mxcache.provider.StorageFactory;
 import com.maxifier.mxcache.storage.Storage;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -24,7 +25,7 @@ public class EhcacheStorageFactory<T> implements StorageFactory<T> {
         this.cacheManager = cacheManager;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Storage createStorage(T owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
         String name = descriptor.getCacheName();

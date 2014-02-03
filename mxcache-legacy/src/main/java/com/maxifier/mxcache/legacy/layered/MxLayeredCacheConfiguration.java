@@ -2,7 +2,8 @@ package com.maxifier.mxcache.legacy.layered;
 
 import com.maxifier.mxcache.legacy.MxResourceManager;
 import com.maxifier.mxcache.legacy.converters.*;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +24,10 @@ public final class MxLayeredCacheConfiguration<T> {
     private int maxShorttimeLive;
     private int maxShorttimeSize;
 
-    @NotNull
+    @Nonnull
     private final Class<T> elementClass;
 
-    public MxLayeredCacheConfiguration(@NotNull String name, Class<T> elementClass, MxConvertType... convertTypes) {
+    public MxLayeredCacheConfiguration(@Nonnull String name, Class<T> elementClass, MxConvertType... convertTypes) {
         if (convertTypes == null || convertTypes.length == 0) {
             throw new IllegalArgumentException("No types specified!");
         }
@@ -37,7 +38,7 @@ public final class MxLayeredCacheConfiguration<T> {
         layers = new ArrayList<MxCacheLayer>();
     }
 
-    public synchronized <T> MxCacheLayer<T> addLayer(@NotNull String name, int maxLongtimeSize, int maxLongtimeLive, float preferenceFactor) {
+    public synchronized <T> MxCacheLayer<T> addLayer(@Nonnull String name, int maxLongtimeSize, int maxLongtimeLive, float preferenceFactor) {
         if (converterBuilder != null) {
             throw new IllegalStateException("Cannot add layer after stable layer was added");
         }
@@ -46,7 +47,7 @@ public final class MxLayeredCacheConfiguration<T> {
         return layer;
     }
 
-    public synchronized <T> MxCacheLayer<T> addStableLayer(MxResourceManager rm, @NotNull String name, float preferenceFactor) {
+    public synchronized <T> MxCacheLayer<T> addStableLayer(MxResourceManager rm, @Nonnull String name, float preferenceFactor) {
         MxCacheLayer<T> layer = addLayer(name, 0, 0, preferenceFactor);
 
         cacheLayers = layers.toArray(new MxCacheLayer[layers.size()]);
@@ -55,7 +56,7 @@ public final class MxLayeredCacheConfiguration<T> {
         return layer;
     }
 
-    public synchronized <F, T> void addConverter(@NotNull MxConvertState<F> from, @NotNull MxCacheLayer<T> to, @NotNull MxConverter<F, T> converter, float avgLoadtime) {
+    public synchronized <F, T> void addConverter(@Nonnull MxConvertState<F> from, @Nonnull MxCacheLayer<T> to, @Nonnull MxConverter<F, T> converter, float avgLoadtime) {
         if (converterBuilder == null) {
             throw new IllegalStateException("Cannot add converter before all layers are added");
         }
@@ -74,7 +75,7 @@ public final class MxLayeredCacheConfiguration<T> {
         return name;
     }
 
-    @NotNull
+    @Nonnull
     public Class<T> getElementClass() {
         return elementClass;
     }

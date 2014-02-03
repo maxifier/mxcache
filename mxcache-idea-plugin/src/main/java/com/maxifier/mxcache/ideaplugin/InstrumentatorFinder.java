@@ -9,7 +9,8 @@ import com.intellij.psi.PsiLiteralExpression;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.maxifier.mxcache.MxCacheException;
 import com.maxifier.mxcache.instrumentation.Instrumentator;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class InstrumentatorFinder implements ProjectComponent {
     public void disposeComponent() {
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getComponentName() {
         return "InstrumentatorFinder";

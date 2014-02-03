@@ -5,7 +5,7 @@ import com.maxifier.mxcache.caches.ObjectObjectCache;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.provider.CacheDescriptor;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 import java.util.concurrent.locks.Lock;
 

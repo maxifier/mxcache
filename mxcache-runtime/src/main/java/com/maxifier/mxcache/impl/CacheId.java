@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.impl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,12 +9,12 @@ import org.jetbrains.annotations.NotNull;
  * Time: 9:26:48
  */
 public final class CacheId {
-    @NotNull
+    @Nonnull
     private final Class owner;
 
     private final int id;
 
-    public CacheId(@NotNull Class owner, int id) {
+    public CacheId(@Nonnull Class owner, int id) {
         this.owner = owner;
         this.id = id;
     }

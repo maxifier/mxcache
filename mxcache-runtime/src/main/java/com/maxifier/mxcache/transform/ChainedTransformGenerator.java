@@ -4,7 +4,8 @@ import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.util.ClassGenerator;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
 * Created by IntelliJ IDEA.
@@ -17,7 +18,7 @@ public final class ChainedTransformGenerator implements TransformGenerator {
 
     private final TransformGenerator second;
 
-    private ChainedTransformGenerator(@NotNull TransformGenerator first, @NotNull TransformGenerator second) {
+    private ChainedTransformGenerator(@Nonnull TransformGenerator first, @Nonnull TransformGenerator second) {
         this.first = first;
         this.second = second;
     }
@@ -90,8 +91,8 @@ public final class ChainedTransformGenerator implements TransformGenerator {
         return first + " -> " + second;
     }
 
-    @NotNull
-    public static TransformGenerator chain(@NotNull TransformGenerator a, @NotNull TransformGenerator b) {
+    @Nonnull
+    public static TransformGenerator chain(@Nonnull TransformGenerator a, @Nonnull TransformGenerator b) {
         if (a == NO_TRANSFORM) {
             return b;
         }

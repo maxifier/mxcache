@@ -1,7 +1,8 @@
 package com.maxifier.mxcache.activity;
 
 import gnu.trove.THashMap;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public final class ActivityTracker {
      *
      * @return ресурс с заданным именем
      */
-    public static synchronized Activity getActivity(@NotNull String id) {
+    public static synchronized Activity getActivity(@Nonnull String id) {
         Activity resource = ACTIVITIES.get(id);
         if (resource == null) {
             resource = new ActivityImpl(id);

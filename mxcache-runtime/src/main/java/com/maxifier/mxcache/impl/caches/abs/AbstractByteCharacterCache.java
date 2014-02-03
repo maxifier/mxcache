@@ -72,7 +72,7 @@ public abstract class AbstractByteCharacterCache extends AbstractCache implement
         }
     }
 
-    private char create(byte o) {
+    protected char create(byte o) {
         long start = System.nanoTime();
         char t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

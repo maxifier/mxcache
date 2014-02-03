@@ -6,8 +6,8 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel;
 import com.maxifier.mxcache.ideaplugin.MxCacheInspection;
 import com.maxifier.mxcache.transform.ReversibleTransform;
 import com.maxifier.mxcache.transform.Transform;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.List;
 
@@ -20,14 +20,13 @@ import java.util.List;
 public class CacheAccessorsInspection extends MxCacheInspection {
     private static final String INSPECTION_ID = "MxCacheCachedAccessors";
 
-    @Nls
-    @NotNull
+    @Nonnull
     @Override
     public String getDisplayName() {
         return "MxCache @Cached problems";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getShortName() {
         return INSPECTION_ID;
@@ -126,7 +125,7 @@ public class CacheAccessorsInspection extends MxCacheInspection {
         return qualifiedName != null && qualifiedName.equals(ReversibleTransform.class.getCanonicalName());
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.ERROR;

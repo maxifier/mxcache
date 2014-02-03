@@ -74,7 +74,7 @@ public abstract class AbstractByteDoubleCache extends AbstractElementLockedCache
         }
     }
 
-    private double create(byte key) {
+    protected double create(byte key) {
         long start = System.nanoTime();
         double t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

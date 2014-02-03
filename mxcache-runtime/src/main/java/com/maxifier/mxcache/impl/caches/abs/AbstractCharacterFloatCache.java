@@ -72,7 +72,7 @@ public abstract class AbstractCharacterFloatCache extends AbstractCache implemen
         }
     }
 
-    private float create(char o) {
+    protected float create(char o) {
         long start = System.nanoTime();
         float t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

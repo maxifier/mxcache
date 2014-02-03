@@ -1,6 +1,7 @@
 package com.maxifier.mxcache.activity;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,7 @@ public class ActivityImpl implements Activity, Serializable {
 
     private static final long serialVersionUID = 100L;
 
-    @NotNull
+    @Nonnull
     private final String name;
 
     private int globalRuns;
@@ -29,7 +30,7 @@ public class ActivityImpl implements Activity, Serializable {
 
     private transient ThreadLocal<Integer> local;
 
-    public ActivityImpl(@NotNull String name) {
+    public ActivityImpl(@Nonnull String name) {
         this.name = name;
     }
 
@@ -40,7 +41,7 @@ public class ActivityImpl implements Activity, Serializable {
         return local;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getName() {
         return name;
@@ -75,7 +76,7 @@ public class ActivityImpl implements Activity, Serializable {
     }
 
     @Override
-    public void start(@NotNull ActivityScope scope) {
+    public void start(@Nonnull ActivityScope scope) {
         fireStarted(scope);
         switch (scope) {
             case GLOBAL:
@@ -90,7 +91,7 @@ public class ActivityImpl implements Activity, Serializable {
     }
 
     @Override
-    public void finish(@NotNull ActivityScope scope) {
+    public void finish(@Nonnull ActivityScope scope) {
         fireFinished(scope);
         switch (scope) {
             case GLOBAL:

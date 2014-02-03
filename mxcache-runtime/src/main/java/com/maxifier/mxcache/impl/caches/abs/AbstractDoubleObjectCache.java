@@ -76,7 +76,7 @@ public abstract class AbstractDoubleObjectCache<F> extends AbstractCache impleme
     }
 
     @SuppressWarnings({ "unchecked" })
-    private F create(double o) {
+    protected F create(double o) {
         long start = System.nanoTime();
         F t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

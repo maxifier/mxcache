@@ -4,7 +4,8 @@ import com.maxifier.mxcache.MxCacheException;
 import com.maxifier.mxcache.instrumentation.ClassDefinition;
 import com.maxifier.mxcache.instrumentation.ClassInstrumentationResult;
 import com.maxifier.mxcache.instrumentation.Instrumentator;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class StaticInstrumentator implements ClassInstrumentingCompiler /*, Appl
 
 
     @Override
-    @NotNull
+    @Nonnull
     public ProcessingItem[] getProcessingItems(CompileContext compileContext) {
         if (!enabled) {
             return new ProcessingItem[] {};
@@ -101,7 +102,7 @@ public class StaticInstrumentator implements ClassInstrumentingCompiler /*, Appl
     }
 
     @Override
-    @NotNull
+    @Nonnull
     public String getDescription() {
         return "MxCache instrumentator";
     }
@@ -203,7 +204,7 @@ public class StaticInstrumentator implements ClassInstrumentingCompiler /*, Appl
     /*
     //////////// ApplicationComponent methods //////////////////////////////////////////////////////////////////////////
 
-    @NotNull
+    @Nonnull
     public String getComponentName() {
         return "MxCache instrumentator";
     }

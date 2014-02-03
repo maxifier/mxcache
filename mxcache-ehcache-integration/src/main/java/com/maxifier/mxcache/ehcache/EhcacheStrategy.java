@@ -6,7 +6,9 @@ import com.maxifier.mxcache.provider.*;
 import com.maxifier.mxcache.provider.CacheManager;
 import gnu.trove.THashMap;
 import net.sf.ehcache.CacheException;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +32,7 @@ public class EhcacheStrategy implements CachingStrategy {
 
     private final Map<String, net.sf.ehcache.CacheManager> byConfiguration = new THashMap<String, net.sf.ehcache.CacheManager>();
 
-    @NotNull
+    @Nonnull
     @Override
     public <T> CacheManager<T> getManager(CacheContext context, final CacheDescriptor<T> descriptor) {
         if (descriptor.getKeyType() == null) {

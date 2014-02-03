@@ -74,7 +74,7 @@ public abstract class AbstractLongCharacterCache extends AbstractElementLockedCa
         }
     }
 
-    private char create(long key) {
+    protected char create(long key) {
         long start = System.nanoTime();
         char t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.impl.instanceprovider;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
 * Created by IntelliJ IDEA.
@@ -9,9 +9,9 @@ import org.jetbrains.annotations.NotNull;
 * Time: 9:12:01
 */
 public interface Binder<T> {
-    void toProvider(@NotNull Provider<T> provider);
+    void toProvider(@Nonnull Provider<T> provider);
 
-    void toInstance(@NotNull T instance);
+    void toInstance(@Nonnull T instance);
 
-    void toClass(@NotNull Class<? extends T> cls);
+    void toClass(@Nonnull Class<? extends T> cls);
 }

@@ -77,7 +77,7 @@ public abstract class AbstractDoubleObjectCache<F> extends AbstractElementLocked
     }
 
     @SuppressWarnings({ "unchecked" })
-    private F create(double key) {
+    protected F create(double key) {
         long start = System.nanoTime();
         F t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

@@ -17,7 +17,8 @@ import java.util.Set;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.util.TIdentityHashSet;
 import gnu.trove.THashMap;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 public class CacheControl implements CacheControlMXBean {
     private final CacheProvider provider;
 
-    public CacheControl(@NotNull CacheProvider provider) {
+    public CacheControl(@Nonnull CacheProvider provider) {
         this.provider = provider;
     }
 

@@ -12,7 +12,9 @@ import com.maxifier.mxcache.proxy.*;
 import gnu.trove.THashMap;
 import gnu.trove.THashSet;
 import gnu.trove.TObjectIdentityHashingStrategy;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,10 +52,10 @@ public final class MxLayeredCache<T> extends MutableStatisticsImpl implements Mx
 
     private final String name;
 
-    @NotNull
+    @Nonnull
     private final MxCacheLayer[] layers;
 
-    @NotNull
+    @Nonnull
     private final MxGenericProxyFactory<T, MxLayeredStrategy> proxyFactory;
 
     private int garbageCollected;
@@ -87,11 +89,11 @@ public final class MxLayeredCache<T> extends MutableStatisticsImpl implements Mx
 
     private MxLayeredCache(
             String name,
-            @NotNull Class<T> elementClass,
-            @NotNull MxCacheLayer[] layers,
+            @Nonnull Class<T> elementClass,
+            @Nonnull MxCacheLayer[] layers,
             int maxShorttimeLive,
             int maxShorttimeSize,
-            @NotNull MxReusageForecastManager<T> reusageForecastManager,
+            @Nonnull MxReusageForecastManager<T> reusageForecastManager,
             MBeanRegistrator mBeanRegistrator,
             MxConvertHelper converter,
             MxLayeredCacheSerializator serializator,

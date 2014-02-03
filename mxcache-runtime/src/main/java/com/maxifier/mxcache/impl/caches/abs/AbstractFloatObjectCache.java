@@ -76,7 +76,7 @@ public abstract class AbstractFloatObjectCache<F> extends AbstractCache implemen
     }
 
     @SuppressWarnings({ "unchecked" })
-    private F create(float o) {
+    protected F create(float o) {
         long start = System.nanoTime();
         F t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

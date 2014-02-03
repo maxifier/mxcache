@@ -74,7 +74,7 @@ public abstract class AbstractBooleanCharacterCache extends AbstractElementLocke
         }
     }
 
-    private char create(boolean key) {
+    protected char create(boolean key) {
         long start = System.nanoTime();
         char t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

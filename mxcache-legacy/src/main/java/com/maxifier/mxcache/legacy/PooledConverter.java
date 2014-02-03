@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.legacy;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,13 +9,13 @@ import org.jetbrains.annotations.NotNull;
  * Time: 17:08
  */
 public interface PooledConverter<T> {
-    @NotNull
+    @Nonnull
     MxResource save(byte[] bytes, T value);
 
-    @NotNull
+    @Nonnull
     T load(MxResource resource);
 
-    @NotNull
+    @Nonnull
     T deserialize(byte[] bytes);
 
     byte[] serialize(T value);

@@ -16,14 +16,15 @@ import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.provider.CachingStrategy;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
@@ -40,7 +41,7 @@ public class CacheProviderImplUTest {
     private static final int TEST_CACHE_FINGERPRINT = 0xCAFE;
 
     static class Y implements CachingStrategy {
-        @NotNull
+        @Nonnull
         @Override
         public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
             throw new UnsupportedOperationException();
@@ -69,7 +70,7 @@ public class CacheProviderImplUTest {
         }
 
 
-        @NotNull
+        @Nonnull
         @Override
         public synchronized <T> CacheManager<T> getManager(CacheContext context, final CacheDescriptor<T> descriptor) {
             return new XManager<T>(descriptor);
@@ -264,7 +265,7 @@ public class CacheProviderImplUTest {
         public TestStorageFactory(CacheDescriptor descriptor) {
         }
 
-        @NotNull
+        @Nonnull
         @Override
         public Storage createStorage(Object owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
             return new TestStorage();
@@ -277,7 +278,7 @@ public class CacheProviderImplUTest {
     }
 
     public static class InvalidStorageFactory implements StorageFactory {
-        @NotNull
+        @Nonnull
         @Override
         public Storage createStorage(Object owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
             throw new UnsupportedOperationException();
@@ -463,7 +464,7 @@ public class CacheProviderImplUTest {
         }, "x", "()I", null);
         InstanceProvider sp = mock(InstanceProvider.class);
         when(sp.forClass(X.class)).thenReturn(new X() {
-            @NotNull
+            @Nonnull
             @Override
             public synchronized <T> CacheManager<T> getManager(final CacheContext context, CacheDescriptor<T> descriptor) {
                 return new XManager<T>(descriptor) {

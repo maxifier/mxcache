@@ -72,7 +72,7 @@ public abstract class AbstractLongLongCache extends AbstractCache implements Lon
         }
     }
 
-    private long create(long o) {
+    protected long create(long o) {
         long start = System.nanoTime();
         long t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

@@ -7,8 +7,10 @@ import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
 import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.util.ClassGenerator;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 
 import static com.maxifier.mxcache.asm.Type.getType;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
@@ -28,16 +30,16 @@ public class ExternalTransformGenerator extends ScalarTransformGenerator {
     private static final Method GET_INSTANCE_PROVIDER_METHOD = new Method("getInstanceProvider", INSTANCE_PROVIDER_TYPE, EMPTY_TYPES);
     private static final Method FOR_CLASS_METHOD = Method.getMethod("Object forClass(Class)");
 
-    @NotNull
+    @Nonnull
     private final InvocationType invocationType;
-    @NotNull
+    @Nonnull
     private final Type ownerType;
-    @NotNull
+    @Nonnull
     private final java.lang.reflect.Method method;
     @Nullable
     private final Type keyType;
 
-    public ExternalTransformGenerator(@NotNull InvocationType invocationType, @NotNull Class owner, @NotNull java.lang.reflect.Method method) {
+    public ExternalTransformGenerator(@Nonnull InvocationType invocationType, @Nonnull Class owner, @Nonnull java.lang.reflect.Method method) {
         this.invocationType = invocationType;
         this.ownerType = Type.getType(owner);
         this.method = method;

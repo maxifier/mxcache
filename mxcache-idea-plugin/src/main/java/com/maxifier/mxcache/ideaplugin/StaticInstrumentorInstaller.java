@@ -7,7 +7,8 @@ import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,7 +32,7 @@ public class StaticInstrumentorInstaller implements ProjectComponent, JDOMExtern
     public void projectClosed() {
     }
 
-    @NotNull
+    @Nonnull
     public String getComponentName() {
         return "MxCache static instrumentator";
     }

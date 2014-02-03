@@ -72,7 +72,7 @@ public abstract class AbstractIntByteCache extends AbstractCache implements IntB
         }
     }
 
-    private byte create(int o) {
+    protected byte create(int o) {
         long start = System.nanoTime();
         byte t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

@@ -7,7 +7,8 @@ import com.maxifier.mxcache.impl.resource.DependencyNodeVisitor;
 import com.maxifier.mxcache.util.HashWeakReference;
 import com.maxifier.mxcache.util.TIdentityHashSet;
 import gnu.trove.THashSet;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.lang.ref.Reference;
 import java.util.Iterator;
@@ -69,7 +70,7 @@ public class #E#InlineDependencyCache extends #E#InlineCacheImpl implements Depe
     }
 
     @Override
-    public synchronized void addNode(@NotNull CleaningNode cache) {
+    public synchronized void addNode(@Nonnull CleaningNode cache) {
         throw new UnsupportedOperationException("Inline dependency node should has only one cache");
     }
 

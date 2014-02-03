@@ -1,6 +1,6 @@
 package com.maxifier.mxcache;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,5 +17,6 @@ public interface InstanceProvider {
      * @throws NoSuchInstanceException if there were problems accessing instance (e.g. class has no corresponding
      * constructor).
      */
-    @NotNull <T> T forClass(@NotNull Class<T> cls);
+    @Nonnull
+    <T> T forClass(@Nonnull Class<T> cls);
 }

@@ -4,13 +4,14 @@ import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.caches.storage.StorageHolder;
 import com.maxifier.mxcache.impl.caches.abs.elementlocked.*;
 import com.maxifier.mxcache.caches.*;
-import com.maxifier.mxcache.impl.resource.*;
 import com.maxifier.mxcache.storage.elementlocked.*;
 
 import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.interfaces.StatisticsHolder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 
 import java.util.concurrent.locks.Lock;
 
@@ -29,12 +30,12 @@ import java.util.concurrent.locks.Lock;
 public class StorageShortLongCacheImpl extends AbstractShortLongCache implements StorageHolder<ShortLongElementLockedStorage> {
     private ShortLongElementLockedStorage storage;
 
-    public StorageShortLongCacheImpl(Object owner, ShortLongCalculatable calculatable, @NotNull MutableStatistics statistics) {
+    public StorageShortLongCacheImpl(Object owner, ShortLongCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@NotNull ShortLongElementLockedStorage storage) {
+    public void setStorage(@Nonnull ShortLongElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }

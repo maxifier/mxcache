@@ -4,7 +4,7 @@ import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.impl.resource.AbstractDependencyNode;
 import com.maxifier.mxcache.util.TIdentityHashSet;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,7 +25,7 @@ public class SingletonDependencyNode extends AbstractDependencyNode {
     }
 
     @Override
-    public synchronized void addNode(@NotNull CleaningNode cache) {
+    public synchronized void addNode(@Nonnull CleaningNode cache) {
         if (instance != null) {
             throw new UnsupportedOperationException("Singleton dependency node should has only one cache");
         }

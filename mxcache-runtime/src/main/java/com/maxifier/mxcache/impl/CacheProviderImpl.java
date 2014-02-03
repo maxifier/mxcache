@@ -14,8 +14,10 @@ import java.lang.management.ManagementFactory;
 import com.maxifier.mxcache.caches.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 
 import javax.management.*;
 
@@ -65,7 +67,7 @@ public class CacheProviderImpl implements CacheProvider {
     }
 
     @Override
-    public synchronized Cache createCache(@NotNull Class cacheOwner, int cacheId, @Nullable Object instance, CacheContext context) {
+    public synchronized Cache createCache(@Nonnull Class cacheOwner, int cacheId, @Nullable Object instance, CacheContext context) {
         if (logger.isTraceEnabled()) {
             logger.trace("createCache({}, {}, {})", new Object[] {cacheOwner, cacheId, instance});
         }

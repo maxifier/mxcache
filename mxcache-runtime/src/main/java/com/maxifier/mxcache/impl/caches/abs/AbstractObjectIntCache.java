@@ -72,7 +72,7 @@ public abstract class AbstractObjectIntCache<E> extends AbstractCache implements
         }
     }
 
-    private int create(E o) {
+    protected int create(E o) {
         long start = System.nanoTime();
         int t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

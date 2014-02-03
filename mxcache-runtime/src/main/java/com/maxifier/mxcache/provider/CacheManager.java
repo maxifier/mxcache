@@ -2,7 +2,7 @@ package com.maxifier.mxcache.provider;
 
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.context.CacheContext;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * Created by IntelliJ IDEA.

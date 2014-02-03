@@ -16,7 +16,7 @@ import com.maxifier.mxcache.util.MxConstructorGenerator;
 import com.maxifier.mxcache.util.MxField;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
 import gnu.trove.THashMap;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

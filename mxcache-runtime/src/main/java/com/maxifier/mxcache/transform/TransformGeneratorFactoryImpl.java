@@ -1,8 +1,10 @@
 package com.maxifier.mxcache.transform;
 
 import com.maxifier.mxcache.CacheFactory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -30,7 +32,7 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
     }
 
     @Override
-    @NotNull
+    @Nonnull
     public TransformGenerator forMethod(Method method) throws InvalidTransformAnnotations {
         try {
             Class[] params = method.getParameterTypes();
@@ -148,7 +150,7 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
     }
 
     @Override
-    @NotNull
+    @Nonnull
     public TransformGenerator forArgument(Annotation[] annotations, Class argType) throws InvalidTransformAnnotations {
         List<TransformGeneratorRef> refs = new ArrayList<TransformGeneratorRef>();
         for (Annotation annotation : annotations) {
@@ -206,7 +208,7 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
         return null;
     }
 
-    @NotNull
+    @Nonnull
     TransformGenerator createMultiParam(Annotation[][] paramAnnotations, Class[] params) throws InvalidTransformAnnotations {
         boolean onlyNoTransforms = true;
         TransformGenerator[] transformGenerators = new TransformGenerator[params.length];
@@ -235,7 +237,7 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
     }
 
     @Override
-    public TransformGenerator getTransformator(Class param, @NotNull Transform key) {
+    public TransformGenerator getTransformator(Class param, @Nonnull Transform key) {
         Class owner = key.owner();
         String name = key.method();
         return getTransformator(param, owner == Transform.KEY_ITSELF.class ? null : owner, name.equals(Transform.ONLY_PUBLIC_METHOD) ? null : name);

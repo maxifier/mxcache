@@ -3,13 +3,14 @@ package com.maxifier.mxcache.impl.caches.storage;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.caches.abs.*;
 import com.maxifier.mxcache.caches.*;
-import com.maxifier.mxcache.impl.resource.*;
 import com.maxifier.mxcache.storage.*;
 
 import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.interfaces.StatisticsHolder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 
 /**
  * Project: Maxifier
@@ -28,12 +29,12 @@ public class StorageBooleanShortCacheImpl extends AbstractBooleanShortCache impl
 
     private BooleanShortStorage storage;
 
-    public StorageBooleanShortCacheImpl(Object owner, BooleanShortCalculatable calculatable, @NotNull MutableStatistics statistics) {
+    public StorageBooleanShortCacheImpl(Object owner, BooleanShortCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@NotNull BooleanShortStorage storage) {
+    public void setStorage(@Nonnull BooleanShortStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }

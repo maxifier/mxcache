@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.transform;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.lang.annotation.Annotation;
 
@@ -13,10 +13,10 @@ import java.lang.annotation.Annotation;
 public interface TransformGeneratorFactory {
     TransformGenerator forMethod(java.lang.reflect.Method method) throws InvalidTransformAnnotations;
 
-    @NotNull
+    @Nonnull
     TransformGenerator forArgument(Annotation[] annotations, Class paramType) throws InvalidTransformAnnotations;
 
-    TransformGenerator getTransformator(Class param, @NotNull Transform key);
+    TransformGenerator getTransformator(Class param, @Nonnull Transform key);
 
     TransformGenerator getTransformator(Class<?> paramType, Class owner, String name);
 }

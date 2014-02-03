@@ -3,8 +3,8 @@ package com.maxifier.mxcache.ideaplugin;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,13 +39,12 @@ public class MxCacheConfiguration implements ProjectComponent, Configurable {
     public void disposeComponent() {
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getComponentName() {
         return "MxCacheSettings";
     }
 
-    @Nls
     @Override
     public String getDisplayName() {
         return "MxCache";

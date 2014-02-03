@@ -19,7 +19,8 @@ import com.maxifier.mxcache.impl.wrapping.Wrapping;
 import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.provider.*;
 import com.maxifier.mxcache.storage.Storage;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ExecutionException;
@@ -45,7 +46,7 @@ public class GuavaCacheStrategy implements CachingStrategy {
     private static final StrategyProperty<Long> REFRESH_AFTER_WRITE = StrategyProperty.create("guava.refreshAfterWrite", long.class, UseGuava.class, "refreshAfterWrite");
     private static final StrategyProperty<Class> WEIGHER_CLASS = StrategyProperty.create("guava.weigher", Class.class, UseGuava.class, "weigher");
 
-    @NotNull
+    @Nonnull
     @Override
     public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
         return new GuavaCacheManager<T>(context, descriptor);
@@ -56,7 +57,7 @@ public class GuavaCacheStrategy implements CachingStrategy {
             super(context, descriptor);
         }
 
-        @NotNull
+        @Nonnull
         @Override
         protected com.maxifier.mxcache.caches.Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws InstantiationException, IllegalAccessException, InvocationTargetException {
             return createCache0(owner, dependencyNode);

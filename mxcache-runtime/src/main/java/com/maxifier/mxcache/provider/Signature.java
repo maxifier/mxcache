@@ -8,8 +8,10 @@ import com.maxifier.mxcache.impl.resource.nodes.MultipleDependencyNode;
 import com.maxifier.mxcache.impl.resource.nodes.SingletonDependencyNode;
 import com.maxifier.mxcache.storage.Storage;
 import gnu.trove.THashMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -88,8 +90,8 @@ public class Signature {
         return erased;
     }
 
-    @NotNull
-    public static synchronized Signature of(@Nullable Class container, @NotNull Class value) {
+    @Nonnull
+    public static synchronized Signature of(@Nullable Class container, @Nonnull Class value) {
         Map<Class, Signature> byValue = BASIC.get(container);
         if (byValue == null) {
             return new Signature(container, value);
@@ -102,8 +104,8 @@ public class Signature {
         return signature;
     }
 
-    @NotNull
-    public static synchronized Signature ofStorage(@NotNull Class<? extends Storage> c) {
+    @Nonnull
+    public static synchronized Signature ofStorage(@Nonnull Class<? extends Storage> c) {
         Signature s = CACHE.get(c);
         if (s == null) {
             s = extractSignature(c);
@@ -115,7 +117,7 @@ public class Signature {
         return s;
     }
 
-    @NotNull
+    @Nonnull
     private static synchronized Signature extractSignature(Class c) {
         Signature res = null;
         Class p = c;

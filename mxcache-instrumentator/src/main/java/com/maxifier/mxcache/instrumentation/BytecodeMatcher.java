@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.instrumentation;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,7 +27,7 @@ public class BytecodeMatcher {
         return text;
     }
 
-    private static boolean contains(@NotNull byte[] haystack, @NotNull byte[] needle, @NotNull int[] pf) {
+    private static boolean contains(@Nonnull byte[] haystack, @Nonnull byte[] needle, @Nonnull int[] pf) {
         //Сопоставление образца
         int n = haystack.length;
         int m1 = needle.length;
@@ -49,7 +49,7 @@ public class BytecodeMatcher {
     }
 
     @SuppressWarnings ({ "LoopConditionNotUpdatedInsideLoop" })
-    private static int[] getPrefix(@NotNull byte[] needle) {
+    private static int[] getPrefix(@Nonnull byte[] needle) {
         if (needle.length == 0) {
             throw new IllegalArgumentException("needle has zero length");
         }

@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.activity;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.io.Serializable;
 
@@ -16,7 +16,7 @@ public interface Activity extends Serializable {
      *
      * @return имя ресурса.
      */
-    @NotNull
+    @Nonnull
     String getName();
 
     /**
@@ -24,7 +24,7 @@ public interface Activity extends Serializable {
      * Если активность уже была запущенна в таком же или более широком scope, не делает ничего.
      * @param scope область применения активности
      */
-    void start(@NotNull ActivityScope scope);
+    void start(@Nonnull ActivityScope scope);
 
     /**
      * Завершает активность в заданом scope.
@@ -33,7 +33,7 @@ public interface Activity extends Serializable {
      * @param scope область применения активности
      * @throws IllegalStateException если активность не была запущена в заданном scope.
      */
-    void finish(@NotNull ActivityScope scope);
+    void finish(@Nonnull ActivityScope scope);
 
     /**
      * Проверяет, запущена ли активность.

@@ -72,7 +72,7 @@ public abstract class AbstractShortCache extends AbstractCache implements ShortC
         }
     }
 
-    private short create() {
+    protected short create() {
         long start = System.nanoTime();
         short t = calculatable.calculate(owner);
         long end = System.nanoTime();

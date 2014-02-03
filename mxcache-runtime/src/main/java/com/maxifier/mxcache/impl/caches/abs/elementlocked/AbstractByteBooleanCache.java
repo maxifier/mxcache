@@ -74,7 +74,7 @@ public abstract class AbstractByteBooleanCache extends AbstractElementLockedCach
         }
     }
 
-    private boolean create(byte key) {
+    protected boolean create(byte key) {
         long start = System.nanoTime();
         boolean t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

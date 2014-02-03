@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.size;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -19,7 +19,7 @@ import java.security.PrivilegedAction;
 public class ComplexSizeCalculator<T> implements SizeCalculator<T> {
     private static final SizeCalculator<Object> OBJECT_CALCULATOR = new SizeCalculator<Object>() {
         @Override
-        public int getApproximateSize(@NotNull Object o, @NotNull SizeIterator iterator) {
+        public int getApproximateSize(@Nonnull Object o, @Nonnull SizeIterator iterator) {
             return ObjectSizeHelper.OBJECT_HEADER_SIZE;
         }
     };
@@ -73,7 +73,7 @@ public class ComplexSizeCalculator<T> implements SizeCalculator<T> {
         }
 
         @Override
-        public int getApproximateSize(@NotNull Object o, @NotNull SizeIterator iterator) {
+        public int getApproximateSize(@Nonnull Object o, @Nonnull SizeIterator iterator) {
             for (Field f : fields) {
                 try {
                     Object fv = f.get(o);
@@ -138,7 +138,7 @@ public class ComplexSizeCalculator<T> implements SizeCalculator<T> {
     }
 
     @Override
-    public int getApproximateSize(@NotNull T o, @NotNull SizeIterator iterator) {
+    public int getApproximateSize(@Nonnull T o, @Nonnull SizeIterator iterator) {
         SizeCalculator<Object> calculator = findForClass(o.getClass());
         if (calculator == null) {
             if (root == null) {

@@ -29,8 +29,10 @@ import com.maxifier.mxcache.util.MxConstructorGenerator;
 import com.maxifier.mxcache.util.MxField;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
 import gnu.trove.THashMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -118,7 +120,7 @@ public final class Wrapping {
         return factory;
     }
 
-    private static synchronized WrapperFactory getConvertingFactory(Signature storageSignature, Signature cacheSignature, @NotNull TransformGenerator userKeyTransformer, @NotNull TransformGenerator userValueTransformer, boolean perElementLocking) {
+    private static synchronized WrapperFactory getConvertingFactory(Signature storageSignature, Signature cacheSignature, @Nonnull TransformGenerator userKeyTransformer, @Nonnull TransformGenerator userValueTransformer, boolean perElementLocking) {
         CacheImplementationSignature signature = new CacheImplementationSignature(
                 cacheSignature.getCacheInterface(),
                 cacheSignature.getCalculableInterface(),
@@ -158,10 +160,10 @@ public final class Wrapping {
         return onlyConstructor == null ? new MultipleDependencyNode() : new NodeWrapperFactoryImpl(onlyConstructor).wrap();
     }
 
-    private static WrapperFactory createConvertingFactory(Signature storageSignature, Signature cacheSignature, CacheImplementationSignature signature, @NotNull TransformGenerator userKeyTransformer, @NotNull TransformGenerator userValueTransformer, boolean perElementLocking) {
-        @NotNull
+    private static WrapperFactory createConvertingFactory(Signature storageSignature, Signature cacheSignature, CacheImplementationSignature signature, @Nonnull TransformGenerator userKeyTransformer, @Nonnull TransformGenerator userValueTransformer, boolean perElementLocking) {
+        @Nonnull
         TransformGenerator keyTransformer = boxTransformer(userKeyTransformer, cacheSignature.getContainer(), storageSignature.getContainer());
-        @NotNull
+        @Nonnull
         TransformGenerator valueTransformer = boxTransformer(userValueTransformer, cacheSignature.getValue(), storageSignature.getValue());
 
         byte[] bytecode = generateWrapperBytecode(storageSignature, cacheSignature, keyTransformer, valueTransformer, signature, perElementLocking);
@@ -171,12 +173,12 @@ public final class Wrapping {
         return new WrapperFactoryImpl(getOnlyConstructor(wrapperClass));
     }
 
-    @NotNull
+    @Nonnull
     private static TransformGenerator boxTransformer(TransformGenerator transformer, Class from, Class to) {
         return ChainedTransformGenerator.chain(transformer, getBoxingTransformGenerator(transformer.getTransformedType(from), to));
     }
 
-    private static byte[] generateWrapperBytecode(Signature storageSignature, Signature cacheSignature, @NotNull TransformGenerator keyTransformer, @NotNull TransformGenerator valueTransformer, CacheImplementationSignature signature, boolean perElementLocking) {
+    private static byte[] generateWrapperBytecode(Signature storageSignature, Signature cacheSignature, @Nonnull TransformGenerator keyTransformer, @Nonnull TransformGenerator valueTransformer, CacheImplementationSignature signature, boolean perElementLocking) {
         String superName = cacheSignature.getImplementationClassName(getAbstractCachePackage(perElementLocking) + "/Abstract", "Cache");
         String className = getCacheImplClassName(storageSignature, cacheSignature);
 
@@ -270,7 +272,7 @@ public final class Wrapping {
         getStatistics.endMethod();
     }
 
-    private static void generateSave(@NotNull TransformGenerator keyTransformer, @NotNull TransformGenerator valueTransformer, ClassWriter w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type erasedCacheValueType, Type storageKeyType, Type storageValueType) {
+    private static void generateSave(@Nonnull TransformGenerator keyTransformer, @Nonnull TransformGenerator valueTransformer, ClassWriter w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type erasedCacheValueType, Type storageKeyType, Type storageValueType) {
         Method cacheSaveMethod = new Method(SAVE_METHOD, VOID_TYPE, erasedCacheKeyType == null ? new Type[]{erasedCacheValueType} : new Type[]{erasedCacheKeyType, erasedCacheValueType});
         Method storageSaveMethod = new Method(SAVE_METHOD, VOID_TYPE, storageKeyType == null ? new Type[]{erase(storageValueType)} : new Type[]{erase(storageKeyType), erase(storageValueType)});
         WrapperMethodGenerator save = defineMethod(w, cacheSaveMethod);
@@ -289,7 +291,7 @@ public final class Wrapping {
         save.endMethod();
     }
 
-    private static void generateDelegatingLockingMethod(String name, @NotNull TransformGenerator keyTransformer, ClassWriter w, Type wrapperType, Type storageType, @NotNull Type erasedCacheKeyType, @NotNull Type storageKeyType) {
+    private static void generateDelegatingLockingMethod(String name, @Nonnull TransformGenerator keyTransformer, ClassWriter w, Type wrapperType, Type storageType, @Nonnull Type erasedCacheKeyType, @Nonnull Type storageKeyType) {
         Method cacheLockMethod = new Method(name, VOID_TYPE, new Type[]{erasedCacheKeyType});
         Method storageLockMethod = new Method(name, VOID_TYPE, new Type[]{erase(storageKeyType)});
         WrapperMethodGenerator save = defineMethod(w, cacheLockMethod);
@@ -327,7 +329,7 @@ public final class Wrapping {
         return type == null ? EMPTY_TYPES : new Type[]{erase(type)};
     }
 
-    private static void generateIsCalculated(@NotNull TransformGenerator keyTransformer, ClassWriter w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type storageKeyType, Type storageValueType) {
+    private static void generateIsCalculated(@Nonnull TransformGenerator keyTransformer, ClassWriter w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type storageKeyType, Type storageValueType) {
         Method cacheIsCalculatedMethod = new Method(IS_CALCULATED_METHOD, BOOLEAN_TYPE, getArgumentTypes(erasedCacheKeyType));
 
         WrapperMethodGenerator isCalculated = defineMethod(w, cacheIsCalculatedMethod);
@@ -377,7 +379,7 @@ public final class Wrapping {
         keyTransformer.generateForward(wrapperType, 0, methodGenerator);
     }
 
-    private static void generateLoad(@NotNull TransformGenerator keyTransformer, @NotNull TransformGenerator valueTransformer, ClassWriter w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type erasedCacheValueType, Type storageKeyType, Type storageValueType) {
+    private static void generateLoad(@Nonnull TransformGenerator keyTransformer, @Nonnull TransformGenerator valueTransformer, ClassWriter w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type erasedCacheValueType, Type storageKeyType, Type storageValueType) {
         Method cacheLoadMethod = new Method(LOAD_METHOD, erasedCacheValueType, getArgumentTypes(erasedCacheKeyType));
         Method storageLoadMethod = new Method(LOAD_METHOD, erase(storageValueType), getArgumentTypes(storageKeyType));
 
@@ -446,7 +448,7 @@ public final class Wrapping {
         return cacheSignature.getImplementationClassName("com/maxifier/mxcache/impl/caches/wrapping/Storage", extension);
     }
 
-    @NotNull
+    @Nonnull
     private static TransformGenerator getBoxingTransformGenerator(Class from, Class to) {
         if (from == to) {
             return NO_TRANSFORM;

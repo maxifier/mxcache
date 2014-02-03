@@ -72,7 +72,7 @@ public abstract class AbstractShortCharacterCache extends AbstractCache implemen
         }
     }
 
-    private char create(short o) {
+    protected char create(short o) {
         long start = System.nanoTime();
         char t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

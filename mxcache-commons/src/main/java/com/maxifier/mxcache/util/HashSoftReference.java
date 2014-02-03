@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.util;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
@@ -14,7 +14,7 @@ import java.lang.ref.SoftReference;
 public class HashSoftReference<T> extends SoftReference<T> {
     private int hashCode;
 
-    public HashSoftReference(@NotNull T referent) {
+    public HashSoftReference(@Nonnull T referent) {
         super(referent);
         hashCode = hashCode(referent);
     }

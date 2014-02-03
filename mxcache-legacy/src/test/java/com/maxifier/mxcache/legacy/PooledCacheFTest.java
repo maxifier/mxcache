@@ -13,7 +13,9 @@ import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.proxy.ConstResolvable;
 import com.maxifier.mxcache.proxy.MxProxy;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+
 import org.testng.annotations.Test;
 
 import java.io.*;
@@ -445,7 +447,7 @@ public class PooledCacheFTest {
     }
 
     private static class TestProxy extends MxProxy<String, ConstResolvable<String>> implements IValue {
-        @NotNull
+        @Nonnull
         @Override
         public ConstResolvable<String> getValue() {
             return new ConstResolvable<String>("result");

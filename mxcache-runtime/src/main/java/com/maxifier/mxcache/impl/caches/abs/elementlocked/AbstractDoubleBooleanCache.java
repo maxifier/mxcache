@@ -74,7 +74,7 @@ public abstract class AbstractDoubleBooleanCache extends AbstractElementLockedCa
         }
     }
 
-    private boolean create(double key) {
+    protected boolean create(double key) {
         long start = System.nanoTime();
         boolean t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

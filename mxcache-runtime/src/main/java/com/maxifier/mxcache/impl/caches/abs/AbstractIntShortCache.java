@@ -72,7 +72,7 @@ public abstract class AbstractIntShortCache extends AbstractCache implements Int
         }
     }
 
-    private short create(int o) {
+    protected short create(int o) {
         long start = System.nanoTime();
         short t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

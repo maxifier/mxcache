@@ -5,7 +5,8 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.maxifier.mxcache.AbstractCacheContext;
 import com.maxifier.mxcache.InstanceProvider;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,9 +29,9 @@ public class GuiceInstanceProvider extends AbstractCacheContext implements Insta
         this.injector = injector;
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public <T> T forClass(@NotNull Class<T> cls) {
+    public <T> T forClass(@Nonnull Class<T> cls) {
         return injector.getInstance(cls);
     }
 

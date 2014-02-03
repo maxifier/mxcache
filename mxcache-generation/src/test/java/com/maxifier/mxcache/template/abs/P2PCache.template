@@ -72,7 +72,7 @@ public abstract class Abstract#EG##FG#Cache extends AbstractCache implements #EG
         }
     }
 
-    private #fg# create(#IF_E##eg# o#ENDIF#) {
+    protected #fg# create(#IF_E##eg# o#ENDIF#) {
         long start = System.nanoTime();
         #fg# t = calculatable.calculate(owner#IF_E#, o#ENDIF#);
         long end = System.nanoTime();

@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.impl.resource;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  */
 class MxBoundResource extends MxResourceImpl {
 
-    public MxBoundResource(@NotNull Object owner, @NotNull String name) {
+    public MxBoundResource(@Nonnull Object owner, @Nonnull String name) {
         super(owner, name);
     }
 

@@ -2,7 +2,9 @@ package com.maxifier.mxcache.legacy.converters;
 
 import com.maxifier.mxcache.legacy.MxResource;
 import com.maxifier.mxcache.legacy.MxResourceManager;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +104,7 @@ public final class MxConvertHelperBuilder {
         }
     }
 
-    public synchronized <F, T> void addConverter(MxConvertState<F> from, MxConvertState<T> to, @NotNull MxConverter<? extends F, ? extends T> converter, float avgLoadTime) {
+    public synchronized <F, T> void addConverter(MxConvertState<F> from, MxConvertState<T> to, @Nonnull MxConverter<? extends F, ? extends T> converter, float avgLoadTime) {
         int fid = from.getId();
         int tid = to.getId();
         if (fid >= states.length || states[fid] == null) {

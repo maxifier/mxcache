@@ -72,7 +72,7 @@ public abstract class AbstractFloatByteCache extends AbstractCache implements Fl
         }
     }
 
-    private byte create(float o) {
+    protected byte create(float o) {
         long start = System.nanoTime();
         byte t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

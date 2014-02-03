@@ -72,7 +72,7 @@ public abstract class AbstractDoubleBooleanCache extends AbstractCache implement
         }
     }
 
-    private boolean create(double o) {
+    protected boolean create(double o) {
         long start = System.nanoTime();
         boolean t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

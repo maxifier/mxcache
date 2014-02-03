@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.proxy;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,6 +9,6 @@ import org.jetbrains.annotations.NotNull;
  * Time: 10:12:17
  */
 public abstract class MxProxy<T, C extends Resolvable<T>> {
-    @NotNull
+    @Nonnull
     public abstract C getValue();
 }

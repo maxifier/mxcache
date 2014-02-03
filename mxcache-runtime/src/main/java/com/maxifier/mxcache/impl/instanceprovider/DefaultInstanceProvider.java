@@ -3,7 +3,8 @@ package com.maxifier.mxcache.impl.instanceprovider;
 import com.maxifier.mxcache.InstanceProvider;
 import com.maxifier.mxcache.NoSuchInstanceException;
 import gnu.trove.THashMap;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.Collections;
 import java.util.Map;
@@ -33,10 +34,10 @@ public final class DefaultInstanceProvider implements InstanceProvider {
         registry.remove(cls);
     }
 
-    @NotNull
+    @Nonnull
     @SuppressWarnings({ "unchecked" })
     @Override
-    public <T> T forClass(@NotNull Class<T> cls) {
+    public <T> T forClass(@Nonnull Class<T> cls) {
         Provider provider = registry.get(cls);
         if (provider == null) {
             return createInstance(cls);
@@ -44,7 +45,7 @@ public final class DefaultInstanceProvider implements InstanceProvider {
         return (T) provider.get();
     }
 
-    private static <T> T createInstance(@NotNull Class<T> cls) {
+    private static <T> T createInstance(@Nonnull Class<T> cls) {
         try {
             return cls.newInstance();
         } catch (InstantiationException e) {

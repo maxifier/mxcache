@@ -5,7 +5,8 @@ import com.magenta.dataserializator.MxObjectInput;
 import com.magenta.dataserializator.MxObjectOutput;
 import com.magenta.dataserializator.MxObjectSerializator;
 import gnu.trove.THashMap;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.io.IOException;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class MxLayeredCacheSerializator10Impl implements MxLayeredCacheSerializa
         return MX_CACHE_CODE;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Class<?> getObjectClass() {
         return MxLayeredCache.class;

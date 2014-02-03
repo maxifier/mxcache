@@ -76,7 +76,7 @@ public abstract class AbstractByteObjectCache<F> extends AbstractCache implement
     }
 
     @SuppressWarnings({ "unchecked" })
-    private F create(byte o) {
+    protected F create(byte o) {
         long start = System.nanoTime();
         F t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

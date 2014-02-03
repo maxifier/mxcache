@@ -76,7 +76,7 @@ public abstract class AbstractBooleanObjectCache<F> extends AbstractCache implem
     }
 
     @SuppressWarnings({ "unchecked" })
-    private F create(boolean o) {
+    protected F create(boolean o) {
         long start = System.nanoTime();
         F t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

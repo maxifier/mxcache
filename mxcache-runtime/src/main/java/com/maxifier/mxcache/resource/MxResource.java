@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.resource;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ public interface MxResource extends Serializable {
      * Имя ресурса неизменно.
      * @return имя ресурса.
      */
-    @NotNull
+    @Nonnull
     String getName();
 
     /**

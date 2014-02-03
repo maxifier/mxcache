@@ -10,7 +10,8 @@ import java.util.Set;
 
 import com.maxifier.mxcache.config.ResourceConfig;
 import gnu.trove.THashSet;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,7 +38,7 @@ public final class MxResourceFactory {
      * @param id имя ресурса
      * @return ресурс с заданным именем
      */
-    public static synchronized MxResource getResource(@NotNull String id) {
+    public static synchronized MxResource getResource(@Nonnull String id) {
         MxResource resource = RESOURCES.get(id);
         if (resource == null) {
             resource = new MxStaticResource(id);
@@ -46,7 +47,7 @@ public final class MxResourceFactory {
         return resource;
     }
 
-    public static MxResource createResource(@NotNull Object owner, @NotNull String id) {
+    public static MxResource createResource(@Nonnull Object owner, @Nonnull String id) {
         return new MxBoundResource(owner, id);
     }
 

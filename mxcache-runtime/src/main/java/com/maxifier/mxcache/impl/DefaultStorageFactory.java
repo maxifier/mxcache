@@ -8,7 +8,8 @@ import com.maxifier.mxcache.transform.Ignore;
 import com.maxifier.mxcache.transform.SoftKey;
 import com.maxifier.mxcache.transform.WeakKey;
 import gnu.trove.TIntArrayList;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -74,7 +75,7 @@ public class DefaultStorageFactory<T> implements StorageFactory<T> {
         throw new IllegalStateException("No corresponding constructor at " + implementation);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Storage createStorage(T owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
         if (tupleIndices == null) {

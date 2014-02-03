@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.size;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,5 +9,5 @@ import org.jetbrains.annotations.NotNull;
  * Time: 16:23:33
  */
 public interface SizeCalculator<T> {
-    int getApproximateSize(@NotNull T o, @NotNull SizeIterator iterator);
+    int getApproximateSize(@Nonnull T o, @Nonnull SizeIterator iterator);
 }

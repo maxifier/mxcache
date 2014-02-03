@@ -5,8 +5,8 @@ import com.intellij.psi.*;
 import com.intellij.codeHighlighting.HighlightDisplayLevel;
 import com.maxifier.mxcache.ideaplugin.MxCacheInspection;
 import com.maxifier.mxcache.ideaplugin.ResourceNameChecker;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.List;
 
@@ -21,14 +21,13 @@ public class ResourceNamingInspection extends MxCacheInspection {
 
     protected static final int MIN_NAME_LENGTH = 4;
 
-    @Nls
-    @NotNull
+    @Nonnull
     @Override
     public String getDisplayName() {
         return "MxCache resource naming problems";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getShortName() {
         return INSPECTION_ID;
@@ -92,7 +91,7 @@ public class ResourceNamingInspection extends MxCacheInspection {
         }
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.WARNING;

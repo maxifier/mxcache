@@ -72,7 +72,7 @@ public abstract class AbstractLongDoubleCache extends AbstractCache implements L
         }
     }
 
-    private double create(long o) {
+    protected double create(long o) {
         long start = System.nanoTime();
         double t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

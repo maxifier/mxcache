@@ -72,7 +72,7 @@ public abstract class AbstractDoubleCharacterCache extends AbstractCache impleme
         }
     }
 
-    private char create(double o) {
+    protected char create(double o) {
         long start = System.nanoTime();
         char t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

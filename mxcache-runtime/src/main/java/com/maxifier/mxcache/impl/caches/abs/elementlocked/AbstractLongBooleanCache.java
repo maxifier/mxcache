@@ -74,7 +74,7 @@ public abstract class AbstractLongBooleanCache extends AbstractElementLockedCach
         }
     }
 
-    private boolean create(long key) {
+    protected boolean create(long key) {
         long start = System.nanoTime();
         boolean t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

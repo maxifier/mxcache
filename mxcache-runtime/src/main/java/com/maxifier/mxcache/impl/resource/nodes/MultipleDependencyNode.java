@@ -7,7 +7,7 @@ import com.maxifier.mxcache.util.TIdentityHashSet;
 import java.util.*;
 import java.lang.ref.WeakReference;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,7 +19,7 @@ public class MultipleDependencyNode extends AbstractDependencyNode {
     protected final List<WeakReference<CleaningNode>> instances = new ArrayList<WeakReference<CleaningNode>>();
 
     @Override
-    public synchronized void addNode(@NotNull CleaningNode node) {
+    public synchronized void addNode(@Nonnull CleaningNode node) {
         instances.add(new WeakReference<CleaningNode>(node));
     }
 

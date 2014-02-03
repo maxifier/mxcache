@@ -4,7 +4,8 @@ import com.maxifier.mxcache.impl.caches.def.ObjectObjectTroveStorage;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.StorageFactory;
 import com.maxifier.mxcache.storage.Storage;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -25,7 +26,7 @@ public class BatchFactory implements StorageFactory {
     }
 
     @SuppressWarnings("unchecked")
-    @NotNull
+    @Nonnull
     @Override
     public Storage createStorage(Object owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
         ObjectObjectTroveStorage storage = new ObjectObjectTroveStorage();

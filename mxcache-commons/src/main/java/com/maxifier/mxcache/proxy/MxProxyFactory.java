@@ -6,7 +6,9 @@ import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.util.ClassGenerator;
 import com.maxifier.mxcache.util.MxConstructorGenerator;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +33,7 @@ public final class MxProxyFactory<T, C extends Resolvable<T>> extends MxAbstract
 
     private volatile Constructor<T> proxyConstructor;
 
-    MxProxyFactory(@NotNull Class<T> sourceInterface, @NotNull Class<C> containerClass) {
+    MxProxyFactory(@Nonnull Class<T> sourceInterface, @Nonnull Class<C> containerClass) {
         if (!sourceInterface.isInterface()) {
             throw new IllegalArgumentException("Only interface can be used as proxy source but " + sourceInterface + " was passed");
         }

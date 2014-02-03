@@ -18,7 +18,8 @@ import com.maxifier.mxcache.storage.CalculableInterceptor;
 import com.maxifier.mxcache.storage.Storage;
 import com.maxifier.mxcache.storage.elementlocked.ElementLockedStorage;
 import com.maxifier.mxcache.util.TIdentityHashSet;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.lang.ref.Reference;
 import java.lang.reflect.InvocationTargetException;
@@ -55,7 +56,7 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
                 !descriptor.isResourceView();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     protected Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws InstantiationException, IllegalAccessException, InvocationTargetException {
         if (inlineCache) {
@@ -202,7 +203,7 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
         }
 
         @Override
-        public void addNode(@NotNull CleaningNode cache) {
+        public void addNode(@Nonnull CleaningNode cache) {
             // do nothing: cache itself is DependencyNode
         }
     }

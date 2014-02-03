@@ -2,7 +2,8 @@ package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.util.TIdentityHashSet;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.lang.ref.Reference;
 
@@ -43,5 +44,5 @@ public interface DependencyNode {
      * Добавляет к узлу кэщ, который нужно чистить.
      * @param cache кэш
      */
-    void addNode(@NotNull CleaningNode cache);
+    void addNode(@Nonnull CleaningNode cache);
 }

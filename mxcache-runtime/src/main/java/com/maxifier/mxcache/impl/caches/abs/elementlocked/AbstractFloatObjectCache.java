@@ -77,7 +77,7 @@ public abstract class AbstractFloatObjectCache<F> extends AbstractElementLockedC
     }
 
     @SuppressWarnings({ "unchecked" })
-    private F create(float key) {
+    protected F create(float key) {
         long start = System.nanoTime();
         F t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

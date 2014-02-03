@@ -2,8 +2,10 @@ package com.maxifier.mxcache.legacy;
 
 import com.maxifier.mxcache.proxy.MxProxy;
 import com.maxifier.mxcache.util.MultiLock;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 
 import static com.maxifier.mxcache.storage.Storage.UNDEFINED;
 
@@ -53,7 +55,7 @@ class PooledElement<T> extends MultiLock.Sublock {
 
     //------------------------------------------------------------------------------------------------------------------
 
-    public PooledElement(@NotNull ElementOwner<T> owner, @NotNull Confidence confidence, @NotNull PooledConverter<T> converter) {
+    public PooledElement(@Nonnull ElementOwner<T> owner, @Nonnull Confidence confidence, @Nonnull PooledConverter<T> converter) {
         super(owner.getLock());
         this.confidence = confidence;
         this.owner = owner;
@@ -202,22 +204,22 @@ class PooledElement<T> extends MultiLock.Sublock {
 
     //------------------------------------------------------------------------------------------------------------------
 
-    @NotNull
+    @Nonnull
     private byte[] serialize(T value) {
         return converter.serialize(value);
     }
 
-    @NotNull
+    @Nonnull
     private T deserialize(byte[] bytes) {
         return converter.deserialize(bytes);
     }
 
-    @NotNull
+    @Nonnull
     private MxResource save(byte[] bytes, T value) {
         return converter.save(bytes, value);
     }
 
-    @NotNull
+    @Nonnull
     private T load(MxResource resource) {
         return converter.load(resource);
     }

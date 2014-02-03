@@ -72,7 +72,7 @@ public abstract class AbstractLongFloatCache extends AbstractCache implements Lo
         }
     }
 
-    private float create(long o) {
+    protected float create(long o) {
         long start = System.nanoTime();
         float t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

@@ -4,13 +4,14 @@ import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.caches.storage.StorageHolder;
 import com.maxifier.mxcache.impl.caches.abs.elementlocked.*;
 import com.maxifier.mxcache.caches.*;
-import com.maxifier.mxcache.impl.resource.*;
 import com.maxifier.mxcache.storage.elementlocked.*;
 
 import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.interfaces.StatisticsHolder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 
 import java.util.concurrent.locks.Lock;
 
@@ -29,12 +30,12 @@ import java.util.concurrent.locks.Lock;
 public class StorageObjectBooleanCacheImpl<E> extends AbstractObjectBooleanCache<E> implements StorageHolder<ObjectBooleanElementLockedStorage<E>> {
     private ObjectBooleanElementLockedStorage<E> storage;
 
-    public StorageObjectBooleanCacheImpl(Object owner, ObjectBooleanCalculatable<E> calculatable, @NotNull MutableStatistics statistics) {
+    public StorageObjectBooleanCacheImpl(Object owner, ObjectBooleanCalculatable<E> calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@NotNull ObjectBooleanElementLockedStorage<E> storage) {
+    public void setStorage(@Nonnull ObjectBooleanElementLockedStorage<E> storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }

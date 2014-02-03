@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.tuple;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -141,7 +141,7 @@ public abstract class Tuple implements Serializable, Iterable<Object> {
     /**
      * @return array representation of this tuple.
      */
-    @NotNull
+    @Nonnull
     public Object[] toArray() {
         int size = size();
         Object[] array = new Object[size];

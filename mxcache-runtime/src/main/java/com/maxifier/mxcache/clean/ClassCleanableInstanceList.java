@@ -1,7 +1,7 @@
 package com.maxifier.mxcache.clean;
 
 import com.maxifier.mxcache.caches.CleaningNode;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;

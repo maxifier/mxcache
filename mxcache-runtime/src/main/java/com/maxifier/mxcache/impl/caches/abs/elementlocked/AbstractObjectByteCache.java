@@ -74,7 +74,7 @@ public abstract class AbstractObjectByteCache<E> extends AbstractElementLockedCa
         }
     }
 
-    private byte create(E key) {
+    protected byte create(E key) {
         long start = System.nanoTime();
         byte t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

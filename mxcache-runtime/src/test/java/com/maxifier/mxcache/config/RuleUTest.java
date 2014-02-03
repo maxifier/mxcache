@@ -7,7 +7,9 @@ import com.maxifier.mxcache.Strategy;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.provider.CachingStrategy;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -22,7 +24,7 @@ import java.util.Arrays;
 @Test
 public class RuleUTest {
     public static class SomeStrategy implements CachingStrategy {
-        @NotNull
+        @Nonnull
         @Override
         public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
             throw new UnsupportedOperationException();
@@ -30,7 +32,7 @@ public class RuleUTest {
     }
 
     public static class OtherStrategy implements CachingStrategy {
-        @NotNull
+        @Nonnull
         @Override
         public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
             throw new UnsupportedOperationException();
@@ -38,7 +40,7 @@ public class RuleUTest {
     }
 
     public static class ImportantStrategy implements CachingStrategy {
-        @NotNull
+        @Nonnull
         @Override
         public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
             throw new UnsupportedOperationException();

@@ -9,7 +9,9 @@ import com.maxifier.mxcache.caches.ByteCache;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.storage.ByteStorage;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +26,7 @@ public class ViewableMultipleByteDependencyNode extends MultipleDependencyNode i
     private static final Logger logger = LoggerFactory.getLogger(ViewableMultipleByteDependencyNode.class);
 
     @Override
-    public synchronized void addNode(@NotNull CleaningNode cache) {
+    public synchronized void addNode(@Nonnull CleaningNode cache) {
         super.addNode(cache);
         if (!(cache instanceof ByteStorage)) {
             String owner = "";

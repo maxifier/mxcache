@@ -4,8 +4,10 @@ import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.Calculable;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.impl.CacheId;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 
 import java.util.List;
 
@@ -45,7 +47,7 @@ public interface CacheProvider {
      * @param context context
      * @return экземпляр кэша
      */
-    Cache createCache(@NotNull Class cacheOwner, int cacheId, @Nullable Object instance, CacheContext context);
+    Cache createCache(@Nonnull Class cacheOwner, int cacheId, @Nullable Object instance, CacheContext context);
 
     CacheDescriptor getDescriptor(CacheId id);
 

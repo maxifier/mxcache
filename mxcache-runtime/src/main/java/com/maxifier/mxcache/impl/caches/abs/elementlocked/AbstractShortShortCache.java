@@ -74,7 +74,7 @@ public abstract class AbstractShortShortCache extends AbstractElementLockedCache
         }
     }
 
-    private short create(short key) {
+    protected short create(short key) {
         long start = System.nanoTime();
         short t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

@@ -4,8 +4,8 @@ import com.intellij.codeInspection.*;
 import com.intellij.psi.*;
 import com.intellij.codeHighlighting.HighlightDisplayLevel;
 import com.maxifier.mxcache.ideaplugin.MxCacheInspection;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.List;
 
@@ -18,14 +18,13 @@ import java.util.List;
 public class ResourceCompatibilityInspection extends MxCacheInspection {
     private static final String INSPECTION_ID = "MxCacheResourceCompatibility";
 
-    @Nls
-    @NotNull
+    @Nonnull
     @Override
     public String getDisplayName() {
         return "MxCache resource compatibility problems";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getShortName() {
         return INSPECTION_ID;
@@ -58,7 +57,7 @@ public class ResourceCompatibilityInspection extends MxCacheInspection {
         }
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.ERROR;

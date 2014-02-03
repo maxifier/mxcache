@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.util;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.lang.ref.WeakReference;
 import java.lang.ref.ReferenceQueue;
@@ -14,7 +14,7 @@ import java.lang.ref.ReferenceQueue;
 public class HashWeakReference<T> extends WeakReference<T> {
     private int hashCode;
 
-    public HashWeakReference(@NotNull T referent) {
+    public HashWeakReference(@Nonnull T referent) {
         super(referent);
         hashCode = hashCode(referent);
     }

@@ -1,7 +1,8 @@
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.interfaces.Statistics;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
@@ -91,7 +92,7 @@ public class MutableStatisticsImpl implements MutableStatistics {
     }
 
     @Override
-    @NotNull
+    @Nonnull
     public Statistics getStatistics() {
         return this;
     }

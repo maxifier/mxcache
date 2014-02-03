@@ -4,8 +4,8 @@ import com.intellij.codeInspection.*;
 import com.intellij.psi.*;
 import com.intellij.codeHighlighting.HighlightDisplayLevel;
 import com.maxifier.mxcache.ideaplugin.MxCacheInspection;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -22,14 +22,13 @@ public class CacheNamingInspection extends MxCacheInspection {
     private static final Pattern NAME_PATTERN = Pattern.compile("([a-zA-Z_][\\w_]*\\.)*([a-zA-Z_][\\w_]*)");
     private static final int MIN_NAME_LENGTH = 4;
 
-    @Nls
-    @NotNull
+    @Nonnull
     @Override
     public String getDisplayName() {
         return "MxCache naming problems";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getShortName() {
         return INSPECTION_ID;
@@ -117,7 +116,7 @@ public class CacheNamingInspection extends MxCacheInspection {
         return NAME_PATTERN.matcher(name).matches();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public HighlightDisplayLevel getDefaultLevel() {
         return HighlightDisplayLevel.WARNING;

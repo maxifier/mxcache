@@ -9,7 +9,8 @@ import com.maxifier.mxcache.impl.AbstractCacheManager;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.provider.CacheDescriptor;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -23,7 +24,7 @@ public class NotStorageCacheManager<T> extends AbstractCacheManager<T> {
         super(context, descriptor);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     protected Cache createCache(Object owner, DependencyNode dependencyNode, MutableStatistics statistics) throws InstantiationException, IllegalAccessException, InvocationTargetException {
         return new TestCache(owner, dependencyNode, statistics, getDescriptor());

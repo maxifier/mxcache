@@ -72,7 +72,7 @@ public abstract class AbstractLongCache extends AbstractCache implements LongCac
         }
     }
 
-    private long create() {
+    protected long create() {
         long start = System.nanoTime();
         long t = calculatable.calculate(owner);
         long end = System.nanoTime();

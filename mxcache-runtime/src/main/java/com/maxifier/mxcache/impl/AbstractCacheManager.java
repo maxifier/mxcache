@@ -10,8 +10,9 @@ import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.resource.MxResource;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nullable;
+
+import javax.annotation.Nonnull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
@@ -194,7 +195,7 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
         }
     }
 
-    @NotNull
+    @Nonnull
     protected abstract Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws InstantiationException, IllegalAccessException, InvocationTargetException;
 
     @Override

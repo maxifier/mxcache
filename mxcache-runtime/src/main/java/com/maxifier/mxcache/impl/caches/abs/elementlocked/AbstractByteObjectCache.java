@@ -77,7 +77,7 @@ public abstract class AbstractByteObjectCache<F> extends AbstractElementLockedCa
     }
 
     @SuppressWarnings({ "unchecked" })
-    private F create(byte key) {
+    protected F create(byte key) {
         long start = System.nanoTime();
         F t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

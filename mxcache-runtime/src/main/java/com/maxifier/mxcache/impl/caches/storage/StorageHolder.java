@@ -1,7 +1,8 @@
 package com.maxifier.mxcache.impl.caches.storage;
 
 import com.maxifier.mxcache.storage.Storage;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,5 +11,5 @@ import org.jetbrains.annotations.NotNull;
  * Time: 12:17:07
  */
 public interface StorageHolder<T extends Storage> {
-    void setStorage(@NotNull T t);
+    void setStorage(@Nonnull T t);
 }

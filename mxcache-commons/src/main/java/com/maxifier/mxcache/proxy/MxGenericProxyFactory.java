@@ -7,7 +7,8 @@ import com.maxifier.mxcache.util.*;
 import gnu.trove.THashMap;
 import gnu.trove.THashSet;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,7 @@ public final class MxGenericProxyFactory<T, C> extends MxAbstractProxyFactory {
 
     private final Map<Class<? extends T>, Constructor<T>> proxyClasses = new THashMap<Class<? extends T>, Constructor<T>>();
 
-    MxGenericProxyFactory(@NotNull Class<T> sourceInterface, @NotNull Class<C> containerClass) {
+    MxGenericProxyFactory(@Nonnull Class<T> sourceInterface, @Nonnull Class<C> containerClass) {
         if (!sourceInterface.isInterface()) {
             throw new IllegalArgumentException("Only interface can be used as proxy source but " + sourceInterface + " was passed");
         }

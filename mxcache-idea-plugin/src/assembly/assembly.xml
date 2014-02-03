@@ -15,6 +15,7 @@
                 <include>com.maxifier.mxcache:mxcache-runtime</include>
                 <include>com.maxifier.mxcache:mxcache-idea-plugin</include>
                 <include>com.maxifier.mxcache:mxcache-instrumentator</include>
+                <include>com.google.code.findbugs:jsr305</include>
             </includes>
             <useStrictFiltering>true</useStrictFiltering>
         </dependencySet>

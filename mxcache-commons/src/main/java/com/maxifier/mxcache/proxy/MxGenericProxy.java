@@ -1,17 +1,17 @@
 package com.maxifier.mxcache.proxy;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.io.Serializable;
 
 public class MxGenericProxy<T, C extends Resolvable<T>> extends MxProxy<T, C> implements Serializable {
-    @NotNull
+    @Nonnull
     protected final C value;
     private final Class<T> mainInterface;
     private final Class<T> valueClass;
     private final Class<C> containerClass;
 
-    protected MxGenericProxy(@NotNull C value, Class<T> valueClass, Class<C> containerClass, Class<T> mainInterface) {
+    protected MxGenericProxy(@Nonnull C value, Class<T> valueClass, Class<C> containerClass, Class<T> mainInterface) {
         this.value = value;
         this.valueClass = valueClass;
         this.containerClass = containerClass;
@@ -50,7 +50,7 @@ public class MxGenericProxy<T, C extends Resolvable<T>> extends MxProxy<T, C> im
         return new WriteProxy<T, C>(value, valueClass, containerClass, mainInterface);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public C getValue() {
         return value;
@@ -61,13 +61,13 @@ public class MxGenericProxy<T, C extends Resolvable<T>> extends MxProxy<T, C> im
     private static final class WriteProxy<T, C extends Resolvable<T>> implements Serializable {
         private static final long serialVersionUID = 1285165L;
 
-        @NotNull
+        @Nonnull
         private final C container;
         private final Class<T> mainInterface;
         private final Class<T> valueClass;
         private final Class<C> containerClass;
 
-        public WriteProxy(@NotNull C container, Class<T> valueClass, Class<C> containerClass, Class<T> mainInterface) {
+        public WriteProxy(@Nonnull C container, Class<T> valueClass, Class<C> containerClass, Class<T> mainInterface) {
             this.container = container;
             this.valueClass = valueClass;
             this.containerClass = containerClass;

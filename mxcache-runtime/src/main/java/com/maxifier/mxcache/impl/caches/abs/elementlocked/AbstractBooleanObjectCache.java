@@ -77,7 +77,7 @@ public abstract class AbstractBooleanObjectCache<F> extends AbstractElementLocke
     }
 
     @SuppressWarnings({ "unchecked" })
-    private F create(boolean key) {
+    protected F create(boolean key) {
         long start = System.nanoTime();
         F t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

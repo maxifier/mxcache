@@ -4,8 +4,10 @@ import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.StorageFactory;
 import com.maxifier.mxcache.storage.Storage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -47,7 +49,7 @@ public class CustomStorageFactory<T> implements StorageFactory<T> {
         return true;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Storage createStorage(T owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
         return constructor.newInstance(arguments);

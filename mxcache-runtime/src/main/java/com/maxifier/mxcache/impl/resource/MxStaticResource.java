@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.impl.resource;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.io.ObjectStreamException;
 
@@ -11,7 +11,7 @@ import java.io.ObjectStreamException;
  * Time: 21:44
  */
 public class MxStaticResource extends MxResourceImpl {
-    public MxStaticResource(@NotNull String name) {
+    public MxStaticResource(@Nonnull String name) {
         super(null, name);
     }
 

@@ -76,7 +76,7 @@ public abstract class AbstractCharacterObjectCache<F> extends AbstractCache impl
     }
 
     @SuppressWarnings({ "unchecked" })
-    private F create(char o) {
+    protected F create(char o) {
         long start = System.nanoTime();
         F t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

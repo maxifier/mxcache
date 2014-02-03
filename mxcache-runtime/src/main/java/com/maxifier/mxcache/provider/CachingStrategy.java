@@ -1,7 +1,8 @@
 package com.maxifier.mxcache.provider;
 
 import com.maxifier.mxcache.context.CacheContext;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,6 +17,6 @@ public interface CachingStrategy {
      * @param <T> тип класса-владельца кэша
      * @return менеджер кэша для заданного дескриптора 
      */
-    @NotNull
+    @Nonnull
     <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor);
 }

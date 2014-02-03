@@ -8,7 +8,7 @@ import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.util.ClassGenerator;
 import gnu.trove.THashMap;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 import java.util.Map;
 

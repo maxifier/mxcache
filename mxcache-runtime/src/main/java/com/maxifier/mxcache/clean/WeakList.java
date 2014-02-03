@@ -3,7 +3,8 @@ package com.maxifier.mxcache.clean;
 import com.maxifier.mxcache.LightweightLock;
 import com.maxifier.mxcache.transform.SmartReference;
 import com.maxifier.mxcache.transform.SmartReferenceManager;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -59,7 +60,7 @@ class WeakList<T> implements Iterable<T> {
         }
     }
 
-    public void add(@NotNull Object t) {
+    public void add(@Nonnull Object t) {
         lock.lock();
         try {
             version++;

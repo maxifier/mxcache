@@ -74,7 +74,7 @@ public abstract class AbstractCharacterDoubleCache extends AbstractElementLocked
         }
     }
 
-    private double create(char key) {
+    protected double create(char key) {
         long start = System.nanoTime();
         double t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

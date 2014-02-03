@@ -18,8 +18,10 @@ import java.util.Set;
 import com.maxifier.mxcache.transform.TransformGenerator;
 import com.maxifier.mxcache.transform.TransformGeneratorFactoryImpl;
 import com.maxifier.mxcache.util.CodegenHelper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,11 +60,11 @@ public class CacheDescriptor<T> {
         this(ownerClass, id, keyType, valueType, calculable, methodName, methodDesc, cacheName, group, tags, CacheFactory.getConfiguration().getRule(ownerClass, group, tags), proxyFactory);
     }
 
-    public CacheDescriptor(Class<T> ownerClass, int id, Class keyType, Class valueType, Calculable calculable, String methodName, String methodDesc, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory) {
+    public CacheDescriptor(Class<T> ownerClass, int id, Class keyType, Class valueType, Calculable calculable, String methodName, String methodDesc, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory) {
         this(ownerClass, id, keyType, valueType, calculable, CodegenHelper.getMethod(ownerClass, methodName, methodDesc), cacheName, group, tags, rule, proxyFactory);
     }
 
-    private CacheDescriptor(Class<T> ownerClass, int id, Class keyType, Class valueType, Calculable calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory) {
+    private CacheDescriptor(Class<T> ownerClass, int id, Class keyType, Class valueType, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory) {
         this(ownerClass, id, signature(keyType, valueType, method), calculable, method, cacheName, group, tags, rule, proxyFactory, null);
     }
 
@@ -74,11 +76,11 @@ public class CacheDescriptor<T> {
         return new Signature(method.getParameterTypes(), keyType, valueType);
     }
 
-    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory, @Nullable PropertyOverrides overrides) {
+    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, @Nullable PropertyOverrides overrides) {
         this(ownerClass, id, signature, calculable, method, cacheName, group, tags, rule, proxyFactory, TransformGeneratorFactoryImpl.getInstance().forMethod(method), TransformGenerator.NO_TRANSFORM, overrides);
     }
 
-    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, PropertyOverrides overrides) {
+    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, PropertyOverrides overrides) {
         this(ownerClass, id, signature, calculable, method, cacheName, group, tags, rule, proxyFactory, keyTransform, valueTransform, getTransformedSignature(signature, keyTransform, valueTransform), overrides);
     }
 
@@ -86,7 +88,7 @@ public class CacheDescriptor<T> {
         return valueTransform.transformValue(keyTransform.transformKey(signature));
     }
 
-    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @NotNull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, Signature transformedSignature, PropertyOverrides overrides) {
+    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, Signature transformedSignature, PropertyOverrides overrides) {
         this.method = method;
         this.group = group;
         this.ownerClass = ownerClass;

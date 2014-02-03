@@ -11,8 +11,8 @@ import com.maxifier.mxcache.proxy.UseProxy;
 import com.maxifier.mxcache.resource.ResourceDependency;
 import com.maxifier.mxcache.resource.ResourceReader;
 import com.maxifier.mxcache.resource.ResourceWriter;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +30,13 @@ public abstract class MxCacheInspection extends LocalInspectionTool implements C
     private static final String RESOURCE_WRITER_NAME = ResourceWriter.class.getCanonicalName();
     private static final String RESOURCE_READER_NAME = ResourceReader.class.getCanonicalName();
 
-    @Nls
-    @NotNull
+    @Nonnull
     @Override
     public String getGroupDisplayName() {
         return "MxCache problems";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     // remember: there is no pattern validation in idea 7!
     public String getID() {
@@ -82,7 +81,7 @@ public abstract class MxCacheInspection extends LocalInspectionTool implements C
     }
 
     @Override
-    public ProblemDescriptor[] checkFile(@NotNull PsiFile psiFile, @NotNull InspectionManager inspectionManager, boolean b) {
+    public ProblemDescriptor[] checkFile(@Nonnull PsiFile psiFile, @Nonnull InspectionManager inspectionManager, boolean b) {
         PsiElement[] methods = PsiTreeUtil.collectElements(psiFile, new PsiMethodFinder());
         List<ProblemDescriptor> res = new ArrayList<ProblemDescriptor>();
         for (PsiElement method : methods) {

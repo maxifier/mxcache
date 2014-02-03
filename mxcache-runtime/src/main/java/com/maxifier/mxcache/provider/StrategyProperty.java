@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.provider;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.lang.annotation.Annotation;
 
@@ -27,7 +27,7 @@ public class StrategyProperty<T> {
      * @param type тип
      * @param defaultValue значение по умолчанию
      */
-    public StrategyProperty(@NotNull String name, @NotNull Class<T> type, T defaultValue) {
+    public StrategyProperty(@Nonnull String name, @Nonnull Class<T> type, T defaultValue) {
         if (defaultValue != null && !type.isInstance(defaultValue)) {
             throw new IllegalArgumentException("Invalid defaultValue = " + defaultValue + " for property " + name + ": " + type);
         }
@@ -46,19 +46,19 @@ public class StrategyProperty<T> {
         this(name, type, null);
     }
 
-    public static <T> StrategyProperty<T> create(@NotNull String name, @NotNull Class<T> type, T defaultValue) {
+    public static <T> StrategyProperty<T> create(@Nonnull String name, @Nonnull Class<T> type, T defaultValue) {
         return new StrategyProperty<T>(name, type, defaultValue);
     }
 
-    public static <T> StrategyProperty<T> create(@NotNull String name, @NotNull Class<T> type) {
+    public static <T> StrategyProperty<T> create(@Nonnull String name, @Nonnull Class<T> type) {
         return new StrategyProperty<T>(name, type);
     }
 
-    public static <A extends Annotation, T> AnnotationProperty<A, T> create(@NotNull String name, @NotNull Class<T> type, Class<A> annotationClass, String annotationPropertyName) {
+    public static <A extends Annotation, T> AnnotationProperty<A, T> create(@Nonnull String name, @Nonnull Class<T> type, Class<A> annotationClass, String annotationPropertyName) {
         return new ReflectiveAnnotationProperty<A, T>(name, type, null, annotationClass, annotationPropertyName);
     }
 
-    public static <A extends Annotation, T> AnnotationProperty<A, T> create(@NotNull String name, @NotNull Class<T> type, T defaultValue, Class<A> annotationClass, String annotationPropertyName) {
+    public static <A extends Annotation, T> AnnotationProperty<A, T> create(@Nonnull String name, @Nonnull Class<T> type, T defaultValue, Class<A> annotationClass, String annotationPropertyName) {
         return new ReflectiveAnnotationProperty<A, T>(name, type, defaultValue, annotationClass, annotationPropertyName);
     }
 

@@ -1,6 +1,6 @@
 package com.maxifier.mxcache.clean;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Iterator;
 
@@ -13,7 +13,7 @@ import java.util.Iterator;
 public abstract class MappingIterable<F, T> implements Iterable<T> {
     private final Iterable<? extends F> iterable;
 
-    protected MappingIterable(@NotNull Iterable<? extends F> iterable) {
+    protected MappingIterable(@Nonnull Iterable<? extends F> iterable) {
         this.iterable = iterable;
     }
 

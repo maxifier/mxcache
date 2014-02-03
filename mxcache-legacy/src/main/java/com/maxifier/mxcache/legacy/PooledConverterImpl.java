@@ -2,7 +2,9 @@ package com.maxifier.mxcache.legacy;
 
 import com.maxifier.mxcache.legacy.converters.MxConvertHelper;
 import com.maxifier.mxcache.legacy.converters.MxConvertType;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +26,7 @@ class PooledConverterImpl<T> implements PooledConverter<T> {
     }
 
     @Override
-    @NotNull
+    @Nonnull
     public MxResource save(byte[] bytes, T value) {
         try {
             assert bytes != null || value != null : "Cannot save: both bytes and value are null";
@@ -39,7 +41,7 @@ class PooledConverterImpl<T> implements PooledConverter<T> {
 
     @SuppressWarnings( { "unchecked" })
     @Override
-    @NotNull
+    @Nonnull
     public T load(MxResource resource) {
         try {
             return (T) converter.convert(MxPooledState.ONDISK, MxPooledState.READY, type, resource);
@@ -51,7 +53,7 @@ class PooledConverterImpl<T> implements PooledConverter<T> {
 
     @SuppressWarnings( { "unchecked" })
     @Override
-    @NotNull
+    @Nonnull
     public T deserialize(byte[] bytes) {
         assert bytes != null;
         try {

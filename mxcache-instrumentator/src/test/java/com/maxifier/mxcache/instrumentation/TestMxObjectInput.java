@@ -5,7 +5,8 @@ import com.magenta.dataserializator.link.LinkContext;
 import com.magenta.dataserializator.link.LinkContextImpl;
 import com.magenta.dataserializator.stream.MxStreamReader;
 import com.maxifier.mxcache.context.CacheContext;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,13 +67,13 @@ public class TestMxObjectInput extends ObjectInputStream implements MxObjectInpu
         throw new UnsupportedOperationException();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Set<MxFlagOption> getFlagOptions() {
         throw new UnsupportedOperationException();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Map<MxParametricOption, Object> getParametricOptions() {
         throw new UnsupportedOperationException();

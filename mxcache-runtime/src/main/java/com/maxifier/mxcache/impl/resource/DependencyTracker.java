@@ -6,8 +6,10 @@ import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.util.HashWeakReference;
 import com.maxifier.mxcache.util.TIdentityHashSet;
 import gnu.trove.THashSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -204,7 +206,7 @@ public final class DependencyTracker {
         }
 
         @Override
-        public void addNode(@NotNull CleaningNode cache) {
+        public void addNode(@Nonnull CleaningNode cache) {
             // ?????? ?? ??????, ???? ?????? ?? ??????????? ?????, ??? ??? ???? ????????
         }
 
@@ -243,7 +245,7 @@ public final class DependencyTracker {
         }
 
         @Override
-        public void addNode(@NotNull CleaningNode cache) {
+        public void addNode(@Nonnull CleaningNode cache) {
             // do nothing
         }
 

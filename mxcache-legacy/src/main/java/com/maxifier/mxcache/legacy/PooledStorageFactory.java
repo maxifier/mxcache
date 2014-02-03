@@ -3,7 +3,8 @@ package com.maxifier.mxcache.legacy;
 import com.maxifier.mxcache.provider.StorageFactory;
 import com.maxifier.mxcache.storage.Storage;
 import com.maxifier.mxcache.legacy.converters.MxConvertType;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -24,7 +25,7 @@ class PooledStorageFactory<T, Value, ElementType extends MxConvertType> implemen
         this.strategy = strategy;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Storage createStorage(Object owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
         return new PooledCache<Object, Value, ElementType>(owner, cache, elementType, strategy);

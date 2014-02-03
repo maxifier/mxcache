@@ -76,7 +76,7 @@ public abstract class AbstractLongObjectCache<F> extends AbstractCache implement
     }
 
     @SuppressWarnings({ "unchecked" })
-    private F create(long o) {
+    protected F create(long o) {
         long start = System.nanoTime();
         F t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

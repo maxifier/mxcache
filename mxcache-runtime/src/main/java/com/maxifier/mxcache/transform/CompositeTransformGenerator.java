@@ -4,7 +4,8 @@ import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.util.ClassGenerator;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 /**
 * Created by IntelliJ IDEA.
@@ -16,7 +17,7 @@ public class CompositeTransformGenerator implements TransformGenerator {
     private final TransformGenerator forward;
     private final TransformGenerator backward;
 
-    public CompositeTransformGenerator(@NotNull TransformGenerator forward, @NotNull TransformGenerator backward) {
+    public CompositeTransformGenerator(@Nonnull TransformGenerator forward, @Nonnull TransformGenerator backward) {
         this.forward = forward;
         this.backward = backward;
     }

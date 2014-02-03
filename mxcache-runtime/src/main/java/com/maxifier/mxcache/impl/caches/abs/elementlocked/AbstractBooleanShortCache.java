@@ -74,7 +74,7 @@ public abstract class AbstractBooleanShortCache extends AbstractElementLockedCac
         }
     }
 
-    private short create(boolean key) {
+    protected short create(boolean key) {
         long start = System.nanoTime();
         short t = calculatable.calculate(owner, key);
         long end = System.nanoTime();

@@ -72,7 +72,7 @@ public abstract class AbstractCharacterBooleanCache extends AbstractCache implem
         }
     }
 
-    private boolean create(char o) {
+    protected boolean create(char o) {
         long start = System.nanoTime();
         boolean t = calculatable.calculate(owner, o);
         long end = System.nanoTime();

@@ -4,7 +4,8 @@ import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.util.TIdentityHashSet;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.util.Set;
 import java.lang.ref.WeakReference;
@@ -128,7 +129,7 @@ public class AbstractDependencyListUTest {
         }
 
         @Override
-        public void addNode(@NotNull CleaningNode cache) {
+        public void addNode(@Nonnull CleaningNode cache) {
             throw new UnsupportedOperationException();
         }
 

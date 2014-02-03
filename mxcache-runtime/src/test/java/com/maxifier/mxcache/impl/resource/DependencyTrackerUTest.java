@@ -7,7 +7,8 @@ import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import java.lang.ref.Reference;
 
@@ -86,7 +87,7 @@ public class DependencyTrackerUTest {
         }
 
         @Override
-        public void addNode(@NotNull CleaningNode cache) {
+        public void addNode(@Nonnull CleaningNode cache) {
             fail("Should not reach here");
         }
 

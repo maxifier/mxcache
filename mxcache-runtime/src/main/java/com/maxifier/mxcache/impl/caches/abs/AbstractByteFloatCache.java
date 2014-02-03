@@ -72,7 +72,7 @@ public abstract class AbstractByteFloatCache extends AbstractCache implements By
         }
     }
 
-    private float create(byte o) {
+    protected float create(byte o) {
         long start = System.nanoTime();
         float t = calculatable.calculate(owner, o);
         long end = System.nanoTime();
