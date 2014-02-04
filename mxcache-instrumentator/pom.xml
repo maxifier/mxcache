@@ -38,32 +38,12 @@
 
         <dependency>
             <groupId>com.maxifier.mxcache</groupId>
-            <artifactId>mxcache-ds11-integration</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.maxifier.mxcache</groupId>
             <artifactId>mxcache-asm</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.maxifier.mxcache</groupId>
             <artifactId>mxcache-runtime</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.magenta</groupId>
-            <artifactId>data-serializator-core</artifactId>
-            <version>1.1.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.magenta</groupId>
-            <artifactId>data-serializator-stream-v11</artifactId>
-            <version>1.1.2</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

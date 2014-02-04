@@ -49,8 +49,6 @@ public interface TestCached extends Serializable {
 
     String transformPrimitiveToString(long v);
 
-    TestCached reloadWithContext(CacheContextImpl context) throws IOException, ClassNotFoundException;
-
     void readResource();
 
     void writeResource();

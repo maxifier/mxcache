@@ -20,9 +20,6 @@
         <module>mxcache-generation</module>
         <module>mxcache-runtime</module>
         <module>mxcache-commons</module>
-        <module>mxcache-legacy</module>
-        <module>mxcache-ds10-integration</module>
-        <module>mxcache-ds11-integration</module>
         <module>mxcache-idea-plugin</module>
         <module>mxcache-maven-plugin</module>
         <module>mxcache-tests</module>
@@ -98,16 +95,6 @@
             <dependency>
                 <groupId>com.maxifier.mxcache</groupId>
                 <artifactId>jconsole-stub</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.maxifier.mxcache</groupId>
-                <artifactId>mxcache-ds11-integration</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.maxifier.mxcache</groupId>
-                <artifactId>mxcache-guava-integration</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

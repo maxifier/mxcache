@@ -428,32 +428,6 @@ public class DynamicInstrumentationFTest {
     }
 
     @Test(dataProvider = "v229")
-    public void testCustomContextSerialize(Instrumentator instrumentator, ClassLoader cl) throws Exception {
-        Class<?> c = instrumentClass(TestCachedImpl.class, instrumentator, cl);
-        TestCached defInstance = (TestCached) c.newInstance();
-        Assert.assertEquals(defInstance.nullCache("test"), "test0");
-        Assert.assertEquals(defInstance.nullCache("test"), "test1");
-        Assert.assertEquals(defInstance.nullCache("test"), "test2");
-
-        Assert.assertEquals(defInstance.nullCache("past"), "past3");
-        Assert.assertEquals(defInstance.nullCache("past"), "past4");
-        Assert.assertEquals(defInstance.nullCache("past"), "past5");
-
-        CacheContextImpl context = new CacheContextImpl(new OverrideInstanceProvider());
-
-        TestCached cusInstance = defInstance.reloadWithContext(context);
-
-        Assert.assertEquals(cusInstance.nullCache("test"), "test6");
-        Assert.assertEquals(cusInstance.nullCache("test"), "test6");
-        Assert.assertEquals(cusInstance.nullCache("test"), "test6");
-
-        Assert.assertEquals(cusInstance.nullCache("past"), "past7");
-        Assert.assertEquals(cusInstance.nullCache("past"), "past7");
-        Assert.assertEquals(cusInstance.nullCache("past"), "past7");
-
-    }
-
-    @Test(dataProvider = "v229")
     public void testMarkerAnnotations(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         Class<?> c = instrumentClass(TestProxiedImpl.class, instrumentator, cl);
         Assert.assertEquals(new Version(c.getAnnotation(CachedInstrumented.class).version()), MxCache.getVersionObject());

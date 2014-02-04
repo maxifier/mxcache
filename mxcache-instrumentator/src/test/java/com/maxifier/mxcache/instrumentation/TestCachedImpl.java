@@ -3,12 +3,9 @@ package com.maxifier.mxcache.instrumentation;
 import com.maxifier.mxcache.Cached;
 import com.maxifier.mxcache.DependencyTracking;
 import com.maxifier.mxcache.Strategy;
-import com.maxifier.mxcache.UseStorageFactory;
 import com.maxifier.mxcache.context.CacheContext;
-import com.maxifier.mxcache.context.CacheContextImpl;
 import com.maxifier.mxcache.context.UseCacheContext;
 import com.maxifier.mxcache.impl.caches.batch.BatchCache;
-import com.maxifier.mxcache.impl.caches.batch.BatchFactory;
 import com.maxifier.mxcache.resource.ResourceReader;
 import com.maxifier.mxcache.resource.ResourceWriter;
 import com.maxifier.mxcache.resource.TrackDependency;
@@ -176,20 +173,6 @@ public class TestCachedImpl implements TestCached, Serializable {
     @Override
     public String exceptionTest() throws IOException {
         throw new IOException("This exception should be passed to test method");
-    }
-
-    public TestCached reloadWithContext(CacheContextImpl context) throws IOException, ClassNotFoundException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(bos);
-        try {
-            oos.writeObject(this);
-        } finally {
-            oos.close();
-        }
-
-        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-        TestMxObjectInput testMxObjectInput = new TestMxObjectInput(bis, context, getClass().getClassLoader());
-        return (TestCached) testMxObjectInput.readObject();
     }
 
     @Override

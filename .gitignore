@@ -1,8 +1,6 @@
 jconsole-stub/*.iml
 mxcache-asm/*.iml
 mxcache-commons/*.iml
-mxcache-ds10-integration/*.iml
-mxcache-ds11-integration/*.iml
 mxcache-ehcache-integration/*.iml
 mxcache-guice-integration/*.iml
 mxcache-idea-plugin/*.iml
