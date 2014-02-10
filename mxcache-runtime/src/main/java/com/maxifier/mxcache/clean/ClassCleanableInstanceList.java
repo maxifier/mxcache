@@ -115,8 +115,13 @@ final class ClassCleanableInstanceList<T> extends WeakList<T> implements Cleanab
         for (T t : this) {
             cleanable.appendInstanceCachesTo(caches, t);
         }
-        for (ClassCleanableInstanceList<? extends T> child : children) {
-            child.getCachesHierarchically(caches);
+        readLock.lock();
+        try {
+            for (ClassCleanableInstanceList<? extends T> child : children) {
+                child.getCachesHierarchically(caches);
+            }
+        } finally {
+            readLock.unlock();
         }
     }
 

@@ -55,8 +55,13 @@ final class CustomCleanableInstanceList implements CleanableInstanceList {
 
     @Override
     public void getCaches(List<CleaningNode> caches) {
-        for (CustomClassCleanableInstanceList<?> customClassCleanableInstanceList : list) {
-            customClassCleanableInstanceList.getCaches(caches);
+        readLock.lock();
+        try {
+            for (CustomClassCleanableInstanceList<?> customClassCleanableInstanceList : list) {
+                customClassCleanableInstanceList.getCaches(caches);
+            }
+        } finally {
+            readLock.unlock();
         }
     }
 
