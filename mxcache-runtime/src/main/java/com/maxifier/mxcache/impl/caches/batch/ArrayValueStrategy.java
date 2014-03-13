@@ -1,13 +1,13 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.batch;
 
 import java.lang.reflect.Array;
 import java.util.BitSet;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 25.04.12
- * Time: 14:38
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 final class ArrayValueStrategy<K, V> implements ValueStrategy<K, V[], V, BitSet> {
     private ArrayValueStrategy() {}

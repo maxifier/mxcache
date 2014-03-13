@@ -1,9 +1,15 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.proxy;
 
 import gnu.trove.THashMap;
 
 import java.util.Map;
 
+/**
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 public final class MxProxyGenerator {
     private static final Map<MxProxyFactory, MxProxyFactory> PROXY_MAP = new THashMap<MxProxyFactory, MxProxyFactory>();
     private static final Map<MxGenericProxyFactory, MxGenericProxyFactory> GENERIC_PROXY_MAP = new THashMap<MxGenericProxyFactory, MxGenericProxyFactory>();
@@ -12,11 +18,11 @@ public final class MxProxyGenerator {
     }
 
     /**
-     * Создает фабрику проксей заданного типа.
+     * Creates a proxy factory for given interface.
      *
-     * @param sourceClass    исходный интерфейс
-     * @param containerClass класс/интерфейс контейнера
-     * @return фабрику проксей для заданного типа объектов и контейнеров.
+     * @param sourceClass    source interface
+     * @param containerClass container type interface
+     * @return created factory
      */
     public static synchronized <T, C extends Resolvable<T>> MxProxyFactory<T, C> getProxyFactory(Class<T> sourceClass, Class<C> containerClass) {
         MxProxyFactory<T, C> proxy = new MxProxyFactory<T, C>(sourceClass, containerClass);
@@ -30,13 +36,13 @@ public final class MxProxyGenerator {
     }
 
     /**
-     * Создает generic фабрику проксей заданного типа.
-     * Отличасется тем, что возвращаемые прокси помимо самого исходного интерфейса реализуют также все его
-     * интерфейсы-наследники, которые реализует исходный объект
+     * Creates generic proxy factory of given type.
+     * The difference between usual and generic proxy factory is that proxies created by generic proxy will implement
+     * not only target interface but also all its subinterfaces that initial object has.
      *
-     * @param sourceClass    исходный интерфейс
-     * @param containerClass класс/интерфейс контейнера
-     * @return фабрику проксей для заданного типа объектов и контейнеров.
+     * @param sourceClass    source interface
+     * @param containerClass container type interface
+     * @return created factory
      */
     public static synchronized <T, C extends Resolvable<T>> MxGenericProxyFactory<T, C> getGenericProxyFactory(Class<T> sourceClass, Class<C> containerClass) {
         MxGenericProxyFactory<T, C> proxy = new MxGenericProxyFactory<T, C>(sourceClass, containerClass);

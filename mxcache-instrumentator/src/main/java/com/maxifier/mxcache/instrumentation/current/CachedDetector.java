@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.instrumentation.IllegalCachedClass;
@@ -15,10 +18,7 @@ import static com.maxifier.mxcache.instrumentation.CommonRuntimeTypes.*;
 import static com.maxifier.mxcache.instrumentation.current.RuntimeTypes.CACHE_INSTRUMENTED_ANNOTATION;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 19.10.2010
-* Time: 12:56:36
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 class CachedDetector extends ClassAdapter {
     private final Map<Method, CachedMethodContext> cachedMethods = new THashMap<Method, CachedMethodContext>();

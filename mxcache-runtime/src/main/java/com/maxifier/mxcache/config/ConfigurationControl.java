@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.config;
 
 import com.maxifier.mxcache.mbean.ConfigurationControlMXBean;
@@ -7,10 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 16.08.2010
- * Time: 14:29:46
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ConfigurationControl implements ConfigurationControlMXBean {
     private final MxCacheConfigProviderImpl provider;

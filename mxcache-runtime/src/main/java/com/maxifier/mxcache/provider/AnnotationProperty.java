@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.provider;
 
 import java.lang.annotation.Annotation;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 30.04.2010
- * Time: 19:36:29
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class AnnotationProperty<A extends Annotation, T> extends StrategyProperty<T> {
     private final Class<A> annotationType;

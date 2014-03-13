@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.asm.AnnotationVisitor;
@@ -15,10 +18,7 @@ import static com.maxifier.mxcache.asm.Opcodes.*;
 import static com.maxifier.mxcache.instrumentation.current.RuntimeTypes.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 12.04.2010
- * Time: 12:49:37
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 class ResourceMethodVisitor extends MxGeneratorAdapter {
     private final ResourceMethodContext context;

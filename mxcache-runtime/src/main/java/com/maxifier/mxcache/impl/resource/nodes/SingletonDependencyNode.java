@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.resource.nodes;
 
 import com.maxifier.mxcache.caches.CleaningNode;
@@ -7,10 +10,7 @@ import com.maxifier.mxcache.util.TIdentityHashSet;
 import javax.annotation.Nonnull;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.04.2010
- * Time: 12:32:45
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class SingletonDependencyNode extends AbstractDependencyNode {
     // we don't need to store reference here cause this node exists only if object itself is not gc'ed

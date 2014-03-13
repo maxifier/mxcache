@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ideaplugin.inspections;
 
 import com.intellij.codeInspection.*;
@@ -11,10 +14,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * Created by IntelliJ IDEA.
-* User: dalex
-* Date: 17.03.2010
-* Time: 11:39:36
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 public class CacheNamingInspection extends MxCacheInspection {
     private static final String INSPECTION_ID = "MxCacheNaming";

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.util;
 
 import com.maxifier.mxcache.asm.Type;
@@ -6,10 +9,9 @@ import org.testng.annotations.Test;
 import static com.maxifier.mxcache.asm.Opcodes.ACC_PUBLIC;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 11.03.11
- * Time: 8:40
+ * ClassGeneratorUTest
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class ClassGeneratorUTest {

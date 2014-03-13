@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 import com.maxifier.mxcache.impl.resource.DependencyNode;
@@ -9,10 +12,7 @@ import java.io.InputStream;
 import java.util.concurrent.Callable;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 09.08.2010
- * Time: 12:39:07
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class MxCache {
     private MxCache() {}

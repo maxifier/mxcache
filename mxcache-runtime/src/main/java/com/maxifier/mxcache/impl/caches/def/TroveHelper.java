@@ -1,10 +1,10 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.def;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 08.11.2010
- * Time: 8:58:42
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class TroveHelper {
     public static final Object NULL_REPLACEMENT = new Object() {

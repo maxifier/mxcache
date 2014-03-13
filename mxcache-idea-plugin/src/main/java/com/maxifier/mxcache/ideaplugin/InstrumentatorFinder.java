@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ideaplugin;
 
 import com.intellij.openapi.application.ApplicationManager;
@@ -17,10 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 09.08.2010
-* Time: 12:04:02
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 public class InstrumentatorFinder implements ProjectComponent {
     private InstrumentatorFinder() { }

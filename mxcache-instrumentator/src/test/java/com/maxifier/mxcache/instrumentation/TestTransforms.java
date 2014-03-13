@@ -1,10 +1,10 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 25.10.2010
-* Time: 10:53:42
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 public class TestTransforms {
     private final String suffix;

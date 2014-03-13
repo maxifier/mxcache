@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.mavenplugin;
 
 import com.maxifier.mxcache.MxCache;
@@ -17,10 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.maxifier.mxcache.instrumentation.ClassDefinition;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 17.03.2010
- * Time: 16:33:58
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class AbstractInstrumentatorMojo extends AbstractInstrumentator {
     private static final Instrumentator INSTRUMENTATOR = InstrumentatorProvider.getPreferredVersion();

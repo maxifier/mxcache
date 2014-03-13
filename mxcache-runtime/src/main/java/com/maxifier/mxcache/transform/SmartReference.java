@@ -1,10 +1,10 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.transform;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 19.10.2010
- * Time: 10:33:35
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface SmartReference {
     Runnable getCallback();

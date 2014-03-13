@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 import com.maxifier.mxcache.context.CacheContext;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 09.03.11
- * Time: 15:49
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface ContextResolver<T> {
     Class<T> getContextOwnerClass();

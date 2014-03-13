@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.util.MxField;
@@ -8,10 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 11.03.11
- * Time: 10:57
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ResourceMethodContext {
     private final Set<MxField> readResourceFields = new THashSet<MxField>();

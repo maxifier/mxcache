@@ -1,5 +1,5 @@
-/* 
- * Copyright (c) 2008-2013 Maxifier Ltd. All Rights Reserved.
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
  */
 package com.maxifier.mxcache.impl.resource;
 
@@ -37,7 +37,7 @@ public class ResourceViewDependencyNodeVisitor implements DependencyNodeVisitor 
 
     @Override
     public Set<DependencyNode> getNodes() {
-        return resourceViewableNodes;  //To change body of implemented methods use File | Settings | File Templates.
+        return resourceViewableNodes;
     }
 
     @Override

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.asm.Type;
@@ -12,10 +15,7 @@ import java.util.Map;
 import static com.maxifier.mxcache.asm.Type.getType;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 10.11.2010
- * Time: 11:00:54
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class CommonRuntimeTypes {
     public static final Type LIST_TYPE = Type.getType(List.class);

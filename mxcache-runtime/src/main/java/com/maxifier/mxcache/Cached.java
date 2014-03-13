@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 import java.lang.annotation.Retention;
@@ -7,28 +10,17 @@ import java.lang.annotation.Documented;
 import static java.lang.annotation.ElementType.METHOD;
 
 /**
- * Project: Maxifier
- * Created by: Yakoushin Andrey
- * Date: 23.01.2010
- * Time: 15:12:46
- * <p/>
- * Copyright (c) 1999-2009 Magenta Corporation Ltd. All Rights Reserved.
- * Magenta Technology proprietary and confidential.
- * Use is subject to license terms.
+ * Cached - this annotation tells MxCache instrumentator that method marked with this annotation should be instrumented.
  *
- * <a href="http://wiki.bequest/index.php/Кэширование">См. Вики</a>
- * @author ELectronic ENgine
- *
+ * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(value = {METHOD})
 @Documented
 public @interface Cached {
     /**
-     * Задаёт имя группы кешей. Несколько кешей в одной группе управляются одним менеджером,
-     * зависимости от ресурсов и lock`и у них общие
-     *
-     * @return имя группы кешей
+     * @return Cache group name. It's just another way of cleaning caches.
      */
     String group() default "";
 
@@ -38,15 +30,15 @@ public @interface Cached {
     String name() default "";
 
     /**
-     * Набор тегов. Тег - любая строка. Теги могут использоваться для очистки кеша. 
-     * @return теги
+     * Tag is any string. They are used to clear caches.
+     * @see CacheFactory#getCleaner()
+     * @return tags of cache.
      */
     String[] tags() default {};
 
     /**
-     * Для метода - этот метод используется в этой активности
-     *
-     * @return имя активности
+     * Not used actually
+     * @return activity; ignored
      */
     String activity() default "";
 }

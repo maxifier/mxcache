@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.def;
 
 import gnu.trove.*;
@@ -6,16 +9,14 @@ import com.maxifier.mxcache.storage.*;
 import static com.maxifier.mxcache.impl.caches.def.TroveHelper.*;
 
 /**
- * Project: Maxifier
- * Created by: Yakoushin Andrey
- * Date: 15.02.2010
- * Time: 13:29:47
- * <p/>
- * Copyright (c) 1999-2009 Magenta Corporation Ltd. All Rights Reserved.
- * Magenta Technology proprietary and confidential.
- * Use is subject to license terms.
+ * DoubleObjectTroveStorage
  *
- * @author ELectronic ENgine
+ * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
+ *
+ * GENERATED FROM #SOURCE#
+ *
+ * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class DoubleObjectTroveStorage<T> extends TDoubleObjectHashMap<Object> implements DoubleObjectStorage<T> {
     public DoubleObjectTroveStorage() {

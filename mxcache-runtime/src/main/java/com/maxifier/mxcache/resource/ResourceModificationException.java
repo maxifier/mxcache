@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.resource;
 
 import com.maxifier.mxcache.MxCacheException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 15.04.2010
- * Time: 16:05:27
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ResourceModificationException extends MxCacheException {
     public ResourceModificationException(String message) {

@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.jconsoleplugin;
 
 import javax.swing.table.AbstractTableModel;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 08.04.2010
- * Time: 17:44:56
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 class MxCacheTableModel extends AbstractTableModel {
     private static final Attribute[] ATTRIBUTES = Attribute.values();

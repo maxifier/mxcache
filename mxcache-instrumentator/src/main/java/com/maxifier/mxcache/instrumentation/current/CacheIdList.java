@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import gnu.trove.TIntArrayList;
 
 /**
- * Created by IntelliJ IDEA.
-* User: dalex
-* Date: 14.04.2010
-* Time: 10:03:14
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 class CacheIdList {
     private final TIntArrayList staticCaches = new TIntArrayList();

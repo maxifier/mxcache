@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.test;
 
 import com.maxifier.mxcache.Cached;
@@ -5,10 +8,7 @@ import org.testng.annotations.Test;
 import com.maxifier.mxcache.CacheFactory;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 24.03.2010
- * Time: 13:01:48
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class MixedCacheKeyFTest {

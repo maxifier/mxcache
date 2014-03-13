@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.asm.ClassAdapter;
@@ -14,10 +17,7 @@ import static com.maxifier.mxcache.util.CodegenHelper.STATIC_INITIALIZER_ACCESS;
 import static com.maxifier.mxcache.util.CodegenHelper.STATIC_INITIALIZER_NAME;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 29.02.12
- * Time: 14:34
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class AddStaticInitializer extends ClassAdapter {
     private final Method method;

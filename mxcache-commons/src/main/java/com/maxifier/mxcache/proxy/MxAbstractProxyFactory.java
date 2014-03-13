@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.proxy;
 
 import com.maxifier.mxcache.asm.Type;
@@ -7,10 +10,7 @@ import static com.maxifier.mxcache.util.CodegenHelper.EMPTY_TYPES;
 import static com.maxifier.mxcache.util.CodegenHelper.OBJECT_TYPE;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 21.12.2009
- * Time: 13:02:32
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class MxAbstractProxyFactory {
     protected static final String GETTER_NAME = "getValue";

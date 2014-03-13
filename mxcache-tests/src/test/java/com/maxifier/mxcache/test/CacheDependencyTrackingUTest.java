@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.test;
 
 import com.maxifier.mxcache.*;
@@ -13,10 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 17.06.11
- * Time: 13:49
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class CacheDependencyTrackingUTest {

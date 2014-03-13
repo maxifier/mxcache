@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 import com.maxifier.mxcache.context.CacheContext;
@@ -6,10 +9,7 @@ import gnu.trove.THashMap;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 26.01.12
- * Time: 15:46
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class AbstractCacheContext implements CacheContext {
     private final Map<ContextRelatedItem, Object> cache = new THashMap<ContextRelatedItem, Object>();

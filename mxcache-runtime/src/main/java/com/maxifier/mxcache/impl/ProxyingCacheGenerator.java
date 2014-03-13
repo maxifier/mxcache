@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.context.CacheContext;
@@ -25,10 +28,7 @@ import static com.maxifier.mxcache.asm.Type.*;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 11.10.2010
- * Time: 13:22:34
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class ProxyingCacheGenerator {
     private static final Type STATISTICS_TYPE = getType(Statistics.class);

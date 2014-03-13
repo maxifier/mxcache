@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.hashing;
 
 import com.maxifier.mxcache.NoSuchInstanceException;
@@ -10,17 +13,12 @@ import org.slf4j.LoggerFactory;
 import java.lang.annotation.Annotation;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 01.07.2010
- * Time: 14:59:26
- * <p>
- * Фабрика стратегий хэширования по-умолчанию; понимает аннотации @{@link HashingStrategy},
- * для массивов используется хэширование по содержимому.
- * умеет работать с кортежами (Tuple).
- * <p>В случае любых ошибок конфигурирования выводит сообщение в лог (не выбрасывает исключений)
- * <p> В наследниках класса можно добавлять поддержку нестандартных аннотаций или переопределять создание экземпляра
- * стратегии. 
+ * <p>DefaultHashingStrategyFactory. Supports @{@link HashingStrategy} annotations.
+ * Compares and hashes arrays by content, not by identity. Supports tuples.</p>
+ * <p>Never throws exceptions but outputs an error to the log.</p>
+ * <p>You can add custom annotation support in child classes or override strategy creation.</p>
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class DefaultHashingStrategyFactory extends AbstractHashingStrategyFactory {
     private static final Logger logger = LoggerFactory.getLogger(DefaultHashingStrategyFactory.class);

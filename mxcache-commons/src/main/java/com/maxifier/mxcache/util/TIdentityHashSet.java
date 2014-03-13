@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.util;
 
 import gnu.trove.THashSet;
@@ -6,10 +9,7 @@ import gnu.trove.TObjectIdentityHashingStrategy;
 import java.util.Collection;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 01.05.2010
- * Time: 9:56:15
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @SuppressWarnings ({ "unchecked" })
 public class TIdentityHashSet<T> extends THashSet<T> {

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.clean;
 
 import com.maxifier.mxcache.caches.Cache;
@@ -10,10 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.Lock;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 27.04.2010
- * Time: 17:24:56
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 class CacheWithLock implements Cache {
     private final ReentrantLock lock;

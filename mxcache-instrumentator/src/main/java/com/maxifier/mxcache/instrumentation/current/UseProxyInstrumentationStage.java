@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.instrumentation.IllegalCachedClass;
@@ -20,10 +23,7 @@ import static com.maxifier.mxcache.instrumentation.current.RuntimeTypes.*;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 19.10.2010
- * Time: 12:28:31
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 abstract class UseProxyInstrumentationStage extends ClassAdapter implements InstrumentationStage {
 

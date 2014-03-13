@@ -1,14 +1,14 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.util;
 
 import com.maxifier.mxcache.asm.ClassReader;
 import com.maxifier.mxcache.asm.ClassWriter;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 23.08.2010
-* Time: 17:17:01
-*/
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 public class SmartClassWriter extends ClassWriter {
     public SmartClassWriter(ClassReader classReader) {
         super(classReader, COMPUTE_FRAMES);

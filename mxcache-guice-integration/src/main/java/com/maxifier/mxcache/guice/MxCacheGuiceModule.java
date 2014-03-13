@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.guice;
 
 import com.maxifier.mxcache.CacheFactory;
@@ -10,10 +13,9 @@ import com.maxifier.mxcache.config.MxCacheConfigProvider;
 import com.maxifier.mxcache.impl.DefaultStrategy;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 18.10.2010
- * Time: 13:56:05
+ * MxCacheGuiceModule
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class MxCacheGuiceModule extends MxCacheGuiceChildModule {
     public MxCacheGuiceModule() {

@@ -1,12 +1,14 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.scheduler;
 
+import com.maxifier.mxcache.PublicAPI;
+
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 10.11.11
- * Time: 13:18
- * To change this template use File | Settings | File Templates.
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface MxScheduler {
+    @PublicAPI
     void schedule(Runnable runnable);
 }

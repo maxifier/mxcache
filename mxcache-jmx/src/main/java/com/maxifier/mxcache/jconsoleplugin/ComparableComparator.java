@@ -1,13 +1,13 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.jconsoleplugin;
 
 import java.io.Serializable;
 import java.util.Comparator;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 16.08.2010
- * Time: 10:14:12
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ComparableComparator<T extends Comparable> implements Comparator<T>, Serializable {
     private static final long serialVersionUID = 1L;

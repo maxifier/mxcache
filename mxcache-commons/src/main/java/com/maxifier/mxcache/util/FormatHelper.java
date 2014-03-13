@@ -1,18 +1,15 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.util;
 
 import java.math.BigDecimal;
 
 /**
- * Project: Smart Advertising
- * Created by: Yakoushin Andrey
- * Date: 23.03.2009
- * Time: 10:41:18
- * <p/>
- * Copyright (c) 1999-2008 Magenta Corporation Ltd. All Rights Reserved.
- * Magenta Technology proprietary and confidential.
- * Use is subject to license terms.
+ * FormatHelper
  *
- * @author ELectronic ENgine
+ * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class FormatHelper {
     private static final int KILOBYTE = 1024;

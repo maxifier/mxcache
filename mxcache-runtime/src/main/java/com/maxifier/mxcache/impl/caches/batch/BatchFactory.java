@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.batch;
 
 import com.maxifier.mxcache.impl.caches.def.ObjectObjectTroveStorage;
@@ -13,10 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 25.04.12
- * Time: 15:41
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class BatchFactory implements StorageFactory {
     private final CacheDescriptor descriptor;

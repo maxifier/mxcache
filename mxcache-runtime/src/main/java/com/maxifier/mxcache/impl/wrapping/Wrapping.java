@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.wrapping;
 
 import com.maxifier.mxcache.asm.ClassWriter;
@@ -47,10 +50,7 @@ import static com.maxifier.mxcache.util.CodegenHelper.*;
 import static com.maxifier.mxcache.transform.TransformGenerator.NO_TRANSFORM;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 09.09.2010
- * Time: 19:41:46
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class Wrapping {
     private static final Type MUTABLE_STATISTICS_TYPE = Type.getType(MutableStatistics.class);
@@ -550,7 +550,7 @@ public final class Wrapping {
 
         v.visitEnd();
         //noinspection unchecked
-        result = v.toClass(Wrapping.class.getClassLoader()).getConstructor(ObjectObjectCache.class);
+        result = v.<Cache>toClass(Wrapping.class.getClassLoader()).getConstructor(ObjectObjectCache.class);
         CACHE_WRAPPER_CONSTRUCTORS_CACHE.put(signature, result);
         return result;
     }
@@ -612,7 +612,7 @@ public final class Wrapping {
         v.visitEnd();
 
         //noinspection unchecked
-        result = v.toClass(Wrapping.class.getClassLoader()).getConstructor(calculableInterface);
+        result = v.<ObjectObjectCalculatable>toClass(Wrapping.class.getClassLoader()).getConstructor(calculableInterface);
         CALCULABLE_WRAPPER_CONSTRUCTORS_CACHE.put(signature, result);
         return result;
     }

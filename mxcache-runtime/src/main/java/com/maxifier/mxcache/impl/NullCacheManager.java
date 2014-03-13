@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.MxCacheException;
@@ -27,10 +30,7 @@ import static com.maxifier.mxcache.asm.Opcodes.*;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 03.03.11
- * Time: 16:56
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class NullCacheManager<T> implements CacheManager<T> {
     public static final Type LOCK_TYPE = Type.getType(Lock.class);

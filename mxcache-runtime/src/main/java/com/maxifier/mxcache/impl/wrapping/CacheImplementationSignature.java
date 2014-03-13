@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.wrapping;
 
 import com.maxifier.mxcache.transform.TransformGenerator;
@@ -5,11 +8,8 @@ import com.maxifier.mxcache.transform.TransformGenerator;
 import javax.annotation.Nonnull;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 15.10.2010
-* Time: 9:19:25
-*/
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 class CacheImplementationSignature {
     private final Class cacheClass;
     private final Class calculatableClass;

@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.proxy;
 
 import java.lang.ref.WeakReference;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 27.10.2010
-* Time: 14:14:23
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 public class WeakProxyFactory<Value> implements ProxyFactory<Value> {
     public static class WeakResolvable<T> implements Resolvable<T> {

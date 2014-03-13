@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.provider;
 
 import gnu.trove.THashMap;
@@ -5,11 +8,8 @@ import gnu.trove.THashMap;
 import java.util.Map;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 17.02.11
-* Time: 18:23
-*/
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 class PropertyOverrides {
     private final PropertyOverrides parent;
     private final Map<StrategyProperty, Object> values;

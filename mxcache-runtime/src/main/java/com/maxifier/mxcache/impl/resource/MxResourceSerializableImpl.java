@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.resource.MxResource;
@@ -5,10 +8,7 @@ import com.maxifier.mxcache.resource.MxResource;
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 20.04.2010
- * Time: 11:18:09
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 class MxResourceSerializableImpl implements Serializable {
     private static final long serialVersionUID = 100L; 

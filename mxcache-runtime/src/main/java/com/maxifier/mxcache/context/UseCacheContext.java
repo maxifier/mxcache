@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.context;
 
 import java.lang.annotation.ElementType;
@@ -6,10 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 04.03.11
- * Time: 11:59
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)

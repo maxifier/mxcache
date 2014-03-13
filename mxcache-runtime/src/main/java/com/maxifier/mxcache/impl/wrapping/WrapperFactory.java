@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.wrapping;
 
 import com.maxifier.mxcache.caches.Cache;
@@ -6,10 +9,7 @@ import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.storage.Storage;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 09.09.2010
- * Time: 19:40:03
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface WrapperFactory {
     Cache wrap(Object owner, Calculable calculable, Storage storage, MutableStatistics statistics);

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.asm.Type;
@@ -6,10 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 25.05.11
- * Time: 9:20
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class CalculatableHelper {
     private static final Pattern NAME_PATTERN = Pattern.compile("^((\\p{javaJavaIdentifierPart}+\\.)*\\p{javaJavaIdentifierPart}+)\\$Calculable\\$\\p{javaJavaIdentifierPart}+\\$(\\d+)$");

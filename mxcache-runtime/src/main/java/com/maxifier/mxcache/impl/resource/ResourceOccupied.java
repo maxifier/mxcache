@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.resource.MxResource;
@@ -5,16 +8,13 @@ import com.maxifier.mxcache.resource.MxResource;
 import javax.annotation.Nonnull;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.04.2010
- * Time: 10:47:47
+ * ResourceOccupied.
  *
- * <p>
- * Эту ошибку никто не должен поймать кроме нас, поэтому не RuntimeException, а Error - слишком много любителей
- * отловить все Exception'ы.
- * <p>
- * <b>Этот эксепшн не заполняет stack trace!!!</b>
+ * Please don't catch this Error. It is a part of dependency tracking and deadlock prevention of MxCache.
+ *
+ * <b>It doesn't fill the stack trace!!!</b>
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ResourceOccupied extends Error {
     private final MxResource resource;

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.instanceprovider;
 
 import com.maxifier.mxcache.NoSuchInstanceException;
@@ -7,10 +10,7 @@ import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 13.10.2010
- * Time: 12:48:18
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class InstanceProviderImplUTest {

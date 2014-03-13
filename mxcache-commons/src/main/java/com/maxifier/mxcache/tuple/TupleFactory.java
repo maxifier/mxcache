@@ -1,13 +1,15 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.tuple;
 
-import com.maxifier.mxcache.tuple.Tuple;
-
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 15.09.2010
-* Time: 15:43:50
-*/
+ * TupleFactory - generates tuple instances with specific types.
+ *
+ * @see TupleGenerator
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 public interface TupleFactory {
     Tuple create(Object... values);
 

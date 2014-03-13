@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.asm.commons.Method;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 19.10.2010
- * Time: 13:37:33
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 class ProxiedMethodContext {
     private final int id;

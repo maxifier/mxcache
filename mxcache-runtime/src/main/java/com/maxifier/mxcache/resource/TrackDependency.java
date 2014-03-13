@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.resource;
 
 import com.maxifier.mxcache.DependencyTracking;
@@ -5,10 +8,7 @@ import com.maxifier.mxcache.DependencyTracking;
 import java.lang.annotation.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 21.04.2010
- * Time: 13:21:45
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

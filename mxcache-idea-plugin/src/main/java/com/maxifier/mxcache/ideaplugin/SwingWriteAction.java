@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ideaplugin;
 
 import com.intellij.openapi.application.ApplicationManager;
 
 /**
- * Created by IntelliJ IDEA.
-* User: dalex
-* Date: 01.05.2010
-* Time: 18:53:47
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 class SwingWriteAction implements Runnable {
     private final Runnable action;

@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ideaplugin;
 
 import java.util.regex.Pattern;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 29.02.12
- * Time: 22:55
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  *
  * Этот класс вынесен из ResourceNamingInspection чтобы его можно было тестировать - иначе падает при статической
  * инициализации.

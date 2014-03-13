@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.interfaces.Statistics;
@@ -8,10 +11,7 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 29.08.11
- * Time: 18:24
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class MutableStatisticsImpl implements MutableStatistics {
     private static final boolean USE_ATOMIC_UPDATERS = true;

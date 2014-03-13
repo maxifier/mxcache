@@ -1,10 +1,10 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.provider;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 24.06.2010
- * Time: 11:13:51
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface CacheStrategyBinder<T extends CachingStrategy> {
     void to(T instance);

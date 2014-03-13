@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.activity;
 
 import javax.annotation.Nonnull;
@@ -5,56 +8,60 @@ import javax.annotation.Nonnull;
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 01.07.2010
- * Time: 12:09:42
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface Activity extends Serializable {
     /**
-     * Имя активности неизменно.
+     * Activity name is immutable.
      *
-     * @return имя ресурса.
+     * @return activity name
      */
     @Nonnull
     String getName();
 
     /**
-     * Запускает активность в заданном scope.
-     * Если активность уже была запущенна в таком же или более широком scope, не делает ничего.
-     * @param scope область применения активности
+     * Marks this activity as active in given scope.
+     *
+     * If activity was already run in the same or wider scope, no changes made otherwise listeners are notified.
+     *
+     * @param scope activity scope
      */
     void start(@Nonnull ActivityScope scope);
 
     /**
-     * Завершает активность в заданом scope.
-     * Каждая активность должна быть завершена в том же scope и столько же раз, сколько была запущена.
-     * Завершать thread-local активноть можно только в том же потоке, что её запустил.
-     * @param scope область применения активности
-     * @throws IllegalStateException если активность не была запущена в заданном scope.
+     * Marks this activity as finished in a given scope.
+     *
+     * Activities started in thread-local scope should be finished in the same thread.
+     *
+     * For each start() invocation there must be corresponding finish() invocation in the same scope.
+     *
+     * @param scope activity scope
+     * @throws IllegalStateException if activity is not running in given scope
      */
     void finish(@Nonnull ActivityScope scope);
 
     /**
-     * Проверяет, запущена ли активность.
-     * @return true, если активность была хотя бы раз запущена.
+     * @return true, if activity is running
      */
     boolean isRunning();
 
     /**
-     * Добавляет слушателя. Слушатель оповещается каждый раз, когда активность начинается или завершается.
      * <p>
-     * В случае начала или завершения активности в thread-local scope, оповещение происходит именно в потоке,
-     * вызвавшем изменение (для global scope это не обязательно).
-     * Методы слушателя вызываются ПЕРЕД изменением состояния. Т.е. started может быть вызван при isRunning() == false,
-     * а finished - при isRunning() == true. Исключения в слушателе (кроме Error) не влияют на работу Activity.
-     * @param listener слушатель
+     * Adds a listener. Listener is notified every time the activity is started or finished.</p>
+     * <p>
+     * If activity was started/finished in thread-local scope the listener will be notified in the same thread.
+     * This is not true for global scope - in this case thread different from the one called "start" or "finish" may
+     * be used to notify listener.</p>
+     * <p>
+     * Listeners are notified BEFORE activity is actually started or finished. I.e. isRunning will return false in
+     * listener's "started" and true in listener's "finished" method.</p>
+     * <p>
+     * All exceptions (but not errors!) thrown by listeners are ignored.</p>
      */
     void addListener(ActivityListener listener);
 
     /**
-     * Удаляет слушателя.
-     * @param listener слушатель
+     * Removes listener.
      */
     void removeListener(ActivityListener listener);
 }

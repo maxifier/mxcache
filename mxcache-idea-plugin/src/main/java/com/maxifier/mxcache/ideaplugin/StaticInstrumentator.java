@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ideaplugin;
 
 import com.maxifier.mxcache.MxCacheException;
@@ -22,12 +25,9 @@ import com.intellij.openapi.util.Computable;
 import javax.swing.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 17.03.2010
- * Time: 9:50:45
- * <p/>
- * Note: when importing this module into Idea from maven, you may need to manually set type="PLUGIN_MODULE" in module
+ * StaticInstrumentator
+ *
+ * <b>Note:</b> when importing this module into Idea from maven, you may need to manually set type="PLUGIN_MODULE" in module
  * .iml file to be able to debug it in Idea and set <code>META-INF/plugin.xml</code> location to
  * <code>mxcache-ideaplugin/src/main/resources/</code>
  * <p/>
@@ -35,6 +35,8 @@ import javax.swing.*;
  * <p/>
  * This class may be application component but idea 7 doesn't support compiler extension point, so a workaround is
  * used to install it.
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class StaticInstrumentator implements ClassInstrumentingCompiler /*, ApplicationComponent */ {
     private final InstrumentatorFinder instrumentatorFinder;

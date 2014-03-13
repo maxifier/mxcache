@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.asm.commons.Method;
@@ -17,10 +20,7 @@ import static com.maxifier.mxcache.instrumentation.current.RuntimeTypes.*;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 12.04.2010
- * Time: 12:38:31
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 abstract class ResourceInstrumentationStage extends SerialVersionUIDAdder implements InstrumentationStage {
     private static final Method RESOURCE_STATIC_INITIALIZER_METHOD = Method.getMethod("void $initResourcesStatic$()");

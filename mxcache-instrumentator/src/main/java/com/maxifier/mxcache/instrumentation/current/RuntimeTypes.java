@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.*;
@@ -19,10 +22,7 @@ import static com.maxifier.mxcache.asm.Type.*;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 10.11.2010
- * Time: 10:28:19
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 final class RuntimeTypes {
     static final Type CACHED_TYPE = getType(Cached.class);

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.proxy;
 
 import com.maxifier.mxcache.asm.Opcodes;
@@ -17,10 +20,11 @@ import java.lang.reflect.Constructor;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 30.01.2009
- * Time: 12:35:39
+ * MxProxyFactory allows to generate high-throughput lazy-loading proxies.
+ * @param <T> type of interface/class for which this factory constructs proxies for
+ * @param <C> resolver type that resolves instances of T
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class MxProxyFactory<T, C extends Resolvable<T>> extends MxAbstractProxyFactory {
     private static final Logger logger = LoggerFactory.getLogger(MxProxyGenerator.class);
@@ -64,16 +68,21 @@ public final class MxProxyFactory<T, C extends Resolvable<T>> extends MxAbstract
     }
 
     /**
-     * Создает прокси-объект, который реализует заданный интерфейс {@link #getSourceInterface()}, хранит внутри ссылку
-     * на контейнер типа {@link #getContainerClass()}, имеет два конструктора: по умолчанию (для сериализации), и
-     * с одним параметром типа {@link #getContainerClass()}.
+     * <p>
+     * Creates proxy-object that implements given interface {@link #getSourceInterface()} and stores a link to
+     * container of {@link #getContainerClass()} type. The proxy class has two constructors: default (for serialization)
+     * and single parameter-constructor {@link #getContainerClass()}.
      * <p/>
-     * Прокси имеет переопределенный метод toString() который возврящает строку, состоящую из toString() хранимого
-     * в контейнере объекта, hashCode и equals, сравнивающие классы контейнера, целевой интерфейс и значение из
-     * контейнера.
+     * <p>
+     * Proxy overrides {@code toString()} method that returns toString() of stored object from container.
+     * </p>
+     * <p>
+     * Proxies for the same container with same target interface and value from container will be considered equal
+     * in terms of equals and hashCode.
+     * </p>
      *
-     * @param container контейнер
-     * @return прокси
+     * @param container container of proxyed objects
+     * @return created proxy
      */
     public T createProxy(C container) {
         try {

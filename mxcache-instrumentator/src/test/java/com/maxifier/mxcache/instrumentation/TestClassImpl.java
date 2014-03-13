@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.Cached;
@@ -6,10 +9,7 @@ import com.maxifier.mxcache.resource.ResourceReader;
 import com.maxifier.mxcache.resource.ResourceWriter;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.04.2010
- * Time: 12:45:01
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class TestClassImpl implements TestClass {
     int i;

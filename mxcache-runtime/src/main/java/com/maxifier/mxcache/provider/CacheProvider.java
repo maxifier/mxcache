@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.provider;
 
 import com.maxifier.mxcache.caches.Cache;
@@ -12,10 +15,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 10.03.2010
- * Time: 9:24:10
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  * </p>
  * Провайдер кэша должен уметь работать со стратегиями.
  */

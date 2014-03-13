@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.util;
 
 import com.maxifier.mxcache.asm.commons.EmptyVisitor;
 
 /**
- * Created by IntelliJ IDEA.
-* User: dalex
-* Date: 15.04.2010
-* Time: 13:10:02
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 class NameFindVisitor extends EmptyVisitor {
     private String name;

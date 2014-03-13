@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.abs.elementlocked;
 
 import com.maxifier.mxcache.CacheFactory;
@@ -11,16 +14,14 @@ import com.maxifier.mxcache.storage.elementlocked.*;
 
 
 /**
- * Project: Maxifier
- * Created by: Yakoushin Andrey
- * Date: 15.02.2010
- * Time: 13:54:51
- * <p/>
- * Copyright (c) 1999-2009 Magenta Corporation Ltd. All Rights Reserved.
- * Magenta Technology proprietary and confidential.
- * Use is subject to license terms.
+ * AbstractObjectShortCache<E>
  *
- * @author ELectronic ENgine
+ * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
+ *
+ * GENERATED FROM P2PCache.template
+ *
+ * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class AbstractObjectShortCache<E> extends AbstractElementLockedCache implements ObjectShortCache<E>, ObjectShortElementLockedStorage<E> {
     private final ObjectShortCalculatable<E> calculatable;

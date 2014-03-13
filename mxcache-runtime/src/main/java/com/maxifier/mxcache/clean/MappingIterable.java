@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.clean;
 
 import javax.annotation.Nonnull;
@@ -5,10 +8,7 @@ import javax.annotation.Nonnull;
 import java.util.Iterator;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 17.06.11
- * Time: 11:43
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class MappingIterable<F, T> implements Iterable<T> {
     private final Iterable<? extends F> iterable;

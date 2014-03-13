@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.asm.ClassVisitor;
@@ -12,10 +15,7 @@ import static com.maxifier.mxcache.instrumentation.CommonRuntimeTypes.DEFAULT_RE
 import static com.maxifier.mxcache.instrumentation.current.RuntimeTypes.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 04.03.11
- * Time: 12:47
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 class UseProxyInstrumentationStage219 extends UseProxyInstrumentationStage {
     public UseProxyInstrumentationStage219(InstrumentatorImpl instrumentator, ClassVisitor cv, ClassVisitor nextDetector) {

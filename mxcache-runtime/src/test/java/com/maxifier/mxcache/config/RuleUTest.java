@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.config;
 
 import com.maxifier.mxcache.DependencyTracking;
@@ -16,10 +19,7 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 01.05.2010
- * Time: 8:55:46
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class RuleUTest {

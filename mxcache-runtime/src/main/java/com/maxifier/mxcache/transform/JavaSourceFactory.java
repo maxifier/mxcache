@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.transform;
 
 import com.maxifier.mxcache.MxCacheException;
@@ -13,10 +16,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 15.09.2010
- * Time: 13:18:29
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class JavaSourceFactory implements TransformFactory {
     private static final TupleFactory KEY_FACTORY = TupleGenerator.getTupleFactory(Object.class, Object.class);

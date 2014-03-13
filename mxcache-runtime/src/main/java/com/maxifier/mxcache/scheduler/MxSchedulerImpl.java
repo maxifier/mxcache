@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.scheduler;
 
 import org.slf4j.Logger;
@@ -7,10 +10,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 10.11.11
- * Time: 13:05
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class MxSchedulerImpl implements MxScheduler {
     private static final Logger logger = LoggerFactory.getLogger(MxSchedulerImpl.class);

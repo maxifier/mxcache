@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.util;
 
 import javax.annotation.Nonnull;
@@ -6,10 +9,15 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.04.2010
- * Time: 15:03:54
+ * A soft reference that has hashCode and equals methods overriden in a way consistent with most hash collections.
+ *
+ * References will have the same hash code as the original object.
+ * They will be considered equal if they reference the same object and this object hasn't been GC'ed yet.
+ *
+ * Not that when referenced object is GC'ed all references to it will be considered not equal while their hash code will
+ * not change.
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class HashSoftReference<T> extends SoftReference<T> {
     private int hashCode;
@@ -45,16 +53,14 @@ public class HashSoftReference<T> extends SoftReference<T> {
 
         T thisObject = get();
         if (thisObject == null) {
-            // если у нас уже нет возможности сравнить сами объекты, то считаем, что все ссылки вдруг стали неравны.
-            // это не должно порождать броблем, т.к. hashCode у них не меняется, и рефлексивность проверяется раньше.
+            // if we can't compare the actual objects we consider that all references become unequal.
+            // This is consistent with most hash maps as hashCode doesn't change and reflectivity of equals
+            // is still consistent.
             return false;
         }
         T thatObject = that.get();
-        if (thatObject == null) {
-            return false;
-        }
+        return thatObject != null && thisObject.equals(thatObject);
 
-        return thisObject.equals(thatObject);
     }
 
     @Override

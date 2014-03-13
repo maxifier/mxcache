@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.instrumentation.IllegalCachedClass;
@@ -17,10 +20,7 @@ import static com.maxifier.mxcache.asm.Opcodes.ACC_SYNTHETIC;
 import static com.maxifier.mxcache.instrumentation.current.RuntimeTypes.RESOURCE_INSTRUMENTED_ANNOTATION;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 11.03.11
- * Time: 10:56
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ResourceDetector extends ClassAdapter {
     private static final int STATIC_RESOURCE_FIELD_ACCESS = ACC_PRIVATE | ACC_STATIC | ACC_SYNTHETIC;

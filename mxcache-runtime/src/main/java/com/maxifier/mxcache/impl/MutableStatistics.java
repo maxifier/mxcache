@@ -1,13 +1,13 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.interfaces.StatisticsHolder;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 30.08.11
- * Time: 12:24
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface MutableStatistics extends Statistics, StatisticsHolder {
     void hit();

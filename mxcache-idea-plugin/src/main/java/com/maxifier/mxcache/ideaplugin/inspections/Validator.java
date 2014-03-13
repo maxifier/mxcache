@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ideaplugin.inspections;
 
 import javax.annotation.Nonnull;
@@ -6,10 +9,7 @@ import com.intellij.codeInspection.InspectionToolProvider;
 import com.intellij.openapi.components.ApplicationComponent;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 17.03.2010
- * Time: 11:21:19
+* @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class Validator implements ApplicationComponent, InspectionToolProvider {
 

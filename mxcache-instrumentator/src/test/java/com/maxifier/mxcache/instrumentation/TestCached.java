@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.context.CacheContextImpl;
@@ -9,10 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 24.03.2010
- * Time: 11:22:40
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface TestCached extends Serializable {
     void reset();

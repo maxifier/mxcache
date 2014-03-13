@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.provider;
 
 import org.testng.Assert;
@@ -7,10 +10,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 15.03.11
- * Time: 19:22
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 @ReflectiveAnnotationPropertyUTest.TestAnnotation(value = 3, str = "test")

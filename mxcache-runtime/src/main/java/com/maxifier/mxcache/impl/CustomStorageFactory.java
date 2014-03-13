@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.context.CacheContext;
@@ -13,10 +16,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 19.11.2010
-* Time: 10:40:41
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 public class CustomStorageFactory<T> implements StorageFactory<T> {
     private static final Object[] EMPTY_ARRAY = {};

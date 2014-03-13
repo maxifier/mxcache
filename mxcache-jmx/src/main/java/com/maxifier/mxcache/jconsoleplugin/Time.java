@@ -1,11 +1,11 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.jconsoleplugin;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 18.10.2010
-* Time: 9:07:43
-*/
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 final class Time implements Comparable<Time> {
     private final double value;
 

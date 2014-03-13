@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.util;
 
 import gnu.trove.THashMap;
@@ -6,10 +9,7 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 19.10.2010
- * Time: 11:46:45
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class THashMapBuilder<K, V> {
     private final Map<K, V> map = new THashMap<K, V>();

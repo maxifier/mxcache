@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.util;
 
 import com.maxifier.mxcache.asm.ClassVisitor;
@@ -16,10 +19,7 @@ import static com.maxifier.mxcache.asm.Opcodes.*;
 import static com.maxifier.mxcache.asm.commons.Method.getMethod;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 03.03.2010
- * Time: 17:37:24
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class MxGeneratorAdapter extends GeneratorAdapter {
     public static final Method TO_STRING_METHOD = getMethod("java.lang.String toString()");

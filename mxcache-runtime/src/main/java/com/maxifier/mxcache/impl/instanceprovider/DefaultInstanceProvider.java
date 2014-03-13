@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.instanceprovider;
 
 import com.maxifier.mxcache.InstanceProvider;
@@ -10,10 +13,7 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 15.09.2010
- * Time: 9:08:53
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class DefaultInstanceProvider implements InstanceProvider {
     private static final DefaultInstanceProvider INSTANCE = new DefaultInstanceProvider();

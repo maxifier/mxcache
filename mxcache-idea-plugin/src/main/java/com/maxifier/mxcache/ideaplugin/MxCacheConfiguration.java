@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ideaplugin;
 
 import com.intellij.openapi.components.ProjectComponent;
@@ -10,10 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 02.03.12
- * Time: 12:56
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class MxCacheConfiguration implements ProjectComponent, Configurable {
     private final StaticInstrumentorInstaller installer;

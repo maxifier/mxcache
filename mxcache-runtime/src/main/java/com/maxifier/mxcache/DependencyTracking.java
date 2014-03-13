@@ -1,10 +1,10 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 20.04.2010
- * Time: 8:47:53
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  * </p>
  * Тип отслеживания зависимостей
  */

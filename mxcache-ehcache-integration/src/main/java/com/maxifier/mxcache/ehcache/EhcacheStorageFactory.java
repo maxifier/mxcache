@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ehcache;
 
 import com.maxifier.mxcache.provider.CacheDescriptor;
@@ -11,11 +14,10 @@ import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 14.03.11
-* Time: 18:33
-*/
+ * EhcacheStorageFactory
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 public class EhcacheStorageFactory<T> implements StorageFactory<T> {
     private final CacheManager cacheManager;
     private final CacheDescriptor descriptor;

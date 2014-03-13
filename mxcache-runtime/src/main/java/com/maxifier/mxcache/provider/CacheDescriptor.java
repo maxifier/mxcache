@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.provider;
 
 import com.maxifier.mxcache.*;
@@ -26,10 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 22.04.2010
- * Time: 18:05:54
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  * <p>
  * Дескриптор кэша. Хранит всю необходимую информацию для менеджера кэша, чтобы создать экземпляр кэша.
  * Позволяет получать значения свойств.

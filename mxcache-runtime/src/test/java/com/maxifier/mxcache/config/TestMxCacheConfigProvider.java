@@ -1,10 +1,10 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.config;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 19.04.11
- * Time: 9:38
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class TestMxCacheConfigProvider extends MxCacheConfigProviderImpl {
     private final MxCacheConfig bootstrapConfig;

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ideaplugin;
 
 import com.intellij.codeInsight.daemon.HighlightDisplayKey;
@@ -18,10 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 09.04.2010
- * Time: 17:35:28
+* @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class MxCacheInspection extends LocalInspectionTool implements CustomSuppressableInspectionTool {
     private static final String CACHED_NAME = Cached.class.getCanonicalName();

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.resource.MxResource;
@@ -14,10 +17,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.Condition;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 20.04.2010
- * Time: 11:24:42
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class MxResourceUTest {

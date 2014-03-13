@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.clean;
 
 import com.maxifier.mxcache.caches.CleaningNode;
@@ -18,10 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import static org.mockito.Mockito.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 17.06.11
- * Time: 13:12
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @SuppressWarnings({"unchecked"})
 @Test

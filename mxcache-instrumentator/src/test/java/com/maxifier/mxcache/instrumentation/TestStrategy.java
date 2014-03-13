@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.context.CacheContext;
@@ -9,10 +12,7 @@ import com.maxifier.mxcache.provider.CachingStrategy;
 import javax.annotation.Nonnull;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 09.03.11
- * Time: 18:14
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class TestStrategy implements CachingStrategy {
     @Nonnull

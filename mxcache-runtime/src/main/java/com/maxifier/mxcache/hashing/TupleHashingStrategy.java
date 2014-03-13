@@ -1,13 +1,13 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.hashing;
 
 import com.maxifier.mxcache.tuple.Tuple;
 import gnu.trove.TObjectHashingStrategy;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 01.07.2010
- * Time: 14:14:35
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class TupleHashingStrategy implements TObjectHashingStrategy<Tuple> {
     private static final long serialVersionUID = 100L;

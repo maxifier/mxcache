@@ -1,6 +1,5 @@
-/* Copyright (c) 2008-2013 Maxifier Ltd. All Rights Reserved.
- * Maxifier Ltd  proprietary and confidential.
- * Use is subject to license terms.
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
  */
 package com.maxifier.mxcache.instrumentation;
 

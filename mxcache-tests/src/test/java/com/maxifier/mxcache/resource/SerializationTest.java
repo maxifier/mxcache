@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.resource;
 
 import com.maxifier.mxcache.Cached;
@@ -6,10 +9,7 @@ import org.testng.annotations.Test;
 import java.io.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 12.04.2010
- * Time: 9:46:42
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class SerializationTest {

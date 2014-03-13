@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.batch;
 
 import gnu.trove.THashMap;
@@ -5,10 +8,7 @@ import gnu.trove.THashMap;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 25.04.12
- * Time: 15:57
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 final class MapValueStrategy<K, V> implements ValueStrategy<K, Map<K, V>, V, Void> {
     private MapValueStrategy() {}

@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.activity;
 
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 01.07.2010
- * Time: 12:14:52
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 class ActivitySerializableImpl implements Serializable {
     private static final long serialVersionUID = 100L;

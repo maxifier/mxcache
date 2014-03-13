@@ -1,14 +1,14 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.resource;
 
 import java.util.Queue;
 import java.util.Set;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 21.03.11
-* Time: 17:01
-*/
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 public interface DependencyNodeVisitor {
     void visit(DependencyNode node);
 

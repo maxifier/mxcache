@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.mbean;
 
 import com.maxifier.mxcache.caches.Cache;
@@ -21,10 +24,7 @@ import gnu.trove.THashMap;
 import javax.annotation.Nonnull;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 07.04.2010
- * Time: 15:29:18
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class CacheControl implements CacheControlMXBean {
     private final CacheProvider provider;

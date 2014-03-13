@@ -1,13 +1,13 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.proxy.ProxyFactory;
 import com.maxifier.mxcache.proxy.Resolvable;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 19.10.2010
- * Time: 14:55:51
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class TestProxyFactory implements ProxyFactory<String> {
     int call;

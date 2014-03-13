@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.resource;
 
 import javax.annotation.Nonnull;
@@ -5,10 +8,7 @@ import javax.annotation.Nonnull;
 import java.io.ObjectStreamException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 28.02.12
- * Time: 21:44
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class MxStaticResource extends MxResourceImpl {
     public MxStaticResource(@Nonnull String name) {

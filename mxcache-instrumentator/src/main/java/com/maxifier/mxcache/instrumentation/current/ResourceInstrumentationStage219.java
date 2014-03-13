@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.asm.ClassVisitor;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 28.02.12
- * Time: 22:07
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ResourceInstrumentationStage219 extends ResourceInstrumentationStage {
     public ResourceInstrumentationStage219(InstrumentatorImpl instrumentator, ClassVisitor cv, ClassVisitor nextDetector) {

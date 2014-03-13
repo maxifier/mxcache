@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.transform;
 
 import com.maxifier.mxcache.asm.Type;
@@ -5,10 +8,7 @@ import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
 import com.maxifier.mxcache.util.ClassGenerator;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Administrator
- * Date: 12/14/11
- * Time: 11:49 AM
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class IgnoreTransformGenerator extends ScalarTransformGenerator {
     private static final TransformGenerator INSTANCE = new IgnoreTransformGenerator();

@@ -1,14 +1,15 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.mavenplugin;
 
+import com.maxifier.mxcache.PublicAPI;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import java.io.File;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 17.03.2010
- * Time: 15:04:5
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com):5
  * <p/>
  *
  * @goal instrument
@@ -16,6 +17,7 @@ import java.io.File;
  * 
  */
 @SuppressWarnings ({ "JavaDoc" })
+@PublicAPI
 public class InstrumentatorMojo extends AbstractInstrumentatorMojo {
     /**
      * The directory for compiled classes.

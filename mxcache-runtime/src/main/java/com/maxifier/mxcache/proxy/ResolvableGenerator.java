@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.proxy;
 
 import com.maxifier.mxcache.CacheFactory;
@@ -19,10 +22,7 @@ import static com.maxifier.mxcache.asm.Type.getType;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 25.10.2010
- * Time: 9:17:58
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class ResolvableGenerator {
     public static final Type RESOLVABLE_TYPE = getType(Resolvable.class);

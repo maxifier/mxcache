@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.util;
 
 import com.maxifier.mxcache.asm.*;
@@ -21,10 +24,9 @@ import static com.maxifier.mxcache.asm.Type.OBJECT;
 import static com.maxifier.mxcache.asm.Type.getType;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 16.02.2010
- * Time: 19:15:27
+ * CodegenHelper
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class CodegenHelper {
     public static final Type STRING_TYPE = getType(String.class);

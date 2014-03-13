@@ -1,13 +1,13 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 import com.maxifier.mxcache.impl.instanceprovider.DefaultInstanceProvider;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 16.03.11
-* Time: 11:13
-*/
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 class DefaultCacheContext extends AbstractCacheContext {
     @Override
     public InstanceProvider getInstanceProvider() {

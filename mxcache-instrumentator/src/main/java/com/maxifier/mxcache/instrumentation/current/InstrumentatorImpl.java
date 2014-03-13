@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.MxCache;
@@ -10,10 +13,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 17.03.2010
- * Time: 9:14:33
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrumentation.Instrumentator {
     static final String CACHED_DESCRIPTOR = RuntimeTypes.CACHED_TYPE.getDescriptor();

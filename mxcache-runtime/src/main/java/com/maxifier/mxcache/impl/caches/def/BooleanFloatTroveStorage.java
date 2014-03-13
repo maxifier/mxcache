@@ -1,20 +1,21 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.def;
 
 import com.maxifier.mxcache.storage.*;
 
 /**
- * Project: Maxifier
- * Created by: Yakoushin Andrey
- * Date: 15.02.2010
- * Time: 13:54:51
- * <p/>
- * Copyright (c) 1999-2009 Magenta Corporation Ltd. All Rights Reserved.
- * Magenta Technology proprietary and confidential.
- * Use is subject to license terms.
+ * BooleanFloatTroveStorage - default cache storage for caches that has boolean key.
+ * Though "Trove" is used in name, but it's actually not a map, it's just a set of two values.
  *
- * @author ELectronic ENgine
+ * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
+ *
+ * GENERATED FROM #SOURCE#
+ *
+ * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-
 public class BooleanFloatTroveStorage implements BooleanFloatStorage {
     private float trueValue;
     private float falseValue;

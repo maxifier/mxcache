@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.provider;
 
 import com.maxifier.mxcache.util.CodegenHelper;
@@ -7,11 +10,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 14.03.11
-* Time: 18:30
-*/
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 public class ReflectiveAnnotationProperty<A extends Annotation, T> extends AnnotationProperty<A, T> {
     private final Method method;
 

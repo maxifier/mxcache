@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.config;
 
 import gnu.trove.THashSet;
@@ -10,10 +13,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.04.2010
- * Time: 11:08:59
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @XmlRootElement(name = "mxcache")
 final class MxCacheConfig {

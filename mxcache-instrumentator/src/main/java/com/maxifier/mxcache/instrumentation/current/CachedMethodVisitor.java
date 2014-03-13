@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.instrumentation.ClassDefinition;
@@ -15,10 +18,7 @@ import com.maxifier.mxcache.util.MxGeneratorAdapter;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 15.03.2010
- * Time: 14:24:36
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 class CachedMethodVisitor extends MxGeneratorAdapter {
 

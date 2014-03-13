@@ -1,10 +1,10 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.proxy;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 08.11.2010
- * Time: 15:50:53
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ConstResolvable<T> implements Resolvable<T> {
     private final T value;

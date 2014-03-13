@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.CacheFactory;
@@ -14,10 +17,7 @@ import gnu.trove.THashSet;
 import javax.annotation.Nonnull;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 12.04.2010
- * Time: 9:18:30
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class MxResourceFactory {
     private static final Map<String, MxResource> RESOURCES = new THashMap<String, MxResource>();
@@ -33,10 +33,13 @@ public final class MxResourceFactory {
     }
 
     /**
-     * Гарантируется, что для одного имени всегда возвращается один и тот же ресурс.
-     * Настройки ресурса будут загружены из конфигурации или использованы значения по умолчанию.
-     * @param id имя ресурса
-     * @return ресурс с заданным именем
+     * It is guaranteed that this method will always return the same object for a single id.
+     * I.e. resources are singletons.
+     * Use @{link #createResource(Object,String)} to create non-singleton resources.
+     *
+     * @param id resource name
+     *
+     * @return resource with given name
      */
     public static synchronized MxResource getResource(@Nonnull String id) {
         MxResource resource = RESOURCES.get(id);

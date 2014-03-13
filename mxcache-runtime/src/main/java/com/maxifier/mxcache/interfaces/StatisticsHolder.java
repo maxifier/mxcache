@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.interfaces;
 
 import javax.annotation.Nullable;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.09.2010
- * Time: 17:11:55
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface StatisticsHolder {
     /**

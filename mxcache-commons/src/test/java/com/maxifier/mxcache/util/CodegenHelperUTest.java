@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.util;
 
 import com.maxifier.mxcache.asm.Type;
@@ -9,10 +12,9 @@ import static com.maxifier.mxcache.asm.Opcodes.*;
 import static org.testng.Assert.assertEquals;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 15.04.2010
- * Time: 13:37:24
+ * CodegenHelperUTest
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class CodegenHelperUTest {

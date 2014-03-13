@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl;
 
 import javax.annotation.Nonnull;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 10.03.2010
- * Time: 9:26:48
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class CacheId {
     @Nonnull

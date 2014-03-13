@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 import com.maxifier.mxcache.storage.Storage;
@@ -5,10 +8,7 @@ import com.maxifier.mxcache.storage.Storage;
 import java.lang.annotation.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 15.11.2010
- * Time: 9:47:57
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

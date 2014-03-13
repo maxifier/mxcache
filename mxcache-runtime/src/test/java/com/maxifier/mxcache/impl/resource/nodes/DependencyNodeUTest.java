@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.resource.nodes;
 
 import com.maxifier.mxcache.caches.CleaningNode;
@@ -9,10 +12,7 @@ import org.testng.annotations.Test;
 import java.util.concurrent.locks.Lock;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 22.06.11
- * Time: 10:06
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @SuppressWarnings({"UnusedAssignment"})
 @Test

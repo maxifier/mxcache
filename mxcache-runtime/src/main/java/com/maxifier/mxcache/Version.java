@@ -1,10 +1,10 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 24.04.12
- * Time: 9:32
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class Version implements Comparable<Version> {
     public static final Version UNKNOWN = new Version("UNKNOWN");
@@ -33,7 +33,8 @@ public class Version implements Comparable<Version> {
                 if (p2 == n2) {
                     return 0;
                 } else {
-                    // да, тут инвертированный порядок - более короткая версия всегда старше, e.g. 2.2.3-SNAPSHOT меньше  2.2.3
+                    // yes the order is inverted as shorter version is always older,
+                    // e.g. 2.2.3-SNAPSHOT is less than  2.2.3
                     return 1;
                 }
             } else if (p2 == n2) {

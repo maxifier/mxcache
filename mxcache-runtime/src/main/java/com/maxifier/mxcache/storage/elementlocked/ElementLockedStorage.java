@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.storage.elementlocked;
 
 import com.maxifier.mxcache.storage.Storage;
@@ -5,10 +8,7 @@ import com.maxifier.mxcache.storage.Storage;
 import java.util.concurrent.locks.Lock;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 15.11.2010
- * Time: 9:32:08
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface ElementLockedStorage extends Storage {
     Lock getLock();

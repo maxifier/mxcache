@@ -1,10 +1,10 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.batch;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 25.04.12
- * Time: 18:16
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 interface ValueStrategy<KE, V, VE, C> {
     void addUnknown(V knownValues, C composer, int i, KE k);

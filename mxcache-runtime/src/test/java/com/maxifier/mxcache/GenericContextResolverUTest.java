@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 import com.maxifier.mxcache.context.CacheContext;
@@ -9,10 +12,7 @@ import java.util.Arrays;
 import static org.mockito.Mockito.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 10.03.11
- * Time: 16:42
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @SuppressWarnings( { "unchecked" })
 @Test

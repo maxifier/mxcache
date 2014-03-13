@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.*;
@@ -48,52 +51,13 @@ import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 24.03.2010
- * Time: 8:47:52
+ * DynamicInstrumentationFTest
+ *
+ * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class DynamicInstrumentationFTest {
-    /**
-     * It's a bit hacky cause we want to load out own implementation of commons, but we also need some classes from
-     * tests.
-     */
-//    private static final ClassLoader ISOLATED_CLASSLOADER = new ClassLoader() {
-//        @Override
-//        public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-//            if (name.equals(TestCached.class.getName())) {
-//                return TestCached.class;
-//            }
-//            if (name.equals(TestProxied.class.getName())) {
-//                return TestProxied.class;
-//            }
-//            if (name.startsWith("com.magenta.mxcache2.") || name.startsWith("com.maxifier.mxcache.")) {
-//                // exclude references to mxcache classes, but allow utility classes (trove, apache commons, etc.)
-//                // tuples are created in system classloader, so we need all commons to have same TupleGenerator.
-//                throw new ClassNotFoundException();
-//            }
-//            return super.loadClass(name, resolve);
-//        }
-//    };
-
-//    private static final String ASM_JAR_NAME = "mxcache-asm-2.1.8.jar";
-//    private static final String COMMONS_2_0_1_JAR_NAME = "mxcache-commons-2.0.1.jar";
-//    private static final String COMMONS_2_1_0_JAR_NAME = "mxcache-commons-2.1.0.jar";
-
-//    private static final ClassLoader V200_CLASSLOADER = getArtifact(COMMONS_2_0_1_JAR_NAME, ASM_JAR_NAME);
-//    private static final ClassLoader V210_CLASSLOADER = getArtifact(COMMONS_2_1_0_JAR_NAME, ASM_JAR_NAME);
-
-//    private static ClassLoader getArtifact(String... names) {
-//        URL[] urls = new URL[names.length];
-//        for (int i = 0; i<names.length; i++) {
-//            urls[i] = DynamicInstrumentationFTest.class.getClassLoader().getResource(names[i]);
-//        }
-//        return new URLClassLoader(urls, ISOLATED_CLASSLOADER);
-//    }
-
-//    private static final Object[] V200 = { Instrumentator200.INSTANCE, V200_CLASSLOADER };
-//    private static final Object[] V210 = { Instrumentator210.INSTANCE, V210_CLASSLOADER};
     private static final Object[] V219  = { InstrumentatorProvider.getAvailableVersions().get("2.1.9"), null};
     private static final Object[] V229  = { InstrumentatorProvider.getAvailableVersions().get("2.2.9"), null };
     private static final Object[] V2228 = { InstrumentatorProvider.getAvailableVersions().get("2.2.28"), null };

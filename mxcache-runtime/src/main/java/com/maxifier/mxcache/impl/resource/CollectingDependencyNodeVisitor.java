@@ -1,13 +1,13 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.resource;
 
 import java.util.Queue;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 17.06.11
- * Time: 11:58
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 class CollectingDependencyNodeVisitor implements DependencyNodeVisitor {
     private final Set<DependencyNode> nodes;

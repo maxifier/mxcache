@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.Cached;
@@ -5,10 +8,7 @@ import com.maxifier.mxcache.Cached;
 import java.io.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 12.04.2010
- * Time: 11:57:24
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class TestSerializationClassImplWithReadObject implements TestSerializationClass, Serializable {
     TestSerializationClassImplWithReadObject(String s) {

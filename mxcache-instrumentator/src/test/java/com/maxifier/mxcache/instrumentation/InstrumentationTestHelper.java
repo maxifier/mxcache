@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.util.CodegenHelper;
@@ -10,10 +13,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 12.04.2010
- * Time: 11:42:34
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class InstrumentationTestHelper {
     private InstrumentationTestHelper() {

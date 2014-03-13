@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.guice;
 
 import com.google.inject.BindingAnnotation;
@@ -8,10 +11,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 17.03.11
- * Time: 15:57
+ * GuiceInstanceProviderName
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)

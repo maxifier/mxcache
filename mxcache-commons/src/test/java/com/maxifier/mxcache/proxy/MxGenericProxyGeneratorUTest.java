@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.proxy;
 
 import org.testng.Assert;
@@ -6,10 +9,7 @@ import org.testng.annotations.Test;
 import java.io.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 29.01.2009
- * Time: 17:35:12
+* @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class MxGenericProxyGeneratorUTest {

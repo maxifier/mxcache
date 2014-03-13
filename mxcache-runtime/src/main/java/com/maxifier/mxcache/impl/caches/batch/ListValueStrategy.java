@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.batch;
 
 import java.util.ArrayList;
@@ -5,10 +8,7 @@ import java.util.BitSet;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 25.04.12
- * Time: 14:38
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 final class ListValueStrategy<K, V> implements ValueStrategy<K, List<V>, V, BitSet> {
     private ListValueStrategy() {}

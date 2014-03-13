@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import static org.testng.Assert.assertTrue;
@@ -6,16 +9,10 @@ import static org.testng.Assert.assertFalse;
 import org.testng.annotations.Test;
 
 /**
- * Project: Maxifier
- * Created by: Yakoushin Andrey
- * Date: 27.01.2010
- * Time: 10:13:45
- * <p/>
- * Copyright (c) 1999-2009 Magenta Corporation Ltd. All Rights Reserved.
- * Magenta Technology proprietary and confidential.
- * Use is subject to license terms.
+ * BytecodeMatcherUTest
  *
- * @author ELectronic ENgine
+ * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @SuppressWarnings({"MethodMayBeStatic"})
 @Test

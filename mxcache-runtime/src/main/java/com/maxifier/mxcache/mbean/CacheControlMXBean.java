@@ -1,13 +1,13 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.mbean;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 07.04.2010
- * Time: 15:28:06
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface CacheControlMXBean {
     String getCacheProviderImpl();

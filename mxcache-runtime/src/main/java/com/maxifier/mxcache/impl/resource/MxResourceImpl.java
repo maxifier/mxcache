@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.resource;
 
 import java.util.Iterator;
@@ -17,10 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 12.04.2010
- * Time: 9:18:59
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 class MxResourceImpl extends AbstractDependencyNode implements MxResource, Serializable, CleaningNode {
     private static final Logger logger = LoggerFactory.getLogger(MxResourceImpl.class);

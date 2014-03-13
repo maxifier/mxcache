@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.hashing;
 
 import gnu.trove.TObjectHashingStrategy;
@@ -6,10 +9,7 @@ import java.io.ObjectStreamException;
 import java.util.Arrays;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 01.07.2010
- * Time: 14:42:12
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class ArrayHashingStrategy<T> implements TObjectHashingStrategy<T[]> {
     private static final long serialVersionUID = 100L;

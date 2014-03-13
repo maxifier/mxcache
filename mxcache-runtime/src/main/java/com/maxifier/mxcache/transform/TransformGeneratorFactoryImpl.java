@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.transform;
 
 import com.maxifier.mxcache.CacheFactory;
@@ -16,10 +19,7 @@ import java.util.List;
 import static com.maxifier.mxcache.transform.InvocationType.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.09.2010
- * Time: 18:59:42
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @SuppressWarnings("deprecation")
 public final class TransformGeneratorFactoryImpl implements TransformGeneratorFactory {
@@ -285,7 +285,7 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
             return STATIC;
         }
         if (keyInstanceMethods) {
-            // у ключа не статические методы мы не смотрим!
+            // Key non-static methods are not evaluated
             throw new IllegalArgumentException("Invalid transform found: " + forwardMethod);
         }
         return owner.isInterface() ? INTERFACE : VIRTUAL;
@@ -321,11 +321,10 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
             case 0:
                 return keyInstanceMethods && !Modifier.isStatic(method.getModifiers());
             case 1:
-                // в качестве трансформаторов у самого ключа могут применяться ТОЛЬКО статические методы
-                // (было бы странно брать экземпляр ключа откуда-то, когда ты сам ключ!)
+                // only zero-arg key methods may be transformer
                 return (!keyInstanceMethods || Modifier.isStatic(method.getModifiers())) && params[0].isAssignableFrom(paramType);
             default:
-                // методы с большим числом аргументов мы не рассматриваем
+                // transformer method can't have more than 1 argument
                 return false;
         }
     }

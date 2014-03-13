@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.util;
 
 import com.maxifier.mxcache.asm.Type;
@@ -5,11 +8,10 @@ import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.tuple.TupleGenerator;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 21.10.2010
-* Time: 18:13:44
-*/
+ * TupleInitializerGenerator
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 public class TupleInitializerGenerator extends Generator {
     private static final Type TUPLE_GENERATOR_TYPE = Type.getType(TupleGenerator.class);
 

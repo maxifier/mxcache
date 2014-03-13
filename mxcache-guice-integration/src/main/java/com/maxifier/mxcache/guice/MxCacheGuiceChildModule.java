@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.guice;
 
 import com.google.inject.AbstractModule;
@@ -15,10 +18,9 @@ import java.util.Map;
 import static com.maxifier.mxcache.asm.Opcodes.ACC_PUBLIC;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 10.03.11
- * Time: 20:04
+ * MxCacheGuiceChildModule
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class MxCacheGuiceChildModule extends AbstractModule {
     private static final Map<Class<? extends CacheContext>, Class<? extends GuiceInstanceProvider>> CACHE = new THashMap<Class<? extends CacheContext>, Class<? extends GuiceInstanceProvider>>();

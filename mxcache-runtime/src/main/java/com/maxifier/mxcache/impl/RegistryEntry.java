@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.NoSuchInstanceException;
@@ -13,10 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 24.06.2010
-* Time: 11:03:20
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheManager<T>> {
     private static final Logger logger = LoggerFactory.getLogger(RegistryEntry.class);

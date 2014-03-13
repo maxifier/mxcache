@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.*;
@@ -18,10 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 27.04.2010
- * Time: 19:15:05
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     private static final DependencyTracking DEFAULT_DEPENDENCY_TRACKING_VALUE = DependencyTracking.INSTANCE;

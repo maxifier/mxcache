@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.guice;
 
 import com.google.inject.Inject;
@@ -9,10 +12,9 @@ import com.maxifier.mxcache.InstanceProvider;
 import javax.annotation.Nonnull;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 18.10.2010
- * Time: 13:54:18
+ * GuiceInstanceProvider
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Singleton
 public class GuiceInstanceProvider extends AbstractCacheContext implements InstanceProvider {

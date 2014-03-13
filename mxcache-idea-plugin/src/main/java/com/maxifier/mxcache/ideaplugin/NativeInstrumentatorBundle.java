@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ideaplugin;
 
 import com.maxifier.mxcache.MxCache;
@@ -8,10 +11,7 @@ import com.maxifier.mxcache.instrumentation.InstrumentatorProvider;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 06.03.12
- * Time: 13:16
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class NativeInstrumentatorBundle implements InstrumentatorBundle {
     @Override

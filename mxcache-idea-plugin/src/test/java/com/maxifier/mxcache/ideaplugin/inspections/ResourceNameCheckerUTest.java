@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ideaplugin.inspections;
 
 import com.maxifier.mxcache.ideaplugin.ResourceNameChecker;
@@ -5,10 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 29.02.12
- * Time: 22:47
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class ResourceNameCheckerUTest {

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.batch;
 
 import gnu.trove.THashSet;
@@ -5,10 +8,7 @@ import gnu.trove.THashSet;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 25.04.12
- * Time: 18:16
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 final class CollectionKeyStrategy<T> implements KeyStrategy<Collection<T>, T, Iterator<T>> {
     private CollectionKeyStrategy() {}

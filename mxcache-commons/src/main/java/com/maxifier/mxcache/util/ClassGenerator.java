@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.util;
 
 import com.maxifier.mxcache.asm.*;
@@ -8,10 +11,11 @@ import static com.maxifier.mxcache.asm.Opcodes.V1_5;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 03.03.11
- * Time: 17:15
+ * ClassGenerator - a wrapper for ClassWriter with some useful methods.
+ *
+ * It simplifies class generation by providing higher-level functions for method definition, field definition, etc.
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ClassGenerator extends SmartClassWriter {
     private static final int DEFAULT_VERSION = V1_5;
@@ -94,7 +98,7 @@ public class ClassGenerator extends SmartClassWriter {
         return new MxField(access, thisType, name, type);
     }
 
-    public Class toClass(ClassLoader classLoader) {
+    public <T> Class<T> toClass(ClassLoader classLoader) {
         if (!endVisited) {
             visitEnd();
         }

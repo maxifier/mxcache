@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.mbean;
 
 import com.maxifier.mxcache.DependencyTracking;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 16.08.2010
- * Time: 14:32:10
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class RuleInfo {
     private final String name;

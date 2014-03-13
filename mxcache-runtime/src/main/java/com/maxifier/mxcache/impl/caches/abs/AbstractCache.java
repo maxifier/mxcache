@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.abs;
 
 import com.maxifier.mxcache.LightweightLock;
@@ -11,10 +14,14 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 08.09.2010
- * Time: 9:51:52
+ * AbstractCache - parent for all caches.
+ *
+ * <p>This class extends LightweightLock making itself a lock. This is due to we want to save some memory.</p>
+ *
+ * <p>It holds a reference to statistics, and contains shorthand methods for
+ * operating with statistics.</p>
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 abstract class AbstractCache extends LightweightLock implements Cache, Storage {
     private final MutableStatistics statistics;

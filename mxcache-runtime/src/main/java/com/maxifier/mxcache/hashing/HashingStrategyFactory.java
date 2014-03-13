@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.hashing;
 
 import com.maxifier.mxcache.context.CacheContext;
@@ -5,10 +8,7 @@ import com.maxifier.mxcache.context.CacheContext;
 import java.lang.reflect.Method;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 01.07.2010
- * Time: 15:01:18
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface HashingStrategyFactory {
     /**

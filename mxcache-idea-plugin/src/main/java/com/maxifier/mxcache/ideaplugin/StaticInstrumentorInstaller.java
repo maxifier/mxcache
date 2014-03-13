@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ideaplugin;
 
 import com.intellij.openapi.components.ProjectComponent;
@@ -11,10 +14,7 @@ import org.jdom.Element;
 import javax.annotation.Nonnull;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 29.03.2010
- * Time: 11:33:11
+* @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class StaticInstrumentorInstaller implements ProjectComponent, JDOMExternalizable {
     private final Project project;

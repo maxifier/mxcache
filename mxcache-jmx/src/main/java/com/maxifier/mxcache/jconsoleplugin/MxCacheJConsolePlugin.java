@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.jconsoleplugin;
 
 import com.sun.tools.jconsole.JConsolePlugin;
@@ -17,10 +20,7 @@ import java.util.regex.PatternSyntaxException;
 import java.awt.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 08.04.2010
- * Time: 14:53:45
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @SuppressWarnings("UnusedDeclaration")
 // used by JConsole

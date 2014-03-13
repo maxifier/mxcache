@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ideaplugin;
 
 import com.intellij.openapi.compiler.FileProcessingCompiler;
@@ -8,10 +11,7 @@ import com.maxifier.mxcache.instrumentation.Instrumentator;
 import javax.annotation.Nonnull;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 29.03.2010
- * Time: 12:31:40
+* @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 class CachedProcessingItem implements FileProcessingCompiler.ProcessingItem {
     private final Instrumentator instrumentator;

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.util.HashWeakReference;
@@ -8,10 +11,7 @@ import java.lang.ref.Reference;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.04.2010
- * Time: 17:20:01
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class AbstractDependencyNode implements DependencyNode {
     /**

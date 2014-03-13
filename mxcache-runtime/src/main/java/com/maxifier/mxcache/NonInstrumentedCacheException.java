@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 import java.lang.reflect.Method;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 07.09.2010
- * Time: 8:22:29
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class NonInstrumentedCacheException extends MxCacheException {
     public NonInstrumentedCacheException(Method m) {

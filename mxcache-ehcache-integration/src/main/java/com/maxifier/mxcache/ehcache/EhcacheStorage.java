@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ehcache;
 
 import com.maxifier.mxcache.storage.elementlocked.ObjectObjectElementLockedStorage;
@@ -10,10 +13,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.03.11
- * Time: 18:33
+ * TupleInitializerGenerator
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 class EhcacheStorage<E, F> implements ObjectObjectElementLockedStorage<E, F> {
     private final ExplicitLockingCache underlyingCache;

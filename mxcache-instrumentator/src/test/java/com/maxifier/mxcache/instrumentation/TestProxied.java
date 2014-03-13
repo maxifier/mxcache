@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 19.10.2010
- * Time: 14:58:05
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface TestProxied extends Serializable {
     String test();

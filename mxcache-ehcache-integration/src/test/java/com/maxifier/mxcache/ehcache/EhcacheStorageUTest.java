@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ehcache;
 
 import com.maxifier.mxcache.Cached;
@@ -5,10 +8,9 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 15.03.11
- * Time: 16:07
+ * EhcacheStorageUTest
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class EhcacheStorageUTest {

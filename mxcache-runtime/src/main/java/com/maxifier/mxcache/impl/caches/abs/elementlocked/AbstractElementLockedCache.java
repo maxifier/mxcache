@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.abs.elementlocked;
 
 import com.maxifier.mxcache.caches.Cache;
@@ -8,10 +11,7 @@ import com.maxifier.mxcache.interfaces.Statistics;
 import java.util.concurrent.locks.Lock;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 08.09.2010
- * Time: 9:51:52
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 abstract class AbstractElementLockedCache implements Cache, ElementLockedStorage {
     protected final Object owner;

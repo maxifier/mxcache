@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ehcache;
 
 import com.maxifier.mxcache.context.CacheContext;
@@ -17,10 +20,9 @@ import java.net.URL;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.03.11
- * Time: 17:42
+ * EhcacheStrategy
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class EhcacheStrategy implements CachingStrategy {
     private static final Logger logger = LoggerFactory.getLogger(EhcacheStrategy.class);

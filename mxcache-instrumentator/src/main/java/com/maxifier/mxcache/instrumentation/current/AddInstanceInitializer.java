@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.asm.ClassAdapter;
@@ -11,10 +14,7 @@ import com.maxifier.mxcache.util.CodegenHelper;
 import java.lang.reflect.Modifier;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 29.02.12
- * Time: 15:00
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class AddInstanceInitializer extends ClassAdapter {
     private final Method method;

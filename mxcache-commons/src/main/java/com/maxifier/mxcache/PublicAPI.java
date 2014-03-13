@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 import java.lang.annotation.Documented;
@@ -8,13 +11,10 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 
 /**
- * Project: Maxifier
- * Created by: Yakoushin Andrey
- * Date: 23.01.2010
- * Time: 15:12:46
- * <p/>
- * Этой аннотацией помечаются методы публичного API. Смело добавляйте эту аннотацию в список исключений для
- * неиспользуемых методов.
+ * This is just a marker annotation that says that this method should not be deleted or modified because it is
+ * a part of public API of MxCache.
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Retention(value = RetentionPolicy.SOURCE)
 @Target(value = {METHOD, TYPE, CONSTRUCTOR, FIELD, PARAMETER})

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.asm.Type;
@@ -5,10 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 25.05.11
- * Time: 9:22
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class CalculatableHelperUTest {
     @Test

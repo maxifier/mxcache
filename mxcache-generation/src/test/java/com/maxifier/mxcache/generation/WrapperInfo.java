@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.generation;
 
 import com.maxifier.mxcache.util.THashMapBuilder;
@@ -6,11 +9,10 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * Created by IntelliJ IDEA.
-* User: dalex
-* Date: 14.04.2010
-* Time: 13:07:34
-*/
+ * WrapperInfo
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 class WrapperInfo {
     private final String primitive;
     private final String className;

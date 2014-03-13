@@ -1,9 +1,15 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.proxy;
 
 import javax.annotation.Nonnull;
 
 import java.io.Serializable;
 
+/**
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 public class MxGenericProxy<T, C extends Resolvable<T>> extends MxProxy<T, C> implements Serializable {
     @Nonnull
     protected final C value;

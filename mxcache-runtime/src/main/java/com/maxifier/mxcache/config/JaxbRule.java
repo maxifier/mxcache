@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.config;
 
 import com.maxifier.mxcache.DependencyTracking;
@@ -18,10 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 21.04.2010
- * Time: 13:18:28
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 class JaxbRule implements Rule {
     private static class PropertyValueImpl {

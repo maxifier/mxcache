@@ -1,10 +1,10 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 24.03.2010
- * Time: 11:59:35
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class NonCachedShortcut {
     public void doSomething() {}

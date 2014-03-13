@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.caches.Calculable;
@@ -22,10 +25,7 @@ import javax.annotation.Nullable;
 import javax.management.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 03.03.2010
- * Time: 17:59:10
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class CacheProviderImpl implements CacheProvider {
     private static final Logger logger = LoggerFactory.getLogger(CacheProviderImpl.class);

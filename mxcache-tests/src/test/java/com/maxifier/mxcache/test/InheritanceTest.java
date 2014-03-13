@@ -1,13 +1,13 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.test;
 
 import com.maxifier.mxcache.Cached;
 import org.testng.annotations.Test;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 01.04.2010
- * Time: 14:26:19
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class InheritanceTest {

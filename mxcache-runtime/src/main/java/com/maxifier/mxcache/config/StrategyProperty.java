@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.config;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -5,10 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 30.04.2010
- * Time: 19:24:23
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class StrategyProperty {
     @XmlAttribute(required = true)

@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.resource.ResourceReader;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 29.02.12
- * Time: 22:45
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class StaticMethodAccessedBoundResource {
 

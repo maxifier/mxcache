@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.caches.CleaningNode;
@@ -8,10 +11,7 @@ import javax.annotation.Nonnull;
 import java.lang.ref.Reference;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.04.2010
- * Time: 10:45:03
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface DependencyNode {
     /**

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.tuple;
 
 import com.maxifier.mxcache.PublicAPI;
@@ -19,10 +22,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 16.02.2010
- * Time: 18:54:06
+ * TupleGenerator
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class TupleGenerator {
     private static final Type FLOAT_WRAPPER_TYPE = getType(Float.class);
@@ -68,7 +70,8 @@ public final class TupleGenerator {
     private static final Method EQUALS_OBJECT_OBJECT_METHOD = Method.getMethod("boolean equals(Object, Object)");
 
     static {
-        // Мы вынуждены использовать строки, а не классы, потому что в составе idea поставляется старая версия trove
+        // We have to use Strings, not actual classes because old IDEA is distributed with outdated
+        // Trove version where not all of them are present.
         STRATEGY_TYPE.put(Type.BYTE, Type.getObjectType("gnu/trove/TByteHashingStrategy"));
         STRATEGY_TYPE.put(Type.SHORT, Type.getObjectType("gnu/trove/TShortHashingStrategy"));
         STRATEGY_TYPE.put(Type.INT, Type.getObjectType("gnu/trove/TIntHashingStrategy"));
@@ -278,7 +281,7 @@ public final class TupleGenerator {
 
                 Type strategyType = STRATEGY_TYPE.get(type.getSort());
                 if (strategyType != null) {
-                    // для boolean нет стратегий, поэтому разрешенное значение - только null.
+                    // No strategies for boolean, the only allowed value is null
                     visitor.loadArg(1);
                     visitor.push(i);
                     visitor.arrayLoad(OBJECT_TYPE);

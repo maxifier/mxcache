@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.def;
 
 import com.maxifier.mxcache.tuple.Tuple;
@@ -7,18 +10,11 @@ import gnu.trove.*;
 import java.util.*;
 
 /**
- * Project: Maxifier
- * Created by: Yakoushin Andrey
- * Date: 15.02.2010
- * Time: 13:40:10
- * <p/>
- * Copyright (c) 1999-2009 Magenta Corporation Ltd. All Rights Reserved.
- * Magenta Technology proprietary and confidential.
- * Use is subject to license terms.
+ * TupleObjectWeakTroveStorage
  *
- * @author ELectronic ENgine
+ * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-
 public class TupleObjectWeakTroveStorage<V> extends ObjectObjectTroveStorage<Tuple, V> {
     private final List<Tuple> removed = Collections.synchronizedList(new ArrayList<Tuple>());
 

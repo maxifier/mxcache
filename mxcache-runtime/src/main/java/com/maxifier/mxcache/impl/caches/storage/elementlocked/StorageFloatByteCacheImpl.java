@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.storage.elementlocked;
 
 import com.maxifier.mxcache.impl.MutableStatistics;
@@ -16,16 +19,14 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * Project: Maxifier
- * Created by: Yakoushin Andrey
- * Date: 15.02.2010
- * Time: 13:54:51
- * <p/>
- * Copyright (c) 1999-2009 Magenta Corporation Ltd. All Rights Reserved.
- * Magenta Technology proprietary and confidential.
- * Use is subject to license terms.
+ * StorageFloatByteCacheImpl
  *
- * @author ELectronic ENgine
+ * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
+ *
+ * GENERATED FROM StorageP2PCache.template
+ *
+ * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class StorageFloatByteCacheImpl extends AbstractFloatByteCache implements StorageHolder<FloatByteElementLockedStorage> {
     private FloatByteElementLockedStorage storage;

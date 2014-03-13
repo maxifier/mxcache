@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.asm.*;
@@ -10,10 +13,7 @@ import static com.maxifier.mxcache.instrumentation.CommonRuntimeTypes.*;
 import static com.maxifier.mxcache.instrumentation.current.RuntimeTypes.*;
 
 /**
- * Created by IntelliJ IDEA.
-* User: dalex
-* Date: 15.03.2010
-* Time: 14:13:43
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 class CachedInstrumentationStage219 extends CachedInstrumentationStage {
     CachedInstrumentationStage219(InstrumentatorImpl instrumentator, ClassVisitor classWriter, ClassVisitor nextDetector) {

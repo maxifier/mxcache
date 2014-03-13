@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.transform;
 
 import org.slf4j.Logger;
@@ -6,10 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.ref.ReferenceQueue;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 23.04.12
- * Time: 17:59
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class SmartReferenceManager {
     private static final ReferenceQueue QUEUE = new ReferenceQueue();

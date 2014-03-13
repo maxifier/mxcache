@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 import com.maxifier.mxcache.context.CacheContext;
@@ -7,10 +10,7 @@ import gnu.trove.THashSet;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 09.03.11
- * Time: 15:51
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 class GenericContextResolver implements ContextResolver<Object> {
     private final Map<Class, Collection<ContextResolver>> resolverMapping;

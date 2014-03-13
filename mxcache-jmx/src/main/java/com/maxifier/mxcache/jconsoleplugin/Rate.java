@@ -1,11 +1,11 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.jconsoleplugin;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 18.10.2010
-* Time: 9:08:01
-*/
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 final class Rate implements Comparable<Rate> {
     private final double value;
 

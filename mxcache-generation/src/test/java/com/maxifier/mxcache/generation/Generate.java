@@ -1,18 +1,6 @@
-///////////////////////////////////////////////////////////////////////////////
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2.1 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-///////////////////////////////////////////////////////////////////////////////
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.generation;
 
 import org.apache.commons.io.FileUtils;
@@ -24,6 +12,8 @@ import java.io.*;
 /**
  * Generates classes that are created from templates. The "*.template" files must be in
  * the classpath (because Class.getResource() is used to load the files).
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class Generate {
     private static final Logger logger = LoggerFactory.getLogger(Generate.class);

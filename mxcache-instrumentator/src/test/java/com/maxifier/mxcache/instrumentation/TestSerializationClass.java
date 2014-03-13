@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import java.io.IOException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 12.04.2010
- * Time: 11:51:42
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface TestSerializationClass {
     int cached();

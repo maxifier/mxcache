@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.provider;
 
 import com.maxifier.mxcache.Strategy;
@@ -11,10 +14,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 01.05.2010
- * Time: 9:23:55
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class CacheDescriptorUTest {

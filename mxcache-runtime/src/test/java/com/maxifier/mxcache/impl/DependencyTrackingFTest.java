@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.CacheFactory;
@@ -24,10 +27,7 @@ import java.util.Set;
 import static org.testng.Assert.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 21.04.2010
- * Time: 15:19:02
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  * 
  */
 @Test

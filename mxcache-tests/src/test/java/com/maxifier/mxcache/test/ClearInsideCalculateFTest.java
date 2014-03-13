@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.test;
 
 import com.maxifier.mxcache.CacheFactory;
@@ -9,10 +12,7 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 25.10.11
- * Time: 21:15
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class ClearInsideCalculateFTest {

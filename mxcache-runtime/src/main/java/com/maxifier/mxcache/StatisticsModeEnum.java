@@ -1,10 +1,10 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 29.08.11
- * Time: 18:56
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public enum StatisticsModeEnum {
     NONE,

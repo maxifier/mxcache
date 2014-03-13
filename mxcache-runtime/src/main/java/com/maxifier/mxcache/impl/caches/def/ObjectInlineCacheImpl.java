@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.def;
 
 import com.maxifier.mxcache.caches.ObjectCalculatable;
@@ -5,10 +8,7 @@ import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.caches.abs.AbstractObjectCache;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Administrator
- * Date: 12/15/11
- * Time: 12:02 PM
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ObjectInlineCacheImpl<T> extends AbstractObjectCache<T> {
     private volatile Object value = UNDEFINED;

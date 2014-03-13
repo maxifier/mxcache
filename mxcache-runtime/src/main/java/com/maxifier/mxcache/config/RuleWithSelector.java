@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.config;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -6,10 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.04.2010
- * Time: 11:46:14
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @XmlRootElement (name = "rule")
 class RuleWithSelector extends JaxbRule {

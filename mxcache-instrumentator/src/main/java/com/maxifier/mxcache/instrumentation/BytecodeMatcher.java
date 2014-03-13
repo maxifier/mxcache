@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import javax.annotation.Nonnull;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 10.11.2010
- * Time: 10:30:07
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class BytecodeMatcher {
     private final String text;

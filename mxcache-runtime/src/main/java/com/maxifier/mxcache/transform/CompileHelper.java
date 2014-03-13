@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.transform;
 
 import com.maxifier.mxcache.MxCacheException;
@@ -14,6 +17,9 @@ import java.util.Arrays;
 import javax.tools.*;
 import javax.tools.JavaFileObject.Kind;
 
+/**
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 public final class CompileHelper extends ForwardingJavaFileManager<StandardJavaFileManager> {
     private CompileHelper(StandardJavaFileManager fileManager) {
         super(fileManager);

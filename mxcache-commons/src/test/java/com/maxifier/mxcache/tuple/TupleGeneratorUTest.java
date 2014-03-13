@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.tuple;
 
 import gnu.trove.TIntHashingStrategy;
@@ -12,10 +15,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 17.02.2010
- * Time: 9:40:52
+ * TupleGeneratorUTest
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class TupleGeneratorUTest {

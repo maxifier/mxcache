@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.asm.commons.Method;
@@ -12,10 +15,7 @@ import static com.maxifier.mxcache.instrumentation.current.RuntimeTypes.USE_PROX
 import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 19.10.2010
-* Time: 13:37:43
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 class UseProxyDetector extends ClassAdapter {
     private final Map<Method, ProxiedMethodContext> proxiedMethods = new THashMap<Method, ProxiedMethodContext>();

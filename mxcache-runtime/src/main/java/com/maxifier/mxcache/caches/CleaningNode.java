@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.caches;
 
 import com.maxifier.mxcache.impl.resource.DependencyNode;
@@ -6,24 +9,30 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 21.03.11
- * Time: 16:40
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface CleaningNode {
     /**
-     * @return лок, если он есть, null - если нет.
+     * @return lock if any
      */
     @Nullable
     Lock getLock();
 
     /**
-     * Очищает кэш.
+     * Clears the cache.
+     * This method requires a lock, but it doesn't lock anything.
+     * Calling it without proper locking may result in undefined behaviour
+     * (e.g. ConcurrentModificationException or deadlocks)
+     *
+     * Lock must be obtained first with {@link #getLock()} and locked.
      */
     void clear();
 
     DependencyNode getDependencyNode();
 
+    /**
+     * @return owner of cache, null for static caches.
+     */
+    @Nullable
     Object getCacheOwner();
 }

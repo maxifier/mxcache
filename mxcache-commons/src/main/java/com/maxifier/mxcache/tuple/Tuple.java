@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.tuple;
 
 import javax.annotation.Nonnull;
@@ -6,14 +9,14 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 16.02.2010
- * Time: 18:55:04
+ * Tuple - don't try to implement it manually. All the specific implementations are generated on-the-flight by
+ * TupleFactory and TupleGenerator. Tuples are immutable. Tuples are typed, i.e. it may hold only values of specific
+ * type as it's fields. The types are defined at tuple creation time.
  *
- * <p>
- * Класс кортежа. Не стоит его реализовавыть вручную.
  * @see TupleGenerator
+ * @see TupleFactory
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class Tuple implements Serializable, Iterable<Object> {
     /**
@@ -129,8 +132,8 @@ public abstract class Tuple implements Serializable, Iterable<Object> {
      *
      * @param obj object
      *
-     * @param hashingStrategies стратегии хэширования; размер массива должен совпадать с размером кортежа; null означает
-     * использование стратегии по-умолчанию
+     * @param hashingStrategies hashing strategy; the size of array should match tuple size. null strategy means use
+     *                          default strategy.
      * @return true if obj is tuple and this tuple is equal to obj.
      */
     public abstract boolean equals(Object obj, Object... hashingStrategies);

@@ -1,10 +1,10 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 17.03.11
- * Time: 15:39
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  * <p>This is commonly used enum for strategies (e.g. ehcache strategy uses it).
  */
 public enum EvictionPolicyEnum {

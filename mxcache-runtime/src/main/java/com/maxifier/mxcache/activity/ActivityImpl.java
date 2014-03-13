@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.activity;
 
 import javax.annotation.Nonnull;
@@ -11,10 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 01.07.2010
- * Time: 12:10:31
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ActivityImpl implements Activity, Serializable {
     private static final Logger logger = LoggerFactory.getLogger(ActivityImpl.class);
@@ -174,8 +174,8 @@ public class ActivityImpl implements Activity, Serializable {
 
     @Override
     public synchronized void removeListener(ActivityListener listener) {
+        // no list -> nothing to remove
         if (listeners != null) {
-            // если список не создан, то и удалять нечего
             listeners.remove(listener);
         }
     }

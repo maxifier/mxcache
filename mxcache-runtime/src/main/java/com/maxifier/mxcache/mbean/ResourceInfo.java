@@ -1,10 +1,10 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.mbean;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 25.05.11
- * Time: 10:15
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ResourceInfo {
     private final String name;

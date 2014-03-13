@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.resource.nodes;
 
 import com.maxifier.mxcache.caches.CleaningNode;
@@ -10,10 +13,7 @@ import java.lang.ref.WeakReference;
 import javax.annotation.Nonnull;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.04.2010
- * Time: 12:32:45
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class MultipleDependencyNode extends AbstractDependencyNode {
     protected final List<WeakReference<CleaningNode>> instances = new ArrayList<WeakReference<CleaningNode>>();

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.asm.ClassVisitor;
@@ -5,10 +8,7 @@ import com.maxifier.mxcache.asm.ClassVisitor;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.04.2010
- * Time: 8:50:03
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface InstrumentationStage extends ClassVisitor {
     boolean isClassChanged();

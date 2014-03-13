@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.wrapping;
 
 import com.maxifier.mxcache.caches.Cache;
@@ -10,11 +13,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 15.10.2010
-* Time: 9:19:17
-*/
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 class WrapperFactoryImpl implements WrapperFactory {
     private final Constructor<? extends Cache> constructor;
 

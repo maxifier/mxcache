@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 import javax.annotation.Nonnull;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 18.10.2010
- * Time: 11:12:36
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface InstanceProvider {
     /**

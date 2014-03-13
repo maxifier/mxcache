@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.transform;
 
 import com.maxifier.mxcache.InstanceProvider;
@@ -16,10 +19,7 @@ import static com.maxifier.mxcache.asm.Type.getType;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 15.09.2010
-* Time: 12:29:32
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 public class ExternalTransformGenerator extends ScalarTransformGenerator {
     private static final String TRANSFORMATOR_FIELD = "transformator";

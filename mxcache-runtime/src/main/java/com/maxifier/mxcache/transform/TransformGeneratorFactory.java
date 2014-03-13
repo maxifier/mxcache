@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.transform;
 
 import javax.annotation.Nonnull;
@@ -5,10 +8,7 @@ import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 18.10.2010
- * Time: 14:29:00
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface TransformGeneratorFactory {
     TransformGenerator forMethod(java.lang.reflect.Method method) throws InvalidTransformAnnotations;

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.regression;
 
 import com.maxifier.mxcache.Cached;
@@ -5,10 +8,7 @@ import com.maxifier.mxcache.transform.CompileHelper;
 import org.testng.annotations.Test;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 13.02.12
- * Time: 14:36
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class MxCache33UTest {

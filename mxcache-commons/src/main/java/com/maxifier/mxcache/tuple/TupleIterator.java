@@ -1,14 +1,16 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.tuple;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
-* Created by IntelliJ IDEA.
-* User: kochurov
-* Date: 26.01.12
-* Time: 16:06
-*/
+ * TupleIterator
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 public class TupleIterator implements Iterator<Object> {
     private final Tuple objects;
     private int index;

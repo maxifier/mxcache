@@ -1,10 +1,10 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.util;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 15.04.2010
- * Time: 13:41:52
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface TestClass {
     public String test();

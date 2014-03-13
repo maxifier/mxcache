@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.clean;
 
 import com.maxifier.mxcache.caches.CleaningNode;
@@ -6,10 +9,7 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 29.03.2010
- * Time: 13:24:40
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface CacheCleaner {
     /**

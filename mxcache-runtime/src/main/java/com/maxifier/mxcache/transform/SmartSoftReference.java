@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.transform;
 
 import com.maxifier.mxcache.util.HashSoftReference;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 19.10.2010
-* Time: 10:33:44
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 class SmartSoftReference<T> extends HashSoftReference<T> implements SmartReference {
     private Runnable callback;

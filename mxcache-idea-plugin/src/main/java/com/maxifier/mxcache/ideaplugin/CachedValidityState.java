@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ideaplugin;
 
 import com.intellij.openapi.compiler.ValidityState;
@@ -8,11 +11,8 @@ import java.io.DataOutput;
 import java.io.DataInput;
 
 /**
- * Created by IntelliJ IDEA.
-* User: dalex
-* Date: 31.03.2010
-* Time: 15:55:42
-*/
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
 final class CachedValidityState implements ValidityState {
     private final long stamp;
 

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.hashing;
 
 import com.maxifier.mxcache.context.CacheContext;
@@ -10,13 +13,13 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 01.07.2010
- * Time: 15:04:56
- * <p>
- * Этот класс необходимо расширять, если вы хотите сделать поддержку собственных аннотаций для указания стратегии
- * хэширования. Для этого перекройте метод {@link AbstractHashingStrategyFactory#findStrategyClass(com.maxifier.mxcache.context.CacheContext, Class, java.lang.annotation.Annotation[])}.
+ * AbstractHashingStrategyFactory
+ *
+ * Extend this class and override method
+ * {@link #findStrategyClass(com.maxifier.mxcache.context.CacheContext, Class, java.lang.annotation.Annotation[])}.
+ * to add you own hashing-strategy annotations.
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class AbstractHashingStrategyFactory implements HashingStrategyFactory {
     private static final Logger logger = LoggerFactory.getLogger(AbstractHashingStrategyFactory.class);

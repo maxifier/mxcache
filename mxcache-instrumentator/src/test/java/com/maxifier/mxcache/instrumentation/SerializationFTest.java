@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import org.testng.annotations.Test;
@@ -5,10 +8,7 @@ import org.testng.annotations.Test;
 import static com.maxifier.mxcache.instrumentation.InstrumentationTestHelper.instrumentClass;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 12.04.2010
- * Time: 11:47:25
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class SerializationFTest {

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.util;
 
 import com.maxifier.mxcache.asm.ClassVisitor;
@@ -5,10 +8,7 @@ import com.maxifier.mxcache.asm.Opcodes;
 import com.maxifier.mxcache.asm.Type;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 03.03.11
- * Time: 17:25
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class MxField {
     private final int access;

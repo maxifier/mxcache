@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.clean;
 
 import com.maxifier.mxcache.caches.CleaningNode;
@@ -5,10 +8,7 @@ import com.maxifier.mxcache.caches.CleaningNode;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 31.08.2010
- * Time: 10:54:38
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 interface CleanableInstanceList {
     int deepLock();

@@ -1,10 +1,10 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.activity;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 01.07.2010
- * Time: 12:38:40
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface ActivityListener {
     void started(ActivityScope scope);

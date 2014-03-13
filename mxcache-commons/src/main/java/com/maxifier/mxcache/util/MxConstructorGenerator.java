@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.util;
 
 import com.maxifier.mxcache.asm.MethodVisitor;
@@ -8,10 +11,7 @@ import static com.maxifier.mxcache.asm.Opcodes.*;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 03.03.11
- * Time: 17:34
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class MxConstructorGenerator extends MxGeneratorAdapter {
     private final Type superType;

@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.transform;
 
 import com.maxifier.mxcache.provider.Signature;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Administrator
- * Date: 12/14/11
- * Time: 3:23 PM
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class ScalarTransformGenerator implements TransformGenerator {
     public abstract Class getTransformedType(Class in);

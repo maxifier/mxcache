@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import java.lang.instrument.Instrumentation;
@@ -8,16 +11,10 @@ import java.security.ProtectionDomain;
 import com.maxifier.mxcache.util.CodegenHelper;
 
 /**
- * Project: Maxifier
- * Created by: Yakoushin Andrey
- * Date: 25.01.2010
- * Time: 14:20:31
- * <p/>
- * Copyright (c) 1999-2009 Magenta Corporation Ltd. All Rights Reserved.
- * Magenta Technology proprietary and confidential.
- * Use is subject to license terms.
+ * DynamicInstrumentator
  *
- * @author ELectronic ENgine
+ * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class DynamicInstrumentator implements ClassFileTransformer {
     private final Instrumentator instrumentator;

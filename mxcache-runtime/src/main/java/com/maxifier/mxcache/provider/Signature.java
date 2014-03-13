@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.provider;
 
 import com.maxifier.mxcache.PublicAPI;
@@ -18,10 +21,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 09.09.2010
- * Time: 19:40:24
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class Signature {
     private static final String CACHES_PACKAGE_NAME = "com.maxifier.mxcache.caches.";

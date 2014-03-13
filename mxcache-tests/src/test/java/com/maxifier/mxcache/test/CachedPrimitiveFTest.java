@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.test;
 
 import com.maxifier.mxcache.CacheFactory;
@@ -9,10 +12,7 @@ import java.lang.reflect.Method;
 import static org.testng.Assert.assertNull;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 17.03.2010
- * Time: 15:10:21
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class CachedPrimitiveFTest {

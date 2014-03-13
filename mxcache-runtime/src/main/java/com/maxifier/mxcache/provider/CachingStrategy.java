@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.provider;
 
 import com.maxifier.mxcache.context.CacheContext;
@@ -5,10 +8,7 @@ import com.maxifier.mxcache.context.CacheContext;
 import javax.annotation.Nonnull;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 22.04.2010
- * Time: 18:26:55
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface CachingStrategy {
     /**

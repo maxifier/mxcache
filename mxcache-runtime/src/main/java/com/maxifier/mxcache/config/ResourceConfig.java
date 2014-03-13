@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.config;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.04.2010
- * Time: 11:10:19
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ResourceConfig {
     @XmlAttribute(required = true)

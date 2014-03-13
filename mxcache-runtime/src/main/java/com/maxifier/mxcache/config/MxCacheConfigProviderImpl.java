@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.config;
 
 import org.slf4j.Logger;
@@ -13,10 +16,7 @@ import java.util.*;
 import static com.maxifier.mxcache.impl.CacheProviderImpl.registerMBean;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 16.08.2010
- * Time: 14:20:06
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class MxCacheConfigProviderImpl implements MxCacheConfigProvider {
     private static final Logger logger = LoggerFactory.getLogger(MxCacheConfigProviderImpl.class);

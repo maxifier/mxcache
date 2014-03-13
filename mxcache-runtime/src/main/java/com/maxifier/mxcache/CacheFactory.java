@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 import com.maxifier.mxcache.caches.Cache;
@@ -24,10 +27,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 10.03.2010
- * Time: 9:24:40
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class CacheFactory {
     private static final CacheProvider PROVIDER = new CacheProviderImpl();

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.instanceprovider;
 
 import com.maxifier.mxcache.InstanceProvider;
@@ -7,10 +10,7 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
-* Created by IntelliJ IDEA.
-* User: dalex
-* Date: 18.10.2010
-* Time: 11:33:05
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 class BinderImpl<T> implements Binder<T> {
     private final Class<T> cls;

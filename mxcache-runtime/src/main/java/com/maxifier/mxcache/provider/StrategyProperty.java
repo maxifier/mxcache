@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.provider;
 
 import javax.annotation.Nonnull;
@@ -5,27 +8,36 @@ import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 30.04.2010
- * Time: 19:36:29
- * <p>
- * Представляет собой свойство пользовательской стратегии.
+ * A generic user caching strategy property.
+ *
  * @see CacheDescriptor#getProperty(StrategyProperty)
  * @see CacheDescriptor#getProperty(AnnotationProperty)
- * @see AnnotationProperty 
+ * @see AnnotationProperty
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class StrategyProperty<T> {
+    /**
+     * Property name to be used in mxcache.xml descriptor.
+     */
     private final String name;
 
+    /**
+     * Property value type
+     */
     private final Class<T> type;
 
+    /**
+     * Default value of the property.
+     * Will be used if no definition is found in either corresponding annotation if any or mxcache.xml.
+     * It's up to strategy to allow user to leave some properties initialized to default.
+     */
     private final T defaultValue;
 
     /**
-     * @param name название
-     * @param type тип
-     * @param defaultValue значение по умолчанию
+     * @param name property name to be used in mxcache.xml descriptor
+     * @param type property value type
+     * @param defaultValue default value of the property
      */
     public StrategyProperty(@Nonnull String name, @Nonnull Class<T> type, T defaultValue) {
         if (defaultValue != null && !type.isInstance(defaultValue)) {
@@ -37,10 +49,10 @@ public class StrategyProperty<T> {
     }
 
     /**
-     * Создает свойство со значение по умолчанию null.
+     * Creates a property with null-default value.
      *
-     * @param name название
-     * @param type тип
+     * @param name property name to be used in mxcache.xml descriptor.
+     * @param type property value type
      */
     public StrategyProperty(String name, Class<T> type) {
         this(name, type, null);
@@ -63,21 +75,23 @@ public class StrategyProperty<T> {
     }
 
     /**
-     * @return название (под которым свойство записывается в mxcache.xml)
+     * @return property name to be used in mxcache.xml descriptor.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @return тип свойства
+     * @return Property value type
      */
     public Class<T> getType() {
         return type;
     }
 
     /**
-     * @return Значение по умолчанию
+     * @return default value of the property.
+     *          Will be used if no definition is found in either corresponding annotation if any or mxcache.xml.
+     *          It's up to strategy to allow user to leave some properties initialized to default.
      */
     public T getDefaultValue() {
         return defaultValue;

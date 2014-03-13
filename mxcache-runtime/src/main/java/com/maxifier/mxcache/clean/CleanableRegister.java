@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.clean;
 
 import com.maxifier.mxcache.Cached;
@@ -19,16 +22,11 @@ import java.lang.annotation.Annotation;
 import com.maxifier.mxcache.caches.Cache;
 
 /**
- * Project: Maxifier
- * Created by: Yakoushin Andrey
- * Date: 05.02.2010
- * Time: 9:47:32
- * <p/>
- * Copyright (c) 1999-2009 Magenta Corporation Ltd. All Rights Reserved.
- * Magenta Technology proprietary and confidential.
- * Use is subject to license terms.
+ * CleanableRegister - this class maintains a list of Cleanable and cache instances.
+ * It's a single access point to all cache cleaning operations.
  *
- * @author ELectronic ENgine
+ * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class CleanableRegister implements CacheCleaner {
     private static final Logger logger = LoggerFactory.getLogger(CleanableRegister.class);

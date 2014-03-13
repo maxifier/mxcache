@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.config;
 
 import com.maxifier.mxcache.DependencyTracking;
@@ -18,10 +21,7 @@ import java.util.Set;
 import gnu.trove.THashSet;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 20.04.2010
- * Time: 10:21:25
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class MxCacheConfigUTest {

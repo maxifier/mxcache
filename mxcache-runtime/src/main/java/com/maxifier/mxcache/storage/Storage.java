@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.storage;
 
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 08.09.2010
- * Time: 9:01:15
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface Storage {
     /** This object is returned by reference-value storages if no value is set for given key */

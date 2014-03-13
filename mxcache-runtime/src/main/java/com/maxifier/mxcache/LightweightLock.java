@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache;
 
 import java.io.IOException;
@@ -6,10 +9,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.Lock;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 23.11.11
- * Time: 15:45
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  *
  * This lock is similar to {@link java.util.concurrent.locks.ReentrantLock} and is based on it's sync object.
  * But this lock requires much less memory than ReentrantLock.

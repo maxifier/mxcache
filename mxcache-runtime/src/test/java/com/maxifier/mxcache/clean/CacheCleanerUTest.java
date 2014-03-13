@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.clean;
 
 import com.maxifier.mxcache.Cached;
@@ -24,10 +27,7 @@ import com.maxifier.mxcache.caches.Cache;
 import static com.maxifier.mxcache.clean.CacheCleanerUTest.Cleared.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 18.03.2010
- * Time: 15:59:44
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class CacheCleanerUTest {

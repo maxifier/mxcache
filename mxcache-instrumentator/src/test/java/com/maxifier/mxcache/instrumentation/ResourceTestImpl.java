@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.impl.resource.MxResourceFactory;
@@ -5,10 +8,7 @@ import com.maxifier.mxcache.resource.ResourceReader;
 import com.maxifier.mxcache.resource.ResourceWriter;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 14.04.2010
- * Time: 9:12:11
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ResourceTestImpl implements ResourceTest {
     @Override

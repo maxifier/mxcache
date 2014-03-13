@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.provider;
 
 import com.maxifier.mxcache.caches.IntCache;
@@ -11,10 +14,7 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 16.11.2010
- * Time: 10:33:05
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class SignatureUTest {

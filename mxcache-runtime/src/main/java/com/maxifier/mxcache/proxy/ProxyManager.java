@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.proxy;
 
 import com.maxifier.mxcache.CacheFactory;
@@ -11,10 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 25.10.2010
- * Time: 13:51:15
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class ProxyManager {
     private static final Logger logger = LoggerFactory.getLogger(ProxyManager.class);

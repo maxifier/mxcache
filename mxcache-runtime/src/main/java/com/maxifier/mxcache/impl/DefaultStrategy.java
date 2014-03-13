@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.context.CacheContext;
@@ -14,10 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Constructor;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 22.04.2010
- * Time: 18:28:26
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  * <p>
  * Стратегия кэширования по умолчанию.
  */

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.caches.Cache;
@@ -13,10 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import static org.mockito.Mockito.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 03.03.11
- * Time: 18:08
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class NullCacheManagerUTest {

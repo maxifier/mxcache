@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.ideaplugin.inspections;
 
 import com.intellij.codeInspection.*;
@@ -10,10 +13,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
-* User: dalex
-* Date: 17.03.2010
-* Time: 11:39:36
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 public class ResourceCompatibilityInspection extends MxCacheInspection {
     private static final String INSPECTION_ID = "MxCacheResourceCompatibility";

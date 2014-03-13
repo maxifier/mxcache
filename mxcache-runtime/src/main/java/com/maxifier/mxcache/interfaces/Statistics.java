@@ -1,13 +1,14 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.interfaces;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 16.08.2010
- * Time: 14:10:15
+ * Statistics
  *
- * <p>
  * Node: statistics may reflect current state of cache so it may be changed in another thread or event be reset.
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface Statistics {
     /**

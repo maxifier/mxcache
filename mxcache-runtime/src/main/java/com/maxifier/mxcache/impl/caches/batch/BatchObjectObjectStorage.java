@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.impl.caches.batch;
 
 import com.maxifier.mxcache.caches.Calculable;
@@ -7,10 +10,7 @@ import com.maxifier.mxcache.storage.ObjectObjectStorage;
 import javax.annotation.Nullable;
 
 /**
- * Created by IntelliJ IDEA.
- * User: kochurov
- * Date: 24.04.12
- * Time: 18:03
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class BatchObjectObjectStorage<K, V, C, KeyElement, ValueElement, KeyIterator>
         implements ObjectObjectStorage<K, V>, CalculableInterceptor, ObjectObjectCalculatable<K, V> {

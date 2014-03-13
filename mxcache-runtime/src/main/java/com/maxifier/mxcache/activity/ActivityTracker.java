@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
 package com.maxifier.mxcache.activity;
 
 import gnu.trove.THashMap;
@@ -7,10 +10,7 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dalex
- * Date: 01.07.2010
- * Time: 12:10:13
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class ActivityTracker {
     private static final Map<String, Activity> ACTIVITIES = new THashMap<String, Activity>();
@@ -26,12 +26,11 @@ public final class ActivityTracker {
     }
 
     /**
-     * Гарантируется, что для одного имени всегда возвращается один и тот же ресурс.
-     * Настройки ресурса будут загружены из конфигурации или использованы значения по умолчанию.
+     * It is guaranteed that this method will always return the same object for a single id.
      *
-     * @param id имя ресурса
+     * @param id activity name
      *
-     * @return ресурс с заданным именем
+     * @return activity with given name
      */
     public static synchronized Activity getActivity(@Nonnull String id) {
         Activity resource = ACTIVITIES.get(id);
