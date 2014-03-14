@@ -38,6 +38,9 @@
     <properties>
         <sonar.skippedModules>mxcache-asm,jconsole-stub</sonar.skippedModules>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <checkstyle.version>2.9.1</checkstyle.version>
+        <checkstyle.config.file>checkstyle.xml</checkstyle.config.file>
+        <checkstyle.header.file>maxifier-copyright.txt</checkstyle.header.file>
     </properties>
 
     <dependencyManagement>
@@ -126,6 +129,24 @@
                     <target>1.6</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle.version}</version>
+                <configuration>
+                    <configLocation>${checkstyle.config.file}</configLocation>
+                    <headerLocation>${checkstyle.header.file}</headerLocation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
