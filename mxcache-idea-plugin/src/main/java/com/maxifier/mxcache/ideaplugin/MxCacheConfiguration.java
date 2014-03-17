@@ -50,7 +50,7 @@ public class MxCacheConfiguration implements ProjectComponent, Configurable {
         return "MxCache";
     }
 
-    @Override
+    // In IDEA 13 there's no such method, so there's no override
     public Icon getIcon() {
         return null;
     }

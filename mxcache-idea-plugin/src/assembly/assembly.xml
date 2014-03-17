@@ -2,12 +2,12 @@
     <id>idea-plugin</id>
     <includeBaseDirectory>false</includeBaseDirectory>
     <formats>
-        <format>zip</format>
+        <format>jar</format>
     </formats>
     <dependencySets>
         <dependencySet>
+            <unpack>true</unpack>
             <useProjectArtifact>true</useProjectArtifact>
-            <outputDirectory>lib</outputDirectory>
             <includes>
                 <include>commons-io:commons-io</include>
                 <include>com.maxifier.mxcache:mxcache-asm</include>
@@ -15,6 +15,7 @@
                 <include>com.maxifier.mxcache:mxcache-runtime</include>
                 <include>com.maxifier.mxcache:mxcache-idea-plugin</include>
                 <include>com.maxifier.mxcache:mxcache-instrumentator</include>
+                <include>com.maxifier.mxcache:mxcache-instrumentator-facade</include>
                 <include>com.google.code.findbugs:jsr305</include>
             </includes>
             <useStrictFiltering>true</useStrictFiltering>

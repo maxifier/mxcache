@@ -41,7 +41,7 @@
         <checkstyle.version>2.9.1</checkstyle.version>
         <checkstyle.config.file>checkstyle.xml</checkstyle.config.file>
         <checkstyle.header.file>maxifier-copyright.txt</checkstyle.header.file>
-        <idea.sdk.version>8.1</idea.sdk.version>
+        <idea.sdk.version>13.696</idea.sdk.version>
     </properties>
 
     <dependencyManagement>
@@ -120,6 +120,20 @@
             <dependency>
                 <groupId>com.intellij</groupId>
                 <artifactId>extensions</artifactId>
+                <version>${idea.sdk.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.intellij</groupId>
+                <artifactId>jps-server</artifactId>
+                <version>${idea.sdk.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.intellij</groupId>
+                <artifactId>javac2</artifactId>
                 <version>${idea.sdk.version}</version>
                 <scope>compile</scope>
             </dependency>

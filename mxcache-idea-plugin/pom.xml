@@ -39,6 +39,16 @@
         </dependency>
 
         <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>jps-server</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>javac2</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
         </dependency>
