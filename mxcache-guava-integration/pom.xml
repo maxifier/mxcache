@@ -15,24 +15,18 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>13.0.1</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.maxifier.mxcache</groupId>
             <artifactId>mxcache-commons</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.maxifier.mxcache</groupId>
             <artifactId>mxcache-runtime</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.3</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
