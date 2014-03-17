@@ -12,12 +12,11 @@ import com.intellij.psi.PsiLiteralExpression;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.maxifier.mxcache.MxCacheException;
 import com.maxifier.mxcache.instrumentation.Instrumentator;
+import com.maxifier.mxcache.instrumentation.InstrumentatorProvider;
 
 import javax.annotation.Nonnull;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
@@ -45,19 +44,6 @@ public class InstrumentatorFinder implements ProjectComponent {
     @Override
     public String getComponentName() {
         return "InstrumentatorFinder";
-    }
-
-    private final InstrumentatorBundle builtinBundle = new NativeInstrumentatorBundle();
-
-    private final Collection<InstrumentatorBundle> bundles = new ArrayList<InstrumentatorBundle>();
-
-    private InstrumentatorBundle latestBundle = builtinBundle;
-
-    private void addBundle(InstrumentatorBundle bundle) {
-        bundles.add(bundle);
-        if (latestBundle.getVersion().compareTo(bundle.getVersion()) < 0) {
-            latestBundle = bundle;
-        }
     }
 
     public Instrumentator getInstrumentator(final Module module) {
@@ -102,7 +88,13 @@ public class InstrumentatorFinder implements ProjectComponent {
             String versionIdentifier = null;
             for (PsiField psiField : old.getFields()) {
                 if (psiField.getName().equals("VERSION")) {
-                    versionIdentifier = (String) ((PsiLiteralExpression) psiField.getInitializer()).getValue();
+                    PsiLiteralExpression initializer = (PsiLiteralExpression) psiField.getInitializer();
+                    if (initializer != null) {
+                        Object value = initializer.getValue();
+                        if (value instanceof String) {
+                            versionIdentifier = (String) value;
+                        }
+                    }
                 }
             }
             return versionIdentifier;
@@ -155,7 +147,7 @@ public class InstrumentatorFinder implements ProjectComponent {
     }
 
     private Instrumentator getVersion(String version) {
-        return latestBundle.getAvailableVersions().get(version);
+        return InstrumentatorProvider.getAvailableVersions().get(version);
     }
 
     private static final class IdeaVersionException extends MxCacheException {

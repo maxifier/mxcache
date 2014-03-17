@@ -59,12 +59,15 @@ public class CacheAccessorsInspection extends MxCacheInspection {
 
     private void checkNonCachedNonProxy(PsiMethod method, InspectionManager inspectionManager, List<ProblemDescriptor> res) {
         for (PsiParameter param : method.getParameterList().getParameters()) {
-            for (PsiAnnotation annotation : param.getModifierList().getAnnotations()) {
-                PsiJavaCodeReferenceElement ref = annotation.getNameReferenceElement();
-                if (ref != null) {
-                    String qualifiedName = ref.getQualifiedName();
-                    if (isTransform(qualifiedName) || isReversibleTransform(qualifiedName)) {
-                        reportError(inspectionManager, res, annotation, "Only cached methods or proxied methods may have @Transform or @ReversibleTransform annotations");
+            PsiModifierList modifiers = param.getModifierList();
+            if (modifiers != null) {
+                for (PsiAnnotation annotation : modifiers.getAnnotations()) {
+                    PsiJavaCodeReferenceElement ref = annotation.getNameReferenceElement();
+                    if (ref != null) {
+                        String qualifiedName = ref.getQualifiedName();
+                        if (isTransform(qualifiedName) || isReversibleTransform(qualifiedName)) {
+                            reportError(inspectionManager, res, annotation, "Only cached methods or proxied methods may have @Transform or @ReversibleTransform annotations");
+                        }
                     }
                 }
             }
@@ -81,7 +84,8 @@ public class CacheAccessorsInspection extends MxCacheInspection {
                 reportError(inspectionManager, res, cached, "@Cached method should not return void");
             }
         }
-        if (method.getContainingClass().isInterface()) {
+        PsiClass containingClass = method.getContainingClass();
+        if (containingClass != null && containingClass.isInterface()) {
             reportError(inspectionManager, res, cached, "Interface should not have @Cached methods");
         } else {
             if (modifiers.hasModifierProperty("abstract")) {
@@ -98,18 +102,21 @@ public class CacheAccessorsInspection extends MxCacheInspection {
     private void checkParams(PsiMethod method, InspectionManager inspectionManager, List<ProblemDescriptor> res, boolean useProxy) {
         for (PsiParameter param : method.getParameterList().getParameters()) {
             boolean transform = false;
-            for (PsiAnnotation annotation : param.getModifierList().getAnnotations()) {
-                PsiJavaCodeReferenceElement ref = annotation.getNameReferenceElement();
-                if (ref != null) {
-                    String qualifiedName = ref.getQualifiedName();
-                    if (useProxy && isTransform(qualifiedName)) {
-                        reportError(inspectionManager, res, annotation, "Proxied method should have @ReversibleTransform annotation instead of @Transform");
-                    }
-                    if (isTransform(qualifiedName) || isReversibleTransform(qualifiedName)) {
-                        if (transform) {
-                            reportError(inspectionManager, res, annotation, "Duplicate transformation annotation");
-                        } else {
-                            transform = true;
+            PsiModifierList modifiers = param.getModifierList();
+            if (modifiers != null) {
+                for (PsiAnnotation annotation : modifiers.getAnnotations()) {
+                    PsiJavaCodeReferenceElement ref = annotation.getNameReferenceElement();
+                    if (ref != null) {
+                        String qualifiedName = ref.getQualifiedName();
+                        if (useProxy && isTransform(qualifiedName)) {
+                            reportError(inspectionManager, res, annotation, "Proxied method should have @ReversibleTransform annotation instead of @Transform");
+                        }
+                        if (isTransform(qualifiedName) || isReversibleTransform(qualifiedName)) {
+                            if (transform) {
+                                reportError(inspectionManager, res, annotation, "Duplicate transformation annotation");
+                            } else {
+                                transform = true;
+                            }
                         }
                     }
                 }
