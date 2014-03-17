@@ -22,8 +22,6 @@ import java.lang.reflect.InvocationTargetException;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 public class InstrumentatorFinder implements ProjectComponent {
-    private InstrumentatorFinder() { }
-
     @Override
     public void projectOpened() {
     }
