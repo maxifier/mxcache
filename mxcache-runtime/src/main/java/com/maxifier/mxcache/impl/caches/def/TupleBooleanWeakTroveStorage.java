@@ -24,7 +24,6 @@ public class TupleBooleanWeakTroveStorage extends ObjectBooleanTroveStorage<Tupl
 
     private final int[] tupleIndices;
 
-    @Deprecated
     public TupleBooleanWeakTroveStorage() {
         throw new UnsupportedOperationException("TupleBooleanWeakTroveStorage actually is not externalizable");
     }

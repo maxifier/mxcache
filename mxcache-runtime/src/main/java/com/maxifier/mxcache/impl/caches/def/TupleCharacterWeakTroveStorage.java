@@ -24,7 +24,6 @@ public class TupleCharacterWeakTroveStorage extends ObjectCharacterTroveStorage<
 
     private final int[] tupleIndices;
 
-    @Deprecated
     public TupleCharacterWeakTroveStorage() {
         throw new UnsupportedOperationException("TupleCharacterWeakTroveStorage actually is not externalizable");
     }

@@ -20,7 +20,6 @@ public class TupleObjectWeakTroveStorage<V> extends ObjectObjectTroveStorage<Tup
 
     private final int[] tupleIndices;
 
-    @Deprecated
     public TupleObjectWeakTroveStorage() {
         throw new UnsupportedOperationException("TupleObjectWeakTroveStorage actually is not externalizable");
     }

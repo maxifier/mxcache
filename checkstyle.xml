@@ -44,5 +44,10 @@
         <property name="format" value="Created by IntelliJ IDEA"/>
         <property name="message" value="Don't use IntelliJ IDEA default file template" />
     </module>
+
+    <module name="RegexpMultiline">
+        <property name="format" value="[;}{]\s*((?!/\*[^/]*@deprecated +[A-Za-z@0-9_\-]+[^/]*\*/)/\*[^/]+\*/)?\s*@Deprecated"/>
+        <property name="message" value="Deprecated without comment" />
+    </module>
 </module>
 

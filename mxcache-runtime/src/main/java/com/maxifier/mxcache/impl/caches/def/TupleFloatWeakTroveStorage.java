@@ -24,7 +24,6 @@ public class TupleFloatWeakTroveStorage extends ObjectFloatTroveStorage<Tuple> {
 
     private final int[] tupleIndices;
 
-    @Deprecated
     public TupleFloatWeakTroveStorage() {
         throw new UnsupportedOperationException("TupleFloatWeakTroveStorage actually is not externalizable");
     }

@@ -93,7 +93,7 @@ public final class CodegenHelper {
     }
 
     /**
-     * Use this method only for debug!!!
+     * @deprecated Use this method only for debug!!!
      * @param bytecode bytecode of class to verify
      */
     @Deprecated
@@ -102,7 +102,7 @@ public final class CodegenHelper {
     }
 
     /**
-     * Use this method only for debug!!!
+     * @deprecated Use this method only for debug!!!
      *
      * @param bytecode bytecode of class to verify
      * @param loader main class loader
@@ -113,7 +113,7 @@ public final class CodegenHelper {
     }
 
     /**
-     * Use this method only for debug!!!
+     * @deprecated Use this method only for debug!!!
      * @param bytecode bytecode of class to dump
      */
     @Deprecated

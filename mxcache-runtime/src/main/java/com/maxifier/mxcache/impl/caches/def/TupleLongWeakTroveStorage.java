@@ -24,7 +24,6 @@ public class TupleLongWeakTroveStorage extends ObjectLongTroveStorage<Tuple> {
 
     private final int[] tupleIndices;
 
-    @Deprecated
     public TupleLongWeakTroveStorage() {
         throw new UnsupportedOperationException("TupleLongWeakTroveStorage actually is not externalizable");
     }
