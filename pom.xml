@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.maxifier.mxcache</groupId>
+    <artifactId>mxcache</artifactId>
+    <version>2.3.0-SNAPSHOT</version>
+    <name>MxCache</name>
+
+    <parent>
+        <groupId>com.maxifier</groupId>
+        <artifactId>maxifier-project</artifactId>
+        <version>2.5</version>
+    </parent>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>mxcache-instrumentator-facade</module>
+        <module>mxcache-instrumentator</module>
+        <module>mxcache-generation</module>
+        <module>mxcache-runtime</module>
+        <module>mxcache-commons</module>
+        <module>mxcache-idea-plugin</module>
+        <module>mxcache-maven-plugin</module>
+        <module>mxcache-tests</module>
+        <module>mxcache-asm</module>
+        <module>mxcache-jmx</module>
+        <module>mxcache-guice-integration</module>
+        <module>mxcache-ehcache-integration</module>
+        <module>jconsole-stub</module>
+        <module>mxcache-guava-integration</module>
+    </modules>
+
+    <scm>
+        <connection>scm:git:ssh://git.maxifier.com/mxcache.git</connection>
+    </scm>
+
+    <properties>
+        <sonar.skippedModules>mxcache-asm,jconsole-stub</sonar.skippedModules>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <checkstyle.version>2.9.1</checkstyle.version>
+        <checkstyle.config.file>checkstyle.xml</checkstyle.config.file>
+        <checkstyle.header.file>maxifier-copyright.txt</checkstyle.header.file>
+        <idea.sdk.version>13.696</idea.sdk.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>mxcache-runtime</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>mxcache-guice-integration</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>mxcache-instrumentator-facade</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>mxcache-instrumentator</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>mxcache-legacy</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>mxcache-maven-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>mxcache-idea-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>mxcache-asm</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>mxcache-commons</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>mxcache-jmx</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>jconsole-stub</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>com.intellij</groupId>
+                <artifactId>openapi</artifactId>
+                <version>${idea.sdk.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.intellij</groupId>
+                <artifactId>util</artifactId>
+                <version>${idea.sdk.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.intellij</groupId>
+                <artifactId>extensions</artifactId>
+                <version>${idea.sdk.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.intellij</groupId>
+                <artifactId>jps-server</artifactId>
+                <version>${idea.sdk.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.intellij</groupId>
+                <artifactId>javac2</artifactId>
+                <version>${idea.sdk.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jdom</groupId>
+                <artifactId>jdom</artifactId>
+                <version>1.1</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice</artifactId>
+                <version>2.0-m6</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>aopalliance</groupId>
+                <artifactId>aopalliance</artifactId>
+                <version>1.0</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>6.3</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>13.0.1</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>2.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache-core</artifactId>
+                <version>2.0.0</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache-explicitlocking</artifactId>
+                <version>0.2</version>
+                <scope>provided</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.2.1</version>
+                <configuration>
+                    <tagNameFormat>mxcache-@{project.version}</tagNameFormat>
+                    <preparationGoals>clean install</preparationGoals>
+                    <goals>deploy sonar:sonar -Prelease</goals>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>2.0-beta-2</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle.version}</version>
+                <configuration>
+                    <configLocation>${checkstyle.config.file}</configLocation>
+                    <headerLocation>${checkstyle.header.file}</headerLocation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>trove</groupId>
+            <artifactId>trove</artifactId>
+            <version>2.0.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>1.3.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.5.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>5.9</version>
+            <classifier>jdk15</classifier>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>0.9.18</version>
+            <scope>test</scope>
+       </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.8.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+
+</project>

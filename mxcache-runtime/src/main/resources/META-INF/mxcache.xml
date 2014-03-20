@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxcache>
+    <rule>
+        <selector>
+            <annotated>com.maxifier.mxcache.impl.caches.batch.BatchCache</annotated>
+        </selector>
+        <property name="storage.factory" value="com.maxifier.mxcache.impl.caches.batch.BatchFactory" />
+    </rule>
+</mxcache>

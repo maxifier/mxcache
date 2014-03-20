@@ -1,0 +1,224 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
+package com.maxifier.mxcache.impl.caches.storage;
+
+import com.maxifier.mxcache.caches.*;
+import com.maxifier.mxcache.impl.wrapping.Wrapping;
+import com.maxifier.mxcache.storage.#E##F#Storage;
+import com.maxifier.mxcache.storage.Storage;
+import com.maxifier.mxcache.storage.elementlocked.#E##F#ElementLockedStorage;
+import com.maxifier.mxcache.provider.Signature;
+import com.maxifier.mxcache.resource.MxResource;
+import com.maxifier.mxcache.impl.MutableStatisticsImpl;
+import com.maxifier.mxcache.impl.resource.DependencyTracker;
+import com.maxifier.mxcache.impl.resource.ResourceOccupied;
+import com.maxifier.mxcache.interfaces.StatisticsHolder;
+import org.testng.annotations.*;
+
+import java.util.concurrent.locks.*;
+
+import static org.mockito.Mockito.*;
+
+/**
+ * #E#ObjectCacheTest
+ *
+ * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
+ *
+ * GENERATED FROM #SOURCE#
+ *
+ * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
+@Test
+public class #E#ObjectCacheTest {
+    private static final Signature SINGATURE = new Signature(#IF_E##e#.class#ELSE#null#ENDIF#, Object.class);
+
+    private static final #E#ObjectCalculatable CALCULATABLE = new #E#ObjectCalculatable() {
+        @Override
+        public Object calculate(Object owner#IF_E#, #e# o#ENDIF#) {
+            #IF_E#assert o == #ETEST#;#ENDIF#
+            return "123";
+        }
+    };
+
+    @DataProvider(name = "both")
+    public Object[][] v200v210v219() {
+        return new Object[][] {{false}, {true}};
+    }
+
+    @Test(dataProvider = "both")
+    public void testMiss(boolean elementLocked) {
+        #E##F#Storage storage = createStorage(elementLocked);
+
+        when(storage.load(#ETEST#)).thenReturn(Storage.UNDEFINED);
+        when(storage.size()).thenReturn(0);
+
+        #E#ObjectCache cache = (#E#ObjectCache) Wrapping.getFactory(SINGATURE, SINGATURE, elementLocked).
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
+
+        assert cache.getSize() == 0;
+        assert cache.getStatistics().getHits() == 0;
+        assert cache.getStatistics().getMisses() == 0;
+
+        assert cache.getOrCreate(#ETEST#).equals("123");
+
+        verify(storage).size();
+        verify(storage, atLeast(1)).load(#ETEST#);
+        verify(storage).save(#IF_E##ETEST#, #ENDIF#"123");
+        if (elementLocked) {
+            #IF_E#
+                ((#E#ObjectElementLockedStorage)verify(storage, atLeast(1))).lock(#ETEST#);
+                ((#E#ObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(#ETEST#);
+            #ELSE#
+                ((#E#ObjectElementLockedStorage)verify(storage, atLeast(1))).getLock();
+            #ENDIF#
+        }
+        verifyNoMoreInteractions(storage);
+
+        assert cache.getStatistics().getHits() == 0;
+        assert cache.getStatistics().getMisses() == 1;
+    }
+
+    @Test(dataProvider = "both")
+    public void testHit(boolean elementLocked) {
+        #E##F#Storage storage = createStorage(elementLocked);
+
+        #E#ObjectCache cache = (#E#ObjectCache) Wrapping.getFactory(SINGATURE, SINGATURE, elementLocked).
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
+
+        when(storage.load(#ETEST#)).thenReturn("123");
+        when(storage.size()).thenReturn(1);
+
+        assert cache.getSize() == 1;
+        assert cache.getStatistics().getHits() == 0;
+        assert cache.getStatistics().getMisses() == 0;
+
+        assert cache.getOrCreate(#ETEST#).equals("123");
+
+        verify(storage).size();
+        verify(storage, atLeast(1)).load(#ETEST#);
+        if (elementLocked) {
+            #IF_E#
+                ((#E#ObjectElementLockedStorage)verify(storage, atLeast(1))).lock(#ETEST#);
+                ((#E#ObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(#ETEST#);
+            #ELSE#
+                ((#E#ObjectElementLockedStorage)verify(storage, atLeast(1))).getLock();
+            #ENDIF#
+        }
+        verifyNoMoreInteractions(storage);
+
+        assert cache.getStatistics().getHits() == 1;
+        assert cache.getStatistics().getMisses() == 0;
+    }
+
+    @Test(dataProvider = "both")
+    public void testClear(boolean elementLocked) {
+        #E##F#Storage storage = createStorage(elementLocked);
+
+        #E#ObjectCache cache = (#E#ObjectCache) Wrapping.getFactory(SINGATURE, SINGATURE, elementLocked).
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
+
+        cache.clear();
+
+        verify(storage).clear();
+        verifyNoMoreInteractions(storage);
+    }
+
+    @Test(dataProvider = "both")
+    public void testSetDuringDependencyNodeOperations(boolean elementLocked) {
+        #E##F#Storage storage = createStorage(elementLocked);
+
+        when(storage.load(#ETEST#)).thenReturn(Storage.UNDEFINED, "123");
+
+        #E#ObjectCalculatable calculatable = mock(#E#ObjectCalculatable.class);
+        MxResource r = mock(MxResource.class);
+        when(calculatable.calculate("123"#IF_E#, #ETEST##ENDIF#)).thenThrow(new ResourceOccupied(r));
+
+        #E#ObjectCache cache = (#E#ObjectCache) Wrapping.getFactory(SINGATURE, SINGATURE, elementLocked).
+                    wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
+
+        assert cache.getStatistics().getHits() == 0;
+        assert cache.getStatistics().getMisses() == 0;
+
+        assert cache.getOrCreate(#ETEST#).equals("123");
+
+        assert cache.getStatistics().getHits() == 1;
+        assert cache.getStatistics().getMisses() == 0;
+
+        verify(storage, times(2)).load(#ETEST#);
+        if (elementLocked) {
+            #IF_E#
+                ((#E#ObjectElementLockedStorage)verify(storage, atLeast(1))).lock(#ETEST#);
+                ((#E#ObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(#ETEST#);
+            #ELSE#
+                ((#E#ObjectElementLockedStorage)verify(storage, atLeast(1))).getLock();
+            #ENDIF#
+        }
+        verifyNoMoreInteractions(storage);
+        verify(calculatable).calculate("123"#IF_E#, #ETEST##ENDIF#);
+        verifyNoMoreInteractions(calculatable);
+    }
+
+    @Test(dataProvider = "both")
+    public void testResetStat(boolean elementLocked) {
+        #E##F#Storage storage = createStorage(elementLocked);
+
+        when(storage.load(#ETEST#)).thenReturn(Storage.UNDEFINED);
+
+        #E#ObjectCache cache = (#E#ObjectCache) Wrapping.getFactory(SINGATURE, SINGATURE, elementLocked).
+                    wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
+
+        assert cache.getStatistics().getHits() == 0;
+        assert cache.getStatistics().getMisses() == 0;
+
+        assert cache.getOrCreate(#ETEST#).equals("123");
+
+        assert cache.getStatistics().getHits() == 0;
+        assert cache.getStatistics().getMisses() == 1;
+
+        cache.getStatistics().reset();
+
+        assert cache.getStatistics().getHits() == 0;
+        assert cache.getStatistics().getMisses() == 0;
+
+        verify(storage, atLeast(1)).load(#ETEST#);
+        verify(storage).save(#IF_E##ETEST#, #ENDIF#"123");
+        if (elementLocked) {
+            #IF_E#
+                ((#E#ObjectElementLockedStorage)verify(storage, atLeast(1))).lock(#ETEST#);
+                ((#E#ObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(#ETEST#);
+            #ELSE#
+                ((#E#ObjectElementLockedStorage)verify(storage, atLeast(1))).getLock();
+            #ENDIF#   
+        }
+        verifyNoMoreInteractions(storage);
+    }
+
+    private #E##F#Storage createStorage(boolean elementLocked) {
+        #E##F#Storage storage = mock(elementLocked ? #E##F#ElementLockedStorage.class : #E##F#Storage.class);
+        if (elementLocked) {
+            when(((#E##F#ElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
+        }
+        return storage;
+    }
+
+    @Test(dataProvider = "both")
+    public void testTransparentStat(boolean elementLocked) {
+        #E#ObjectStorage storage = mock(elementLocked ? #E#ObjectElementLockedStorage.class : #E#ObjectStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
+
+        #E#ObjectCache cache = (#E#ObjectCache) Wrapping.getFactory(SINGATURE, SINGATURE, elementLocked).
+                wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
+
+        cache.getStatistics();
+
+        verify((StatisticsHolder)storage).getStatistics();
+        verifyNoMoreInteractions(storage);
+    }
+}

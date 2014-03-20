@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxcache>
+    <rule>
+        <selector>
+            <annotated>com.maxifier.mxcache.ehcache.UseEhcache</annotated>
+        </selector>
+        <strategy>com.maxifier.mxcache.ehcache.EhcacheStrategy</strategy>
+    </rule>
+</mxcache>

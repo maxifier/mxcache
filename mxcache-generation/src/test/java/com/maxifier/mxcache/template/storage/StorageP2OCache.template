@@ -1,0 +1,73 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
+package com.maxifier.mxcache.impl.caches.storage;
+
+import com.maxifier.mxcache.impl.MutableStatistics;
+import com.maxifier.mxcache.impl.caches.abs.*;
+import com.maxifier.mxcache.caches.*;
+import com.maxifier.mxcache.storage.*;
+
+import com.maxifier.mxcache.interfaces.Statistics;
+import com.maxifier.mxcache.interfaces.StatisticsHolder;
+
+import javax.annotation.Nonnull;
+
+import javax.annotation.Nullable;
+
+/**
+ * Storage#EG##FG#CacheImpl
+ *
+ * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
+ *
+ * GENERATED FROM #SOURCE#
+ *
+ * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
+public class Storage#EG##FG#CacheImpl extends Abstract#EG##FG#Cache implements StorageHolder<#EG##FG#Storage> {
+    private static final long serialVersionUID = 100L;
+
+    private #EG##FG#Storage storage;
+
+    public Storage#E##F#CacheImpl(Object owner, #EG##FG#Calculatable calculatable, @Nonnull MutableStatistics statistics) {
+        super(owner, calculatable, statistics);
+    }
+
+    @Override
+    public void setStorage(@Nonnull #EG##FG#Storage storage) {
+        if (this.storage != null) {
+            throw new UnsupportedOperationException("Storage already set");
+        }
+        this.storage = storage;
+    }
+
+    @Override
+    public Object load(#IF_E##eg# key#ENDIF#) {
+        return storage.load(#IF_E#key#ENDIF#);
+    }
+
+    @Override
+    public void save(#IF_E##eg# key, #ENDIF##fg# value) {
+        storage.save(#IF_E#key, #ENDIF#value);
+    }
+
+    @Override
+    public void clear() {
+        storage.clear();
+    }
+
+    @Override
+    public int size() {
+        return storage.size();
+    }
+
+    @Nullable
+    @Override
+    public Statistics getStatistics() {
+        if (storage instanceof StatisticsHolder) {
+            return ((StatisticsHolder)storage).getStatistics();
+        }
+        return super.getStatistics();
+    }
+}

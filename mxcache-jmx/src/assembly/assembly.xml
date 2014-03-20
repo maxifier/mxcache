@@ -1,0 +1,32 @@
+<assembly>
+    <id>jconsole-plugin</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <formats>
+        <format>dir</format>
+        <format>zip</format>
+    </formats>
+    <dependencySets>
+        <dependencySet>
+            <outputFileNameMapping>${artifact.artifactId}-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
+            <useProjectArtifact>true</useProjectArtifact>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>com.maxifier.mxcache:mxcache-jmx</include>
+            </includes>
+            <useStrictFiltering>true</useStrictFiltering>
+        </dependencySet>
+    </dependencySets>
+
+    <files>
+        <file>
+            <destName>mxcache-jconsole.bat</destName>
+            <source>${basedir}/src/assembly/mxcache-jconsole.run</source>
+            <filtered>true</filtered>
+        </file>
+        <file>
+            <destName>mxcache-jconsole.sh</destName>
+            <source>${basedir}/src/assembly/mxcache-jconsole.run</source>
+            <filtered>true</filtered>
+        </file>
+    </files>
+</assembly>
