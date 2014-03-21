@@ -32,7 +32,9 @@
     </modules>
 
     <scm>
-        <connection>scm:git:ssh://git.maxifier.com/mxcache.git</connection>
+        <url>https://github.com/maxifier/mxcache.git</url>
+        <connection>scm:git:git://github.com/maxifier/mxcache.git</connection>
+        <developerConnection>scm:git:git@github.com:maxifier/mxcache.git</developerConnection>
     </scm>
 
     <properties>
