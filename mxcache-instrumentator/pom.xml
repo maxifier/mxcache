@@ -4,6 +4,7 @@
     <groupId>com.maxifier.mxcache</groupId>
     <artifactId>mxcache-instrumentator</artifactId>
     <name>MxCache instrumentator</name>
+    <description>Instrumentator core. This jar can also be used for dynamic instrumentation.</description>
 
     <parent>
         <groupId>com.maxifier.mxcache</groupId>
@@ -31,11 +32,6 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>com.maxifier.mxcache</groupId>
-            <artifactId>mxcache-instrumentator-facade</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>com.maxifier.mxcache</groupId>
             <artifactId>mxcache-asm</artifactId>

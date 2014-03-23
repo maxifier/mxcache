@@ -226,11 +226,6 @@ mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/inspections/Re
 mxcache-idea-plugin/src/main/java/com/maxifier/mxcache/ideaplugin/inspections/Validator.java -text
 mxcache-idea-plugin/src/main/resources/META-INF/plugin.xml -text
 mxcache-idea-plugin/src/test/java/com/maxifier/mxcache/ideaplugin/inspections/ResourceNameCheckerUTest.java -text
-mxcache-instrumentator-facade/pom.xml -text
-mxcache-instrumentator-facade/src/main/java/com/maxifier/mxcache/instrumentation/ClassDefinition.java -text
-mxcache-instrumentator-facade/src/main/java/com/maxifier/mxcache/instrumentation/ClassInstrumentationResult.java -text
-mxcache-instrumentator-facade/src/main/java/com/maxifier/mxcache/instrumentation/IllegalCachedClass.java -text
-mxcache-instrumentator-facade/src/main/java/com/maxifier/mxcache/instrumentation/Instrumentator.java -text
 mxcache-instrumentator/pom.xml -text
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/BytecodeMatcher.java -text
 mxcache-instrumentator/src/main/java/com/maxifier/mxcache/instrumentation/CommonRuntimeTypes.java -text

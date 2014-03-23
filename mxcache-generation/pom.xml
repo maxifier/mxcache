@@ -4,6 +4,7 @@
     <groupId>com.maxifier.mxcache</groupId>
     <artifactId>mxcache-generation</artifactId>
     <name>Generator of MxCache cache classes</name>
+    <description>Contains a set of templates and Generator class that generates various cache classes for a combination of different primitive key and value types.</description>
 
     <parent>
         <groupId>com.maxifier.mxcache</groupId>

@@ -4,6 +4,7 @@
     <groupId>com.maxifier.mxcache</groupId>
     <artifactId>mxcache-runtime</artifactId>
     <name>MxCache runtime</name>
+    <description>Constains all classes necessary for launching a MxCache-instrumentated application</description>
 
     <parent>
         <groupId>com.maxifier.mxcache</groupId>

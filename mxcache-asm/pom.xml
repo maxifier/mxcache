@@ -4,6 +4,9 @@
     <groupId>com.maxifier.mxcache</groupId>
     <artifactId>mxcache-asm</artifactId>
     <name>MxCache asm</name>
+    <description>A repackage of ASM 3.2 byte code manipulation library with some fixes from 3.3. 
+                 All classes put into com.maxifier.mxcache.asm package.
+                 (It was done because different versions ASM are incompatible)</description>
 
     <parent>
         <groupId>com.maxifier.mxcache</groupId>
