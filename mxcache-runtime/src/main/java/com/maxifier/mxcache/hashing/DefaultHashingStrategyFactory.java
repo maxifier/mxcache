@@ -10,6 +10,7 @@ import gnu.trove.TObjectIdentityHashingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 
 /**
@@ -33,7 +34,8 @@ public final class DefaultHashingStrategyFactory extends AbstractHashingStrategy
 
     /**
      * {@inheritDoc}
-     * Эта реализация поддерживает аннотаци  
+     * This implementation supports {@link com.maxifier.mxcache.hashing.HashingStrategy} and
+     * {@link com.maxifier.mxcache.hashing.IdentityHashing} annotations.
      */
     @Override
     protected Object findStrategyClass(CacheContext context, Class paramType, Annotation[] annotations) {
@@ -46,7 +48,7 @@ public final class DefaultHashingStrategyFactory extends AbstractHashingStrategy
                     throw new UnsupportedOperationException();
                 }
                 if (paramType.isArray()) {
-                    // массивы по-умолчанию сравниваются на ссылочное равенство
+                    // arrays are compared with referential equality by default
                     return null;
                 }
                 return new TObjectIdentityHashingStrategy();
@@ -59,14 +61,18 @@ public final class DefaultHashingStrategyFactory extends AbstractHashingStrategy
     }
 
     /**
-     * Этот метод должен создавать экземпляр заданного класса стратегии хэширования.
-     * Перекройте этот метод, если требуется нестандартная инициализация для стратегии (например, используется singleton).
-     * Метод не должен выбрасывать исключения, даже если создать не удалось.
-     * Реализация обращается к InstanceProvider.
+     * This method should create an instance of strategy.
+     *
+     * Override it if you need non-standard behavior (e.g. singleton strategy).
+     *
+     * Don't throw exception even if creation hasn't succeeded, return null instead.
+     *
+     * This particular implementation queries {@link com.maxifier.mxcache.InstanceProvider} for instances.
      * @param context cache context
-     * @param strategyClass класс стратегии
-     * @return экземпляр заданного класса стратегии; null, если этого сделать не удалось.
+     * @param strategyClass strategy class
+     * @return an instance of strategy or null if it can't be instantiated
      */
+    @Nullable
     protected <T> T instantiate(CacheContext context, Class<T> strategyClass) {
         try {
             return context.getInstanceProvider().forClass(strategyClass);

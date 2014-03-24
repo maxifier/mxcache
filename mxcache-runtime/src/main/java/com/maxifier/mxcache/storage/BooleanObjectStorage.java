@@ -10,25 +10,28 @@ package com.maxifier.mxcache.storage;
  *
  * GENERATED FROM P2OStorage.template
  *
- * Относительно абстрактных методов этого класса даются следующие гарантии:
- * 1) Методы contains, get и put всегда вызываются с блокировкой.
- * 2) Если реализация использует read-write блокировку, то методы contains и get
- *    вызываются с блокировкой на чтение, а put - с блокировкой на запись.
- * 3) Если метод contains возвращает true, то гарантируется, что вскоре при
- *    удерживаемой блокировке будет вызван метод get с таким же аргументом.
- *    (для метода put таких гарантий не дается!)
- *
+ * <p>
+ * This is a basic implementation of cache storage. It is very similar to a usual map.
+ * It supports two main operations: load and save for corresponding key and value types.
+ * </p>
  *
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface BooleanObjectStorage<F> extends Storage {
     /**
-     * This method should extract value for given key from internal representation.
+     * <p>This method should extract value for given key from internal representation.</p>
+     * <p>It is guaranteed that it would be called with corresponding lock held.</p>
      * @param key key
      * @return {@link Storage#UNDEFINED} if no value for key exists, value itself if it's set for given key.
      */
     Object load(boolean key);
 
+    /**
+     * <p>Saves a value to cache.</p>
+     * <p>It is guaranteed that it would be called with corresponding lock held.</p>
+     * @param key cache key
+     * @param value cache value
+     */
     void save(boolean key, F value);
 }

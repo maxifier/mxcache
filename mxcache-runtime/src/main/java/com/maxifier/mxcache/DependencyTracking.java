@@ -4,17 +4,28 @@
 package com.maxifier.mxcache;
 
 /**
+ * Dependency tracking type
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
- * </p>
- * Тип отслеживания зависимостей
  */
 public enum DependencyTracking {
-    /** По умолчанию (не перекрывает значение) */
+    /**
+     * Use inherited value (e.g. taken from parent or from defaults)
+     */
     DEFAULT,
-    /** Нет отслеживания */
+    /** No dependency tracking */
     NONE,
-    /** Статическое */
+    /**
+     * Caches of all instances of this cache will be cleaned at once.
+     * <p>
+     * It's much cheaper to have static dependency tracking.
+     * If there are a lot of instances with cache and refresh takes quick consider using STATIC tracking
+     * to improve performance.
+     */
     STATIC,
-    /** Динамическое */
+    /**
+     * Each instance has it's own dependency tracking, if a single cache is marked as dirty only this cache
+     * will be cleaned.
+     */
     INSTANCE
 }

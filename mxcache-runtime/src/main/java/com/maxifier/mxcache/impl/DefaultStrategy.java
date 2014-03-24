@@ -17,9 +17,10 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Constructor;
 
 /**
+ * Default caching strategy.
+ * Delegates calls to storage factory (by default it is {@link StorageBasedCacheManager})
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
- * <p>
- * Стратегия кэширования по умолчанию.
  */
 public class DefaultStrategy implements CachingStrategy {
     private static final Logger logger = LoggerFactory.getLogger(DefaultStrategy.class);

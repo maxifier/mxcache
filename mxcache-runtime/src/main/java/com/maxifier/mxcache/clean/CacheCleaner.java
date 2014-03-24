@@ -3,6 +3,7 @@
  */
 package com.maxifier.mxcache.clean;
 
+import com.maxifier.mxcache.PublicAPI;
 import com.maxifier.mxcache.caches.CleaningNode;
 
 import java.lang.annotation.Annotation;
@@ -13,64 +14,62 @@ import java.util.Collection;
  */
 public interface CacheCleaner {
     /**
-     * Очищает все кэши в заданном экземпляре. Не трогает статические кэши.
-     *
-     * @param o экземпляр
+     * Clears all caches in given instance.
+     * Doesn't clean static caches.
      */
+    @PublicAPI
     void clearCacheByInstance(Object o);
 
     /**
-     * Очищает все кэши в заданных экземплярах. Не трогает статические кэши.
-     *
-     * @param o экземпляры
+     * Clears all caches in given instances.
+     * Doesn't clean static caches.
      */
+    @PublicAPI
     void clearCacheByInstances(Object... o);
 
     /**
-     * Очищает все кэши заданного экземпляра, имеющие заданный тег
-     * @param o экземпляр
-     * @param tag тег
+     * Clears all caches in given instance having given tag.
+     * Doesn't clean static caches.
      */
+    @PublicAPI
     void clearInstanceByTag(Object o, String tag);
 
     /**
-     * Очищает все кэши заданного экземпляра, имеющие заданный группу
-     *
-     * @param o   экземпляр
-     * @param group группа
+     * Clears all caches in given instance having given group.
+     * Doesn't clean static caches.
      */
+    @PublicAPI
     void clearInstanceByGroup(Object o, String group);
 
     /**
-     * Очищает все кэши в заданном классе, в том числе все кэши всех экземпляров данного класса (даже объявленные в
-     * предке и в потомках), и все статические кэши, объявленные в данном классе и всех его потомках
-     * (т.е. статические кэши предков не очищаются). 
-     *
-     * @param aClass класс
+     * Clears all non-static caches of given class, including the ones inherited from parent class or declared in
+     * ancestors.
+     * Clears static classes of this class and it's ancestors (leaves parent class static caches untouched).
      */
+    @PublicAPI
     void clearCacheByClass(Class<?> aClass);
 
     /**
-     * Очищает все кэши, принадлежащие к заданной группе
-     * @param group группа
+     * Clears all caches having given group.
      */
+    @PublicAPI
     void clearCacheByGroup(String group);
 
     /**
-     * Очищает все кэши, имеющие заданный тег
-     * @param tag тег
+     * Clears all caches having given tag.
      */
+    @PublicAPI
     void clearCacheByTag(String tag);
 
     /**
-     * Очищает все кэши, аннотированные заданной аннотацией
-     * @param annotationClass класс аннотации
+     * Clears all caches having given annotation class
      */
+    @PublicAPI
     void clearCacheByAnnotation(Class<? extends Annotation> annotationClass);
 
     /**
-     * Очищает все кэши, заданные элементами 
-     * @param elements элементы для очистки
+     * Clears all passed cleaning nodes
      */
+    @PublicAPI
     void clearAll(Collection<? extends CleaningNode> elements);
 }

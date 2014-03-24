@@ -335,12 +335,12 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
         return additionalClasses;
     }
 
-    // Для полей, которые не должны сказаться на serialVersionUID
+    // For fields that should not alter serialVersionUID
     public FieldVisitor visitTransparentField(int access, String name, String desc, String signature, Object value) {
         return cv.visitField(access, name, desc, signature, value);
     }
 
-    // Для методов, которые не должны сказаться на serialVersionUID
+    // For methods that should not alter serialVersionUID
     public MethodVisitor visitTransparentMethod(int access, String name, String desc, String sign, String[] exceptions) {
         return cv.visitMethod(access, name, desc, sign, exceptions);
     }

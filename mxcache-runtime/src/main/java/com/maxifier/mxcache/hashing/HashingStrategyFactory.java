@@ -12,9 +12,9 @@ import java.lang.reflect.Method;
  */
 public interface HashingStrategyFactory {
     /**
-     * @param context контекст запроса
-     * @param method метод
-     * @return подходящую стратегию хэширования, или null, если достаточно стандартной
+     * @param context cache context
+     * @param method method invoked
+     * @return creates a suitable hashing strategy of null if standard one should be used
      */
     Object createHashingStrategy(CacheContext context, Method method);
 }

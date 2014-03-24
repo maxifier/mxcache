@@ -49,5 +49,10 @@
         <property name="format" value="[;}{]\s*((?!/\*[^/]*@deprecated +[A-Za-z@0-9_\-]+[^/]*\*/)/\*[^/]+\*/)?\s*@Deprecated"/>
         <property name="message" value="Deprecated without comment" />
     </module>
+
+    <module name="RegexpSingleline">
+        <property name="format" value="[А-Яа-я]"/>
+        <property name="message" value="Russian characters are prohibited" />
+    </module>
 </module>
 

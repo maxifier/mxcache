@@ -57,8 +57,7 @@ final class StubMethodFactory {
         Type[] args = getArgumentTypes(methodDescriptor);
 
         if (args.length > 1) {
-            // наш класс должен инициализировать тип кортежа, который он использует, поскольку статических типов
-            // кортежей не существует!
+            // our class should initialize tuple classes that it uses as they don't exist already
             context.addStaticInitializer(new TupleInitializerGenerator(args));
         }
 

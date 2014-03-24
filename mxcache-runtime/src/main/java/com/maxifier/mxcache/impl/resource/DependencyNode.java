@@ -28,21 +28,21 @@ public interface DependencyNode {
     void visitDependantNodes(DependencyNodeVisitor visitor);
 
     /**
-     * Добавляет в список все кэши, которые должны быть очищены этим узлом
-     * (только им одним, без учета зависимых от него).
-     * @param elements список кэщей
+     * Adds all caches that should be cleaned with that node to given list
+     * (only by this sole node, not it's transitive dependencies).
+     * @param elements list to add caches
      */
     void appendNodes(TIdentityHashSet<CleaningNode> elements);
 
     /**
-     * Добавляет зависимость.
-     * @param node новый зависимый узел
+     * Adds a dependency on a given node.
+     * @param node new dependency node
      */
     void trackDependency(DependencyNode node);
 
     /**
-     * Добавляет к узлу кэщ, который нужно чистить.
-     * @param cache кэш
+     * Adds a cache that should be managed by this node
+     * @param cache cache
      */
     void addNode(@Nonnull CleaningNode cache);
 }

@@ -5,6 +5,7 @@ package com.maxifier.mxcache.provider;
 
 import com.maxifier.mxcache.util.CodegenHelper;
 
+import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,7 +46,7 @@ public class ReflectiveAnnotationProperty<A extends Annotation, T> extends Annot
     }
 
     @Override
-    public T getFromAnnotation(A annotation) {
+    public T getFromAnnotation(@Nonnull A annotation) {
         try {
             //noinspection unchecked
             return (T) method.invoke(annotation);
