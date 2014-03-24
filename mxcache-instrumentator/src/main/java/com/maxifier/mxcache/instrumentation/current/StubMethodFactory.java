@@ -17,7 +17,6 @@ import static com.maxifier.mxcache.util.CodegenHelper.*;
 import com.maxifier.mxcache.util.ClassGenerator;
 import com.maxifier.mxcache.util.Generator;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
-import com.maxifier.mxcache.util.TupleInitializerGenerator;
 
 /**
  * StubMethodFactory

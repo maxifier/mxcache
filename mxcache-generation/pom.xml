@@ -17,10 +17,5 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>com.maxifier.mxcache</groupId>
-            <artifactId>mxcache-commons</artifactId>
-        </dependency>
     </dependencies>
 </project>

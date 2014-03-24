@@ -3,8 +3,7 @@
  */
 package com.maxifier.mxcache.generation;
 
-import com.maxifier.mxcache.util.THashMapBuilder;
-
+import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -87,7 +86,7 @@ class WrapperInfo {
     }
 
     public String replaceE(String out) {
-        out = replaceConditional(out, new THashMapBuilder<String, Boolean>().put("_E", !primitive.isEmpty()).toMap());
+        out = replaceConditional(out, Collections.singletonMap("_E", !primitive.isEmpty()));
 
         out = Pattern.compile("#e#").matcher(out).replaceAll(primitive);
         out = Pattern.compile("#eg#").matcher(out).replaceAll(object ? "E" : primitive);
@@ -102,7 +101,7 @@ class WrapperInfo {
     }
 
     public String replaceF(String out) {
-        out = replaceConditional(out, new THashMapBuilder<String, Boolean>().put("_F", primitive.isEmpty()).toMap());
+        out = replaceConditional(out, Collections.singletonMap("_F", primitive.isEmpty()));
 
         out = Pattern.compile("#f#").matcher(out).replaceAll(primitive);
         out = Pattern.compile("#fg#").matcher(out).replaceAll(object ? "F" : primitive);

@@ -27,7 +27,6 @@ import com.maxifier.mxcache.transform.*;
 import com.maxifier.mxcache.tuple.*;
 import com.maxifier.mxcache.util.ClassGenerator;
 import com.maxifier.mxcache.util.CodegenHelper;
-import com.maxifier.mxcache.util.ExceptionHelper;
 import com.maxifier.mxcache.util.MxConstructorGenerator;
 import com.maxifier.mxcache.util.MxField;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
@@ -569,7 +568,7 @@ public final class Wrapping {
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-            return ExceptionHelper.rethrowInvocationTargetException(e);
+            return rethrowInvocationTargetException(e);
         }
     }
 
@@ -631,7 +630,17 @@ public final class Wrapping {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-            return ExceptionHelper.rethrowInvocationTargetException(e);
+            return rethrowInvocationTargetException(e);
         }
+    }
+
+    private static <T> T rethrowInvocationTargetException(InvocationTargetException e) {
+        if (e.getTargetException() instanceof Error) {
+            throw (Error) e.getTargetException();
+        }
+        if (e.getTargetException() instanceof RuntimeException) {
+            throw (RuntimeException) e.getTargetException();
+        }
+        throw new RuntimeException(e);
     }
 }

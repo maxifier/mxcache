@@ -11,7 +11,6 @@
             <includes>
                 <include>commons-io:commons-io</include>
                 <include>com.maxifier.mxcache:mxcache-asm</include>
-                <include>com.maxifier.mxcache:mxcache-commons</include>
                 <include>com.maxifier.mxcache:mxcache-runtime</include>
                 <include>com.maxifier.mxcache:mxcache-idea-plugin</include>
                 <include>com.maxifier.mxcache:mxcache-instrumentator</include>
