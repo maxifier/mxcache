@@ -4,6 +4,7 @@
     <groupId>com.maxifier.mxcache</groupId>
     <artifactId>mxcache-guice-integration</artifactId>
     <name>MxCache guice integration</name>
+    <description>Allows to use Guice as an instance provider for MxCache</description>
 
     <parent>
         <groupId>com.maxifier.mxcache</groupId>

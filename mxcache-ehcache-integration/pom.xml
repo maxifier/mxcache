@@ -4,6 +4,7 @@
     <groupId>com.maxifier.mxcache</groupId>
     <artifactId>mxcache-ehcache-integration</artifactId>
     <name>MxCache EhCache strategies</name>
+    <description>A set of custom caching strategies for EhCache framework</description>
 
     <parent>
         <groupId>com.maxifier.mxcache</groupId>

@@ -4,6 +4,7 @@
     <groupId>com.maxifier.mxcache</groupId>
     <artifactId>mxcache-commons</artifactId>
     <name>MxCache commons</name>
+    <description>Common classes, not mxcache-specific</description>
 
     <parent>
         <groupId>com.maxifier.mxcache</groupId>

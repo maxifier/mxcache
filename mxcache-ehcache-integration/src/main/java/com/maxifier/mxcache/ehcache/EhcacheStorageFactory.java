@@ -11,8 +11,6 @@ import net.sf.ehcache.CacheManager;
 
 import javax.annotation.Nonnull;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * EhcacheStorageFactory
  *
@@ -29,7 +27,7 @@ public class EhcacheStorageFactory<T> implements StorageFactory<T> {
 
     @Nonnull
     @Override
-    public Storage createStorage(T owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
+    public Storage createStorage(T owner) {
         String name = descriptor.getCacheName();
         Cache cache = cacheManager.getCache(name);
         return new EhcacheStorage(cache);

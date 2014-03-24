@@ -27,7 +27,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
@@ -270,7 +269,7 @@ public class CacheProviderImplUTest {
 
         @Nonnull
         @Override
-        public Storage createStorage(Object owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
+        public Storage createStorage(Object owner) {
             return new TestStorage();
         }
 
@@ -283,7 +282,7 @@ public class CacheProviderImplUTest {
     public static class InvalidStorageFactory implements StorageFactory {
         @Nonnull
         @Override
-        public Storage createStorage(Object owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
+        public Storage createStorage(Object owner) {
             throw new UnsupportedOperationException();
         }
 

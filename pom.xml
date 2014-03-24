@@ -15,7 +15,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>mxcache-instrumentator-facade</module>
         <module>mxcache-instrumentator</module>
         <module>mxcache-generation</module>
         <module>mxcache-runtime</module>
@@ -60,17 +59,7 @@
             </dependency>
             <dependency>
                 <groupId>com.maxifier.mxcache</groupId>
-                <artifactId>mxcache-instrumentator-facade</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.maxifier.mxcache</groupId>
                 <artifactId>mxcache-instrumentator</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.maxifier.mxcache</groupId>
-                <artifactId>mxcache-legacy</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -274,8 +263,7 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>5.9</version>
-            <classifier>jdk15</classifier>
+            <version>6.3</version>
             <scope>test</scope>
         </dependency>
         

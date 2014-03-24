@@ -4,6 +4,7 @@
     <groupId>com.maxifier.mxcache</groupId>
     <artifactId>mxcache-guava-integration</artifactId>
     <name>MxCache Guava integration</name>
+    <description>A set of custom caching strategies for Google Guava library</description>
 
     <parent>
         <artifactId>mxcache</artifactId>
