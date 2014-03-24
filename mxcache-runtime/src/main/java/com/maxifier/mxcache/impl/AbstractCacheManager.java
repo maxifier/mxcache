@@ -97,9 +97,9 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     }
 
     /**
-     * Создает и регистрирует узел для статических зависимостей. Должен зарегистрировать явные зависимости с помощью registerExplicitDependencies.
+     * Creates static dependency node and registers it's resource dependencies with registerExplicitDependencies.
      *
-     * @return узел зависимостей
+     * @return created dependency node
      */
     protected DependencyNode createStaticNode() {
         DependencyNode node;
@@ -113,9 +113,9 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     }
 
     /**
-     * Создает узел зависимостей для отдельного экземпляра. Должен зарегистрировать явные зависимости с помощью registerExplicitDependencies.
+     * Creates instance dependency node. Must register explicit resource dependencies with registerExplicitDependencies.
      *
-     * @return узел
+     * @return created dependency node
      */
     protected DependencyNode createInstanceNode() {
         DependencyNode node = Wrapping.getSingletonNode(descriptor);
@@ -135,9 +135,9 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     }
 
     /**
-     * Добавляет статические зависимости от ресурсов, заданные через аннотации
+     * Adds explicit resource dependencies to given node.
      *
-     * @param node ухед зависимостей
+     * @param node dependency node
      */
     protected void registerExplicitDependencies(DependencyNode node) {
         if (resourceDependencies != null) {

@@ -8,65 +8,95 @@ import javax.annotation.Nonnull;
 import java.io.Serializable;
 
 /**
+ * <p>
+ * MxResource is very similar to a usual read-write lock but it has an important feature:
+ * it marks all caches that invoked its read lock dirty when corresponding write lock is released.
+ * </p><p>
+ * With MxResource you can organize automatic cleaning of cache that depends on certain data and also guard
+ * yourself from dirty reads.
+ * </p><p>
+ * MxResource is guaranteed to prevent deadlocks on cache cleaning.
+ * </p><p>
+ * Use the usual lock access pattern  with try-finally to access resources:
+ * <code>
+ *     MxResource res = ...
+ *     res.readStart();
+ *     try {
+ *         ...code goes here...
+ *     } finally {
+ *         res.readEnd();
+ *     }
+ * </code>
+ * </p>
+ *
+ * @see com.maxifier.mxcache.impl.resource.MxResourceFactory
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface MxResource extends Serializable {
     /**
-     * Имя ресурса неизменно.
-     * @return имя ресурса.
+     * @return resource name. Never changes.
      */
     @Nonnull
     String getName();
 
     /**
-     * Перевести ресурс в состояние чтения.
-     * Может выбросить ошибку ResourceOccupied. Не рекоммендуется её отлавливать, т.к. это может привести к
-     * возникновению deadlock'ов.
-     * @throws ResourceModificationException если текущий поток уже получил блокировку на запись этого ресурса, и при
-     * этом сам же читает кэш.
-     * Т.е. модификация ресурса НЕ ДОЛЖНА ВЫЗЫВАТЬ обращений к кэшам, зависящим от этого самого ресурса.  
+     * <p>
+     * Corresponds to readLock().lock().
+     * </p><p>
+     * This method may throw {@link com.maxifier.mxcache.impl.resource.ResourceOccupied} error.
+     * Please don't catch it as it may lead to deadlocks.
+     *
+     * @throws ResourceModificationException if current thread holds a write lock.
+     * I.e. resource modification should not invoke caches that depend on the same resource.
      */
     void readStart() throws ResourceModificationException;
 
     /**
-     * Освободить ресурс
+     * Corresponds to readLock().unlock();
      */
     void readEnd();
 
     /**
-     * Перевести ресурс в состояние записи
-     * @throws ResourceModificationException в стеке вызова находится хотя бы один кэшируемый метод. 
+     * Corresponds to writeLock().lock()
+     * @throws ResourceModificationException if there is a cached method in the stack of current thread.
      */
     void writeStart() throws ResourceModificationException;
 
     /**
-     * Освободить ресурс
+     * Corresponds to writeLock().unlock().
+     * This method causes cache cleaning immediately.
+     * After it finishes it is guaranteed that no caches contain the dirty data that depend on previous state of
+     * the resource.
      */
     void writeEnd();
 
     /**
-     * Значени не является точным, поскольку в любой момент состояние может быть изменено в другом потоке
-     * @return true, если ресурс находился в состоянии чтения
+     * Note: a state of isReading() can change quite frequently from other threads. Don't rely on the result unless
+     * that's you who hold the lock.
+     * @return true if someone holds read lock of the resource
      */
     boolean isReading();
 
     /**
-     * Значени не является точным, поскольку в любой момент состояние может быть изменено в другом потоке
-     * @return true, если ресурс находился в состоянии модификации
+     * Note: a state of isWriting() can change quite frequently from other threads. Don't rely on the result unless
+     * that's you who hold the lock.
+     * @return true if someone holds write lock of the resource
      */
     boolean isWriting();
 
     /**
-     * Дождаться окончания записи ресурса.
-     * Этот метод не гарантирует, что ресурс будет свободен, поскольку в любой момент состояние может быть
-     * изменено в другом потоке.
-     * @throws ResourceModificationException если модификацию ресурса начал текущий поток (невозможно дождаться
-     * окончания модификации, если сама модификация себя ждет). 
+     * Waits for other threads to release write lock.
+     *
+     * It doesn't guarantee that you can obtain the lock after it finishes as the lock may be obtained concurrently
+     * by any other thread.
+     * @throws ResourceModificationException if current thread holds write lock (prevent from hanging)
      */
     void waitForEndOfModification() throws ResourceModificationException;
 
     /**
-     * Переводит ресурс в состояние записи и очищает все кэши, которые зависят от данного ресурса.
+     * Clears all dependent caches.
+     * <b>Note: it internally obtains write lock.</b>
      */
     void clearDependentCaches();
 }

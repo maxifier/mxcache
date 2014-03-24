@@ -13,6 +13,7 @@ import com.maxifier.mxcache.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -23,14 +24,14 @@ class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheManager<T
 
     private static final StrategyProperty<Class> STORAGE_FACTORY_PROPERTY = new AnnotationProperty<UseStorageFactory, Class>("storage.factory", Class.class, UseStorageFactory.class) {
         @Override
-        public Class getFromAnnotation(UseStorageFactory annotation) {
+        public Class getFromAnnotation(@Nonnull UseStorageFactory annotation) {
             return annotation.value();
         }
     };
 
     private static final StrategyProperty<Class> STORAGE_PROPERTY = new AnnotationProperty<UseStorage, Class>("storage", Class.class, UseStorage.class) {
         @Override
-        public Class getFromAnnotation(UseStorage annotation) {
+        public Class getFromAnnotation(@Nonnull UseStorage annotation) {
             return annotation.value();
         }
     };

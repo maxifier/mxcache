@@ -141,11 +141,11 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
     };
 
     /**
-     * Инструментирует байткод
-     * @param bytecode байткод класса
-     * @return инструментированный байткод и список дополнительных классов,
-     * или null, если инструментация не требуется
-     * @throws com.maxifier.mxcache.instrumentation.IllegalCachedClass если класс содержит некорректные аннотированные методы
+     * Instruments the bytecode
+     * @param bytecode original class bytecode
+     * @return instrumented bytecode among with generated stuff classes, null if no instrumentation is required.
+     * @throws com.maxifier.mxcache.instrumentation.IllegalCachedClass if there are incorrect annotated methods
+     *  (e.g. native or abstract methods with @Cached)
      */
     @Override
     public ClassInstrumentationResult instrument(byte[] bytecode) {

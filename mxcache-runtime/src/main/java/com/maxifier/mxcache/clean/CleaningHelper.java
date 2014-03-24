@@ -108,14 +108,14 @@ public final class CleaningHelper {
                 unlockLists(lists);
             }
             TIdentityHashSet<CleaningNode> elementsAndDependent = DependencyTracker.getAllDependentNodes(nodes, elements);
-            // цикл проверки модификации зависимостей
+            // dependency modification check loop
             while (true) {
                 List<Lock> locks = getLocks(elementsAndDependent);
                 lock(locks);
                 try {
                     TIdentityHashSet<CleaningNode> newElements = DependencyTracker.getAllDependentNodes(nodes, elements);
                     if (!newElements.equals(elementsAndDependent)) {
-                        // набор зависимых кэшей изменился, придется еще раз все блокировать заново
+                        // the set of dependent caches has been altered, lock everything again
                         elementsAndDependent = newElements;
                         continue;
                     }
@@ -171,7 +171,7 @@ public final class CleaningHelper {
             try {
                 TIdentityHashSet<CleaningNode> newElements = DependencyTracker.getAllDependentNodes(nodes, elements);
                 if (!newElements.equals(elementsAndDependent)) {
-                    // набор зависимых кэшей изменился, придется еще раз все блокировать заново
+                    // the set of dependent caches has been altered, lock everything again
                     elementsAndDependent = newElements;
                     continue;
                 }

@@ -28,7 +28,7 @@ public class BytecodeMatcher {
     }
 
     private static boolean contains(@Nonnull byte[] haystack, @Nonnull byte[] needle, @Nonnull int[] pf) {
-        //Сопоставление образца
+        // Pattern matching
         int n = haystack.length;
         int m1 = needle.length;
         for (int i = 0, j = 0; i < n; i++) {
@@ -39,9 +39,9 @@ public class BytecodeMatcher {
                 j++;
             }
             if (j == m1) {
-                //Образец обнаружен на сдвиге i - m + 1
-                //Ищем следующее вхождение образца
-                //j = pf[j];
+                // Pattern has been found at offset i - m + 1
+                // Look for the next match
+                // j = pf[j];
                 return true;
             }
         }
@@ -56,7 +56,7 @@ public class BytecodeMatcher {
         int m = needle.length;
         int[] pf = new int[m];
         pf[0] = -1;
-        //Вычисление префикс-функции
+        // Prefix-function computation
         for (int i = 1; i < m; i++) {
             pf[i] = pf[i - 1] + 1;
             while (pf[i] > 0 && needle[i - 1] != needle[pf[i] - 1]) {

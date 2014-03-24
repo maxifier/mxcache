@@ -37,15 +37,15 @@ public final class CleanableRegister implements CacheCleaner {
 
     private static final Cleanable<?> EMPTY_CLEANABLE = new EmptyCleanable();
 
-    //---- Вызывается в секции статической инициализации инструментированного класса -----------------------------------
+    //---- Methods called from static initializer of classes generated with MxCache instrumentator ---------------------
 
     /**
-     * Метод вызывается в секции статической инициализации класса с кешем для регистрации.
-     * @param clazz - регистрируемый класс
-     * @param cleanable - чистильшик класса
-     * @param groups - id кешей по группам
-     * @param tags - id кешей по тегам
-     * @param <T> - тип класса
+     * Called from generated class registration method
+     * @param clazz registered class
+     * @param cleanable cleaner for this class
+     * @param groups cache id by group mapping
+     * @param tags cache id by tag mapping
+     * @param <T> type of class
      */
     public synchronized <T> void registerClass(Class<T> clazz, Cleanable<T> cleanable, @Nullable Map<String, ClassCacheIds> groups, @Nullable Map<String, ClassCacheIds> tags) {
         if (clazz.isInterface()) {
@@ -111,7 +111,7 @@ public final class CleanableRegister implements CacheCleaner {
         }
     }
 
-    //---- Вызывается в модифицированном конструкторе инструментированного класса---------------------------------------
+    //---- Called from modified constructor of instrumented class ---------------------------------------
 
     public void registerInstance(Object o, Class<?> aClass) {
         ClassCleanableInstanceList<?> instanceList = getListByClass(aClass);
@@ -151,7 +151,7 @@ public final class CleanableRegister implements CacheCleaner {
         return classCleanMap.get(aClass);
     }
 
-    //---- Вызывется по запросу пользователя ---------------------------------------------------------------------------
+    //---- Called by used ----------------------------------------------------------------------------------------------
 
 
     @Override
@@ -266,7 +266,7 @@ public final class CleanableRegister implements CacheCleaner {
     }
 
     /**
-     * Из-за особенностей реализации, метод эквивалентен очистке по тегу <code>@полное.имя.класса.Аннотации</code>.
+     * This method is equivalent to cleaning a tag <code>@full.name.of.AnnotationClass</code>.
      */
     @Override
     public void clearCacheByAnnotation(Class<? extends Annotation> annotationClass) {

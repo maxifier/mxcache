@@ -15,44 +15,49 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ * <p>
+ * Cache provider is a single access point for creation of cache instances.
+ * </p><p>
+ * It doesn't create caches by itself but it maintains a list of CacheManagers and delegates all calls to them.
  * </p>
- * Провайдер кэша должен уметь работать со стратегиями.
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface CacheProvider {
     /**
-     * При загрузке класса с кешем, он вызывает этот метод у провайдера.
-     * @param cacheOwner класс, в котором объявлен данный кэешируемый метод
-     * @param cacheId идентификатор кэша
-     * @param keyType тип ключа, null если кэшируемый метод не имеет параметров. Если параметров несколько, то они будут
- * оборачиваться в Tuple подходящего типа
-     * @param valueType тип значения, хранимого в кэше
-     * @param group группа (из аннотации @Cached метода)
-     * @param tags тэги (из аннотации @Cached метода)
-     * @param calculable объект, вычисляющий значение. Должен быть один из классов
-     * @param methodName имя метода
-     * @param methodDesc дескриптор метода
+     * All instrumented classes do invoke this method for every cached method (both static and instance).
+     *
+     * @param cacheOwner cache that defines cache method.
+     * @param cacheId cache id, unique in the class, starting with 0.
+     * @param keyType key type, null if a method has no arguments. If there are few arguments, key type will be a
+     *                subclass of Tuple with corresponding key types.
+     * @param valueType method return type
+     * @param group group name from @Cached annotation
+     * @param tags tag names from @Cached annotation
+     * @param calculable the object that can invoke original method code
+     * @param methodName method name
+     * @param methodDesc method descriptor
      * @param cacheName name of cache, may be null (used by some strategies)
      */
     <T> void registerCache(Class<T> cacheOwner, int cacheId, Class keyType, Class valueType, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, @Nullable String cacheName);
 
     /**
-     * Для статических кэшей вызывается после загрузки класса в секции инициализации, для нестатических - в
-     * конструкторе.
+     * This method is invoked from MxCache-generated code.
+     * For static methods it is invoked from static initialization section, for non-static - from constructor.
      *
-     * @param cacheOwner класс, в котором объявлен данный кэешируемый метод (может не совпадать с классом экземпляра, а
-     * быть его предком)
-     * @param cacheId идентификатор кэша (совпадает с тем, что был передан в registerCache)
-     * @param instance экземпляр объекта с кэшем. Для статических кэшей - null.
-     * @param context context
-     * @return экземпляр кэша
+     * @param cacheOwner cache that defines cache method.
+     * @param cacheId cache id, unique in the class, starting with 0.
+     * @param instance instance of class that holds cache. null for static caches. This instance is guaranteed to be
+     *                 a subclass of cacheOwner.
+     * @param context cache context
+     * @return cache instance
      */
     Cache createCache(@Nonnull Class cacheOwner, int cacheId, @Nullable Object instance, CacheContext context);
 
     CacheDescriptor getDescriptor(CacheId id);
 
     /**
-     * @return Список всех менеджеров.
+     * @return return all cache managers that create caches.
      */
     List<CacheManager> getCaches();
 }

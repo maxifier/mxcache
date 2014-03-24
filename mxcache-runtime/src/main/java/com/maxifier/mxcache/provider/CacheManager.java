@@ -8,18 +8,20 @@ import com.maxifier.mxcache.context.CacheContext;
 import javax.annotation.Nullable;
 
 /**
+ * Every CacheManager corresponds to exactly one @Cache method. It holds an associated CacheDescriptor.
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface CacheManager<T> {
     /**
-     * @return дескриптор, переданный при создании
+     * @return descriptor for the cache
      */
     CacheDescriptor<T> getDescriptor();
 
     /**
-     * Создает экземпляр кэша
-     * @param owner вдаделец кэша
-     * @return экземпляр кэша
+     * Creates a new instance of cache.
+     * @param owner an instance of class that has cached method.
+     * @return created cache instance. Should match key type and value type of cache.
      */
     Cache createCache(@Nullable T owner);
 

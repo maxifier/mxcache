@@ -89,12 +89,12 @@ public abstract class AbstractHashingStrategyFactory implements HashingStrategyF
     }
 
     /**
-     * Этот метод должен создавать подходяшую стратегию хэширования.
+     * This method creates an appropriate hashing strategy
      * @param context context of instance
-     * @param paramType тип параметра, который должен сравниваться
-     * @param annotations аннотации параметра, среди которых необходимо найти аннотацию
-     * @return стратегию хэширования, или null, если стратегия не найдена; рекоммендуется возвратить null и вывести
-     * сообщение в лог, если указана неправильная аннотация или класс стратегии.
+     * @param paramType the type of parameter that would be compared
+     * @param annotations parameter annotations to find the necessary
+     * @return hashing strategy of null if strategy wasn't found.
+     *     It is recommended to log error message and return null if improper annotation or strategy class was specified
      */
     protected abstract Object findStrategyClass(CacheContext context, Class paramType, Annotation[] annotations);
 }

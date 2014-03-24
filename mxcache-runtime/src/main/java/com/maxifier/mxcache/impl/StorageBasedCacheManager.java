@@ -27,6 +27,8 @@ import javax.annotation.Nonnull;
 import java.lang.ref.Reference;
 
 /**
+ * This is a default implementation of CacheManager that handles Storage-based caches.
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
@@ -45,11 +47,11 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
         super(context, descriptor);
         this.storageFactory = storageFactory;
         cacheSignature = descriptor.getSignature();
-        // проверка идет по классу, а не instanceof потому что наследники могут переопределить поведение
         inlineCache = canInlineCache(descriptor, storageFactory);
     }
 
     private boolean canInlineCache(CacheDescriptor<T> descriptor, StorageFactory<T> storageFactory) {
+        // check class, not instanceof as child classes can override the behavior
         return storageFactory.getClass() == DefaultStorageFactory.class &&
                 descriptor.getSignature().getContainer() == null &&
                 !descriptor.isResourceView();

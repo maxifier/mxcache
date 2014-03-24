@@ -49,27 +49,26 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
     public void readStart() throws ResourceModificationException {
         DependencyNode node = DependencyTracker.get();
         if (node == null) {
-            // если кэшей нет, то просто блокируем.
+            // no caches -> just lock
             readLock.lock();
         } else {
             if (!readLock.tryLock()) {
-                // не получиться readLock может только если кто-то пишет
-                // если к ресурсу обратился кэш, то мы должны ему сообщить об этом.
+                // it means that someone holds a write lock
+                // notify caller caches about resource being locked
+                // so they can release their locks in order to avoid deadlocks on cache cleaning.
                 throw new ResourceOccupied(this);
             }
+            // tryLock will succeed if current thread holds a write lock, so check it
             if (lock.isWriteLockedByCurrentThread()) {
-                // если пишет текущий поток, то мы сможем получить readLock.
-                // поэтому проверяем отдельно
-
-                // надо обязательно освободить ресурс!
+                // we have to release it!
                 readLock.unlock();
                 throw new ResourceModificationException("Resource \"" + name + "\" is already being written from current thread");
             }
-            // мы добавляем зависимость, только если мы можем прочитать ресурс.
-            // если же его кто-то пишет, то нет необходимости добавлять зависимость, потому что прочитать мы ничего
-            // пока не сможем, следовательно чистить пока нечего.
+            // we add dependency only if we can read the resource
+            // if someone writes it at the moment there's no point in adding the dependency that would be cleaned
+            // immediately
             if (!DependencyTracker.isDummyNode(node)) {
-                //Dummy node означает, что отслеживание зависимостей не нужно
+                //Dummy node means that dependency tracking is switched off
                 trackDependency(node);
             }
         }
@@ -197,7 +196,7 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
 
     @Override
     public void appendNodes(TIdentityHashSet<CleaningNode> elements) {
-        // appendNodes не должне быть вызван, поскольку ресурс никогда не добавляется в DependencyTracker
+        // appendNodes should not be invoked because resource is never added to DependencyTracker
         throw new UnsupportedOperationException();
     }
 

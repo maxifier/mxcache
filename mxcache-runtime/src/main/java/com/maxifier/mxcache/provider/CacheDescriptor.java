@@ -29,10 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Cache descriptor. It has all the necessary information about cache.
+ * You can also access properties with it.
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
- * <p>
- * Дескриптор кэша. Хранит всю необходимую информацию для менеджера кэша, чтобы создать экземпляр кэша.
- * Позволяет получать значения свойств.
  */
 public class CacheDescriptor<T> {
     private static final Logger logger = LoggerFactory.getLogger(CacheDescriptor.class);
@@ -135,45 +135,43 @@ public class CacheDescriptor<T> {
     }
 
     /**
-     * @return "вычислятель" значений кэша. Должен реализовавыть корректный интерфейс XxxYyyCalculatable,
-     * соответствующий значению KeyType и ValueType
+     * @return calculator of cache values. It should implement corresponding XxxYyyCalculatable interface that
+     *          matches key type and value type.
      */
     public Calculable getCalculable() {
         return calculable;
     }
 
     /**
-     * Этот метод интересен на самом деле только JMX.
-     * @return внутренний идентификатор кэша. Методы внутри одного класса номеруются последовательно. Номерация
-     * начинается с нуля.  
+     * @return internal id of cache. Methods are numbered sequentially inside of each class starting with 0.
      */
     public int getId() {
         return id;
     }
 
     /**
-     * @return сам кэшируемый метод
+     * @return cached method itself
      */
     public Method getMethod() {
         return method;
     }
 
     /**
-     * @return массив тегов. null, если тегов нет
+     * @return tags from @Cached annotation, null if there were none.
      */
     public String[] getTags() {
-        return tags;
+        return tags.clone();
     }
 
     /**
-     * @return название группы кэшей. null, если не указано
+     * @return cache group name from @Cached annotation, null if there were none.
      */
     public String getGroup() {
         return group;
     }
 
     /**
-     * @return true, если кэш - статический
+     * @return true if this cache is static
      */
     public boolean isStatic() {
         return Modifier.isStatic(method.getModifiers());
@@ -184,7 +182,7 @@ public class CacheDescriptor<T> {
     }
 
     /**
-     * @return класс, содержащий описываемый метод.
+     * @return cache that defines cache method.
      */
     public Class<T> getOwnerClass() {
         return ownerClass;
@@ -196,12 +194,13 @@ public class CacheDescriptor<T> {
     }
 
     /**
-     * Читает свойство из конфигурации.
-     * Корректно обрабатывает и свойства с аннотациями
-     * @param property свойство
-     * @param <T> тип свойства
-     * @return значение свойства (возвращает значение по умолчанию, если есть)
-     * @throws PropertyConvertationException если свойство в XML имеет ошибочный формат
+     * Reads a given property from configuration.
+     * Accepts both plain properties and annotation properties.
+     *
+     * @param property the property to read
+     * @param <T> property type
+     * @return property value or default if none specified.
+     * @throws PropertyConvertationException if XML configuration is incorrect
      */
     public <T> T getProperty(StrategyProperty<T> property) throws PropertyConvertationException {
         if (overrides != null) {
@@ -211,18 +210,20 @@ public class CacheDescriptor<T> {
             }
         }
         if (property instanceof AnnotationProperty) {
-            // hand-made multidispatch
+            // hand-made multi-dispatch
             return getPropertyWithoutOverride((AnnotationProperty<?, T>) property);
         }
         return getPropertyFromRule(property);
     }
 
     /**
-     * Читает свойство из конфигурации.
-     * @param property свойство
-     * @param <T> тип свойства
-     * @return значение свойства (возвращает значение по умолчанию, если есть)
-     * @throws PropertyConvertationException если свойство в XML имеет ошибочный формат
+     * Reads a given property from configuration.
+     * Accepts annotation properties only.
+     *
+     * @param property the property to read
+     * @param <T> property type
+     * @return property value or default if none specified.
+     * @throws PropertyConvertationException if XML configuration is incorrect
      */
     public <T, A extends Annotation> T getProperty(AnnotationProperty<A, T> property) throws PropertyConvertationException {
         if (overrides != null) {

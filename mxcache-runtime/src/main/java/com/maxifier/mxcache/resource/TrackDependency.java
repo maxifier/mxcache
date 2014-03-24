@@ -8,6 +8,8 @@ import com.maxifier.mxcache.DependencyTracking;
 import java.lang.annotation.*;
 
 /**
+ * Use this annotation among with @Cached to specify dependency tracking strategy.
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Documented

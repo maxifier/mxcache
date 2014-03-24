@@ -6,10 +6,9 @@ package com.maxifier.mxcache.ideaplugin;
 import java.util.regex.Pattern;
 
 /**
- * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ * Moved from ResourceNamingInspection to prevent exception in static initialization section in tests.
  *
- * Этот класс вынесен из ResourceNamingInspection чтобы его можно было тестировать - иначе падает при статической
- * инициализации.
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class ResourceNameChecker {
     private static final Pattern NAME_PATTERN = Pattern.compile("#?([a-zA-Z_][\\w_]*\\.)*([a-zA-Z_][\\w_]*)");
