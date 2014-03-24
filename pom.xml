@@ -18,7 +18,6 @@
         <module>mxcache-instrumentator</module>
         <module>mxcache-generation</module>
         <module>mxcache-runtime</module>
-        <module>mxcache-commons</module>
         <module>mxcache-idea-plugin</module>
         <module>mxcache-maven-plugin</module>
         <module>mxcache-tests</module>
@@ -75,11 +74,6 @@
             <dependency>
                 <groupId>com.maxifier.mxcache</groupId>
                 <artifactId>mxcache-asm</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.maxifier.mxcache</groupId>
-                <artifactId>mxcache-commons</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

@@ -42,11 +42,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.maxifier.mxcache</groupId>
-            <artifactId>mxcache-commons</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>

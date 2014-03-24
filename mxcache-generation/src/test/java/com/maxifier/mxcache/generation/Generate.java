@@ -324,7 +324,7 @@ public final class Generate {
         } else if (!eo && fo) {
             pg += "<F>";
             tg += "<F>";
-        } else if (eo && fo) {
+        } else if (eo) {
             pg += "<E, F>";
             tg += "<E, F>";
             tg1 += "<E>";
