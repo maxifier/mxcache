@@ -8,6 +8,10 @@ import com.maxifier.mxcache.provider.CachingStrategy;
 import java.lang.annotation.*;
 
 /**
+ * This annotation allows you to add your own caching strategy to a cached method.
+ * @see com.maxifier.mxcache.UseStorage
+ * @see com.maxifier.mxcache.UseStorageFactory
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Documented

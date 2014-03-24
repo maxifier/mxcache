@@ -25,7 +25,6 @@ import com.maxifier.mxcache.util.TIdentityHashSet;
 import javax.annotation.Nonnull;
 
 import java.lang.ref.Reference;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
@@ -58,7 +57,7 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
 
     @Nonnull
     @Override
-    protected Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws InstantiationException, IllegalAccessException, InvocationTargetException {
+    protected Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws Exception {
         if (inlineCache) {
             if (dependencyNode == MARKER_NODE) {
                 return createInlineCacheWithDependencyNode(owner, statistics);

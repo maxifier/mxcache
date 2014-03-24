@@ -10,7 +10,6 @@ import com.maxifier.mxcache.storage.Storage;
 
 import javax.annotation.Nonnull;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,7 @@ public class BatchFactory implements StorageFactory {
     @SuppressWarnings("unchecked")
     @Nonnull
     @Override
-    public Storage createStorage(Object owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
+    public Storage createStorage(Object owner) {
         ObjectObjectTroveStorage storage = new ObjectObjectTroveStorage();
 
         Class keyType = descriptor.getKeyType();

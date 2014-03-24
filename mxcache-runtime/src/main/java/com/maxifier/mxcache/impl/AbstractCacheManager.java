@@ -17,7 +17,6 @@ import javax.annotation.Nullable;
 
 import javax.annotation.Nonnull;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 /**
@@ -196,7 +195,7 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     }
 
     @Nonnull
-    protected abstract Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws InstantiationException, IllegalAccessException, InvocationTargetException;
+    protected abstract Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws Exception;
 
     @Override
     public CacheDescriptor<T> getDescriptor() {
