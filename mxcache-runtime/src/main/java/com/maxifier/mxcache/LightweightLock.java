@@ -3,16 +3,18 @@
  */
 package com.maxifier.mxcache;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.Lock;
 
 /**
- * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
- *
  * This lock is similar to {@link java.util.concurrent.locks.ReentrantLock} and is based on it's sync object.
  * But this lock requires much less memory than ReentrantLock.
+ * It implements <b>unfair</b> locking.
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class LightweightLock extends AbstractQueuedSynchronizer implements Lock {
     private static final long serialVersionUID = 1L;
@@ -63,6 +65,7 @@ public class LightweightLock extends AbstractQueuedSynchronizer implements Lock 
         setState(0);
     }
 
+    @Nonnull
     @Override
     public final ConditionObject newCondition() {
         return new ConditionObject();
@@ -88,7 +91,7 @@ public class LightweightLock extends AbstractQueuedSynchronizer implements Lock 
     }
 
     @Override
-    public boolean tryLock(long timeout, TimeUnit unit) throws InterruptedException {
+    public boolean tryLock(long timeout, @Nonnull TimeUnit unit) throws InterruptedException {
         return tryAcquireNanos(1, unit.toNanos(timeout));
     }
 

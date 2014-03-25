@@ -6,6 +6,15 @@ package com.maxifier.mxcache;
 import javax.annotation.Nonnull;
 
 /**
+ * MxCache uses InstanceProvider in obtain following objects:
+ * <ul>
+ *     <li>hashing strategies;</li>
+ *     <li>{@link com.maxifier.mxcache.provider.CachingStrategy};</li>
+ *     <li>{@link com.maxifier.mxcache.proxy.ProxyFactory};</li>
+ *     <li>{@link com.maxifier.mxcache.transform.TransformGenerator};</li>
+ *     <li>any other strategy-specific cases.</li>
+ * </ul>
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface InstanceProvider {

@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.util.concurrent.Callable;
 
 /**
+ * This class contains some basic utilities for MxCache.
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class MxCache {
@@ -55,11 +57,26 @@ public final class MxCache {
     public static Version getVersionObject() {
         return PROJECT_VERSION;
     }
-    
+
+    /**
+     * @return Current version of runtime
+     */
     public static String getVersion() {
         return PROJECT_VERSION.toString();
     }
 
+    /**
+     * Executes a piece of code in probe mode.
+     * 'Probe mode' disables calculation of caches. If your code queries a cache and there's no value for it yet,
+     * the execution will fail and this method will return false.
+     * <br />
+     * All exceptions of the original code are rethrown. Checked exceptions are wrapped with RuntimeExceptions.
+     * <br />
+     * <b>Probe mode is broken in current implementation as it will wait for lock if the value is calculated from other
+     * thread.</b>
+     * @param task the piece of code to execute
+     * @return true if execution succeeded, false if it failed due to some caches were not initialized.
+     */
     @PublicAPI
     public static boolean probe(Runnable task) {
         DependencyNode prevNode = DependencyTracker.track(DependencyTracker.PROBE_NODE);
@@ -73,6 +90,12 @@ public final class MxCache {
         }
     }
 
+    /**
+     * Executes a piece of code with bypassing caches.
+     * A new value will be calculated for every cache. These values are completely ignored: they are never put to cache.
+     * @param task a piece of code to execute
+     * @return true always
+     */
     @PublicAPI
     public static boolean withoutCache(Runnable task) {
         DependencyNode prevNode = DependencyTracker.track(DependencyTracker.NOCACHE_NODE);
@@ -83,7 +106,20 @@ public final class MxCache {
             DependencyTracker.exit(prevNode);
         }
     }
-    
+
+    /**
+     * Executes a piece of code in probe mode.
+     * 'Probe mode' disables calculation of caches. If your code queries a cache and there's no value for it yet,
+     * the execution will fail and this method will throw {@link com.maxifier.mxcache.ProbeFailedException}.
+     * <br />
+     * All exceptions of the original code are rethrown. Checked exceptions are wrapped with RuntimeExceptions.
+     * <br />
+     * <b>Probe mode is broken in current implementation as it will wait for lock if the value is calculated from other
+     * thread.</b>
+     * @param task the piece of code to execute
+     * @return the value returned by a piece of code.
+     * @throws ProbeFailedException if there was uninitialized cache.
+     */
     @PublicAPI
     public static <T> T probe(Callable<T> task) throws ProbeFailedException {
         DependencyNode prevNode = DependencyTracker.track(DependencyTracker.PROBE_NODE);
