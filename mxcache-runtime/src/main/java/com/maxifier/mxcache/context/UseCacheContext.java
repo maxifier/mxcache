@@ -9,6 +9,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * This annotation is used in instrumentation. It should be used with constructor arguments of your classes that
+ * have @Cached methods.
+ * <br />
+ * It tells MxCache to use specified cache context that is passed via argument.
+ * The annotated parameters type should extend {@link com.maxifier.mxcache.context.CacheContext} interface,
+ * otherwise it will fail in runtime.
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Target(ElementType.PARAMETER)

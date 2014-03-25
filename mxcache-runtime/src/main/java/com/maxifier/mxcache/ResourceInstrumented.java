@@ -6,9 +6,9 @@ package com.maxifier.mxcache;
 import java.lang.annotation.*;
 
 /**
- * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
- * <p>
  * This annotation is added to all instrumented classes with @Cached methods
+ *
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

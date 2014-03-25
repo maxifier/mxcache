@@ -6,6 +6,8 @@ package com.maxifier.mxcache;
 import java.lang.annotation.*;
 
 /**
+ * Add this annotation to your @Cached method to identify how statistics for it should be gathered.
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Documented

@@ -21,6 +21,9 @@ public interface Statistics {
      */
     int getMisses();
 
+    /**
+     * @return the total calculation time since last reset in ns
+     */
     long getTotalCalculationTime();
 
     /**

@@ -8,6 +8,11 @@ import com.maxifier.mxcache.storage.Storage;
 import java.lang.annotation.*;
 
 /**
+ * Specifies which storage class to use for your @Cached method.
+ *
+ * @see com.maxifier.mxcache.UseStorageFactory
+ * @see com.maxifier.mxcache.Strategy
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Documented
