@@ -6,6 +6,7 @@ package com.maxifier.mxcache.resource;
 import javax.annotation.Nonnull;
 
 import java.io.Serializable;
+import java.util.concurrent.locks.ReadWriteLock;
 
 /**
  * <p>
@@ -33,7 +34,7 @@ import java.io.Serializable;
  *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public interface MxResource extends Serializable {
+public interface MxResource extends Serializable, ReadWriteLock {
     /**
      * @return resource name. Never changes.
      */

@@ -4,6 +4,8 @@
 package com.maxifier.mxcache.impl.resource;
 
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.io.Serializable;
@@ -35,62 +37,41 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
     private final Lock readLock;
     private final Lock writeLock;
 
+    private final ResourceReadLock resourceReadLock;
+    private final ResourceWriteLock resourceWriteLock;
+
     private TIdentityHashSet<CleaningNode> oldDependentResourceViewNodes;
 
     public MxResourceImpl(Object owner, @Nonnull String name) {
         this.owner = owner;
         this.name = name;
         lock = new ReentrantReadWriteLock();
+
         readLock = lock.readLock();
         writeLock = lock.writeLock();
+
+        resourceReadLock = new ResourceReadLock();
+        resourceWriteLock = new ResourceWriteLock();
     }
 
     @Override
     public void readStart() throws ResourceModificationException {
-        DependencyNode node = DependencyTracker.get();
-        if (node == null) {
-            // no caches -> just lock
-            readLock.lock();
-        } else {
-            if (!readLock.tryLock()) {
-                // it means that someone holds a write lock
-                // notify caller caches about resource being locked
-                // so they can release their locks in order to avoid deadlocks on cache cleaning.
-                throw new ResourceOccupied(this);
-            }
-            // tryLock will succeed if current thread holds a write lock, so check it
-            if (lock.isWriteLockedByCurrentThread()) {
-                // we have to release it!
-                readLock.unlock();
-                throw new ResourceModificationException("Resource \"" + name + "\" is already being written from current thread");
-            }
-            // we add dependency only if we can read the resource
-            // if someone writes it at the moment there's no point in adding the dependency that would be cleaned
-            // immediately
-            if (!DependencyTracker.isDummyNode(node)) {
-                //Dummy node means that dependency tracking is switched off
-                trackDependency(node);
-            }
-        }
+        resourceReadLock.lock();
     }
 
     @Override
     public void readEnd() {
-        readLock.unlock();
+        resourceReadLock.unlock();
     }
 
     @Override
     public void writeStart() throws ResourceModificationException {
-        if (DependencyTracker.hasUnderlyingNode()) {
-            throw new ResourceModificationException("Resource \"" + name + "\" modification is required while cache " + DependencyTracker.get() + " is found on the stack");
-        }
-        writeLock.lock();
-        oldDependentResourceViewNodes = DependencyTracker.saveResourceViewNodes(this);
+        resourceWriteLock.lock();
     }
 
     @Override
     public void writeEnd() {
-        clearDependentCachesInternal();
+        resourceWriteLock.unlock();
     }
 
     @Nonnull
@@ -223,5 +204,153 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
     @Override
     public Object getCacheOwner() {
         return owner;
+    }
+
+    @Nonnull
+    @Override
+    public Lock readLock() {
+        return resourceReadLock;
+    }
+
+    @Nonnull
+    @Override
+    public Lock writeLock() {
+        return resourceWriteLock;
+    }
+
+    private class ResourceReadLock implements Lock, Serializable {
+        @Override
+        public void lock() {
+            DependencyNode node = DependencyTracker.get();
+            if (node == null) {
+                // no caches -> just lock
+                readLock.lock();
+            } else {
+                lockFromCache(node);
+            }
+        }
+
+        @Override
+        public void lockInterruptibly() throws InterruptedException {
+            DependencyNode node = DependencyTracker.get();
+            if (node == null) {
+                // no caches -> just lock
+                readLock.lockInterruptibly();
+            } else {
+                lockFromCache(node);
+            }
+        }
+
+        @Override
+        public boolean tryLock() {
+            DependencyNode node = DependencyTracker.get();
+            if (node == null) {
+                // no caches -> just lock
+                return readLock.tryLock();
+            } else {
+                lockFromCache(node);
+                return true;
+            }
+        }
+
+        @Override
+        public boolean tryLock(long time, @Nonnull TimeUnit unit) throws InterruptedException {
+            DependencyNode node = DependencyTracker.get();
+            if (node == null) {
+                // no caches -> just lock
+                return readLock.tryLock(time, unit);
+            } else {
+                lockFromCache(node);
+                return true;
+            }
+        }
+
+        private void lockFromCache(DependencyNode node) {
+            if (!readLock.tryLock()) {
+                // it means that someone holds a write lock
+                // notify caller caches about resource being locked
+                // so they can release their locks in order to avoid deadlocks on cache cleaning.
+                throw new ResourceOccupied(MxResourceImpl.this);
+            }
+            // tryLock will succeed if current thread holds a write lock, so check it
+            if (lock.isWriteLockedByCurrentThread()) {
+                // we have to release it!
+                readLock.unlock();
+                throw new ResourceModificationException("Resource \"" + name + "\" is already being written from current thread");
+            }
+            // we add dependency only if we can read the resource
+            // if someone writes it at the moment there's no point in adding the dependency that would be cleaned
+            // immediately
+            if (!DependencyTracker.isDummyNode(node)) {
+                //Dummy node means that dependency tracking is switched off
+                trackDependency(node);
+            }
+        }
+
+        @Override
+        public void unlock() {
+            readLock.unlock();
+        }
+
+        @Nonnull
+        @Override
+        public Condition newCondition() {
+            return readLock.newCondition();
+        }
+    }
+
+    private class ResourceWriteLock implements Lock, Serializable {
+        @Override
+        public void lock() {
+            if (DependencyTracker.hasUnderlyingNode()) {
+                throw new ResourceModificationException("Resource \"" + name + "\" modification is required while cache " + DependencyTracker.get() + " is found on the stack");
+            }
+            writeLock.lock();
+            oldDependentResourceViewNodes = DependencyTracker.saveResourceViewNodes(MxResourceImpl.this);
+        }
+
+        @Override
+        public void lockInterruptibly() throws InterruptedException {
+            if (DependencyTracker.hasUnderlyingNode()) {
+                throw new ResourceModificationException("Resource \"" + name + "\" modification is required while cache " + DependencyTracker.get() + " is found on the stack");
+            }
+            writeLock.lockInterruptibly();
+            oldDependentResourceViewNodes = DependencyTracker.saveResourceViewNodes(MxResourceImpl.this);
+        }
+
+        @Override
+        public boolean tryLock() {
+            if (DependencyTracker.hasUnderlyingNode()) {
+                throw new ResourceModificationException("Resource \"" + name + "\" modification is required while cache " + DependencyTracker.get() + " is found on the stack");
+            }
+            if (!writeLock.tryLock()) {
+                return false;
+            }
+            oldDependentResourceViewNodes = DependencyTracker.saveResourceViewNodes(MxResourceImpl.this);
+            return true;
+        }
+
+        @Override
+        public boolean tryLock(long time, @Nonnull TimeUnit unit) throws InterruptedException {
+            if (DependencyTracker.hasUnderlyingNode()) {
+                throw new ResourceModificationException("Resource \"" + name + "\" modification is required while cache " + DependencyTracker.get() + " is found on the stack");
+            }
+            if (!writeLock.tryLock(time, unit)) {
+                return false;
+            }
+            oldDependentResourceViewNodes = DependencyTracker.saveResourceViewNodes(MxResourceImpl.this);
+            return true;
+        }
+
+        @Override
+        public void unlock() {
+            clearDependentCachesInternal();
+        }
+
+        @Nonnull
+        @Override
+        public Condition newCondition() {
+            return writeLock.newCondition();
+        }
     }
 }
