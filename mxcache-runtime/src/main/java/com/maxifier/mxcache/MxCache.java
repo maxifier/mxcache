@@ -3,6 +3,7 @@
  */
 package com.maxifier.mxcache;
 
+import com.maxifier.mxcache.clean.CacheCleaner;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import org.apache.commons.io.IOUtils;
@@ -182,5 +183,14 @@ public final class MxCache {
         } finally {
             DependencyTracker.exit(node);
         }
+    }
+
+    /**
+     * Use this method to obtain cache cleaning service.
+     * @return cache cleaner
+     */
+    @PublicAPI
+    public static CacheCleaner getCleaner() {
+        return CacheFactory.getCleaner();
     }
 }
