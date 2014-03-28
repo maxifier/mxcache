@@ -82,7 +82,16 @@ public class ResourceDetector extends ClassAdapter {
         if (alreadyInstrumented) {
             return oldVisitor;
         }
+        if (isBridge(access)) {
+            // In JDK 8, parameter and method annotations are copied to synthetic bridge methods.
+            // See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6695379
+            return oldVisitor;
+        }
         return new MethodDetector(oldVisitor, access, new Method(name, desc));
+    }
+
+    private static boolean isBridge(int access) {
+        return (access & Opcodes.ACC_BRIDGE) != 0;
     }
 
     private final class MethodDetector extends MethodAdapter {

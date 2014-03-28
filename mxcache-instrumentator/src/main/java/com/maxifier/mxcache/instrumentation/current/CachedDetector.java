@@ -77,8 +77,16 @@ class CachedDetector extends ClassAdapter {
         if (!Modifier.isStatic(access) && name.equals(CodegenHelper.CONSTRUCTOR_NAME)) {
             return oldVisitor;
         }
-
+        if (isBridge(access)) {
+            // In JDK 8, parameter and method annotations are copied to synthetic bridge methods.
+            // See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6695379
+            return oldVisitor;
+        }
         return new MethodDetector(oldVisitor, desc, new Method(name, desc), access);
+    }
+
+    private boolean isBridge(int access) {
+        return (access & Opcodes.ACC_BRIDGE) != 0;
     }
 
     private final class MethodDetector extends MethodAdapter {
@@ -132,7 +140,7 @@ class CachedDetector extends ClassAdapter {
                     if (!value.equals("")) {
                         context.setName((String) value);
                     }
-                } else if (name.equals("group")) {
+                } else if (name.equals("group") && value instanceof String) {
                     context.setGroup((String) value);
                 } else if (name.equals("activity") && !"".equals(value)) {
                     throw new IllegalCachedClass("Activity is not supported currently", sourceFileName);
