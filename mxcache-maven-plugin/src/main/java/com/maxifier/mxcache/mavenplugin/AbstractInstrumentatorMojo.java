@@ -24,7 +24,7 @@ import com.maxifier.mxcache.instrumentation.ClassDefinition;
  */
 public abstract class AbstractInstrumentatorMojo extends AbstractInstrumentator {
     private static final Instrumentator INSTRUMENTATOR = InstrumentatorProvider.getPreferredVersion();
-    private static final int MIN_FILES_PER_THREAD = 10;
+    private static final int MIN_FILES_PER_THREAD = 100;
     private static final int MAX_THREADS_PER_CORE = 2;
 
     protected void instrumentClasses(File path) throws MojoExecutionException {

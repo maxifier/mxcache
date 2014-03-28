@@ -14,6 +14,7 @@ import java.io.File;
  *
  * @goal instrument
  * @phase process-classes
+ * @threadSafe
  * 
  */
 @SuppressWarnings ({ "JavaDoc" })

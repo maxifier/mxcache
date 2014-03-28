@@ -14,6 +14,7 @@ import java.io.File;
  *
  * @goal instrument-tests
  * @phase process-test-classes
+ * @threadSafe
  */
 @SuppressWarnings ({ "JavaDoc" })
 @PublicAPI
