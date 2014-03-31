@@ -4,6 +4,6 @@
         <selector>
             <annotated>com.maxifier.mxcache.ehcache.UseEhcache</annotated>
         </selector>
-        <strategy>com.maxifier.mxcache.ehcache.EhcacheStrategy</strategy>
+        <property name="storage" value="com.maxifier.mxcache.ehcache.EhcacheStorage" />
     </rule>
 </mxcache>

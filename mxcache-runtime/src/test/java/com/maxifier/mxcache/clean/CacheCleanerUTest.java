@@ -18,7 +18,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.List;
-import java.util.Arrays;
 import java.util.Map;
 
 import gnu.trove.THashMap;
@@ -770,72 +769,6 @@ public class CacheCleanerUTest {
     public void testInvalidRegisterCache() {
         CleanableRegister register = new CleanableRegister();
         register.registerInstance("123", String.class);
-    }
-
-    public void testBatchLock() throws InterruptedException {
-        final List<Lock> locks = Arrays.<Lock>asList(new ReentrantLock(), new ReentrantLock(), new ReentrantLock());
-
-        class WaiterThread extends Thread {
-            boolean locked;
-
-            @Override
-            public void run() {
-                CleaningHelper.lock(locks);
-                locked = true;
-            }
-        }
-
-        locks.get(0).lock(); // locked: 0
-
-        WaiterThread t = new WaiterThread();
-        t.setDaemon(true);
-        t.start();
-
-        locks.get(1).lock(); // locked: 0, 1
-
-        t.join(10);
-
-        locks.get(2).lock(); // locked: 0, 1, 2
-
-        t.join(10);
-
-        locks.get(0).unlock(); // locked: 1, 2
-
-        t.join(10);
-
-        locks.get(0).lock(); // locked: 0, 1, 2
-
-        t.join(10);
-
-        locks.get(1).unlock(); // locked: 0, 2
-
-        t.join(10);
-
-        locks.get(0).unlock(); // locked: 2
-
-        t.join(10);
-
-        locks.get(0).lock(); // locked: 0, 2
-
-        t.join(10);
-
-        locks.get(1).lock(); // locked: 0, 1, 2
-
-        t.join(10);
-
-        locks.get(2).unlock(); // locked: 0, 1
-
-        t.join(10);
-
-        locks.get(1).unlock(); // locked: 0
-
-        t.join(10);
-        assert !t.locked;
-
-        locks.get(0).unlock(); // nothing locked
-
-        t.join();
-        assert t.locked;
     }
 
     private static class InstanceCacheWithLock extends CacheWithLock {

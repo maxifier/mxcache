@@ -20,6 +20,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface UseEhcache {
+    /**
+     * @return ehcache XML config URL, use "classpath://" to refer to classpath resources (the classloader of cache
+     *    owner class is used to obtain configuration in this case).
+     */
     @PublicAPI
     String configURL() default "classpath://META-INF/ehcache.xml";
 }
