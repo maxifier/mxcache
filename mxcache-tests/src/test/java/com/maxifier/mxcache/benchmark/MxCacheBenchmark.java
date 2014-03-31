@@ -3,14 +3,19 @@
  */
 package com.maxifier.mxcache.benchmark;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.maxifier.mxcache.Cached;
 import com.maxifier.mxcache.MxCache;
+import com.maxifier.mxcache.guava.UseGuava;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.RunnerException;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -33,6 +38,12 @@ public class MxCacheBenchmark {
         return r;
     }
 
+    private LoadingCache<Integer,BigInteger> guavaCache = CacheBuilder.<Integer, BigInteger>newBuilder().build(new CacheLoader<Integer, BigInteger>() {
+            @Override
+            public BigInteger load(Integer key) {
+                return fact(key);
+            }
+        });
     private BigInteger[] cache = new BigInteger[1100];
     private final static BigInteger[] STATIC_CACHE = new BigInteger[1100];
 
@@ -56,6 +67,12 @@ public class MxCacheBenchmark {
 
     @Cached
     private BigInteger factMxCache(int value) {
+        return fact(value);
+    }
+
+    @Cached
+    @UseGuava
+    private BigInteger factMxCacheGuava(int value) {
         return fact(value);
     }
 
@@ -87,6 +104,24 @@ public class MxCacheBenchmark {
         int val = 0;
         for (int i = 0; i<1000; i++) {
             val ^= factMxCache(i).hashCode();
+        }
+        return val;
+    }
+
+    @GenerateMicroBenchmark
+    public int mxCacheGuava() {
+        int val = 0;
+        for (int i = 0; i<1000; i++) {
+            val ^= factMxCacheGuava(i).hashCode();
+        }
+        return val;
+    }
+
+    @GenerateMicroBenchmark
+    public int manualGuava() throws ExecutionException {
+        int val = 0;
+        for (int i = 0; i<1000; i++) {
+            val ^= guavaCache.get(i).hashCode();
         }
         return val;
     }
