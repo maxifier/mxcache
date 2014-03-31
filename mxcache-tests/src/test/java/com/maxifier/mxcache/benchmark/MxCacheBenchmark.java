@@ -38,7 +38,7 @@ public class MxCacheBenchmark {
         return r;
     }
 
-    private LoadingCache<Integer,BigInteger> guavaCache = CacheBuilder.<Integer, BigInteger>newBuilder().build(new CacheLoader<Integer, BigInteger>() {
+    private LoadingCache<Integer,BigInteger> guavaCache = CacheBuilder.newBuilder().build(new CacheLoader<Integer, BigInteger>() {
             @Override
             public BigInteger load(Integer key) {
                 return fact(key);
