@@ -4,8 +4,9 @@
 package com.maxifier.mxcache.ehcache;
 
 import com.maxifier.mxcache.Cached;
-import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.*;
 
 /**
  * EhcacheStorageUTest
@@ -22,6 +23,12 @@ public class EhcacheStorageUTest {
         @Cached(name = "xxx")
         @UseEhcache
         private int xxx(String s) {
+            return i++;
+        }
+
+        @Cached(name = "xxx")
+        @UseEhcache(configURL = "classpath://META-INF/ehcache2.xml")
+        private int xxx2(String s) {
             return i++;
         }
     }
@@ -48,54 +55,64 @@ public class EhcacheStorageUTest {
 
     public void testDiskStore() {
         Z t = new Z();
-        Assert.assertEquals(t.zzz("1"), 0);
-        Assert.assertEquals(t.zzz("2"), 1);
-        Assert.assertEquals(t.zzz("1"), 0);
-        Assert.assertEquals(t.zzz("2"), 1);
-        Assert.assertEquals(t.zzz("3"), 2);
+        assertEquals(t.zzz("1"), 0);
+        assertEquals(t.zzz("2"), 1);
+        assertEquals(t.zzz("1"), 0);
+        assertEquals(t.zzz("2"), 1);
+        assertEquals(t.zzz("3"), 2);
 
-        Assert.assertEquals(t.zzz("4"), 3);
-        Assert.assertEquals(t.zzz("5"), 4);
-        Assert.assertEquals(t.zzz("6"), 5);
+        assertEquals(t.zzz("4"), 3);
+        assertEquals(t.zzz("5"), 4);
+        assertEquals(t.zzz("6"), 5);
 
         // loaded from disk...
-        Assert.assertEquals(t.zzz("1"), 0);
+        assertEquals(t.zzz("1"), 0);
     }
 
     public void testSimpleOverflow() {
         X t = new X();
-        Assert.assertEquals(t.xxx("1"), 0);
-        Assert.assertEquals(t.xxx("2"), 1);
-        Assert.assertEquals(t.xxx("1"), 0);
-        Assert.assertEquals(t.xxx("3"), 2);
+        assertEquals(t.xxx("1"), 0);
+        assertEquals(t.xxx("2"), 1);
+        assertEquals(t.xxx("1"), 0);
+        assertEquals(t.xxx("3"), 2);
 
-        Assert.assertEquals(t.xxx("4"), 3);
-        Assert.assertEquals(t.xxx("5"), 4);
-        Assert.assertEquals(t.xxx("6"), 5);
+        assertEquals(t.xxx("4"), 3);
+        assertEquals(t.xxx("5"), 4);
+        assertEquals(t.xxx("6"), 5);
 
-        Assert.assertEquals(t.xxx("1"), 6);
+        assertEquals(t.xxx("1"), 6);
+    }
+
+    public void testCustomConfiguration() {
+        X t = new X();
+        assertEquals(t.xxx2("1"), 0);
+        assertEquals(t.xxx2("2"), 1);
+        assertEquals(t.xxx2("1"), 0);
+        assertEquals(t.xxx2("3"), 2);
+
+        assertEquals(t.xxx2("2"), 3);
     }
 
     public void testEvictionPolicy() {
         Y t = new Y();
-        Assert.assertEquals(t.yyy("1"), 0);
-        Assert.assertEquals(t.yyy("1"), 0);
-        Assert.assertEquals(t.yyy("1"), 0);
-        Assert.assertEquals(t.yyy("2"), 1);
-        Assert.assertEquals(t.yyy("2"), 1);
+        assertEquals(t.yyy("1"), 0);
+        assertEquals(t.yyy("1"), 0);
+        assertEquals(t.yyy("1"), 0);
+        assertEquals(t.yyy("2"), 1);
+        assertEquals(t.yyy("2"), 1);
 
         // now "1" has frequency 3, "2" - 2.
 
         // this should evict value from cache
-        Assert.assertEquals(t.yyy("3"), 2);
+        assertEquals(t.yyy("3"), 2);
 
         // "1" should still be in cache
-        Assert.assertEquals(t.yyy("1"), 0);
+        assertEquals(t.yyy("1"), 0);
 
         // "3" is still in cache
-        Assert.assertEquals(t.yyy("3"), 2);
+        assertEquals(t.yyy("3"), 2);
 
         // "2" was evicted
-        Assert.assertEquals(t.yyy("2"), 3);
+        assertEquals(t.yyy("2"), 3);
     }
 }
