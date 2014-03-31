@@ -107,7 +107,7 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
     }
 
     private void clearDependentCachesInternal() {
-        if (lock.isWriteLockedByCurrentThread()) {
+        if (!lock.isWriteLockedByCurrentThread()) {
             throw new IllegalStateException("clearDependentCachesInternal is invoked with write lock held");
         }
 
