@@ -59,12 +59,12 @@ public class SuperLock {
     }
 
     protected void finalize() throws Throwable {
-        super.finalize();
         // if there was some problems, unlock all locks held to prevent deadlocks
         if (n != 0) {
             logger.error("MxCache hasn't released " + n + " locks");
             unlock();
         }
+        super.finalize();
     }
 
     public void lock() {
