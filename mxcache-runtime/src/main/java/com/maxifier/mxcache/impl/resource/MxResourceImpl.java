@@ -12,6 +12,7 @@ import java.io.Serializable;
 
 import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.clean.CleaningHelper;
+import com.maxifier.mxcache.clean.SuperLock;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.resource.ResourceModificationException;
 import com.maxifier.mxcache.util.TIdentityHashSet;
@@ -106,13 +107,18 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
     }
 
     private void clearDependentCachesInternal() {
-        assert lock.isWriteLockedByCurrentThread();
+        if (lock.isWriteLockedByCurrentThread()) {
+            throw new IllegalStateException("clearDependentCachesInternal is invoked with write lock held");
+        }
 
         boolean readLockAcquired = false;
         TIdentityHashSet<CleaningNode> elementsAndDependent = null;
+        SuperLock superLock = null;
         try {
             try {
-                elementsAndDependent = CleaningHelper.lockRecursive(this);
+                CleaningHelper.RecursiveLock lock = CleaningHelper.lockRecursive(this);
+                elementsAndDependent = lock.elements;
+                superLock = lock.lock;
                 readLock.lock();
                 readLockAcquired = true;
             } finally {
@@ -122,15 +128,15 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
             }
 
             //elementsAndDependent will be changed during the invocation
-            TIdentityHashSet<CleaningNode> changedDependentNodes = narrowDependenciesSet(elementsAndDependent);
+            TIdentityHashSet<CleaningNode> changedDependentNodes = narrowDependenciesSet(superLock, elementsAndDependent);
 
             //clear changed nodes
             for (CleaningNode element : changedDependentNodes) {
                 element.clear();
             }
         } finally {
-            if (elementsAndDependent != null) {
-                CleaningHelper.unlock(CleaningHelper.getLocks(elementsAndDependent));
+            if (superLock != null) {
+                superLock.unlock();
             }
 
             if (readLockAcquired) {
@@ -139,7 +145,7 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
         }
     }
 
-    private TIdentityHashSet<CleaningNode> narrowDependenciesSet(TIdentityHashSet<CleaningNode> elementsAndDependent) {
+    private TIdentityHashSet<CleaningNode> narrowDependenciesSet(SuperLock superLock, TIdentityHashSet<CleaningNode> elementsAndDependent) {
         TIdentityHashSet<CleaningNode> changedDependentNodes = DependencyTracker.getChangedDependentNodes(this);
 
         //remove new nodes
@@ -151,16 +157,18 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
         }
 
         //unlock not changed nodes
+        TIdentityHashSet<Lock> locksToRelease = new TIdentityHashSet<Lock>(elementsAndDependent.size());
         for (Iterator<CleaningNode> it = elementsAndDependent.iterator(); it.hasNext(); ) {
             CleaningNode element = it.next();
             if (!changedDependentNodes.contains(element)) {
                 Lock lock = element.getLock();
                 if (lock != null) {
                     it.remove();
-                    lock.unlock();
+                    locksToRelease.add(lock);
                 }
             }
         }
+        superLock.unlockPartially(locksToRelease);
         return changedDependentNodes;
     }
 

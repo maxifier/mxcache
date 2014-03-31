@@ -71,17 +71,6 @@ public class CleaningHelperUTest {
         verify(n2, atLeast(1)).getDependencyNode();
     }
 
-    public void testAlreadyLocked() {
-        Lock lock = new ReentrantLock();
-        lock.lock();
-        try {
-            CleaningHelper.lock(Arrays.asList(lock));
-            CleaningHelper.unlock(Arrays.asList(lock));
-        } finally {
-            lock.unlock();
-        }
-    }
-
     @Test(timeOut = 60000)
     public void testLocking() {
         final CleaningNode cn1 = mock(CleaningNode.class);
@@ -153,7 +142,7 @@ public class CleaningHelperUTest {
         MxStaticResource r = new MxStaticResource("test");
         r.trackDependency(n2);
 
-        TIdentityHashSet<CleaningNode> s = CleaningHelper.lockRecursive(r);
-        System.out.println(s);
+        CleaningHelper.RecursiveLock lock = CleaningHelper.lockRecursive(r);
+        lock.lock.unlock();
     }
 }

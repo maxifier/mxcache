@@ -24,37 +24,7 @@ public final class CleaningHelper {
     private CleaningHelper() {
     }
 
-    public static void lock(List<Lock> locks) {
-        int i = 0;
-        int size = locks.size();
-        int firstLockedIndex = 0;
-        int locked = 0;
-        while (locked < size) {
-            Lock lock = locks.get(i);
-            if (!lock.tryLock()) {
-                for (; locked > 0; locked--) {
-                    locks.get(firstLockedIndex++).unlock();
-                    if (firstLockedIndex == size) {
-                        firstLockedIndex = 0;
-                    }
-                }
-                lock.lock();
-            }
-            locked++;
-            i++;
-            if (i == size) {
-                i = 0;
-            }
-        }
-    }
-
-    public static void unlock(List<Lock> locks) {
-        for (Lock lock : locks) {
-            lock.unlock();
-        }
-    }
-
-    public static List<Lock> getLocks(Collection<? extends CleaningNode> caches) {
+    private static SuperLock getSuperLock(Collection<? extends CleaningNode> caches) {
         List<Lock> locks = new ArrayList<Lock>(caches.size());
         for (CleaningNode cache : caches) {
             Lock lock = cache.getLock();
@@ -62,7 +32,7 @@ public final class CleaningHelper {
                 locks.add(lock);
             }
         }
-        return locks;
+        return new SuperLock(locks);
     }
 
     private static int lockLists(List<WeakList<?>> lists) {
@@ -110,8 +80,8 @@ public final class CleaningHelper {
             TIdentityHashSet<CleaningNode> elementsAndDependent = DependencyTracker.getAllDependentNodes(nodes, elements);
             // dependency modification check loop
             while (true) {
-                List<Lock> locks = getLocks(elementsAndDependent);
-                lock(locks);
+                SuperLock superLock = getSuperLock(elementsAndDependent);
+                superLock.lock();
                 try {
                     TIdentityHashSet<CleaningNode> newElements = DependencyTracker.getAllDependentNodes(nodes, elements);
                     if (!newElements.equals(elementsAndDependent)) {
@@ -138,27 +108,43 @@ public final class CleaningHelper {
                         list.deepUnlock();
                     }
                 } finally {
-                    unlock(locks);
+                    superLock.unlock();
                 }
             }
         }
     }
 
-    public static TIdentityHashSet<CleaningNode> lockRecursive(DependencyNode initial) {
-        TIdentityHashSet<CleaningNode> elements = DependencyTracker.getAllDependentNodes(Collections.singleton(initial));
+    /**
+     * Collects all dependent nodes of root node and locks them.
+     * @param rootNode root node to lookup dependencies from
+     * @return a list of dependent caches and a super lock for this list.
+     *    Note: returned super lock is <b>already locked</b> unless there was an exception thrown.
+     */
+    public static RecursiveLock lockRecursive(DependencyNode rootNode) {
+        TIdentityHashSet<CleaningNode> elements = DependencyTracker.getAllDependentNodes(Collections.singleton(rootNode));
         Iterable<DependencyNode> nodes = nodeMapping(elements);
         while (true) {
-            List<Lock> locks = getLocks(elements);
-            lock(locks);
-            TIdentityHashSet<CleaningNode> newElements = DependencyTracker.getAllDependentNodes(nodes, elements);
-            if (!newElements.equals(elements)) {
-                // we have to unlock all locks and lock them again among with new ones as advanced locking algorithm
-                // locks guarantees the absence of deadlocks only if all locks are locked at once.
-                unlock(locks);
-                elements.addAll(newElements);
-                continue;
+            SuperLock superLock = getSuperLock(elements);
+            superLock.lock();
+            try {
+                TIdentityHashSet<CleaningNode> newElements = DependencyTracker.getAllDependentNodes(nodes, elements);
+                if (!newElements.containsAll(elements)) {
+                    // we have to unlock all locks and lock them again among with new ones as advanced locking algorithm
+                    // locks guarantees the absence of deadlocks only if all locks are locked at once.
+                    superLock.unlock();
+                    elements.addAll(newElements);
+                    continue;
+                }
+                return new RecursiveLock(elements, superLock);
+            } catch (Error e) {
+                // we have to unlock it on exception
+                superLock.unlock();
+                throw e;
+            } catch (RuntimeException e) {
+                // we have to unlock it on exception
+                superLock.unlock();
+                throw e;
             }
-            return elements;
         }
     }
 
@@ -166,21 +152,20 @@ public final class CleaningHelper {
         Iterable<DependencyNode> nodes = nodeMapping(elements);
         TIdentityHashSet<CleaningNode> elementsAndDependent = DependencyTracker.getAllDependentNodes(nodes, elements);
         while (true) {
-            List<Lock> locks = getLocks(elementsAndDependent);
-            lock(locks);
+            SuperLock superLock = getSuperLock(elementsAndDependent);
+            superLock.lock();
             try {
                 TIdentityHashSet<CleaningNode> newElements = DependencyTracker.getAllDependentNodes(nodes, elements);
-                if (!newElements.equals(elementsAndDependent)) {
-                    // the set of dependent caches has been altered, lock everything again
-                    elementsAndDependent = newElements;
-                    continue;
+                if (newElements.equals(elementsAndDependent)) {
+                    for (CleaningNode element : elementsAndDependent) {
+                        element.clear();
+                    }
+                    return;
                 }
-                for (CleaningNode element : elementsAndDependent) {
-                    element.clear();
-                }
-                return;
+                // the set of dependent caches has been altered, lock everything again
+                elementsAndDependent = newElements;
             } finally {
-                unlock(locks);
+                superLock.unlock();
             }
         }
     }
@@ -192,5 +177,15 @@ public final class CleaningHelper {
                 return cleaningNode.getDependencyNode();
             }
         };
+    }
+
+    public static class RecursiveLock {
+        public final TIdentityHashSet<CleaningNode> elements;
+        public final SuperLock lock;
+
+        public RecursiveLock(TIdentityHashSet<CleaningNode> elements, SuperLock lock) {
+            this.elements = elements;
+            this.lock = lock;
+        }
     }
 }
