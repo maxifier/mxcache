@@ -8,6 +8,7 @@ import com.maxifier.mxcache.util.TIdentityHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.locks.Lock;
 
@@ -59,10 +60,9 @@ public class SuperLock {
     }
 
     protected void finalize() throws Throwable {
-        // if there was some problems, unlock all locks held to prevent deadlocks
+        // if there was some problems, notify a user about the problem
         if (n != 0) {
-            logger.error("MxCache hasn't released " + n + " locks");
-            unlock();
+            logger.error("MxCache hasn't released {} locks: {}", n, Arrays.toString(locks));
         }
         super.finalize();
     }
