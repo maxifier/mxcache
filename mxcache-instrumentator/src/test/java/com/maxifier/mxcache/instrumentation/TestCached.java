@@ -65,5 +65,7 @@ public interface TestCached extends Serializable {
 
     Map<String, String> getBatchArrayToMap(String... in);
 
+    void readResourceWithException(Runnable r);
+
     void setS(String s);
 }

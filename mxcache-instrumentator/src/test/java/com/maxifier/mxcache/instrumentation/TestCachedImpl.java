@@ -178,7 +178,15 @@ public class TestCachedImpl implements TestCached, Serializable {
     @Override
     @ResourceReader("#123")
     public void readResource() {
+        System.out.println("Some code");
         // nothing
+    }
+
+    @Override
+    @ResourceReader("test")
+    public void readResourceWithException(Runnable r) {
+        r.run();
+        throw new IllegalStateException("123");
     }
 
     @Override

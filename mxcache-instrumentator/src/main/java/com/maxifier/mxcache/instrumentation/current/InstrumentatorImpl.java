@@ -168,7 +168,7 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
         }
         classReader.accept(detector, ClassReader.SKIP_FRAMES);
 
-        classReader.accept(visitor, ClassReader.EXPAND_FRAMES);
+        classReader.accept(visitor, ClassReader.SKIP_FRAMES);
 
         if (isClassChanged(stages)) {
             byte[] bytes = classWriter.toByteArray();

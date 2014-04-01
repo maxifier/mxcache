@@ -255,6 +255,24 @@ public class DynamicInstrumentationFTest {
         instrumentClass(StaticMethodAccessedBoundResource.class, instrumentator, cl);
     }
 
+    @Test(dataProvider = "all")
+    public void testResourceWithException(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        Class<?> c = instrumentClass(TestCachedImpl.class, instrumentator, cl);
+        TestCached o = (TestCached) c.newInstance();
+        try {
+            o.readResourceWithException(new Runnable() {
+                @Override
+                public void run() {
+                    assertTrue(MxResourceFactory.getResource("test").isReading());
+                }
+            });
+            fail("Should throw an exception");
+        } catch (IllegalStateException e) {
+            // that's ok
+        }
+        assertFalse(MxResourceFactory.getResource("test").isReading());
+    }
+
     @Test(dataProvider = "v2228")
     public void testBoundResourceRead(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         Class<?> c = instrumentClass(TestCachedImpl.class, instrumentator, cl);
