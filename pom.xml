@@ -21,7 +21,6 @@
         <module>mxcache-idea-plugin</module>
         <module>mxcache-maven-plugin</module>
         <module>mxcache-tests</module>
-        <module>mxcache-asm</module>
         <module>mxcache-jmx</module>
         <module>mxcache-guice-integration</module>
         <module>mxcache-ehcache-integration</module>
@@ -74,11 +73,6 @@
             <dependency>
                 <groupId>com.maxifier.mxcache</groupId>
                 <artifactId>mxcache-idea-plugin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.maxifier.mxcache</groupId>
-                <artifactId>mxcache-asm</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -212,6 +206,12 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>1.5.10</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>mxcache-asm</artifactId>
+                <version>4.1</version>
             </dependency>
 
         </dependencies>

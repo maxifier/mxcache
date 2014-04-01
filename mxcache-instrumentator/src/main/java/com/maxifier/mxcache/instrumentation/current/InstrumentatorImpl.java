@@ -5,7 +5,6 @@ package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.MxCache;
 import com.maxifier.mxcache.asm.*;
-import com.maxifier.mxcache.asm.commons.EmptyVisitor;
 import com.maxifier.mxcache.instrumentation.*;
 import com.maxifier.mxcache.util.SmartClassWriter;
 
@@ -158,13 +157,13 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
 
         List<InstrumentationStage> stages = new ArrayList<InstrumentationStage>();
         ClassVisitor visitor = classWriter;
-        ClassVisitor detector = new EmptyVisitor();
+        ClassVisitor detector = new ClassVisitor(Opcodes.ASM4) {};
 
         // instrumentation stages are stacked, last added is first passed to class reader
         for (StageFactory factory : activeFactories) {
             InstrumentationStage stage = factory.createStage(visitor, detector);
             stages.add(stage);
-            visitor = stage;
+            visitor = (ClassVisitor)stage;
             detector = stage.getDetector();
         }
         classReader.accept(detector, ClassReader.SKIP_FRAMES);

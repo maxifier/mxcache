@@ -4,7 +4,6 @@
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.instrumentation.IllegalCachedClass;
-import com.maxifier.mxcache.asm.commons.EmptyVisitor;
 import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.asm.*;
 import com.maxifier.mxcache.util.CodegenHelper;
@@ -20,7 +19,7 @@ import static com.maxifier.mxcache.instrumentation.current.RuntimeTypes.CACHE_IN
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
-class CachedDetector extends ClassAdapter {
+class CachedDetector extends ClassVisitor {
     private final Map<Method, CachedMethodContext> cachedMethods = new THashMap<Method, CachedMethodContext>();
 
     private Type thisClass;
@@ -32,7 +31,7 @@ class CachedDetector extends ClassAdapter {
     private boolean alreadyInstrumented;
 
     public CachedDetector(ClassVisitor nextDetector) {
-        super(nextDetector);
+        super(Opcodes.ASM4, nextDetector);
     }
 
     @Override
@@ -89,7 +88,7 @@ class CachedDetector extends ClassAdapter {
         return (access & Opcodes.ACC_BRIDGE) != 0;
     }
 
-    private final class MethodDetector extends MethodAdapter {
+    private final class MethodDetector extends MethodVisitor {
         private final String desc;
 
         private final Method method;
@@ -99,7 +98,7 @@ class CachedDetector extends ClassAdapter {
         private final int methodAccess;
 
         MethodDetector(MethodVisitor mv, String desc, Method method, int methodAccess) {
-            super(mv);
+            super(Opcodes.ASM4, mv);
             this.desc = desc;
             this.method = method;
             this.methodAccess = methodAccess;
@@ -131,7 +130,11 @@ class CachedDetector extends ClassAdapter {
             return new CachedAnnotationVisitor();
         }
 
-        private class CachedAnnotationVisitor implements AnnotationVisitor {
+        private class CachedAnnotationVisitor extends AnnotationVisitor {
+            CachedAnnotationVisitor() {
+                super(Opcodes.ASM4);
+            }
+
             @Override
             public void visit(String name, Object value) {
                 if (name.equals("tags") && value instanceof String[]) {
@@ -161,7 +164,7 @@ class CachedDetector extends ClassAdapter {
                 if (!name.equals("tags")) {
                     return null;
                 }
-                return new EmptyVisitor() {
+                return new AnnotationVisitor(Opcodes.ASM4) {
                     @Override
                     public void visit(String name, Object value) {
                         context.getTags().add((String) value);

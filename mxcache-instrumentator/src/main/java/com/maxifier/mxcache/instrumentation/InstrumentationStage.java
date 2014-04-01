@@ -8,9 +8,12 @@ import com.maxifier.mxcache.asm.ClassVisitor;
 import java.util.List;
 
 /**
+ * Instrumentation stage should also extend ClassVisitor, but it's impossible due to changes in ASM API:
+ * ClassVisitor is not an interface anymore, it is just a class.
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public interface InstrumentationStage extends ClassVisitor {
+public interface InstrumentationStage /* extends ClassVisitor */ {
     boolean isClassChanged();
 
     ClassVisitor getDetector();

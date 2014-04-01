@@ -5,6 +5,7 @@ package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.asm.ClassVisitor;
 import com.maxifier.mxcache.asm.MethodVisitor;
+import com.maxifier.mxcache.asm.Opcodes;
 import com.maxifier.mxcache.asm.commons.AdviceAdapter;
 import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
@@ -94,13 +95,13 @@ class UseProxyInstrumentationStage219 extends UseProxyInstrumentationStage {
 
     private class ProxyFactoryInitializer extends AdviceAdapter {
         public ProxyFactoryInitializer(MethodVisitor oldVisitor, int access, String name, String desc) {
-            super(oldVisitor, access, name, desc);
+            super(Opcodes.ASM4, oldVisitor, access, name, desc);
         }
 
         @Override
         protected void onMethodEnter() {
             loadThis();
-            invokePrivate(getThisType(), INIT_PROXY_FACTORIES_METHOD_OLD);
+            invokeConstructor(getThisType(), INIT_PROXY_FACTORIES_METHOD_OLD);
         }
     }
 }
