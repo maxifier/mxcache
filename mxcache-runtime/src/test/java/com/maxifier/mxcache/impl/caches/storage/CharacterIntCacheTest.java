@@ -301,7 +301,8 @@ public class CharacterIntCacheTest {
     }
 
     private CharacterIntStorage createStorage(boolean elementLocked) {
-        CharacterIntStorage storage = mock(elementLocked ? CharacterIntElementLockedStorage.class : CharacterIntStorage.class);
+        // cast necessary for JDK8 compilation
+        CharacterIntStorage storage = mock((Class<CharacterIntStorage>)(elementLocked ? CharacterIntElementLockedStorage.class : CharacterIntStorage.class));
         if (elementLocked) {
             when(((CharacterIntElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
@@ -310,7 +311,8 @@ public class CharacterIntCacheTest {
 
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
-        CharacterIntStorage storage = mock(elementLocked ? CharacterIntElementLockedStorage.class : CharacterIntStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
+        // cast necessary for JDK8 compilation
+        CharacterIntStorage storage = mock((Class<CharacterIntStorage>)(elementLocked ? CharacterIntElementLockedStorage.class : CharacterIntStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         CharacterIntCache cache = (CharacterIntCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());

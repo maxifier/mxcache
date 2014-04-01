@@ -128,8 +128,9 @@ public class TupleGeneratorUTest {
         assertEquals(tuple.getFloat(2), 4f);
         assertEquals(tuple.getDouble(2), 4d);
 
-        assertEquals(tuple.get(0), (byte)1);
-        assertEquals(tuple.get(1), 3);
+        // cast necessary for JDK8 compilation
+        assertEquals(tuple.<Object>get(0), (byte)1);
+        assertEquals(tuple.<Object>get(1), 3);
         assertEquals(tuple.get(2), 4f);
         assertEquals(tuple.get(3), "test");
     }

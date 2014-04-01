@@ -301,7 +301,8 @@ public class ObjectCharacterCacheTest {
     }
 
     private ObjectCharacterStorage createStorage(boolean elementLocked) {
-        ObjectCharacterStorage storage = mock(elementLocked ? ObjectCharacterElementLockedStorage.class : ObjectCharacterStorage.class);
+        // cast necessary for JDK8 compilation
+        ObjectCharacterStorage storage = mock((Class<ObjectCharacterStorage>)(elementLocked ? ObjectCharacterElementLockedStorage.class : ObjectCharacterStorage.class));
         if (elementLocked) {
             when(((ObjectCharacterElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
@@ -310,7 +311,8 @@ public class ObjectCharacterCacheTest {
 
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
-        ObjectCharacterStorage storage = mock(elementLocked ? ObjectCharacterElementLockedStorage.class : ObjectCharacterStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
+        // cast necessary for JDK8 compilation
+        ObjectCharacterStorage storage = mock((Class<ObjectCharacterStorage>)(elementLocked ? ObjectCharacterElementLockedStorage.class : ObjectCharacterStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         ObjectCharacterCache cache = (ObjectCharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
