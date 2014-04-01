@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.maxifier.mxcache</groupId>
     <artifactId>mxcache-asm</artifactId>
-    <version>4.1</version>
+    <version>5.0</version>
     <name>MxCache asm</name>
     <description>A repackage of ASM byte code manipulation library with some fixes from 3.3.
         All classes put into com.maxifier.mxcache.asm package.
@@ -40,6 +40,18 @@
             <artifactId>asm-util</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-tree</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-analysis</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -67,6 +79,7 @@
 
                             <shadedArtifactAttached>false</shadedArtifactAttached>
                             <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <createSourcesJar>true</createSourcesJar>
 
                             <relocations>
                                 <relocation>

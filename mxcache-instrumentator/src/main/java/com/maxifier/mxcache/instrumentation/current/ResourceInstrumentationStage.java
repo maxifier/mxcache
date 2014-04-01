@@ -33,7 +33,7 @@ abstract class ResourceInstrumentationStage extends SerialVersionUIDAdder implem
     private final ResourceDetector detector;
 
     public ResourceInstrumentationStage(InstrumentatorImpl instrumentator, ClassVisitor cv, ClassVisitor nextDetector) {
-        super(new AddInstanceInitializer(new AddStaticInitializer(cv, RESOURCE_STATIC_INITIALIZER_METHOD), RESOURCE_INITIALIZER_METHOD));
+        super(Opcodes.ASM4, new AddInstanceInitializer(new AddStaticInitializer(cv, RESOURCE_STATIC_INITIALIZER_METHOD), RESOURCE_INITIALIZER_METHOD));
         this.detector = createDetector(nextDetector);
         this.instrumentator = instrumentator;
     }
