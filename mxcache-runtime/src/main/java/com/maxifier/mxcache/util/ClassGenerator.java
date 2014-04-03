@@ -17,7 +17,7 @@ import static com.maxifier.mxcache.util.CodegenHelper.*;
  *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class ClassGenerator extends SmartClassWriter {
+public class ClassGenerator extends ClassVisitor {
     private static final int DEFAULT_VERSION = V1_5;
 
     private Type superType;
@@ -25,11 +25,11 @@ public class ClassGenerator extends SmartClassWriter {
     private boolean endVisited;
 
     public ClassGenerator(int flags) {
-        super(flags);
+        super(Opcodes.ASM4, new SmartClassWriter(flags));
     }
 
     public ClassGenerator(ClassReader classReader, int flags) {
-        super(classReader, flags);
+        super(Opcodes.ASM4, new SmartClassWriter(classReader, flags));
     }
 
     public ClassGenerator(int access, String name, Class superType, Class... interfaces) {
@@ -41,7 +41,7 @@ public class ClassGenerator extends SmartClassWriter {
     }
 
     public ClassGenerator(int version, int access, String name, Type superType, Type... interfaces) {
-        this(COMPUTE_FRAMES);
+        this(ClassWriter.COMPUTE_FRAMES);
         thisType = Type.getObjectType(name);
         this.superType = superType;
 
@@ -104,6 +104,10 @@ public class ClassGenerator extends SmartClassWriter {
         }
         byte[] bytecode = toByteArray();
         return loadClass(classLoader, bytecode);
+    }
+
+    public byte[] toByteArray() {
+        return ((SmartClassWriter)cv).toByteArray();
     }
 
     @Override

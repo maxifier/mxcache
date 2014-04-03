@@ -3,13 +3,9 @@
  */
 package com.maxifier.mxcache.impl.wrapping;
 
-import com.maxifier.mxcache.asm.ClassWriter;
-import com.maxifier.mxcache.asm.Label;
-import com.maxifier.mxcache.asm.MethodVisitor;
-import com.maxifier.mxcache.asm.Opcodes;
+import com.maxifier.mxcache.asm.*;
 import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
 import com.maxifier.mxcache.asm.commons.Method;
-import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.ObjectObjectCache;
 import com.maxifier.mxcache.caches.ObjectObjectCalculatable;
@@ -230,7 +226,7 @@ public final class Wrapping {
         return perElementLocking ? "com/maxifier/mxcache/impl/caches/abs/elementlocked" : "com/maxifier/mxcache/impl/caches/abs";
     }
 
-    private static void generateSetStorage(ClassWriter w, Type wrapperType, Type storageType) {
+    private static void generateSetStorage(ClassVisitor w, Type wrapperType, Type storageType) {
         WrapperMethodGenerator setStorage = defineMethod(w, SET_STORAGE_TYPE);
         setStorage.visitCode();
 
@@ -252,7 +248,7 @@ public final class Wrapping {
         setStorage.endMethod();
     }
 
-    private static void generateGetStatistics(ClassWriter w, String superName, Type wrapperType, Type storageType) {
+    private static void generateGetStatistics(ClassVisitor w, String superName, Type wrapperType, Type storageType) {
         WrapperMethodGenerator getStatistics = defineMethod(w, GET_STATISTICS_METHOD);
         getStatistics.loadStorage(wrapperType, storageType);
         getStatistics.instanceOf(STATISTICS_HOLDER_TYPE);
@@ -266,12 +262,12 @@ public final class Wrapping {
         getStatistics.mark(delegating);
 
         getStatistics.loadThis();
-        getStatistics.invokeSuper(Type.getObjectType(superName), GET_STATISTICS_METHOD);
+        getStatistics.invokeConstructor(Type.getObjectType(superName), GET_STATISTICS_METHOD);
         getStatistics.returnValue();
         getStatistics.endMethod();
     }
 
-    private static void generateSave(@Nonnull TransformGenerator keyTransformer, @Nonnull TransformGenerator valueTransformer, ClassWriter w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type erasedCacheValueType, Type storageKeyType, Type storageValueType) {
+    private static void generateSave(@Nonnull TransformGenerator keyTransformer, @Nonnull TransformGenerator valueTransformer, ClassVisitor w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type erasedCacheValueType, Type storageKeyType, Type storageValueType) {
         Method cacheSaveMethod = new Method(SAVE_METHOD, VOID_TYPE, erasedCacheKeyType == null ? new Type[]{erasedCacheValueType} : new Type[]{erasedCacheKeyType, erasedCacheValueType});
         Method storageSaveMethod = new Method(SAVE_METHOD, VOID_TYPE, storageKeyType == null ? new Type[]{erase(storageValueType)} : new Type[]{erase(storageKeyType), erase(storageValueType)});
         WrapperMethodGenerator save = defineMethod(w, cacheSaveMethod);
@@ -290,7 +286,7 @@ public final class Wrapping {
         save.endMethod();
     }
 
-    private static void generateDelegatingLockingMethod(String name, @Nonnull TransformGenerator keyTransformer, ClassWriter w, Type wrapperType, Type storageType, @Nonnull Type erasedCacheKeyType, @Nonnull Type storageKeyType) {
+    private static void generateDelegatingLockingMethod(String name, @Nonnull TransformGenerator keyTransformer, ClassVisitor w, Type wrapperType, Type storageType, @Nonnull Type erasedCacheKeyType, @Nonnull Type storageKeyType) {
         Method cacheLockMethod = new Method(name, VOID_TYPE, new Type[]{erasedCacheKeyType});
         Method storageLockMethod = new Method(name, VOID_TYPE, new Type[]{erase(storageKeyType)});
         WrapperMethodGenerator save = defineMethod(w, cacheLockMethod);
@@ -305,7 +301,7 @@ public final class Wrapping {
         save.endMethod();
     }
 
-    private static void generateGetLock(ClassWriter w, Type wrapperType, Type storageType) {
+    private static void generateGetLock(ClassVisitor w, Type wrapperType, Type storageType) {
         WrapperMethodGenerator save = defineMethod(w, GET_LOCK_METHOD);
 
         save.visitCode();
@@ -316,7 +312,7 @@ public final class Wrapping {
         save.endMethod();
     }
 
-    private static void generateDelegatingMethod(ClassWriter w, Type wrapperType, Type storageType, Method method) {
+    private static void generateDelegatingMethod(ClassVisitor w, Type wrapperType, Type storageType, Method method) {
         WrapperMethodGenerator size = defineMethod(w, method);
         size.loadStorage(wrapperType, storageType);
         size.invokeInterface(storageType, method);
@@ -328,7 +324,7 @@ public final class Wrapping {
         return type == null ? EMPTY_TYPES : new Type[]{erase(type)};
     }
 
-    private static void generateIsCalculated(@Nonnull TransformGenerator keyTransformer, ClassWriter w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type storageKeyType, Type storageValueType) {
+    private static void generateIsCalculated(@Nonnull TransformGenerator keyTransformer, ClassVisitor w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type storageKeyType, Type storageValueType) {
         Method cacheIsCalculatedMethod = new Method(IS_CALCULATED_METHOD, BOOLEAN_TYPE, getArgumentTypes(erasedCacheKeyType));
 
         WrapperMethodGenerator isCalculated = defineMethod(w, cacheIsCalculatedMethod);
@@ -378,7 +374,7 @@ public final class Wrapping {
         keyTransformer.generateForward(wrapperType, 0, methodGenerator);
     }
 
-    private static void generateLoad(@Nonnull TransformGenerator keyTransformer, @Nonnull TransformGenerator valueTransformer, ClassWriter w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type erasedCacheValueType, Type storageKeyType, Type storageValueType) {
+    private static void generateLoad(@Nonnull TransformGenerator keyTransformer, @Nonnull TransformGenerator valueTransformer, ClassVisitor w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type erasedCacheValueType, Type storageKeyType, Type storageValueType) {
         Method cacheLoadMethod = new Method(LOAD_METHOD, erasedCacheValueType, getArgumentTypes(erasedCacheKeyType));
         Method storageLoadMethod = new Method(LOAD_METHOD, erase(storageValueType), getArgumentTypes(storageKeyType));
 
@@ -424,7 +420,7 @@ public final class Wrapping {
         return !isReferenceType(storageValueType);
     }
 
-    private static void generateConstructor(ClassWriter w, Type superType, Type calculatableType) {
+    private static void generateConstructor(ClassVisitor w, Type superType, Type calculatableType) {
         Method method = new Method(CONSTRUCTOR_NAME, VOID_TYPE, new Type[]{OBJECT_TYPE, calculatableType, MUTABLE_STATISTICS_TYPE});
 
         WrapperMethodGenerator ctor = defineMethod(w, method);
@@ -438,7 +434,7 @@ public final class Wrapping {
         ctor.endMethod();
     }
 
-    private static WrapperMethodGenerator defineMethod(ClassWriter w, Method ctorMethod) {
+    private static WrapperMethodGenerator defineMethod(ClassVisitor w, Method ctorMethod) {
         return new WrapperMethodGenerator(ACC_PUBLIC, ctorMethod, w.visitMethod(ACC_PUBLIC, ctorMethod.getName(), ctorMethod.getDescriptor(), null, null));
     }
 
@@ -496,7 +492,7 @@ public final class Wrapping {
 
     private static final class WrapperMethodGenerator extends GeneratorAdapter {
         private WrapperMethodGenerator(int access, Method method, MethodVisitor mv) {
-            super(access, method, mv);
+            super(Opcodes.ASM4, mv, access, method.getName(), method.getDescriptor());
         }
 
         public void loadUndefined() {

@@ -301,7 +301,8 @@ public class DoubleShortCacheTest {
     }
 
     private DoubleShortStorage createStorage(boolean elementLocked) {
-        DoubleShortStorage storage = mock(elementLocked ? DoubleShortElementLockedStorage.class : DoubleShortStorage.class);
+        // cast necessary for JDK8 compilation
+        DoubleShortStorage storage = mock((Class<DoubleShortStorage>)(elementLocked ? DoubleShortElementLockedStorage.class : DoubleShortStorage.class));
         if (elementLocked) {
             when(((DoubleShortElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
@@ -310,7 +311,8 @@ public class DoubleShortCacheTest {
 
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
-        DoubleShortStorage storage = mock(elementLocked ? DoubleShortElementLockedStorage.class : DoubleShortStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
+        // cast necessary for JDK8 compilation
+        DoubleShortStorage storage = mock((Class<DoubleShortStorage>)(elementLocked ? DoubleShortElementLockedStorage.class : DoubleShortStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         DoubleShortCache cache = (DoubleShortCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());

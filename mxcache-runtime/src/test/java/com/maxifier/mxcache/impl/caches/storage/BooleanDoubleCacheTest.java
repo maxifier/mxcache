@@ -301,7 +301,8 @@ public class BooleanDoubleCacheTest {
     }
 
     private BooleanDoubleStorage createStorage(boolean elementLocked) {
-        BooleanDoubleStorage storage = mock(elementLocked ? BooleanDoubleElementLockedStorage.class : BooleanDoubleStorage.class);
+        // cast necessary for JDK8 compilation
+        BooleanDoubleStorage storage = mock((Class<BooleanDoubleStorage>)(elementLocked ? BooleanDoubleElementLockedStorage.class : BooleanDoubleStorage.class));
         if (elementLocked) {
             when(((BooleanDoubleElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
@@ -310,7 +311,8 @@ public class BooleanDoubleCacheTest {
 
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
-        BooleanDoubleStorage storage = mock(elementLocked ? BooleanDoubleElementLockedStorage.class : BooleanDoubleStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
+        // cast necessary for JDK8 compilation
+        BooleanDoubleStorage storage = mock((Class<BooleanDoubleStorage>)(elementLocked ? BooleanDoubleElementLockedStorage.class : BooleanDoubleStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         BooleanDoubleCache cache = (BooleanDoubleCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());

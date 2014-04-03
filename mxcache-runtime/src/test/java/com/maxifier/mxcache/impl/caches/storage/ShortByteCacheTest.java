@@ -301,7 +301,8 @@ public class ShortByteCacheTest {
     }
 
     private ShortByteStorage createStorage(boolean elementLocked) {
-        ShortByteStorage storage = mock(elementLocked ? ShortByteElementLockedStorage.class : ShortByteStorage.class);
+        // cast necessary for JDK8 compilation
+        ShortByteStorage storage = mock((Class<ShortByteStorage>)(elementLocked ? ShortByteElementLockedStorage.class : ShortByteStorage.class));
         if (elementLocked) {
             when(((ShortByteElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
@@ -310,7 +311,8 @@ public class ShortByteCacheTest {
 
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
-        ShortByteStorage storage = mock(elementLocked ? ShortByteElementLockedStorage.class : ShortByteStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
+        // cast necessary for JDK8 compilation
+        ShortByteStorage storage = mock((Class<ShortByteStorage>)(elementLocked ? ShortByteElementLockedStorage.class : ShortByteStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         ShortByteCache cache = (ShortByteCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());

@@ -3,12 +3,12 @@
  */
 package com.maxifier.mxcache.instrumentation.current;
 
-import com.maxifier.mxcache.asm.ClassAdapter;
 import com.maxifier.mxcache.asm.ClassVisitor;
 import com.maxifier.mxcache.asm.MethodVisitor;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
+import com.maxifier.mxcache.asm.Opcodes;
 
 import java.lang.reflect.Modifier;
 
@@ -19,14 +19,14 @@ import static com.maxifier.mxcache.util.CodegenHelper.STATIC_INITIALIZER_NAME;
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class AddStaticInitializer extends ClassAdapter {
+public class AddStaticInitializer extends ClassVisitor {
     private final Method method;
 
     private boolean hasStaticInitializer;
     private Type thisType;
 
     public AddStaticInitializer(ClassVisitor cv, Method method) {
-        super(cv);
+        super(Opcodes.ASM4, cv);
         this.method = method;
     }
 

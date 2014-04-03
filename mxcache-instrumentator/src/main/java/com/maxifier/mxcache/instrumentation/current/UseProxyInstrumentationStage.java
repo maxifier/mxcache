@@ -25,7 +25,7 @@ import static com.maxifier.mxcache.util.CodegenHelper.*;
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-abstract class UseProxyInstrumentationStage extends ClassAdapter implements InstrumentationStage {
+abstract class UseProxyInstrumentationStage extends ClassVisitor implements InstrumentationStage {
 
     protected static final String PROXY_FACTORY_FIELD_PREFIX = "$proxyFactory$";
 
@@ -42,7 +42,7 @@ abstract class UseProxyInstrumentationStage extends ClassAdapter implements Inst
     private String sourceFileName;
 
     public UseProxyInstrumentationStage(InstrumentatorImpl instrumentator, ClassVisitor cv, ClassVisitor nextDetector) {
-        super(cv);
+        super(Opcodes.ASM4, cv);
         this.instrumentator = instrumentator;
         detector = new UseProxyDetector(nextDetector);
     }
@@ -156,7 +156,7 @@ abstract class UseProxyInstrumentationStage extends ClassAdapter implements Inst
 
     private class ProxyFactoryStaticInitializer extends AdviceAdapter {
         public ProxyFactoryStaticInitializer(MethodVisitor oldVisitor, int access, String name, String desc) {
-            super(oldVisitor, access, name, desc);
+            super(Opcodes.ASM4, oldVisitor, access, name, desc);
         }
 
         @Override

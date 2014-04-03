@@ -301,7 +301,8 @@ public class IntBooleanCacheTest {
     }
 
     private IntBooleanStorage createStorage(boolean elementLocked) {
-        IntBooleanStorage storage = mock(elementLocked ? IntBooleanElementLockedStorage.class : IntBooleanStorage.class);
+        // cast necessary for JDK8 compilation
+        IntBooleanStorage storage = mock((Class<IntBooleanStorage>)(elementLocked ? IntBooleanElementLockedStorage.class : IntBooleanStorage.class));
         if (elementLocked) {
             when(((IntBooleanElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
@@ -310,7 +311,8 @@ public class IntBooleanCacheTest {
 
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
-        IntBooleanStorage storage = mock(elementLocked ? IntBooleanElementLockedStorage.class : IntBooleanStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
+        // cast necessary for JDK8 compilation
+        IntBooleanStorage storage = mock((Class<IntBooleanStorage>)(elementLocked ? IntBooleanElementLockedStorage.class : IntBooleanStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         IntBooleanCache cache = (IntBooleanCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());

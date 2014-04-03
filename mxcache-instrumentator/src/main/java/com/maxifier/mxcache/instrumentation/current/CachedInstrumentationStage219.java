@@ -56,7 +56,7 @@ class CachedInstrumentationStage219 extends CachedInstrumentationStage {
 
     private class CacheRegistrator extends AdviceAdapter {
         public CacheRegistrator(MethodVisitor oldVisitor, int access, String name, String desc) {
-            super(oldVisitor, access, name, desc);
+            super(Opcodes.ASM4, oldVisitor, access, name, desc);
         }
 
         @Override

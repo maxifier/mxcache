@@ -3,13 +3,18 @@
  */
 package com.maxifier.mxcache.util;
 
-import com.maxifier.mxcache.asm.commons.EmptyVisitor;
+import com.maxifier.mxcache.asm.ClassVisitor;
+import com.maxifier.mxcache.asm.Opcodes;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
-class NameFindVisitor extends EmptyVisitor {
+class NameFindVisitor extends ClassVisitor {
     private String name;
+
+    NameFindVisitor() {
+        super(Opcodes.ASM4);
+    }
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {

@@ -68,7 +68,7 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
     private final TIntObjectHashMap<Generator> instanceCleanMethods = new TIntObjectHashMap<Generator>();
 
     public CachedInstrumentationStage(InstrumentatorImpl instrumentator, ClassVisitor classWriter, ClassVisitor nextDetector) {
-        super(classWriter);
+        super(Opcodes.ASM4, classWriter);
         this.instrumentator = instrumentator;
         this.detector = new CachedDetector(nextDetector);
     }

@@ -301,7 +301,8 @@ public class ObjectLongCacheTest {
     }
 
     private ObjectLongStorage createStorage(boolean elementLocked) {
-        ObjectLongStorage storage = mock(elementLocked ? ObjectLongElementLockedStorage.class : ObjectLongStorage.class);
+        // cast necessary for JDK8 compilation
+        ObjectLongStorage storage = mock((Class<ObjectLongStorage>)(elementLocked ? ObjectLongElementLockedStorage.class : ObjectLongStorage.class));
         if (elementLocked) {
             when(((ObjectLongElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
@@ -310,7 +311,8 @@ public class ObjectLongCacheTest {
 
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
-        ObjectLongStorage storage = mock(elementLocked ? ObjectLongElementLockedStorage.class : ObjectLongStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
+        // cast necessary for JDK8 compilation
+        ObjectLongStorage storage = mock((Class<ObjectLongStorage>)(elementLocked ? ObjectLongElementLockedStorage.class : ObjectLongStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         ObjectLongCache cache = (ObjectLongCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());

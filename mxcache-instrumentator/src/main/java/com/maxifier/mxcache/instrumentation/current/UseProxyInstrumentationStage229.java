@@ -3,6 +3,7 @@
  */
 package com.maxifier.mxcache.instrumentation.current;
 
+import com.maxifier.mxcache.asm.Opcodes;
 import com.maxifier.mxcache.instrumentation.IllegalCachedClass;
 import com.maxifier.mxcache.asm.AnnotationVisitor;
 import com.maxifier.mxcache.asm.ClassVisitor;
@@ -102,7 +103,7 @@ class UseProxyInstrumentationStage229 extends UseProxyInstrumentationStage {
         private int contextIndex = -1;
 
         public ProxyFactoryInitializer(MethodVisitor oldVisitor, int access, String name, String desc) {
-            super(oldVisitor, access, name, desc);
+            super(Opcodes.ASM4, oldVisitor, access, name, desc);
         }
 
         @Override
@@ -124,7 +125,7 @@ class UseProxyInstrumentationStage229 extends UseProxyInstrumentationStage {
             } else {
                 loadArg(contextIndex);
             }
-            invokePrivate(getThisType(), INIT_PROXY_FACTORIES_METHOD);
+            invokeConstructor(getThisType(), INIT_PROXY_FACTORIES_METHOD);
         }
     }
 }

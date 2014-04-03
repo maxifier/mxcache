@@ -301,7 +301,8 @@ public class ByteFloatCacheTest {
     }
 
     private ByteFloatStorage createStorage(boolean elementLocked) {
-        ByteFloatStorage storage = mock(elementLocked ? ByteFloatElementLockedStorage.class : ByteFloatStorage.class);
+        // cast necessary for JDK8 compilation
+        ByteFloatStorage storage = mock((Class<ByteFloatStorage>)(elementLocked ? ByteFloatElementLockedStorage.class : ByteFloatStorage.class));
         if (elementLocked) {
             when(((ByteFloatElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
@@ -310,7 +311,8 @@ public class ByteFloatCacheTest {
 
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
-        ByteFloatStorage storage = mock(elementLocked ? ByteFloatElementLockedStorage.class : ByteFloatStorage.class, withSettings().extraInterfaces(StatisticsHolder.class));
+        // cast necessary for JDK8 compilation
+        ByteFloatStorage storage = mock((Class<ByteFloatStorage>)(elementLocked ? ByteFloatElementLockedStorage.class : ByteFloatStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         ByteFloatCache cache = (ByteFloatCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
