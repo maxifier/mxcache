@@ -24,8 +24,11 @@
         <module>mxcache-jmx</module>
         <module>mxcache-guice-integration</module>
         <module>mxcache-ehcache-integration</module>
-        <module>jconsole-stub</module>
         <module>mxcache-guava-integration</module>
+
+        <module>jconsole-stub</module>
+
+        <module>stubgen</module>
     </modules>
 
     <scm>
