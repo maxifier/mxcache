@@ -27,7 +27,7 @@
         <module>mxcache-guava-integration</module>
 
         <module>jconsole-stub</module>
-
+        <module>mxcache-idea-api-stubs</module>
         <module>stubgen</module>
     </modules>
 
@@ -38,7 +38,7 @@
     </scm>
 
     <properties>
-        <sonar.skippedModules>mxcache-asm,jconsole-stub</sonar.skippedModules>
+        <sonar.skippedModules>mxcache-asm,jconsole-stub,mxcache-idea-api-stubs</sonar.skippedModules>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle.version>2.9.1</checkstyle.version>
         <checkstyle.config.file>checkstyle.xml</checkstyle.config.file>
@@ -70,6 +70,11 @@
             </dependency>
             <dependency>
                 <groupId>com.maxifier.mxcache</groupId>
+                <artifactId>mxcache-idea-api-stubs</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.maxifier.mxcache</groupId>
                 <artifactId>mxcache-maven-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -87,42 +92,6 @@
                 <groupId>com.maxifier.mxcache</groupId>
                 <artifactId>jconsole-stub</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-
-
-            <dependency>
-                <groupId>com.intellij</groupId>
-                <artifactId>openapi</artifactId>
-                <version>${idea.sdk.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.intellij</groupId>
-                <artifactId>util</artifactId>
-                <version>${idea.sdk.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.intellij</groupId>
-                <artifactId>extensions</artifactId>
-                <version>${idea.sdk.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.intellij</groupId>
-                <artifactId>jps-server</artifactId>
-                <version>${idea.sdk.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.intellij</groupId>
-                <artifactId>javac2</artifactId>
-                <version>${idea.sdk.version}</version>
-                <scope>compile</scope>
             </dependency>
 
             <dependency>
@@ -275,13 +244,13 @@
             <version>6.3</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>0.9.18</version>
             <scope>test</scope>
-       </dependency>
+        </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>

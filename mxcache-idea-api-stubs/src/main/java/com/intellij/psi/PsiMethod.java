@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
+ */
+package com.intellij.psi;
+
+import com.intellij.pom.PomRenameableTarget;
+
+/**
+ * THIS CLASS WAS GENERATED AUTOMATICALLY WITH StubGen BASED ON IDEA BINARIES
+ * DON'T MODIFY IT MANUALLY!
+
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ */
+public interface PsiMethod extends PsiMember, PsiNameIdentifierOwner, PsiModifierListOwner, PsiDocCommentOwner, PsiTypeParameterListOwner, PomRenameableTarget, PsiTarget {
+     public abstract PsiModifierList getModifierList();
+
+     public abstract PsiParameterList getParameterList();
+
+     public abstract PsiType getReturnType();
+
+}
