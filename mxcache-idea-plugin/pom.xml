@@ -19,28 +19,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.intellij</groupId>
-            <artifactId>openapi</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.intellij</groupId>
-            <artifactId>util</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.intellij</groupId>
-            <artifactId>extensions</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.intellij</groupId>
-            <artifactId>jps-server</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.intellij</groupId>
-            <artifactId>javac2</artifactId>
+            <groupId>com.maxifier.mxcache</groupId>
+            <artifactId>mxcache-idea-api-stubs</artifactId>
         </dependency>
 
         <dependency>
