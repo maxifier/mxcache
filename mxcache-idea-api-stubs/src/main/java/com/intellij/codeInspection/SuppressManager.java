@@ -12,7 +12,6 @@ import com.intellij.codeInsight.daemon.HighlightDisplayKey;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class SuppressManager implements BatchSuppressManager {
-     public SuppressManager() {}
      public static SuppressManager getInstance() {
           throw new UnsupportedOperationException();
      }

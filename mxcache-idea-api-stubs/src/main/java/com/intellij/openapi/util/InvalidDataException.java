@@ -10,5 +10,4 @@ package com.intellij.openapi.util;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class InvalidDataException extends Exception {
-     public InvalidDataException() {}
 }

@@ -10,7 +10,6 @@ package com.intellij.codeInsight.daemon;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class HighlightDisplayKey {
-     public HighlightDisplayKey() {}
      public static HighlightDisplayKey find(String p1) {
           throw new UnsupportedOperationException();
      }

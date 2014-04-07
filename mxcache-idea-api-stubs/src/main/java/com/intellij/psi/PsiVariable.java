@@ -11,7 +11,7 @@ import com.intellij.pom.PomRenameableTarget;
 
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public interface PsiVariable extends PsiModifierListOwner, PsiNameIdentifierOwner, PsiTarget, PomRenameableTarget {
+public interface PsiVariable extends PsiModifierListOwner, PsiNameIdentifierOwner, PsiTarget, PomRenameableTarget<PsiElement> {
      public abstract PsiExpression getInitializer();
 
 }

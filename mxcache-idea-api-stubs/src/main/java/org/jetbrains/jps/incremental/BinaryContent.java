@@ -10,7 +10,6 @@ package org.jetbrains.jps.incremental;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class BinaryContent {
-     public BinaryContent() {}
      public BinaryContent(byte[] p1){}
 
      public byte[] toByteArray() {

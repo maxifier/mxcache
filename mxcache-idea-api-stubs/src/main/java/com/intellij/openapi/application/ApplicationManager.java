@@ -10,7 +10,6 @@ package com.intellij.openapi.application;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ApplicationManager {
-     public ApplicationManager() {}
      public static Application getApplication() {
           throw new UnsupportedOperationException();
      }

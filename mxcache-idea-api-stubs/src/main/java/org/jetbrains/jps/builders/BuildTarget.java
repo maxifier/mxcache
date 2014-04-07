@@ -9,6 +9,5 @@ package org.jetbrains.jps.builders;
 
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class BuildTarget<R> {
-     public BuildTarget() {}
+public abstract class BuildTarget<R extends BuildRootDescriptor> {
 }

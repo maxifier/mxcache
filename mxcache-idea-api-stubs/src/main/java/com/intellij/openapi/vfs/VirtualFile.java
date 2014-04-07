@@ -14,7 +14,6 @@ import java.io.IOException;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class VirtualFile extends UserDataHolderBase implements ModificationTracker {
-     public VirtualFile() {}
      public String toString() {
           throw new UnsupportedOperationException();
      }

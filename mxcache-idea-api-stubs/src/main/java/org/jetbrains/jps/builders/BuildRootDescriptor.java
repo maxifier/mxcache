@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
  */
-package com.intellij.codeInspection;
+package org.jetbrains.jps.builders;
 
 /**
  * THIS CLASS WAS GENERATED AUTOMATICALLY WITH StubGen BASED ON IDEA BINARIES
@@ -9,5 +9,5 @@ package com.intellij.codeInspection;
 
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public interface LocalQuickFix extends QuickFix<ProblemDescriptor> {
+public abstract class BuildRootDescriptor {
 }

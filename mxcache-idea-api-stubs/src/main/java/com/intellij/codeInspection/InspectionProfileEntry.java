@@ -12,7 +12,6 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class InspectionProfileEntry {
-     public InspectionProfileEntry() {}
      public String getShortName() {
           throw new UnsupportedOperationException();
      }

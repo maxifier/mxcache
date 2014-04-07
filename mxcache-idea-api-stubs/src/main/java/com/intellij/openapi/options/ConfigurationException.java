@@ -10,5 +10,4 @@ package com.intellij.openapi.options;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ConfigurationException extends Exception {
-     public ConfigurationException() {}
 }

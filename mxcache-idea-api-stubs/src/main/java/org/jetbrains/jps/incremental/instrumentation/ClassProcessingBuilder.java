@@ -18,12 +18,11 @@ import org.jetbrains.jps.incremental.ModuleLevelBuilder.OutputConsumer;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class ClassProcessingBuilder extends ModuleLevelBuilder {
-     public ClassProcessingBuilder() {}
      public ClassProcessingBuilder(BuilderCategory p1){}
 
      protected abstract String getProgressMessage();
 
-     protected abstract ExitCode performBuild(CompileContext p1, ModuleChunk p2, InstrumentationClassFinder p3, OutputConsumer p4);
+     protected abstract ModuleLevelBuilder.ExitCode performBuild(CompileContext p1, ModuleChunk p2, InstrumentationClassFinder p3, ModuleLevelBuilder.OutputConsumer p4);
 
      protected abstract boolean isEnabled(CompileContext p1, ModuleChunk p2);
 

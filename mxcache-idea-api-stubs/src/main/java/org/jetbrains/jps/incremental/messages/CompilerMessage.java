@@ -10,7 +10,6 @@ package org.jetbrains.jps.incremental.messages;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class CompilerMessage extends BuildMessage {
-     public CompilerMessage() {}
-     public CompilerMessage(String p1, Kind p2, String p3, String p4){}
+     public CompilerMessage(String p1, BuildMessage.Kind p2, String p3, String p4){}
 
 }

@@ -12,7 +12,6 @@ import com.intellij.psi.PsiElement;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class PsiTreeUtil {
-     public PsiTreeUtil() {}
      public static PsiElement[] collectElements(PsiElement p1, PsiElementFilter p2) {
           throw new UnsupportedOperationException();
      }

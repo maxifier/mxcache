@@ -12,7 +12,6 @@ import org.jetbrains.jps.incremental.ModuleBuildTarget;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ModuleChunk {
-     public ModuleChunk() {}
      public ModuleBuildTarget representativeTarget() {
           throw new UnsupportedOperationException();
      }

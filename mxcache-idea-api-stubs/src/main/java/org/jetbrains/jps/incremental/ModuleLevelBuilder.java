@@ -14,7 +14,6 @@ import org.jetbrains.jps.builders.BuildTarget;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class ModuleLevelBuilder extends Builder {
-     public ModuleLevelBuilder() {}
      public static interface OutputConsumer {
           public abstract void registerCompiledClass(BuildTarget<? extends Object> p1, CompiledClass p2) throws IOException;
 

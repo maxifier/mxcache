@@ -3,6 +3,7 @@
  */
 package org.jetbrains.jps.incremental;
 
+import org.jetbrains.jps.builders.BuildRootDescriptor;
 import org.jetbrains.jps.builders.ModuleBasedTarget;
 
 /**
@@ -11,6 +12,5 @@ import org.jetbrains.jps.builders.ModuleBasedTarget;
 
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class JVMModuleBuildTarget<R> extends ModuleBasedTarget {
-     public JVMModuleBuildTarget() {}
+public abstract class JVMModuleBuildTarget<R extends BuildRootDescriptor> extends ModuleBasedTarget<R> {
 }

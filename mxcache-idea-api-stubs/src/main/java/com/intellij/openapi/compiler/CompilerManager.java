@@ -12,7 +12,6 @@ import com.intellij.openapi.project.Project;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class CompilerManager {
-     public CompilerManager() {}
      public static CompilerManager getInstance(Project p1) {
           throw new UnsupportedOperationException();
      }

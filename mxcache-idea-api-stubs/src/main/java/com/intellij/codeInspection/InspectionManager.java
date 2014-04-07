@@ -12,7 +12,6 @@ import com.intellij.psi.PsiElement;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class InspectionManager {
-     public InspectionManager() {}
      public abstract ProblemDescriptor createProblemDescriptor(PsiElement p1, String p2, LocalQuickFix p3, ProblemHighlightType p4);
 
 }

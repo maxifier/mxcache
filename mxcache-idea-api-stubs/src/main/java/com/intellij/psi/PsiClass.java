@@ -11,7 +11,7 @@ import com.intellij.pom.PomRenameableTarget;
 
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public interface PsiClass extends PsiNameIdentifierOwner, PsiModifierListOwner, PsiDocCommentOwner, PsiTypeParameterListOwner, PsiTarget, PomRenameableTarget {
+public interface PsiClass extends PsiNameIdentifierOwner, PsiModifierListOwner, PsiDocCommentOwner, PsiTypeParameterListOwner, PsiTarget, PomRenameableTarget<PsiElement> {
      public abstract PsiField[] getFields();
 
      public abstract boolean isInterface();

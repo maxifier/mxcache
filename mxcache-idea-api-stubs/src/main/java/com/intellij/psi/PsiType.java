@@ -10,7 +10,6 @@ package com.intellij.psi;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class PsiType implements PsiAnnotationOwner {
-     public PsiType() {}
      public abstract String getCanonicalText();
 
 }

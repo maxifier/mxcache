@@ -10,7 +10,6 @@ package com.intellij.openapi.util;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class Key<T> {
-     public Key() {}
      public static <T> Key<T> create(String p1) {
           throw new UnsupportedOperationException();
      }

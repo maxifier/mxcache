@@ -10,7 +10,6 @@ package org.jetbrains.jps.incremental.messages;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class BuildMessage {
-     public BuildMessage() {}
      public static enum Kind {
           ERROR;
      }

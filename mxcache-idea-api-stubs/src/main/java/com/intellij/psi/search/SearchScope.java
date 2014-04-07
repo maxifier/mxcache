@@ -10,5 +10,4 @@ package com.intellij.psi.search;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class SearchScope {
-     public SearchScope() {}
 }

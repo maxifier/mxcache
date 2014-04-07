@@ -10,7 +10,6 @@ package org.jetbrains.jps.incremental;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class Builder {
-     public Builder() {}
      public abstract String getPresentableName();
 
 }

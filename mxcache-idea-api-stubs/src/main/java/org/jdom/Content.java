@@ -12,5 +12,4 @@ import java.io.Serializable;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class Content implements Cloneable, Serializable {
-     public Content() {}
 }

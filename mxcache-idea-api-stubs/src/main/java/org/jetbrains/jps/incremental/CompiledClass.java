@@ -14,7 +14,6 @@ import java.io.IOException;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class CompiledClass extends UserDataHolderBase {
-     public CompiledClass() {}
      public CompiledClass(File p1, File p2, String p3, BinaryContent p4){}
 
      public String getClassName() {

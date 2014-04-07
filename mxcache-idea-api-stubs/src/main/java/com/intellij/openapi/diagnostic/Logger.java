@@ -10,7 +10,6 @@ package com.intellij.openapi.diagnostic;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class Logger {
-     public Logger() {}
      public static Logger getInstance(Class p1) {
           throw new UnsupportedOperationException();
      }

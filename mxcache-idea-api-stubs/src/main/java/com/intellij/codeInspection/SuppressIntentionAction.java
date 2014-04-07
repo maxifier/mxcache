@@ -13,5 +13,4 @@ import com.intellij.openapi.util.Iconable;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class SuppressIntentionAction implements Iconable, IntentionAction {
-     public SuppressIntentionAction() {}
 }

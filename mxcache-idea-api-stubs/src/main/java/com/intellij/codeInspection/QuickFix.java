@@ -9,5 +9,5 @@ package com.intellij.codeInspection;
 
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public interface QuickFix<D> {
+public interface QuickFix<D extends CommonProblemDescriptor> {
 }

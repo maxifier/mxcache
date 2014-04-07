@@ -10,7 +10,6 @@ package org.jdom;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class Element extends Content implements Parent {
-     public Element() {}
      public Element(String p1){}
 
      public String getText() {
