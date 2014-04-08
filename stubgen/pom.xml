@@ -15,10 +15,6 @@
         Stubgen allows to generate API stub source code for third-party libraries.
         It extracts only a skeleton of trird-party libraries that are used by your code.
         Skeletons are brief and don't contain any extra information.
-
-        Usage:
-        1) [Optionally] Put copyright and comment files into the directory where you want to create stub classes.
-        2) Run "StubGen &lt;Jar with your code&gt; &lt;space-separated list of 3rd party jars&gt;"
     </description>
 
     <dependencies>
@@ -45,6 +41,11 @@
         <dependency>
             <groupId>com.maxifier.mxcache</groupId>
             <artifactId>mxcache-asm</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
         </dependency>
     </dependencies>
 </project>

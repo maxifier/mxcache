@@ -3,6 +3,7 @@
  */
 package com.maxifier.mxcache.stubgen;
 
+import com.beust.jcommander.JCommander;
 import com.maxifier.mxcache.asm.*;
 import com.maxifier.mxcache.asm.Type;
 import gnu.trove.THashMap;
@@ -14,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
@@ -21,109 +23,141 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * APIFier generates API stubs from binary third-party JARs.
- *
+ * StubGen generates API stubs from binary third-party JARs.
+ * <p>
  * It accepts jar file with tested app and a set of jar library files for which to generate API.
- *
+ * <p>
  * The output stubs are written to current working directory.
  * Also it takes "copyright" and "comment" files from current directory.
  * These files are injected into source code.
- *
- * Usage:
- * APIfier {tested jar} {library jar 1} {library jar 2} ... {library jar N}
+ * <p>
+ * Usage: StubGen [options]
+ * Options:
+ * -c, --comment
+ *   Path to file with top comment for all files; by default StubGen seeks for
+ *   "comment" file in output path
+ * -p, --copyright
+ *   Path to file with copyright comment to be added before package statement;
+ *   by default StubGen seeks for "copyright" file in output path
+ * -e, --examine
+ *   Path to JARs to examine
+ * -i, --indent
+ *   Indentation
+ *   Default: "     "
+ * -l, --lib
+ *   Path to library JARs that StubGen should generate stubs for
+ * -o, --o
+ *   Output path, current directory by default
+ *   Default: .
  *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com) (2014-04-04 08:28)
  */
 public class StubGen {
-    public static final String INDENT = "     ";
-    public static final File COPYRIGHT_FILE = new File("copyright");
-    public static final File COMMENT_FILE = new File("comment");
+    private final String indent;
 
     private ClassLoader classLoaderWithApi;
-    /** { type internal name : class description } mapping */
-    private Map<String, ClassDescription> classes;
 
+    /**
+     * { type internal name : class description } mapping
+     */
+    private Map<String, ClassDescription> classes;
     private boolean needInitializationStub;
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchFieldException, NoSuchMethodException {
-        String testedJarPath = args[0];
-        URL[] urls = new URL[args.length];
-        for (int i = 0; i < urls.length; i++) {
-            String arg = args[i];
-            if (arg.matches("\\w+:/")) {
-                urls[i] = new URL(arg);
-            } else {
-                urls[i] = new URL("file:" + (arg.startsWith("/") ? "" : "/") + arg);
-            }
-        }
-        new StubGen().apify(testedJarPath, urls);
+    public StubGen(String indent) {
+        this.indent = indent;
     }
 
-    private void apify(String testedJarPath, URL[] urls) throws IOException, ClassNotFoundException, NoSuchFieldException, NoSuchMethodException {
-        String copyright = COPYRIGHT_FILE.exists() ? FileUtils.readFileToString(COPYRIGHT_FILE) : "";
-        String comment = COMMENT_FILE.exists() ? FileUtils.readFileToString(COMMENT_FILE) : "";
+    public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchFieldException, NoSuchMethodException {
+        Options options = new Options();
+        new JCommander(options, args);
+
+        URL[] urls = new URL[options.examine.size() + options.libraries.size()];
+
+        int i = 0;
+        for (String examinePath : options.examine) {
+            urls[i++] = toUrl(examinePath);
+        }
+        for (String libraryPath : options.libraries) {
+            urls[i++] = toUrl(libraryPath);
+        }
+        File outputPath = options.outputPath == null ? new File(".") : new File(options.outputPath);
+        File commentFile = options.commentPath == null ? new File(outputPath, "comment") : new File(options.commentPath);
+        File copyrightFile = options.copyrightPath == null ? new File(outputPath, "copyright") : new File(options.copyrightPath);
+        new StubGen(options.indent).apify(options.examine, urls, outputPath, commentFile, copyrightFile);
+    }
+
+    private static URL toUrl(String arg) throws MalformedURLException {
+        if (arg.matches("\\w+:/")) {
+            return new URL(arg);
+        }
+        return new URL("file:" + (arg.startsWith("/") ? "" : "/") + arg);
+    }
+
+    private void apify(List<String> examinedJars, URL[] libraryJars, File outputDirectory, File commentFile, File copyrightFile) throws IOException, ClassNotFoundException, NoSuchFieldException, NoSuchMethodException {
+        String copyright = copyrightFile.exists() ? FileUtils.readFileToString(copyrightFile) : null;
+        String comment = commentFile.exists() ? FileUtils.readFileToString(commentFile) : null;
 
         classes = new THashMap<String, ClassDescription>();
-        classLoaderWithApi = new URLClassLoader(urls, getClass().getClassLoader());
+        classLoaderWithApi = new URLClassLoader(libraryJars, getClass().getClassLoader());
 
-        classLoaderWithApi.loadClass("com.intellij.openapi.util.UserDataHolder");
+        for (String examinedJar : examinedJars) {
+            JarFile jar = new JarFile(new File(examinedJar));
+            for (JarEntry jarEntry : Collections.list(jar.entries())) {
+                if (jarEntry.getName().endsWith(".class")) {
+                    ClassReader r = new ClassReader(IOUtils.toByteArray(jar.getInputStream(jarEntry)));
+                    r.accept(new ClassVisitor(Opcodes.ASM5) {
+                        Type superType;
+                        Type[] interfaces;
 
-        JarFile jar = new JarFile(new File(testedJarPath));
-        for (JarEntry jarEntry : Collections.list(jar.entries())) {
-            if (jarEntry.getName().endsWith(".class")) {
-                ClassReader r = new ClassReader(IOUtils.toByteArray(jar.getInputStream(jarEntry)));
-                r.accept(new ClassVisitor(Opcodes.ASM5) {
-                    Type superType;
-                    Type[] interfaces;
-
-                    @Override
-                    public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-                        ClassDescription t = typeUsed(Type.getObjectType(name));
-                        if (t != null) {
-                            t.implemented = true;
-                        }
-                        if (superName != null) {
-                            superType = Type.getObjectType(superName);
-                            typeUsed(superType);
-                        }
-                        this.interfaces = new Type[interfaces == null ? 0 : interfaces.length];
-                        if (interfaces != null) {
-                            for (int i = 0; i < interfaces.length; i++) {
-                                Type interfaceType = Type.getObjectType(interfaces[i]);
-                                typeUsed(interfaceType);
-                                this.interfaces[i] = interfaceType;
+                        @Override
+                        public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+                            ClassDescription t = typeUsed(Type.getObjectType(name));
+                            if (t != null) {
+                                t.implemented = true;
+                            }
+                            if (superName != null) {
+                                superType = Type.getObjectType(superName);
+                                typeUsed(superType);
+                            }
+                            this.interfaces = new Type[interfaces == null ? 0 : interfaces.length];
+                            if (interfaces != null) {
+                                for (int i = 0; i < interfaces.length; i++) {
+                                    Type interfaceType = Type.getObjectType(interfaces[i]);
+                                    typeUsed(interfaceType);
+                                    this.interfaces[i] = interfaceType;
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-                        typeUsed(Type.getType(desc));
-                        return null;
-                    }
-
-                    @Override
-                    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-                        if (superType != null) {
-                            methodUsed(superType, name, desc);
+                        @Override
+                        public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+                            typeUsed(Type.getType(desc));
+                            return null;
                         }
-                        for (Type implementedInterface : interfaces) {
-                            methodUsed(implementedInterface, name, desc);
-                        }
-                        processMethodSignature(desc);
-                        return new MethodVisitor(Opcodes.ASM5) {
-                            @Override
-                            public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-                                methodUsed(Type.getObjectType(owner), name, desc);
-                            }
 
-                            @Override
-                            public void visitFieldInsn(int opcode, String owner, String name, String desc) {
-                                fieldUsed(Type.getObjectType(owner), name, desc);
+                        @Override
+                        public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+                            if (superType != null) {
+                                methodUsed(superType, name, desc);
                             }
-                        };
-                    }
-                }, ClassReader.SKIP_FRAMES | ClassReader.SKIP_DEBUG);
+                            for (Type implementedInterface : interfaces) {
+                                methodUsed(implementedInterface, name, desc);
+                            }
+                            processMethodSignature(desc);
+                            return new MethodVisitor(Opcodes.ASM5) {
+                                @Override
+                                public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+                                    methodUsed(Type.getObjectType(owner), name, desc);
+                                }
+
+                                @Override
+                                public void visitFieldInsn(int opcode, String owner, String name, String desc) {
+                                    fieldUsed(Type.getObjectType(owner), name, desc);
+                                }
+                            };
+                        }
+                    }, ClassReader.SKIP_FRAMES | ClassReader.SKIP_DEBUG);
+                }
             }
         }
 
@@ -133,7 +167,7 @@ public class StubGen {
             }
             Class<?> realClass = classDescription.realClass;
 
-            File out = new File(realClass.getName().replace('.', '/') + ".java");
+            File out = new File(outputDirectory, realClass.getName().replace('.', '/') + ".java");
             //noinspection ResultOfMethodCallIgnored
             out.getParentFile().mkdirs();
 
@@ -181,7 +215,7 @@ public class StubGen {
                     w.println(comment);
                 }
                 w.println("public class InitializationStub {");
-                w.println(INDENT + "public static <T> T get() { throw new UnsupportedOperationException(); }");
+                w.println(indent + "public static <T> T get() { throw new UnsupportedOperationException(); }");
                 w.println("}");
             } finally {
                 w.close();
@@ -192,7 +226,7 @@ public class StubGen {
     private static void printThrowsList(ImportTable imports, PrintWriter w, Class<?>[] exceptionTypes) {
         if (exceptionTypes != null && exceptionTypes.length > 0) {
             w.print(" throws ");
-            for (int i = 0; i<exceptionTypes.length; i++) {
+            for (int i = 0; i < exceptionTypes.length; i++) {
                 if (i > 0) {
                     w.print(", ");
                 }
@@ -314,22 +348,22 @@ public class StubGen {
         if (genericType instanceof Class) {
             typeUsed(Type.getType((Class) genericType));
         } else if (genericType instanceof GenericArrayType) {
-            GenericArrayType gt = (GenericArrayType)genericType;
+            GenericArrayType gt = (GenericArrayType) genericType;
             genericTypeUsed(gt.getGenericComponentType());
         } else if (genericType instanceof TypeVariable) {
-            TypeVariable tv = (TypeVariable)genericType;
+            TypeVariable tv = (TypeVariable) genericType;
             for (java.lang.reflect.Type bound : tv.getBounds()) {
                 genericTypeUsed(bound);
             }
         } else if (genericType instanceof ParameterizedType) {
-            ParameterizedType pt = (ParameterizedType)genericType;
+            ParameterizedType pt = (ParameterizedType) genericType;
             genericTypeUsed(pt.getRawType());
             java.lang.reflect.Type[] actualTypeArguments = pt.getActualTypeArguments();
             for (java.lang.reflect.Type actualTypeArgument : actualTypeArguments) {
                 genericTypeUsed(actualTypeArgument);
             }
         } else if (genericType instanceof WildcardType) {
-            WildcardType wt = (WildcardType)genericType;
+            WildcardType wt = (WildcardType) genericType;
             for (java.lang.reflect.Type upper : wt.getUpperBounds()) {
                 genericTypeUsed(upper);
             }
@@ -382,7 +416,7 @@ public class StubGen {
                     typeUsed(Type.getType(superClass));
                     genericTypeUsed(realClass.getGenericSuperclass());
                 }
-                for (Class<?> implementedInterface: realClass.getInterfaces()){
+                for (Class<?> implementedInterface : realClass.getInterfaces()) {
                     typeUsed(Type.getType(implementedInterface));
                 }
                 for (java.lang.reflect.Type genericInterface : realClass.getGenericInterfaces()) {
@@ -424,7 +458,7 @@ public class StubGen {
 
             imports.add(realClass.getTypeParameters());
 
-            for (Field field: usedFields) {
+            for (Field field : usedFields) {
                 imports.add(field.getType());
 
                 imports.add(field.getGenericType());
@@ -498,7 +532,7 @@ public class StubGen {
 
             if (realClass.isEnum()) {
                 boolean first = true;
-                w.print(baseIndent + INDENT);
+                w.print(baseIndent + indent);
                 for (Field field : usedFields) {
                     if (field.isEnumConstant()) {
                         if (first) {
@@ -514,7 +548,7 @@ public class StubGen {
 
             for (Field field : usedFields) {
                 if (!field.isEnumConstant()) {
-                    w.print(baseIndent + INDENT);
+                    w.print(baseIndent + indent);
                     w.print(Modifier.toString(field.getModifiers()));
                     w.print(" ");
                     w.print(imports.getImportedName(field.getType()));
@@ -529,7 +563,7 @@ public class StubGen {
             }
 
             for (Constructor ctor : usedConstructors) {
-                w.print(baseIndent + INDENT + Modifier.toString(ctor.getModifiers()) + " ");
+                w.print(baseIndent + indent + Modifier.toString(ctor.getModifiers()) + " ");
 
                 if (printTypeVariablesDefinition(imports, w, ctor.getTypeParameters())) {
                     w.print(" ");
@@ -544,7 +578,7 @@ public class StubGen {
             }
 
             for (Method method : usedMethods) {
-                w.print(baseIndent + INDENT + Modifier.toString(method.getModifiers()) + " ");
+                w.print(baseIndent + indent + Modifier.toString(method.getModifiers()) + " ");
 
                 if (printTypeVariablesDefinition(imports, w, method.getTypeParameters())) {
                     w.print(" ");
@@ -560,14 +594,14 @@ public class StubGen {
                     w.println(";");
                 } else {
                     w.println(" {");
-                    w.println(baseIndent + INDENT + INDENT + "throw new UnsupportedOperationException();");
-                    w.println(baseIndent + INDENT + "}");
+                    w.println(baseIndent + indent + indent + "throw new UnsupportedOperationException();");
+                    w.println(baseIndent + indent + "}");
                 }
                 w.println();
             }
 
             for (ClassDescription innerClass : innerClasses) {
-                innerClass.printDefinition(imports, w, baseIndent + INDENT);
+                innerClass.printDefinition(imports, w, baseIndent + indent);
             }
 
             w.println(baseIndent + "}");
@@ -605,14 +639,14 @@ public class StubGen {
         if (genericType instanceof Class) {
             w.print(imports.getImportedName((Class) genericType));
         } else if (genericType instanceof GenericArrayType) {
-            GenericArrayType gt = (GenericArrayType)genericType;
+            GenericArrayType gt = (GenericArrayType) genericType;
             printGenericType(imports, w, gt.getGenericComponentType());
             w.print("[]");
         } else if (genericType instanceof TypeVariable) {
-            TypeVariable tv = (TypeVariable)genericType;
+            TypeVariable tv = (TypeVariable) genericType;
             w.print(tv.getName());
         } else if (genericType instanceof ParameterizedType) {
-            ParameterizedType pt = (ParameterizedType)genericType;
+            ParameterizedType pt = (ParameterizedType) genericType;
             printGenericType(imports, w, pt.getRawType());
             w.print("<");
             java.lang.reflect.Type[] actualTypeArguments = pt.getActualTypeArguments();
@@ -625,7 +659,7 @@ public class StubGen {
             }
             w.print(">");
         } else if (genericType instanceof WildcardType) {
-            WildcardType wt = (WildcardType)genericType;
+            WildcardType wt = (WildcardType) genericType;
             w.print("?");
             java.lang.reflect.Type[] uppers = wt.getUpperBounds();
             if (uppers.length > 0) {
