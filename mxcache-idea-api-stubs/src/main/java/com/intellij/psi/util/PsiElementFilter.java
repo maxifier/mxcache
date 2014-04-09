@@ -12,6 +12,6 @@ import com.intellij.psi.PsiElement;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface PsiElementFilter {
-     public abstract boolean isAccepted(PsiElement p1);
+     boolean isAccepted(PsiElement p1);
 
 }

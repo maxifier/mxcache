@@ -10,5 +10,5 @@ package org.jetbrains.jps.incremental;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public enum BuilderCategory {
-     CLASS_INSTRUMENTER;
+     INITIAL, SOURCE_GENERATOR, SOURCE_INSTRUMENTER, SOURCE_PROCESSOR, TRANSLATOR, OVERWRITING_TRANSLATOR, CLASS_INSTRUMENTER, CLASS_POST_PROCESSOR
 }

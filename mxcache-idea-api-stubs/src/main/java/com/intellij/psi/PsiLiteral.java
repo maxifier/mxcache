@@ -10,6 +10,6 @@ package com.intellij.psi;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface PsiLiteral extends PsiAnnotationMemberValue {
-     public abstract Object getValue();
+     Object getValue();
 
 }

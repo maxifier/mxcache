@@ -14,12 +14,12 @@ import com.intellij.openapi.vfs.VirtualFile;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface CompileContext extends UserDataHolder {
-     public abstract VirtualFile getModuleOutputDirectoryForTests(Module p1);
+     VirtualFile getModuleOutputDirectoryForTests(Module p1);
 
-     public abstract void addMessage(CompilerMessageCategory p1, String p2, String p3, int p4, int p5);
+     void addMessage(CompilerMessageCategory p1, String p2, String p3, int p4, int p5);
 
-     public abstract CompileScope getCompileScope();
+     CompileScope getCompileScope();
 
-     public abstract VirtualFile getModuleOutputDirectory(Module p1);
+     VirtualFile getModuleOutputDirectory(Module p1);
 
 }

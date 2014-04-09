@@ -10,5 +10,5 @@ package com.intellij.openapi.compiler;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public enum CompilerMessageCategory {
-     ERROR;
+     ERROR, WARNING, INFORMATION, STATISTICS
 }

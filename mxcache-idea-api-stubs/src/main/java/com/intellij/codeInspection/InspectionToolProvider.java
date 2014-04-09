@@ -10,6 +10,6 @@ package com.intellij.codeInspection;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface InspectionToolProvider {
-     public abstract Class[] getInspectionClasses();
+     Class[] getInspectionClasses();
 
 }

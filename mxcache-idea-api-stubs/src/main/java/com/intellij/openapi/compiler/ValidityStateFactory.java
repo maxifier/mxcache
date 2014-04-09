@@ -13,6 +13,6 @@ import java.io.IOException;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface ValidityStateFactory {
-     public abstract ValidityState createValidityState(DataInput p1) throws IOException;
+     ValidityState createValidityState(DataInput p1) throws IOException;
 
 }

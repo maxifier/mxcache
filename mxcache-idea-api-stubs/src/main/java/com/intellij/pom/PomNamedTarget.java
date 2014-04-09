@@ -10,6 +10,6 @@ package com.intellij.pom;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface PomNamedTarget extends PomTarget {
-     public abstract String getName();
+     String getName();
 
 }

@@ -10,8 +10,8 @@ package com.intellij.openapi.components;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface ProjectComponent extends BaseComponent {
-     public abstract void projectOpened();
+     void projectOpened();
 
-     public abstract void projectClosed();
+     void projectClosed();
 
 }

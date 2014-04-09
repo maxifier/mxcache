@@ -10,6 +10,6 @@ package com.intellij.psi;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface PsiParameterList extends PsiElement {
-     public abstract PsiParameter[] getParameters();
+     PsiParameter[] getParameters();
 
 }

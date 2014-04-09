@@ -10,8 +10,8 @@ package com.intellij.psi;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface PsiNameValuePair extends PsiElement {
-     public abstract String getName();
+     String getName();
 
-     public abstract PsiAnnotationMemberValue getValue();
+     PsiAnnotationMemberValue getValue();
 
 }

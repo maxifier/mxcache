@@ -10,6 +10,6 @@ package com.intellij.codeHighlighting;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class HighlightDisplayLevel {
-     public static final HighlightDisplayLevel WARNING = stub.InitializationStub.get();
-     public static final HighlightDisplayLevel ERROR = stub.InitializationStub.get();
+     public static final HighlightDisplayLevel WARNING = stub.InitializationStub.get(HighlightDisplayLevel.class);
+     public static final HighlightDisplayLevel ERROR = stub.InitializationStub.get(HighlightDisplayLevel.class);
 }

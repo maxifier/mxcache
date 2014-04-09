@@ -10,6 +10,6 @@ package com.intellij.openapi.util;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface Computable<T> {
-     public abstract T compute();
+     T compute();
 
 }

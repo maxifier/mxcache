@@ -12,6 +12,6 @@ import org.jetbrains.jps.incremental.messages.BuildMessage;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface MessageHandler {
-     public abstract void processMessage(BuildMessage p1);
+     void processMessage(BuildMessage p1);
 
 }

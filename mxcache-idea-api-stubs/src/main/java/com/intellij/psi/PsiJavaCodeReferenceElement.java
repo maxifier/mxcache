@@ -10,6 +10,6 @@ package com.intellij.psi;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface PsiJavaCodeReferenceElement extends PsiJavaReference, PsiQualifiedReferenceElement {
-     public abstract String getQualifiedName();
+     String getQualifiedName();
 
 }

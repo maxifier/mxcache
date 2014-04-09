@@ -12,8 +12,8 @@ import com.intellij.psi.PsiElement;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface CustomSuppressableInspectionTool {
-     public abstract SuppressIntentionAction[] getSuppressActions(PsiElement p1);
+     SuppressIntentionAction[] getSuppressActions(PsiElement p1);
 
-     public abstract boolean isSuppressedFor(PsiElement p1);
+     boolean isSuppressedFor(PsiElement p1);
 
 }

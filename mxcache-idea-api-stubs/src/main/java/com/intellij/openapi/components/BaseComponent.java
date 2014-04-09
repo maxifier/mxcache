@@ -10,8 +10,8 @@ package com.intellij.openapi.components;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface BaseComponent extends NamedComponent {
-     public abstract void disposeComponent();
+     void disposeComponent();
 
-     public abstract void initComponent();
+     void initComponent();
 
 }

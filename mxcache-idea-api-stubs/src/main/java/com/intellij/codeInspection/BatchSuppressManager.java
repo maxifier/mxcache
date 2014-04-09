@@ -12,6 +12,6 @@ import com.intellij.psi.PsiElement;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface BatchSuppressManager {
-     public abstract boolean isSuppressedFor(PsiElement p1, String p2);
+     boolean isSuppressedFor(PsiElement p1, String p2);
 
 }

@@ -10,6 +10,6 @@ package com.intellij.openapi.components;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface NamedComponent {
-     public abstract String getComponentName();
+     String getComponentName();
 
 }

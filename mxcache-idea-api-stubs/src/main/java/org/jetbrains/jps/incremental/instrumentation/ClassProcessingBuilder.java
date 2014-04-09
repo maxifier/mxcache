@@ -8,8 +8,6 @@ import org.jetbrains.jps.ModuleChunk;
 import org.jetbrains.jps.incremental.BuilderCategory;
 import org.jetbrains.jps.incremental.CompileContext;
 import org.jetbrains.jps.incremental.ModuleLevelBuilder;
-import org.jetbrains.jps.incremental.ModuleLevelBuilder.ExitCode;
-import org.jetbrains.jps.incremental.ModuleLevelBuilder.OutputConsumer;
 
 /**
  * THIS CLASS WAS GENERATED AUTOMATICALLY WITH StubGen BASED ON IDEA BINARIES

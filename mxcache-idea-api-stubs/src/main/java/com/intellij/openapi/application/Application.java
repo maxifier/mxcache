@@ -13,10 +13,10 @@ import com.intellij.openapi.util.Computable;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface Application extends ComponentManager {
-     public abstract <T> T runReadAction(Computable<T> p1);
+     <T> T runReadAction(Computable<T> p1);
 
-     public abstract void runReadAction(Runnable p1);
+     void runReadAction(Runnable p1);
 
-     public abstract void runWriteAction(Runnable p1);
+     void runWriteAction(Runnable p1);
 
 }

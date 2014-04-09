@@ -12,8 +12,8 @@ import org.jdom.Element;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface JDOMExternalizable {
-     public abstract void writeExternal(Element p1) throws WriteExternalException;
+     void writeExternal(Element p1) throws WriteExternalException;
 
-     public abstract void readExternal(Element p1) throws InvalidDataException;
+     void readExternal(Element p1) throws InvalidDataException;
 
 }

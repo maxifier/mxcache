@@ -12,6 +12,6 @@ import com.intellij.pom.Navigatable;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface NavigationItem extends Navigatable {
-     public abstract String getName();
+     String getName();
 
 }

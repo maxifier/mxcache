@@ -12,6 +12,6 @@ import com.intellij.openapi.module.Module;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface CompileScope extends ExportableUserDataHolder {
-     public abstract Module[] getAffectedModules();
+     Module[] getAffectedModules();
 
 }

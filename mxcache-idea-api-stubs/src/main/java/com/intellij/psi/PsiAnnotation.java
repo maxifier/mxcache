@@ -12,8 +12,8 @@ import com.intellij.psi.meta.PsiMetaOwner;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface PsiAnnotation extends PsiAnnotationMemberValue, PsiMetaOwner {
-     public abstract PsiAnnotationParameterList getParameterList();
+     PsiAnnotationParameterList getParameterList();
 
-     public abstract PsiJavaCodeReferenceElement getNameReferenceElement();
+     PsiJavaCodeReferenceElement getNameReferenceElement();
 
 }

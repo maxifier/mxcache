@@ -12,14 +12,14 @@ import com.intellij.openapi.vfs.VirtualFile;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface FileProcessingCompiler extends Compiler, ValidityStateFactory {
-     public abstract FileProcessingCompiler.ProcessingItem[] getProcessingItems(CompileContext p1);
+     FileProcessingCompiler.ProcessingItem[] getProcessingItems(CompileContext p1);
 
-     public abstract FileProcessingCompiler.ProcessingItem[] process(CompileContext p1, FileProcessingCompiler.ProcessingItem[] p2);
+     FileProcessingCompiler.ProcessingItem[] process(CompileContext p1, FileProcessingCompiler.ProcessingItem[] p2);
 
      public static interface ProcessingItem {
-          public abstract ValidityState getValidityState();
+          ValidityState getValidityState();
 
-          public abstract VirtualFile getFile();
+          VirtualFile getFile();
 
      }
 }

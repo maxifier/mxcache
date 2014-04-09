@@ -13,6 +13,6 @@ import com.intellij.openapi.util.UserDataHolder;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface ComponentManager extends UserDataHolder, Disposable {
-     public abstract <T> T getComponent(Class<T> p1);
+     <T> T getComponent(Class<T> p1);
 
 }

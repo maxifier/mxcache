@@ -10,6 +10,6 @@ package com.intellij.psi;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface PsiAnnotationParameterList extends PsiElement {
-     public abstract PsiNameValuePair[] getAttributes();
+     PsiNameValuePair[] getAttributes();
 
 }

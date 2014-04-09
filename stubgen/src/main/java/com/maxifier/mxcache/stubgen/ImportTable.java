@@ -4,6 +4,7 @@
 package com.maxifier.mxcache.stubgen;
 
 import gnu.trove.THashMap;
+import gnu.trove.THashSet;
 
 import java.lang.reflect.*;
 import java.util.Map;
@@ -25,28 +26,39 @@ class ImportTable {
     }
 
     public void add(java.lang.reflect.Type... genericTypes) {
+        add(new THashSet<Type>(), genericTypes);
+    }
+
+    private void add(Set<java.lang.reflect.Type> visited, java.lang.reflect.Type... genericTypes) {
         for (Type genericType : genericTypes) {
-            add(genericType);
+            add(visited, genericType);
         }
     }
 
     public void add(java.lang.reflect.Type genericType) {
+        add(new THashSet<Type>(), genericType);
+    }
+
+    private void add(Set<Type> visited, Type genericType) {
+        if (!visited.add(genericType)) {
+            return;
+        }
         if (genericType instanceof Class) {
             add((Class) genericType);
         } else if (genericType instanceof GenericArrayType) {
             GenericArrayType gt = (GenericArrayType)genericType;
-            add(gt.getGenericComponentType());
+            add(visited, gt.getGenericComponentType());
         } else if (genericType instanceof TypeVariable) {
             TypeVariable tv = (TypeVariable)genericType;
-            add(tv.getBounds());
+            add(visited, tv.getBounds());
         } else if (genericType instanceof ParameterizedType) {
             ParameterizedType pt = (ParameterizedType)genericType;
-            add(pt.getRawType());
-            add(pt.getActualTypeArguments());
+            add(visited, pt.getRawType());
+            add(visited, pt.getActualTypeArguments());
         } else if (genericType instanceof WildcardType) {
             WildcardType wt = (WildcardType)genericType;
-            add(wt.getUpperBounds());
-            add(wt.getLowerBounds());
+            add(visited, wt.getUpperBounds());
+            add(visited, wt.getLowerBounds());
         }
     }
 
@@ -106,6 +118,11 @@ class ImportTable {
     public Set<String> getSortedImports() {
         Set<String> sortedImports = new TreeSet<String>();
         for (Class importedClass : map.values()) {
+            Class enclosingClass = importedClass.getEnclosingClass();
+            while (enclosingClass != null) {
+                importedClass = enclosingClass;
+                enclosingClass = importedClass.getEnclosingClass();
+            }
             if (!importedClass.getPackage().equals(currentPackage) && !importedClass.getCanonicalName().startsWith("java.lang.")) {
                 sortedImports.add(importedClass.getCanonicalName());
             }

@@ -10,6 +10,6 @@ package com.intellij.psi;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface PsiArrayInitializerMemberValue extends PsiAnnotationMemberValue {
-     public abstract PsiAnnotationMemberValue[] getInitializers();
+     PsiAnnotationMemberValue[] getInitializers();
 
 }

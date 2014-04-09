@@ -12,10 +12,10 @@ import com.intellij.pom.PomRenameableTarget;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface PsiMethod extends PsiMember, PsiNameIdentifierOwner, PsiModifierListOwner, PsiDocCommentOwner, PsiTypeParameterListOwner, PomRenameableTarget<PsiElement>, PsiTarget {
-     public abstract PsiModifierList getModifierList();
+     PsiModifierList getModifierList();
 
-     public abstract PsiParameterList getParameterList();
+     PsiParameterList getParameterList();
 
-     public abstract PsiType getReturnType();
+     PsiType getReturnType();
 
 }

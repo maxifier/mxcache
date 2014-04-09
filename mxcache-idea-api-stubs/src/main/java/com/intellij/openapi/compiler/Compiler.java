@@ -10,8 +10,8 @@ package com.intellij.openapi.compiler;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface Compiler {
-     public abstract boolean validateConfiguration(CompileScope p1);
+     boolean validateConfiguration(CompileScope p1);
 
-     public abstract String getDescription();
+     String getDescription();
 
 }

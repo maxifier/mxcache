@@ -12,14 +12,14 @@ import javax.swing.JComponent;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface UnnamedConfigurable {
-     public abstract void apply() throws ConfigurationException;
+     void apply() throws ConfigurationException;
 
-     public abstract void disposeUIResources();
+     void disposeUIResources();
 
-     public abstract JComponent createComponent();
+     JComponent createComponent();
 
-     public abstract boolean isModified();
+     boolean isModified();
 
-     public abstract void reset();
+     void reset();
 
 }

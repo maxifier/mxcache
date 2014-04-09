@@ -11,6 +11,6 @@ package org.jetbrains.jps.incremental.messages;
  */
 public abstract class BuildMessage {
      public static enum Kind {
-          ERROR;
+          ERROR, WARNING, INFO, PROGRESS
      }
 }

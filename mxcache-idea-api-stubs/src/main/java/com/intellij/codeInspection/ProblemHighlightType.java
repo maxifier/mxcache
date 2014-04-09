@@ -10,5 +10,5 @@ package com.intellij.codeInspection;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public enum ProblemHighlightType {
-     GENERIC_ERROR_OR_WARNING;
+     GENERIC_ERROR_OR_WARNING, LIKE_UNKNOWN_SYMBOL, LIKE_DEPRECATED, LIKE_UNUSED_SYMBOL, ERROR, GENERIC_ERROR, INFO, WEAK_WARNING, INFORMATION
 }

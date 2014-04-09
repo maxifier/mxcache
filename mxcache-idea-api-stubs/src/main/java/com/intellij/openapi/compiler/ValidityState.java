@@ -13,8 +13,8 @@ import java.io.IOException;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface ValidityState {
-     public abstract void save(DataOutput p1) throws IOException;
+     void save(DataOutput p1) throws IOException;
 
-     public abstract boolean equalsTo(ValidityState p1);
+     boolean equalsTo(ValidityState p1);
 
 }

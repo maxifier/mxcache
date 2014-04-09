@@ -10,6 +10,6 @@ package com.intellij.psi;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface PsiModifierList extends PsiElement, PsiAnnotationOwner {
-     public abstract boolean hasModifierProperty(String p1);
+     boolean hasModifierProperty(String p1);
 
 }

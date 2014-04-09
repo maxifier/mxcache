@@ -10,6 +10,6 @@ package com.intellij.psi;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface PsiModifierListOwner extends PsiElement {
-     public abstract PsiModifierList getModifierList();
+     PsiModifierList getModifierList();
 
 }

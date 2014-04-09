@@ -15,12 +15,12 @@ import org.jetbrains.jps.builders.BuildTarget;
  */
 public abstract class ModuleLevelBuilder extends Builder {
      public static interface OutputConsumer {
-          public abstract void registerCompiledClass(BuildTarget<? extends Object> p1, CompiledClass p2) throws IOException;
+          void registerCompiledClass(BuildTarget<?> p1, CompiledClass p2) throws IOException;
 
-          public abstract Map<String, CompiledClass> getCompiledClasses();
+          Map<String, CompiledClass> getCompiledClasses();
 
      }
      public static enum ExitCode {
-          NOTHING_DONE, OK;
+          NOTHING_DONE, OK, ABORT, ADDITIONAL_PASS_REQUIRED, CHUNK_REBUILD_REQUIRED
      }
 }

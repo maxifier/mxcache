@@ -16,8 +16,8 @@ import com.intellij.psi.search.GlobalSearchScope;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface Module extends ComponentManager, AreaInstance, Disposable {
-     public abstract Project getProject();
+     Project getProject();
 
-     public abstract GlobalSearchScope getModuleWithDependenciesAndLibrariesScope(boolean p1);
+     GlobalSearchScope getModuleWithDependenciesAndLibrariesScope(boolean p1);
 
 }

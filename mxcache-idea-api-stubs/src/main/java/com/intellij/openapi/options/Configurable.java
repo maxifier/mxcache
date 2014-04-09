@@ -10,8 +10,8 @@ package com.intellij.openapi.options;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface Configurable extends UnnamedConfigurable {
-     public abstract String getDisplayName();
+     String getDisplayName();
 
-     public abstract String getHelpTopic();
+     String getHelpTopic();
 
 }

@@ -32,4 +32,7 @@ public class Options {
 
     @Parameter(names = {"-i", "--indent"}, description = "Indentation")
     String indent = "     ";
+
+    @Parameter(names = {"-r", "--redundant-modifiers"}, description = "Whether to generate redundant modifiers or not (e.g. public abstract for interface methods)")
+    boolean redundantModifiers;
 }

@@ -10,6 +10,6 @@ package com.intellij.psi;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface PsiMember extends PsiModifierListOwner, NavigatablePsiElement {
-     public abstract PsiClass getContainingClass();
+     PsiClass getContainingClass();
 
 }
