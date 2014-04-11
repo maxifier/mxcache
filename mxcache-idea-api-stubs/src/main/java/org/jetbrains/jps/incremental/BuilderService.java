@@ -15,7 +15,7 @@ public abstract class BuilderService {
      public BuilderService(){}
 
      public List<? extends ModuleLevelBuilder> createModuleLevelBuilders() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
 }

@@ -17,27 +17,23 @@ public class CompiledClass extends UserDataHolderBase {
      public CompiledClass(File p1, File p2, String p3, BinaryContent p4){}
 
      public String getClassName() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public File getOutputFile() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public File getSourceFile() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public BinaryContent getContent() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
-     public void save() throws IOException {
-          throw new UnsupportedOperationException();
-     }
+     public void save() throws IOException {}
 
-     public void setContent(BinaryContent p1) {
-          throw new UnsupportedOperationException();
-     }
+     public void setContent(BinaryContent p1) {}
 
 }

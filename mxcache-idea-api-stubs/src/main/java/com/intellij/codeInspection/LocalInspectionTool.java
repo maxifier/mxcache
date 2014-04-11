@@ -15,11 +15,11 @@ public abstract class LocalInspectionTool extends InspectionProfileEntry {
      public LocalInspectionTool(){}
 
      public ProblemDescriptor[] checkFile(PsiFile p1, InspectionManager p2, boolean p3) {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public String getID() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
 }

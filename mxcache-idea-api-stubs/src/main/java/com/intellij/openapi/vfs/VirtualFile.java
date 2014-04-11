@@ -15,41 +15,39 @@ import java.io.IOException;
  */
 public abstract class VirtualFile extends UserDataHolderBase implements ModificationTracker {
      public String toString() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public abstract byte[] contentsToByteArray() throws IOException;
 
      public String getUrl() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public long getModificationStamp() {
-          throw new UnsupportedOperationException();
+          return 0L;
      }
 
      public VirtualFile createChildDirectory(Object p1, String p2) throws IOException {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public String getExtension() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public abstract boolean isDirectory();
 
-     public final void setBinaryContent(byte[] p1) throws IOException {
-          throw new UnsupportedOperationException();
-     }
+     public final void setBinaryContent(byte[] p1) throws IOException {}
 
      public VirtualFile findChild(String p1) {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public abstract VirtualFile[] getChildren();
 
      public VirtualFile createChildData(Object p1, String p2) throws IOException {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
 }

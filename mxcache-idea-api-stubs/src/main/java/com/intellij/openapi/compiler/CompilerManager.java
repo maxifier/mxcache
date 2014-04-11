@@ -13,7 +13,7 @@ import com.intellij.openapi.project.Project;
  */
 public abstract class CompilerManager {
      public static CompilerManager getInstance(Project p1) {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public abstract void addCompiler(Compiler p1);

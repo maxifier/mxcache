@@ -13,23 +13,23 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel;
  */
 public abstract class InspectionProfileEntry {
      public String getShortName() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public HighlightDisplayLevel getDefaultLevel() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public boolean isEnabledByDefault() {
-          throw new UnsupportedOperationException();
+          return false;
      }
 
      public String getGroupDisplayName() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public String getDisplayName() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
 }

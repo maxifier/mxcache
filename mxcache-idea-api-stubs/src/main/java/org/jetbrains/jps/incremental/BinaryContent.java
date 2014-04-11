@@ -13,7 +13,7 @@ public final class BinaryContent {
      public BinaryContent(byte[] p1){}
 
      public byte[] toByteArray() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
 }

@@ -10,8 +10,6 @@ package com.intellij.compiler.instrumentation;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class InstrumentationClassFinder {
-     public void cleanCachedData(String p1) {
-          throw new UnsupportedOperationException();
-     }
+     public void cleanCachedData(String p1) {}
 
 }

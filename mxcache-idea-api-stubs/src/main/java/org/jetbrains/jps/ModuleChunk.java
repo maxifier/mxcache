@@ -13,7 +13,7 @@ import org.jetbrains.jps.incremental.ModuleBuildTarget;
  */
 public class ModuleChunk {
      public ModuleBuildTarget representativeTarget() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
 }

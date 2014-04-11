@@ -11,11 +11,9 @@ package com.intellij.openapi.diagnostic;
  */
 public abstract class Logger {
      public static Logger getInstance(Class p1) {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
-     public void info(Throwable p1) {
-          throw new UnsupportedOperationException();
-     }
+     public void info(Throwable p1) {}
 
 }

@@ -11,15 +11,13 @@ package com.intellij.openapi.util;
  */
 public class Key<T> {
      public static <T> Key<T> create(String p1) {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
-     public void set(UserDataHolder p1, T p2) {
-          throw new UnsupportedOperationException();
-     }
+     public void set(UserDataHolder p1, T p2) {}
 
      public T get(UserDataHolder p1, T p2) {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
 }

@@ -13,7 +13,7 @@ import com.intellij.psi.PsiElement;
  */
 public class PsiTreeUtil {
      public static PsiElement[] collectElements(PsiElement p1, PsiElementFilter p2) {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
 }

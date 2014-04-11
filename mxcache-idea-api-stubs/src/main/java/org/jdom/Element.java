@@ -13,19 +13,19 @@ public class Element extends Content implements Parent {
      public Element(String p1){}
 
      public String getText() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public Element addContent(Content p1) {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public Element setText(String p1) {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public Element getChild(String p1) {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
 }

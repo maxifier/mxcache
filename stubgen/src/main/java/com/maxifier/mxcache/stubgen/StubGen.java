@@ -590,7 +590,6 @@ public class StubGen {
                 w.println(baseIndent + indent + "// Default constructor, generated because there was no feasible super ctor");
                 w.println(baseIndent + indent + "protected " + imports.getImportedName(realClass) + "() {");
                 printInvokeSuperCtor(w, baseIndent + indent, bestSuperCtor);
-                w.println(baseIndent + indent + indent + "throw new UnsupportedOperationException();");
                 w.println(baseIndent + indent + "}");
             }
 
@@ -623,29 +622,32 @@ public class StubGen {
                 if (i > 0) {
                     w.print(", ");
                 }
-                Class argType = paramTypes[i];
-                if (argType == boolean.class) {
-                    w.print("false");
-                } else if (argType == byte.class) {
-                    w.print("(byte)0");
-                } else if (argType == short.class) {
-                    w.print("(short)0");
-                } else if (argType == int.class) {
-                    w.print("0");
-                } else if (argType == long.class) {
-                    w.print("0L");
-                } else if (argType == float.class) {
-                    w.print("0F");
-                } else if (argType == double.class) {
-                    w.print("0D");
-                } else if (argType == char.class) {
-                    w.print("'\0'");
-                } else {
-                    w.print("null");
-                }
+                w.print(getDefaultValue(paramTypes[i]));
 
             }
             w.println(");");
+        }
+
+        private String getDefaultValue(Class argType) {
+            if (argType == boolean.class) {
+                return "false";
+            } else if (argType == byte.class) {
+                return "(byte)0";
+            } else if (argType == short.class) {
+                return "(short)0";
+            } else if (argType == int.class) {
+                return "0";
+            } else if (argType == long.class) {
+                return "0L";
+            } else if (argType == float.class) {
+                return "0F";
+            } else if (argType == double.class) {
+                return "0D";
+            } else if (argType == char.class) {
+                return "'\0'";
+            } else {
+                return "null";
+            }
         }
 
         private Set<Method> calculateInheritedUsedMethods() {
@@ -760,9 +762,14 @@ public class StubGen {
             if (Modifier.isAbstract(method.getModifiers())) {
                 w.println(";");
             } else {
-                w.println(" {");
-                w.println(baseIndent + indent + indent + "throw new UnsupportedOperationException();");
-                w.println(baseIndent + indent + "}");
+                Class<?> returnType = method.getReturnType();
+                if (returnType == void.class) {
+                    w.println(" {}");
+                } else {
+                    w.println(" {");
+                    w.println(baseIndent + indent + indent + "return " + getDefaultValue(returnType) + ";");
+                    w.println(baseIndent + indent + "}");
+                }
             }
             w.println();
         }

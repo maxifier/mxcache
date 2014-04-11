@@ -13,7 +13,7 @@ import com.intellij.codeInsight.daemon.HighlightDisplayKey;
  */
 public abstract class SuppressManager implements BatchSuppressManager {
      public static SuppressManager getInstance() {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
      public abstract SuppressIntentionAction[] createSuppressActions(HighlightDisplayKey p1);

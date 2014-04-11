@@ -11,7 +11,7 @@ package com.intellij.codeInsight.daemon;
  */
 public class HighlightDisplayKey {
      public static HighlightDisplayKey find(String p1) {
-          throw new UnsupportedOperationException();
+          return null;
      }
 
 }
