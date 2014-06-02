@@ -19,9 +19,7 @@ import java.lang.reflect.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -57,6 +55,16 @@ public class TestStubGen {
             Subclass.EmptyIterator.class
     };
 
+    private static final Class[] TEST_CLASSES = {
+            TestA.class,
+            TestNested.class,
+            TestEnum.class,
+            TestFields.class,
+            TestInheritance.class,
+            TestNoDefaultCtor.class,
+            TestImportInnerClass.class
+    };
+
     private File tempDir;
     private File libJar;
     private File examJar;
@@ -65,15 +73,7 @@ public class TestStubGen {
     @BeforeTest
     public void recompile() throws IOException, NoSuchMethodException, NoSuchFieldException, ClassNotFoundException, InvocationTargetException, IllegalAccessException {
         libJar = createJar(LIB_CLASSES);
-        examJar = createJar(
-                TestA.class,
-                TestNested.class,
-                TestEnum.class,
-                TestFields.class,
-                TestInheritance.class,
-                TestNoDefaultCtor.class,
-                TestImportInnerClass.class
-        );
+        examJar = createJar(TEST_CLASSES);
 
         tempDir = new File(FileUtils.getTempDirectory(), File.createTempFile("stubgen", "").getName() + "dir");
         tempDir.mkdirs();
@@ -92,6 +92,10 @@ public class TestStubGen {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
         Collection<File> allJavaFiles = FileUtils.listFiles(tempDir, new String[]{"java"}, true);
+
+        if (allJavaFiles.isEmpty()) {
+            fail("StubGen output is empty");
+        }
 
         String[] allJavaPaths = new String[allJavaFiles.size()];
         int i = 0;
@@ -229,13 +233,22 @@ public class TestStubGen {
 
     private URLClassLoader getNonTestCL() {
         URLClassLoader testCl = (URLClassLoader) getClass().getClassLoader();
-        List<URL> nonTestUrls = new ArrayList<URL>();
-        for (URL url : testCl.getURLs()) {
-            if (!url.toString().contains("test-classes")) {
-                nonTestUrls.add(url);
+        return new URLClassLoader(testCl.getURLs(), testCl.getParent()) {
+            @Override
+            protected Class<?> findClass(String name) throws ClassNotFoundException {
+                for (Class libClass : LIB_CLASSES) {
+                    if (libClass.getName().equals(name)) {
+                        throw new ClassNotFoundException();
+                    }
+                }
+                for (Class testClass : TEST_CLASSES) {
+                    if (testClass.getName().equals(name)) {
+                        throw new ClassNotFoundException();
+                    }
+                }
+                return super.findClass(name);
             }
-        }
-        return new URLClassLoader(nonTestUrls.toArray(new URL[nonTestUrls.size()]), testCl.getParent());
+        };
     }
 
     private File createJar(Class... classes) throws IOException {
