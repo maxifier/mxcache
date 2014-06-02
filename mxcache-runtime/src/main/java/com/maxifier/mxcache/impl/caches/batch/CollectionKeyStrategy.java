@@ -3,7 +3,7 @@
  */
 package com.maxifier.mxcache.impl.caches.batch;
 
-import gnu.trove.THashSet;
+import gnu.trove.set.hash.THashSet;
 
 import java.util.*;
 

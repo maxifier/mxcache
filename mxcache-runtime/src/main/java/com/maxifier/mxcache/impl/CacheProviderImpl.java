@@ -3,26 +3,24 @@
  */
 package com.maxifier.mxcache.impl;
 
+import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.Calculable;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.mbean.CacheControl;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.provider.CacheProvider;
-import gnu.trove.THashMap;
-
-import java.util.*;
-import java.lang.management.ManagementFactory;
-
-import com.maxifier.mxcache.caches.Cache;
+import gnu.trove.map.hash.THashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-
 import javax.annotation.Nullable;
-
-import javax.management.*;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.JMException;
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
+import java.util.*;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)

@@ -6,19 +6,20 @@ package com.maxifier.mxcache.proxy;
 import com.maxifier.mxcache.asm.Opcodes;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.Method;
-import com.maxifier.mxcache.util.*;
-import gnu.trove.THashMap;
-import gnu.trove.THashSet;
-
-import javax.annotation.Nonnull;
-
+import com.maxifier.mxcache.util.ClassGenerator;
+import com.maxifier.mxcache.util.MxConstructorGenerator;
+import com.maxifier.mxcache.util.MxGeneratorAdapter;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
-import static com.maxifier.mxcache.util.CodegenHelper.*;
+import static com.maxifier.mxcache.util.CodegenHelper.CLASS_TYPE;
+import static com.maxifier.mxcache.util.CodegenHelper.CONSTRUCTOR_NAME;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)

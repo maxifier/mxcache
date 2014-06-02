@@ -3,7 +3,7 @@
  */
 package com.maxifier.mxcache.config;
 
-import gnu.trove.THashSet;
+import gnu.trove.set.hash.THashSet;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlElement;

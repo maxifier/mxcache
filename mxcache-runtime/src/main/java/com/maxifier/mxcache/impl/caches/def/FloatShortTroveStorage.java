@@ -3,8 +3,6 @@
  */
 package com.maxifier.mxcache.impl.caches.def;
 
-import gnu.trove.*;
-
 import com.maxifier.mxcache.storage.*;
 
 /**
@@ -17,14 +15,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class FloatShortTroveStorage extends TFloatShortHashMap implements FloatShortStorage {
-    public FloatShortTroveStorage() {
-    }
-
-    public FloatShortTroveStorage(TFloatHashingStrategy strategy) {
-        super(strategy);
-    }
-
+public class FloatShortTroveStorage extends gnu.trove.map.hash.TFloatShortHashMap implements FloatShortStorage {
     @Override
     public boolean isCalculated(float o) {
         return super.contains(o);

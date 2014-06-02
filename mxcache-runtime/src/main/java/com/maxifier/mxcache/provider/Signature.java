@@ -10,12 +10,10 @@ import com.maxifier.mxcache.impl.caches.abs.elementlocked.ElementLockedStorage;
 import com.maxifier.mxcache.impl.resource.nodes.MultipleDependencyNode;
 import com.maxifier.mxcache.impl.resource.nodes.SingletonDependencyNode;
 import com.maxifier.mxcache.storage.Storage;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 
 import javax.annotation.Nonnull;
-
 import javax.annotation.Nullable;
-
 import java.util.Arrays;
 import java.util.Map;
 import java.util.WeakHashMap;

@@ -4,12 +4,11 @@
 package com.maxifier.mxcache.hashing;
 
 import com.maxifier.mxcache.tuple.Tuple;
-import gnu.trove.TObjectHashingStrategy;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public final class TupleHashingStrategy implements TObjectHashingStrategy<Tuple> {
+public final class TupleHashingStrategy implements gnu.trove.strategy.HashingStrategy<Tuple> {
     private static final long serialVersionUID = 100L;
 
     /** Huge prime number, just a hash for null value */

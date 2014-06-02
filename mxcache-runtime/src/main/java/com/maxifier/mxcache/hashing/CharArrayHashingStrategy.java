@@ -3,15 +3,13 @@
  */
 package com.maxifier.mxcache.hashing;
 
-import gnu.trove.TObjectHashingStrategy;
-
 import java.io.ObjectStreamException;
 import java.util.Arrays;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public final class CharArrayHashingStrategy implements TObjectHashingStrategy<char[]> {
+public final class CharArrayHashingStrategy implements gnu.trove.strategy.HashingStrategy<char[]> {
     private static final long serialVersionUID = 100L;
 
     private static final CharArrayHashingStrategy INSTANCE = new CharArrayHashingStrategy();

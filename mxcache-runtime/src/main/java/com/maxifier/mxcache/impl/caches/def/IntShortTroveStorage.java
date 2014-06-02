@@ -3,8 +3,6 @@
  */
 package com.maxifier.mxcache.impl.caches.def;
 
-import gnu.trove.*;
-
 import com.maxifier.mxcache.storage.*;
 
 /**
@@ -17,14 +15,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class IntShortTroveStorage extends TIntShortHashMap implements IntShortStorage {
-    public IntShortTroveStorage() {
-    }
-
-    public IntShortTroveStorage(TIntHashingStrategy strategy) {
-        super(strategy);
-    }
-
+public class IntShortTroveStorage extends gnu.trove.map.hash.TIntShortHashMap implements IntShortStorage {
     @Override
     public boolean isCalculated(int o) {
         return super.contains(o);

@@ -9,7 +9,7 @@ import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyNodeVisitor;
 import com.maxifier.mxcache.util.HashWeakReference;
 import com.maxifier.mxcache.util.TIdentityHashSet;
-import gnu.trove.THashSet;
+import gnu.trove.set.hash.THashSet;
 
 import javax.annotation.Nonnull;
 

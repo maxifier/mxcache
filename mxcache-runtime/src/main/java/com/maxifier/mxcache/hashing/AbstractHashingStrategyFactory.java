@@ -4,13 +4,11 @@
 package com.maxifier.mxcache.hashing;
 
 import com.maxifier.mxcache.context.CacheContext;
-import gnu.trove.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 /**
  * AbstractHashingStrategyFactory
@@ -23,17 +21,6 @@ import java.util.Map;
  */
 public abstract class AbstractHashingStrategyFactory implements HashingStrategyFactory {
     private static final Logger logger = LoggerFactory.getLogger(AbstractHashingStrategyFactory.class);
-
-    private static final Map<Class, Class> STRATEGY_TYPE = new THashMap<Class, Class>();
-
-    static {
-        STRATEGY_TYPE.put(byte.class, TByteHashingStrategy.class);
-        STRATEGY_TYPE.put(short.class, TShortHashingStrategy.class);
-        STRATEGY_TYPE.put(int.class, TIntHashingStrategy.class);
-        STRATEGY_TYPE.put(long.class, TLongHashingStrategy.class);
-        STRATEGY_TYPE.put(float.class, TFloatHashingStrategy.class);
-        STRATEGY_TYPE.put(double.class, TDoubleHashingStrategy.class);
-    }
 
     @Override
     public Object createHashingStrategy(CacheContext context, Method method) {
@@ -59,23 +46,16 @@ public abstract class AbstractHashingStrategyFactory implements HashingStrategyF
 
     private boolean isSuitableStrategy(Class paramType, Object strategy) {
         if (paramType.isPrimitive()) {
-            Class strategyType = STRATEGY_TYPE.get(paramType);
-            if (strategyType == null) {
-                logger.error("Param of type " + paramType + " cannot have strategy");
-                return false;
-            }
-            if (!strategyType.isInstance(strategy)) {
-                logger.error("Param of type " + paramType + " cannot have strategy of type " + strategy);
-                return false;
-            }
-        } else if (!TObjectHashingStrategy.class.isInstance(strategy)) {
+            logger.error("Param of type " + paramType + " cannot have strategy");
+            return false;
+        } else if (!gnu.trove.strategy.HashingStrategy.class.isInstance(strategy)) {
             logger.error("Param of type " + paramType + " cannot have strategy of type " + strategy);
             return false;
         }
         return true;
     }
 
-    private TObjectHashingStrategy createTupleHashingStrategy(CacheContext context, Class[] paramTypes, Annotation[][] paramAnnotations) {
+    private gnu.trove.strategy.HashingStrategy createTupleHashingStrategy(CacheContext context, Class[] paramTypes, Annotation[][] paramAnnotations) {
         Object[] strategies = new Object[paramAnnotations.length];
         int n = 0;
         for (int i = 0; i < paramAnnotations.length; i++) {

@@ -3,8 +3,6 @@
  */
 package com.maxifier.mxcache.impl.caches.def;
 
-import gnu.trove.*;
-
 import com.maxifier.mxcache.storage.*;
 
 /**
@@ -17,14 +15,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class ByteFloatTroveStorage extends TByteFloatHashMap implements ByteFloatStorage {
-    public ByteFloatTroveStorage() {
-    }
-
-    public ByteFloatTroveStorage(TByteHashingStrategy strategy) {
-        super(strategy);
-    }
-
+public class ByteFloatTroveStorage extends gnu.trove.map.hash.TByteFloatHashMap implements ByteFloatStorage {
     @Override
     public boolean isCalculated(byte o) {
         return super.contains(o);

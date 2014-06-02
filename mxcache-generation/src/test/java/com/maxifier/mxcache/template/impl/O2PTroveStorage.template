@@ -3,27 +3,27 @@
  */
 package com.maxifier.mxcache.impl.caches.def;
 
-import gnu.trove.map.custom_hash.TObjectDoubleCustomHashMap;
+import gnu.trove.map.custom_hash.TObject#F_TROVE#CustomHashMap;
 import gnu.trove.strategy.HashingStrategy;
 import com.maxifier.mxcache.storage.*;
 
 /**
- * ObjectDoubleTroveStorage<E>
+ * Object#FG#TroveStorage<E>
  *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
- * GENERATED FROM O2PTroveStorage.template
+ * GENERATED FROM #SOURCE#
  *
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class ObjectDoubleTroveStorage<E> extends TObjectDoubleCustomHashMap<E> implements ObjectDoubleStorage<E> {
-    public ObjectDoubleTroveStorage() {
+public class Object#FG#TroveStorage<E> extends TObject#F_TROVE#CustomHashMap<E> implements Object#FG#Storage<E> {
+    public Object#F#TroveStorage() {
         //noinspection unchecked
         super(DEFAULT_HASHING_STRATEGY);
     }
 
-    public ObjectDoubleTroveStorage(HashingStrategy<E> strategy) {
+    public Object#F#TroveStorage(HashingStrategy<E> strategy) {
         super(strategy);
     }
 
@@ -33,12 +33,12 @@ public class ObjectDoubleTroveStorage<E> extends TObjectDoubleCustomHashMap<E> i
     }
 
     @Override
-    public double load(E o) {
-        return super.get(o);
+    public #fg# load(E o) {
+        return #F_FROM_TROVE:super.get(o)#;
     }
 
     @Override
-    public void save(E o, double t) {
-        put(o, t);
+    public void save(E o, #fg# t) {
+        put(o, #F_TROVE:t#);
     }
 }

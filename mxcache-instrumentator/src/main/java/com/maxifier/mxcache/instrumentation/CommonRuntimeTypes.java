@@ -5,10 +5,10 @@ package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.Method;
-import gnu.trove.THashMap;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +25,7 @@ public final class CommonRuntimeTypes {
     public static final Type OBJECT_INPUT_STREAM_TYPE = Type.getType(ObjectInputStream.class);
     public static final Type CLASS_NOT_FOUND_EXCEPTION_TYPE = Type.getType(ClassNotFoundException.class);
     public static final Type IO_EXCEPTION_TYPE = Type.getType(IOException.class);
-    public static final Type THASHMAP_TYPE = Type.getType(THashMap.class);
+    public static final Type HASH_MAP_TYPE = Type.getType(HashMap.class);
 
     @SuppressWarnings({ "PublicStaticArrayField" })
     public static final String[] READ_OBJECT_EXCEPTIONS = { CLASS_NOT_FOUND_EXCEPTION_TYPE.getInternalName(), IO_EXCEPTION_TYPE.getInternalName() };

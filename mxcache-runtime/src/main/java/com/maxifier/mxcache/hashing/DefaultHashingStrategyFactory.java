@@ -5,8 +5,7 @@ package com.maxifier.mxcache.hashing;
 
 import com.maxifier.mxcache.NoSuchInstanceException;
 import com.maxifier.mxcache.context.CacheContext;
-import gnu.trove.TObjectHashingStrategy;
-import gnu.trove.TObjectIdentityHashingStrategy;
+import gnu.trove.strategy.IdentityHashingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +50,7 @@ public final class DefaultHashingStrategyFactory extends AbstractHashingStrategy
                     // arrays are compared with referential equality by default
                     return null;
                 }
-                return new TObjectIdentityHashingStrategy();
+                return new IdentityHashingStrategy();
             }
         }
         if (paramType.isArray()) {
@@ -82,7 +81,7 @@ public final class DefaultHashingStrategyFactory extends AbstractHashingStrategy
         }
     }
 
-    private TObjectHashingStrategy getArrayHashingStrategy(Class paramType) {
+    private gnu.trove.strategy.HashingStrategy getArrayHashingStrategy(Class paramType) {
         if (paramType == boolean[].class) {
             return BooleanArrayHashingStrategy.getInstance();
         }

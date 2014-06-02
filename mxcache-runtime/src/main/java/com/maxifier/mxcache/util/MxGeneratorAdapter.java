@@ -4,16 +4,15 @@
 package com.maxifier.mxcache.util;
 
 import com.maxifier.mxcache.asm.ClassVisitor;
-import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
-import com.maxifier.mxcache.asm.commons.Method;
-
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-
 import com.maxifier.mxcache.asm.MethodVisitor;
 import com.maxifier.mxcache.asm.Opcodes;
 import com.maxifier.mxcache.asm.Type;
-import gnu.trove.TIntArrayList;
+import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
+import com.maxifier.mxcache.asm.commons.Method;
+import gnu.trove.list.array.TIntArrayList;
+
+import java.lang.reflect.Modifier;
+import java.util.Collection;
 
 import static com.maxifier.mxcache.asm.Opcodes.*;
 import static com.maxifier.mxcache.asm.commons.Method.getMethod;

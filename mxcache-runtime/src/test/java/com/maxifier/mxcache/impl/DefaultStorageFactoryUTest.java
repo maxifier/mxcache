@@ -4,6 +4,7 @@
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.CacheFactory;
+import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.clean.Cleanable;
 import com.maxifier.mxcache.hashing.HashingStrategy;
 import com.maxifier.mxcache.hashing.IdentityHashing;
@@ -11,16 +12,15 @@ import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.proxy.ProxyFactory;
 import com.maxifier.mxcache.proxy.Resolvable;
+import com.maxifier.mxcache.transform.Transform;
 import com.maxifier.mxcache.transform.WeakKey;
 import com.maxifier.mxcache.tuple.Tuple;
 import com.maxifier.mxcache.tuple.TupleFactory;
 import com.maxifier.mxcache.tuple.TupleGenerator;
-import com.maxifier.mxcache.transform.Transform;
-import gnu.trove.TObjectIdentityHashingStrategy;
+import gnu.trove.strategy.IdentityHashingStrategy;
 import junit.framework.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import com.maxifier.mxcache.caches.*;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
@@ -98,7 +98,7 @@ public class DefaultStorageFactoryUTest {
             return Long.toString(r.x) + x + s;
         }
 
-        String z(@HashingStrategy(TObjectIdentityHashingStrategy.class) String b) {
+        String z(@HashingStrategy(IdentityHashingStrategy.class) String b) {
             return b;
         }
 

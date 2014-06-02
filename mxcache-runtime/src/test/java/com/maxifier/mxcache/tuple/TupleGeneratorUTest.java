@@ -3,16 +3,16 @@
  */
 package com.maxifier.mxcache.tuple;
 
-import gnu.trove.TIntHashingStrategy;
-import gnu.trove.TObjectHashingStrategy;
-import gnu.trove.TObjectIdentityHashingStrategy;
+import gnu.trove.strategy.HashingStrategy;
+import gnu.trove.strategy.IdentityHashingStrategy;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.testng.Assert.*;
 
 /**
  * TupleGeneratorUTest
@@ -45,14 +45,14 @@ public class TupleGeneratorUTest {
     }
 
     public void testCustomStrategy() throws Exception {
-        TObjectIdentityHashingStrategy<String> strategy = new TObjectIdentityHashingStrategy<String>();
+        IdentityHashingStrategy<String> strategy = new IdentityHashingStrategy<String>();
         Tuple tuple = createTuple(array(String.class, int.class), "Test", 3);
         // у int hashCode равен ему самому
         int sample = Arrays.hashCode(new int[] { System.identityHashCode("Test"), 3});
         assert tuple.hashCode(strategy, null) == sample;
 
         Tuple tuple2 = createTuple(array(String.class, int.class), "tEST", 3);
-        assert tuple.equals(tuple2, new TObjectHashingStrategy<String>() {
+        assert tuple.equals(tuple2, new HashingStrategy<String>() {
             @Override
             public int computeHashCode(String object) {
                 throw new UnsupportedOperationException();
@@ -65,38 +65,18 @@ public class TupleGeneratorUTest {
         }, null);
     }
 
-    public void testCustomStrategyForPrimitive() throws Exception {
-        TIntHashingStrategy constIntHashing = new TIntHashingStrategy() {
-            @Override
-            public int computeHashCode(int val) {
-                return -1;
-            }
-        };
-
-        Tuple tuple = createTuple(array(int.class, boolean.class), 3, true);
-        // у int hashCode равен ему самому
-        int sample = Arrays.hashCode(new int[] { -1, Boolean.TRUE.hashCode()});
-        assert tuple.hashCode(constIntHashing, null) == sample;
-
-        Tuple tuple2 = createTuple(array(int.class, boolean.class), 3, true);
-        assert tuple.equals(tuple2, constIntHashing, null);
-
-        Tuple tuple3 = createTuple(array(int.class, boolean.class), 4, true);
-        Assert.assertFalse(tuple.equals(tuple3, constIntHashing, null));
-    }
-
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testIncompatibleStrategy() throws Exception {
         Tuple tuple = createTuple(array(int.class), 3);
         Tuple tuple2 = createTuple(array(int.class), 4);
-        assert tuple.equals(tuple2, new TObjectIdentityHashingStrategy());
+        assert tuple.equals(tuple2, new IdentityHashingStrategy());
     }
 
     @Test (expectedExceptions = IllegalArgumentException.class)
     public void testIncompatibleStrategyForBoolean() throws Exception {
         Tuple tuple = createTuple(array(boolean.class), true);
         Tuple tuple2 = createTuple(array(boolean.class), false);
-        assert tuple.equals(tuple2, new TObjectIdentityHashingStrategy());
+        assert tuple.equals(tuple2, new IdentityHashingStrategy());
     }
 
     @Test (expectedExceptions = IllegalArgumentException.class)

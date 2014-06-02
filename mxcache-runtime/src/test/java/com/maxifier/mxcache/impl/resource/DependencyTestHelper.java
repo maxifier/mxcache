@@ -4,7 +4,7 @@
 package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.resource.MxResource;
-import gnu.trove.THashSet;
+import gnu.trove.set.hash.THashSet;
 
 import java.util.LinkedList;
 import java.util.Queue;

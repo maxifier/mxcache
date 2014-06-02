@@ -5,15 +5,16 @@ package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.hashing.HashingStrategyFactory;
-import com.maxifier.mxcache.provider.*;
+import com.maxifier.mxcache.provider.CacheDescriptor;
+import com.maxifier.mxcache.provider.Signature;
+import com.maxifier.mxcache.provider.StorageFactory;
 import com.maxifier.mxcache.storage.Storage;
 import com.maxifier.mxcache.transform.Ignore;
 import com.maxifier.mxcache.transform.SoftKey;
 import com.maxifier.mxcache.transform.WeakKey;
-import gnu.trove.TIntArrayList;
+import gnu.trove.list.array.TIntArrayList;
 
 import javax.annotation.Nonnull;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -45,7 +46,7 @@ public class DefaultStorageFactory<T> implements StorageFactory<T> {
                 tupleIndices = null;
             } else {
                 implementation = findClass(CACHES_PACKAGE + "Tuple" + Signature.toString(descriptor.getValueType()) + "WeakTroveStorage");
-                tupleIndices = p.toNativeArray();
+                tupleIndices = p.toArray();
             }
         }
         hashingStrategy = hashingStrategyFactory.createHashingStrategy(context, descriptor.getMethod());

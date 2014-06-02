@@ -6,8 +6,8 @@ package com.maxifier.mxcache.stubgen;
 import com.beust.jcommander.JCommander;
 import com.maxifier.mxcache.asm.*;
 import com.maxifier.mxcache.asm.Type;
-import gnu.trove.THashMap;
-import gnu.trove.THashSet;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 

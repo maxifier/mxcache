@@ -3,7 +3,7 @@
  */
 package com.maxifier.mxcache.instrumentation.current;
 
-import gnu.trove.TIntArrayList;
+import gnu.trove.list.array.TIntArrayList;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)

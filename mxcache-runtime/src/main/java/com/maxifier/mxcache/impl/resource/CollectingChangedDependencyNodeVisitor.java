@@ -4,8 +4,8 @@
 package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.impl.resource.nodes.ResourceViewable;
-import gnu.trove.THashMap;
-import gnu.trove.TObjectIdentityHashingStrategy;
+import gnu.trove.map.hash.TCustomHashMap;
+import gnu.trove.strategy.IdentityHashingStrategy;
 
 import java.util.Map;
 import java.util.Queue;
@@ -15,12 +15,10 @@ import java.util.Set;
  * @author Elena Saymanina (elena.saymanina@maxifier.com) (04.06.13)
  */
 public class CollectingChangedDependencyNodeVisitor implements DependencyNodeVisitor {
-    private static final TObjectIdentityHashingStrategy<ResourceViewable> HASHING_STRATEGY = new TObjectIdentityHashingStrategy<ResourceViewable>();
-
     private final Set<DependencyNode> nodes;
     private final Queue<DependencyNode> queue;
 
-    private final Map<ResourceViewable, Boolean> changedCache = new THashMap<ResourceViewable, Boolean>(HASHING_STRATEGY);
+    private final Map<ResourceViewable, Boolean> changedCache = new TCustomHashMap<ResourceViewable, Boolean>(IdentityHashingStrategy.INSTANCE);
 
     public CollectingChangedDependencyNodeVisitor(Set<DependencyNode> nodes, Queue<DependencyNode> queue) {
         this.nodes = nodes;

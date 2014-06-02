@@ -5,7 +5,7 @@ package com.maxifier.mxcache.instrumentation;
 
 import com.maxifier.mxcache.MxCache;
 import com.maxifier.mxcache.instrumentation.current.InstrumentatorImpl;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 
 import java.util.Collections;
 import java.util.Map;

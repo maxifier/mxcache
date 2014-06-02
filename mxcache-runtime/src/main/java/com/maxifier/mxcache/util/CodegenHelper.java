@@ -3,9 +3,12 @@
  */
 package com.maxifier.mxcache.util;
 
-import com.maxifier.mxcache.asm.*;
+import com.maxifier.mxcache.asm.ClassReader;
+import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.asm.util.CheckClassAdapter;
+import gnu.trove.map.hash.THashMap;
+import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -13,16 +16,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Map;
 
-import com.maxifier.mxcache.asm.Type;
-import gnu.trove.THashMap;
-import org.apache.commons.io.IOUtils;
-
-import static com.maxifier.mxcache.asm.Opcodes.ACC_PRIVATE;
-import static com.maxifier.mxcache.asm.Opcodes.ACC_STATIC;
-import static com.maxifier.mxcache.asm.Opcodes.ACC_SYNTHETIC;
-import static com.maxifier.mxcache.asm.Type.ARRAY;
-import static com.maxifier.mxcache.asm.Type.OBJECT;
-import static com.maxifier.mxcache.asm.Type.getType;
+import static com.maxifier.mxcache.asm.Opcodes.*;
+import static com.maxifier.mxcache.asm.Type.*;
 
 /**
  * CodegenHelper

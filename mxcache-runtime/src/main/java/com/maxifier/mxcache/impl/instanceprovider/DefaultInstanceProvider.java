@@ -5,7 +5,7 @@ package com.maxifier.mxcache.impl.instanceprovider;
 
 import com.maxifier.mxcache.InstanceProvider;
 import com.maxifier.mxcache.NoSuchInstanceException;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 
 import javax.annotation.Nonnull;
 

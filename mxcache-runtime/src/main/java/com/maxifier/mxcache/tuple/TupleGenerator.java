@@ -4,22 +4,22 @@
 package com.maxifier.mxcache.tuple;
 
 import com.maxifier.mxcache.PublicAPI;
-import com.maxifier.mxcache.asm.commons.Method;
-import static com.maxifier.mxcache.asm.commons.Method.getMethod;
-import static com.maxifier.mxcache.asm.commons.GeneratorAdapter.*;
-import static com.maxifier.mxcache.asm.Type.*;
-import static com.maxifier.mxcache.asm.Opcodes.*;
-import static com.maxifier.mxcache.util.CodegenHelper.*;
-import static com.maxifier.mxcache.util.CodegenHelper.erase;
-
 import com.maxifier.mxcache.asm.Label;
 import com.maxifier.mxcache.asm.Type;
+import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.util.*;
-
-import gnu.trove.*;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.strategy.HashingStrategy;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+
+import static com.maxifier.mxcache.asm.Opcodes.*;
+import static com.maxifier.mxcache.asm.Type.*;
+import static com.maxifier.mxcache.asm.commons.GeneratorAdapter.EQ;
+import static com.maxifier.mxcache.asm.commons.GeneratorAdapter.NE;
+import static com.maxifier.mxcache.asm.commons.Method.getMethod;
+import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 /**
  * TupleGenerator
@@ -59,28 +59,13 @@ public final class TupleGenerator {
 
     private static final THashMap<String, TupleClass> CACHE = new THashMap<String, TupleClass>();
 
-    private static final TIntObjectHashMap<Type> STRATEGY_TYPE = new TIntObjectHashMap<Type>();
-
-    private static final Type TOBJECT_HASHING_STRATEGY_TYPE = Type.getType(TObjectHashingStrategy.class);
+    private static final Type HASHING_STRATEGY_TYPE = Type.getType(HashingStrategy.class);
 
     private static final int INT_BITS = 32;
 
     private static final int TRUE_HASHCODE = Boolean.TRUE.hashCode();
     private static final int FALSE_HASHCODE = Boolean.FALSE.hashCode();
     private static final Method EQUALS_OBJECT_OBJECT_METHOD = Method.getMethod("boolean equals(Object, Object)");
-
-    static {
-        // We have to use Strings, not actual classes because old IDEA is distributed with outdated
-        // Trove version where not all of them are present.
-        STRATEGY_TYPE.put(Type.BYTE, Type.getObjectType("gnu/trove/TByteHashingStrategy"));
-        STRATEGY_TYPE.put(Type.SHORT, Type.getObjectType("gnu/trove/TShortHashingStrategy"));
-        STRATEGY_TYPE.put(Type.INT, Type.getObjectType("gnu/trove/TIntHashingStrategy"));
-        STRATEGY_TYPE.put(Type.LONG, Type.getObjectType("gnu/trove/TLongHashingStrategy"));
-        STRATEGY_TYPE.put(Type.FLOAT, Type.getObjectType("gnu/trove/TFloatHashingStrategy"));
-        STRATEGY_TYPE.put(Type.DOUBLE, Type.getObjectType("gnu/trove/TDoubleHashingStrategy"));
-        STRATEGY_TYPE.put(Type.OBJECT, TOBJECT_HASHING_STRATEGY_TYPE);
-        STRATEGY_TYPE.put(Type.ARRAY, TOBJECT_HASHING_STRATEGY_TYPE);
-    }
 
     private TupleGenerator() {
     }
@@ -257,7 +242,7 @@ public final class TupleGenerator {
 
                 visitor.loadArg(1);
                 visitor.push(i);
-                visitor.arrayLoad(TOBJECT_HASHING_STRATEGY_TYPE);
+                visitor.arrayLoad(HASHING_STRATEGY_TYPE);
                 visitor.dup();
                 visitor.ifNull(defaultEquals);
 
@@ -265,7 +250,7 @@ public final class TupleGenerator {
                 visitor.getField(tupleType, "$" + i, type);
                 visitor.loadLocal(other);
                 visitor.getField(tupleType, "$" + i, type);
-                visitor.invokeInterface(TOBJECT_HASHING_STRATEGY_TYPE, EQUALS_OBJECT_OBJECT_METHOD);
+                visitor.invokeInterface(HASHING_STRATEGY_TYPE, EQUALS_OBJECT_OBJECT_METHOD);
                 visitor.ifZCmp(EQ, notEqual);
                 visitor.goTo(next);
 
@@ -279,17 +264,7 @@ public final class TupleGenerator {
                 Label ok = new Label();
                 visitor.ifNull(ok);
 
-                Type strategyType = STRATEGY_TYPE.get(type.getSort());
-                if (strategyType != null) {
-                    // No strategies for boolean, the only allowed value is null
-                    visitor.loadArg(1);
-                    visitor.push(i);
-                    visitor.arrayLoad(OBJECT_TYPE);
-                    visitor.instanceOf(strategyType);
-                    visitor.ifZCmp(NE, ok);
-                }
-
-                visitor.throwException(ILLEGAL_ARGUMENT_EXCEPTION_TYPE, "Hashing strategy for " + i + "th param of type " + type.getClassName() + " is invalid");
+                visitor.throwException(ILLEGAL_ARGUMENT_EXCEPTION_TYPE, "Primitives don't support hashing strategy: " + i + "th param of type " + type.getClassName());
 
                 visitor.mark(ok);
             }
@@ -409,19 +384,18 @@ public final class TupleGenerator {
 
             Label next = new Label();
 
-            Type strategyType = STRATEGY_TYPE.get(type.getSort());
-            if (strategyType != null) {
+            if (isReferenceType(type)) {
                 Label defaultHashCode = new Label();
 
                 visitor.loadArg(0);
                 visitor.push(i);
-                visitor.arrayLoad(strategyType);
+                visitor.arrayLoad(HASHING_STRATEGY_TYPE);
                 visitor.dup();
                 visitor.ifNull(defaultHashCode);
                 
                 visitor.loadThis();
                 visitor.getField(tupleType, "$" + i, type);
-                visitor.visitMethodInsn(INVOKEINTERFACE, strategyType.getInternalName(), "computeHashCode", "(" + erase(type).getDescriptor() + ")I");
+                visitor.visitMethodInsn(INVOKEINTERFACE, HASHING_STRATEGY_TYPE.getInternalName(), "computeHashCode", "(" + erase(type).getDescriptor() + ")I");
                 visitor.goTo(next);
 
                 visitor.mark(defaultHashCode);
