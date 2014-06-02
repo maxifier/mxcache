@@ -6,24 +6,24 @@ package com.maxifier.mxcache.clean;
 import com.maxifier.mxcache.Cached;
 import com.maxifier.mxcache.NonInstrumentedCacheException;
 import com.maxifier.mxcache.asm.Type;
+import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
-import org.testng.annotations.Test;
+import gnu.trove.map.hash.THashMap;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.Condition;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.List;
-import java.util.Map;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-import gnu.trove.THashMap;
-import com.maxifier.mxcache.caches.Cache;
-
-import static com.maxifier.mxcache.clean.CacheCleanerUTest.Cleared.*;
+import static com.maxifier.mxcache.clean.CacheCleanerUTest.Cleared.CLEAR;
+import static com.maxifier.mxcache.clean.CacheCleanerUTest.Cleared.DIRTY;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)

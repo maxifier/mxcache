@@ -3,25 +3,23 @@
  */
 package com.maxifier.mxcache.mbean;
 
-import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.CacheFactory;
+import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.impl.resource.MxResourceFactory;
 import com.maxifier.mxcache.interfaces.Statistics;
-import com.maxifier.mxcache.provider.CacheProvider;
-import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.provider.CacheDescriptor;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
-
+import com.maxifier.mxcache.provider.CacheManager;
+import com.maxifier.mxcache.provider.CacheProvider;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.util.TIdentityHashSet;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)

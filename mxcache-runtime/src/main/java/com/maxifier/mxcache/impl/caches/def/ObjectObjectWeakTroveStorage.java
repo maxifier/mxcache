@@ -5,8 +5,9 @@ package com.maxifier.mxcache.impl.caches.def;
 
 import com.maxifier.mxcache.transform.SmartReference;
 
-import gnu.trove.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * ObjectObjectWeakTroveStorage
@@ -18,10 +19,6 @@ public class ObjectObjectWeakTroveStorage<K extends SmartReference, V> extends O
     private final List<K> removed = Collections.synchronizedList(new ArrayList<K>());
 
     public ObjectObjectWeakTroveStorage() {
-    }
-
-    public ObjectObjectWeakTroveStorage(TObjectHashingStrategy<K> strategy) {
-        super(strategy);
     }
 
     private void cleanup() {

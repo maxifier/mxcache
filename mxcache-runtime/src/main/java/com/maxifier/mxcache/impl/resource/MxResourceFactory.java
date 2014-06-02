@@ -4,17 +4,15 @@
 package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.CacheFactory;
+import com.maxifier.mxcache.config.ResourceConfig;
 import com.maxifier.mxcache.resource.MxResource;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
-import com.maxifier.mxcache.config.ResourceConfig;
-import gnu.trove.THashSet;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)

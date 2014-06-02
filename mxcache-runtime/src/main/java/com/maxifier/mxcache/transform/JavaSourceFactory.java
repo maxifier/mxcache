@@ -7,7 +7,7 @@ import com.maxifier.mxcache.MxCacheException;
 import com.maxifier.mxcache.tuple.Tuple;
 import com.maxifier.mxcache.tuple.TupleFactory;
 import com.maxifier.mxcache.tuple.TupleGenerator;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;

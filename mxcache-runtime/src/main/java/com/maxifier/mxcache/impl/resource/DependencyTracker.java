@@ -8,7 +8,7 @@ import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.util.HashWeakReference;
 import com.maxifier.mxcache.util.TIdentityHashSet;
-import gnu.trove.THashSet;
+import gnu.trove.set.hash.THashSet;
 
 import javax.annotation.Nonnull;
 

@@ -7,7 +7,7 @@ import com.maxifier.mxcache.CacheFactory;
 import com.maxifier.mxcache.NoSuchInstanceException;
 import com.maxifier.mxcache.PublicAPI;
 import com.maxifier.mxcache.context.CacheContext;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

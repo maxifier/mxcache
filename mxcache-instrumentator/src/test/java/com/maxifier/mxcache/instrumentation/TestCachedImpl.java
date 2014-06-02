@@ -15,7 +15,7 @@ import com.maxifier.mxcache.resource.TrackDependency;
 import com.maxifier.mxcache.transform.Ignore;
 import com.maxifier.mxcache.transform.Transform;
 import com.maxifier.mxcache.transform.WeakKey;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 
 import java.io.*;
 import java.lang.annotation.Retention;

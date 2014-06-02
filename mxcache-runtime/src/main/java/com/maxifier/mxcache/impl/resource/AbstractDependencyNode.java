@@ -4,7 +4,7 @@
 package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.util.HashWeakReference;
-import gnu.trove.THashSet;
+import gnu.trove.set.hash.THashSet;
 import javax.annotation.Nullable;
 
 import java.lang.ref.Reference;

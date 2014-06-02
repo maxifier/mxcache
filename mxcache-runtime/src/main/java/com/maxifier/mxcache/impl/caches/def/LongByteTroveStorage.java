@@ -3,8 +3,6 @@
  */
 package com.maxifier.mxcache.impl.caches.def;
 
-import gnu.trove.*;
-
 import com.maxifier.mxcache.storage.*;
 
 /**
@@ -17,14 +15,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class LongByteTroveStorage extends TLongByteHashMap implements LongByteStorage {
-    public LongByteTroveStorage() {
-    }
-
-    public LongByteTroveStorage(TLongHashingStrategy strategy) {
-        super(strategy);
-    }
-
+public class LongByteTroveStorage extends gnu.trove.map.hash.TLongByteHashMap implements LongByteStorage {
     @Override
     public boolean isCalculated(long o) {
         return super.contains(o);

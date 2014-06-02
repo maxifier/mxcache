@@ -4,8 +4,8 @@
 package com.maxifier.mxcache;
 
 import com.maxifier.mxcache.context.CacheContext;
-import gnu.trove.THashMap;
-import gnu.trove.THashSet;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 
 import java.util.*;
 

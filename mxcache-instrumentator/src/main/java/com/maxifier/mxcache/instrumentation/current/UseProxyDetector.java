@@ -6,7 +6,7 @@ package com.maxifier.mxcache.instrumentation.current;
 import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.instrumentation.IllegalCachedClass;
 import com.maxifier.mxcache.asm.*;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 
 import java.lang.reflect.Modifier;
 import java.util.Map;

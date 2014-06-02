@@ -3,8 +3,8 @@
  */
 package com.maxifier.mxcache.stubgen;
 
-import gnu.trove.THashMap;
-import gnu.trove.THashSet;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 
 import java.lang.reflect.*;
 import java.util.Map;

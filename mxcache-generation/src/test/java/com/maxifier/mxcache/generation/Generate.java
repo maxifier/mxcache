@@ -44,17 +44,6 @@ public final class Generate {
             SHORT_INFO
     };
 
-    private static final WrapperInfo[] WRAPPERS_NO_BOOLEAN_OBJECT = {
-            CHAR_INFO,
-            DOUBLE_INFO,
-            FLOAT_INFO,
-            INT_INFO,
-            LONG_INFO,
-            BYTE_INFO,
-            SHORT_INFO,
-            OBJECT_INFO
-    };
-
     private static final WrapperInfo[] ONLY_OBJECT = {OBJECT_INFO};
 
     private static final WrapperInfo[] WRAPPERS_NO_OBJECT = {
@@ -252,7 +241,8 @@ public final class Generate {
         //generate("O2PTroveStorage.template", "Object", "TroveStorage.java", inputPathImpl, outputPathImpl, WRAPPERS_FULL);
         generate("P2OTroveStorage.template", "", "ObjectTroveStorage.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_BOOLEAN);
         generate("B2PTroveStorage.template", "Boolean", "TroveStorage.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_BOOLEAN);
-        generateP2P("P2PTroveStorage.template", "", "TroveStorage.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_BOOLEAN_OBJECT, WRAPPERS_NO_OBJECT);
+        generateP2P("P2PTroveStorage.template", "", "TroveStorage.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_BOOLEAN, WRAPPERS_NO_OBJECT);
+        generateP("O2PTroveStorage.template", "Object", "TroveStorage.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_OBJECT);
 
         // BooleanCacheImpl is manually written
         generate("PStorageImpl.template", "", "StorageImpl.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_OBJECT);
@@ -370,6 +360,8 @@ public final class Generate {
         String template = readFile(templateName, inputPath);
         for (WrapperInfo f : wrappers) {
             String out = f.replaceF(template);
+
+            out = out.replace("#SOURCE#", templateName);
 
             String outFile = pathPrefix + f.getShortName() + pathSuffix;
             writeFile(outFile, out, outputPath);

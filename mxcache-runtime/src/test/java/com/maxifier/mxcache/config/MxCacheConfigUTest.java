@@ -5,6 +5,7 @@ package com.maxifier.mxcache.config;
 
 import com.maxifier.mxcache.DependencyTracking;
 import com.maxifier.mxcache.util.CodegenHelper;
+import gnu.trove.set.hash.THashSet;
 import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -17,8 +18,6 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
-
-import gnu.trove.THashSet;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)

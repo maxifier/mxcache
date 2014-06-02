@@ -3,8 +3,8 @@
  */
 package com.maxifier.mxcache.impl.caches.def;
 
-import gnu.trove.*;
-
+import gnu.trove.map.custom_hash.TObjectFloatCustomHashMap;
+import gnu.trove.strategy.HashingStrategy;
 import com.maxifier.mxcache.storage.*;
 
 /**
@@ -12,16 +12,18 @@ import com.maxifier.mxcache.storage.*;
  *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
- * GENERATED FROM P2PTroveStorage.template
+ * GENERATED FROM O2PTroveStorage.template
  *
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class ObjectFloatTroveStorage<E> extends TObjectFloatHashMap<E> implements ObjectFloatStorage<E> {
+public class ObjectFloatTroveStorage<E> extends TObjectFloatCustomHashMap<E> implements ObjectFloatStorage<E> {
     public ObjectFloatTroveStorage() {
+        //noinspection unchecked
+        super(DEFAULT_HASHING_STRATEGY);
     }
 
-    public ObjectFloatTroveStorage(TObjectHashingStrategy<E> strategy) {
+    public ObjectFloatTroveStorage(HashingStrategy<E> strategy) {
         super(strategy);
     }
 

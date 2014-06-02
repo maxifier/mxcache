@@ -7,7 +7,7 @@ import com.maxifier.mxcache.instrumentation.IllegalCachedClass;
 import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.asm.*;
 import com.maxifier.mxcache.util.CodegenHelper;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 
 import java.lang.reflect.Modifier;
 import java.util.Collections;

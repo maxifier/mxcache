@@ -8,6 +8,7 @@ import com.maxifier.mxcache.asm.AnnotationVisitor;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.Calculable;
 import com.maxifier.mxcache.caches.CleaningNode;
+import com.maxifier.mxcache.clean.CacheCleaner;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.context.CacheContextImpl;
 import com.maxifier.mxcache.impl.CacheId;
@@ -17,7 +18,6 @@ import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.impl.resource.MxResourceFactory;
 import com.maxifier.mxcache.impl.resource.nodes.SingletonDependencyNode;
-import com.maxifier.mxcache.clean.CacheCleaner;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.provider.CacheProvider;
@@ -25,27 +25,24 @@ import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.util.ClassGenerator;
 import com.maxifier.mxcache.util.CodegenHelper;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
-import gnu.trove.THashMap;
-import gnu.trove.THashSet;
-
-import javax.annotation.Nonnull;
-
-import javax.annotation.Nullable;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import static com.maxifier.mxcache.asm.Opcodes.ACC_PUBLIC;
 import static com.maxifier.mxcache.asm.Opcodes.IADD;
-import static com.maxifier.mxcache.asm.Type.*;
+import static com.maxifier.mxcache.asm.Type.INT_TYPE;
 import static com.maxifier.mxcache.instrumentation.InstrumentationTestHelper.*;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;

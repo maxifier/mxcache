@@ -3,8 +3,6 @@
  */
 package com.maxifier.mxcache.impl.caches.def;
 
-import gnu.trove.*;
-
 import com.maxifier.mxcache.storage.*;
 import static com.maxifier.mxcache.impl.caches.def.TroveHelper.*;
 
@@ -18,14 +16,7 @@ import static com.maxifier.mxcache.impl.caches.def.TroveHelper.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class DoubleObjectTroveStorage<T> extends TDoubleObjectHashMap<Object> implements DoubleObjectStorage<T> {
-    public DoubleObjectTroveStorage() {
-    }
-
-    public DoubleObjectTroveStorage(TDoubleHashingStrategy strategy) {
-        super(strategy);        
-    }
-
+public class DoubleObjectTroveStorage<T> extends gnu.trove.map.hash.TDoubleObjectHashMap<Object> implements DoubleObjectStorage<T> {
     @Override
     public Object load(double key) {
         Object v = get(key);

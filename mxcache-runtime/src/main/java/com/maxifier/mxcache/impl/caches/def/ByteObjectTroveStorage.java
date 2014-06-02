@@ -3,8 +3,6 @@
  */
 package com.maxifier.mxcache.impl.caches.def;
 
-import gnu.trove.*;
-
 import com.maxifier.mxcache.storage.*;
 import static com.maxifier.mxcache.impl.caches.def.TroveHelper.*;
 
@@ -18,14 +16,7 @@ import static com.maxifier.mxcache.impl.caches.def.TroveHelper.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class ByteObjectTroveStorage<T> extends TByteObjectHashMap<Object> implements ByteObjectStorage<T> {
-    public ByteObjectTroveStorage() {
-    }
-
-    public ByteObjectTroveStorage(TByteHashingStrategy strategy) {
-        super(strategy);        
-    }
-
+public class ByteObjectTroveStorage<T> extends gnu.trove.map.hash.TByteObjectHashMap<Object> implements ByteObjectStorage<T> {
     @Override
     public Object load(byte key) {
         Object v = get(key);

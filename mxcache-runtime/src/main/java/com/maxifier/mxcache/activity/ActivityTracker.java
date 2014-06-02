@@ -3,7 +3,7 @@
  */
 package com.maxifier.mxcache.activity;
 
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 
 import javax.annotation.Nonnull;
 

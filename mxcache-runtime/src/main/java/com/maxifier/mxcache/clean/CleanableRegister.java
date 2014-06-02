@@ -5,21 +5,18 @@ package com.maxifier.mxcache.clean;
 
 import com.maxifier.mxcache.Cached;
 import com.maxifier.mxcache.NonInstrumentedCacheException;
+import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.provider.CacheDescriptor;
-import gnu.trove.THashMap;
-
-import javax.annotation.Nonnull;
-
-import javax.annotation.Nullable;
+import gnu.trove.map.hash.THashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.lang.annotation.Annotation;
-
-import com.maxifier.mxcache.caches.Cache;
 
 /**
  * CleanableRegister - this class maintains a list of Cleanable and cache instances.

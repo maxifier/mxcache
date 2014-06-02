@@ -4,21 +4,20 @@
 package com.maxifier.mxcache.config;
 
 import com.maxifier.mxcache.DependencyTracking;
+import com.maxifier.mxcache.Strategy;
 import com.maxifier.mxcache.provider.CachingStrategy;
 import com.maxifier.mxcache.resource.ResourceDependency;
-import gnu.trove.THashSet;
-import gnu.trove.THashMap;
+import com.maxifier.mxcache.resource.TrackDependency;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
-import java.util.*;
 import java.lang.reflect.Method;
-
-import com.maxifier.mxcache.resource.TrackDependency;
-import com.maxifier.mxcache.Strategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.*;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)

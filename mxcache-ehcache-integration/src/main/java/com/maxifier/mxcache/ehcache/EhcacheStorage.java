@@ -6,7 +6,7 @@ package com.maxifier.mxcache.ehcache;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.StrategyProperty;
 import com.maxifier.mxcache.storage.elementlocked.ObjectObjectElementLockedStorage;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;

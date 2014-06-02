@@ -4,8 +4,8 @@
 package com.maxifier.mxcache.impl.caches.def;
 
 import com.maxifier.mxcache.storage.ObjectObjectStorage;
-import gnu.trove.THashMap;
-import gnu.trove.TObjectHashingStrategy;
+import gnu.trove.map.hash.TCustomHashMap;
+import gnu.trove.strategy.HashingStrategy;
 
 /**
  * ObjectObjectTroveStorage
@@ -13,11 +13,13 @@ import gnu.trove.TObjectHashingStrategy;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class ObjectObjectTroveStorage<K, V> extends THashMap<K, Object> implements ObjectObjectStorage<K, V> {
+public class ObjectObjectTroveStorage<K, V> extends TCustomHashMap<K, Object> implements ObjectObjectStorage<K, V> {
     public ObjectObjectTroveStorage() {
+        //noinspection unchecked
+        super(DEFAULT_HASHING_STRATEGY);
     }
 
-    public ObjectObjectTroveStorage(TObjectHashingStrategy<K> strategy) {
+    public ObjectObjectTroveStorage(HashingStrategy<K> strategy) {
         super(strategy);        
     }
 

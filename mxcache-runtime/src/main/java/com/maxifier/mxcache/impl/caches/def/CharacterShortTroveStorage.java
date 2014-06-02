@@ -3,8 +3,6 @@
  */
 package com.maxifier.mxcache.impl.caches.def;
 
-import gnu.trove.*;
-
 import com.maxifier.mxcache.storage.*;
 
 /**
@@ -17,14 +15,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class CharacterShortTroveStorage extends TShortShortHashMap implements CharacterShortStorage {
-    public CharacterShortTroveStorage() {
-    }
-
-    public CharacterShortTroveStorage(TShortHashingStrategy strategy) {
-        super(strategy);
-    }
-
+public class CharacterShortTroveStorage extends gnu.trove.map.hash.TShortShortHashMap implements CharacterShortStorage {
     @Override
     public boolean isCalculated(char o) {
         return super.contains((short)o);

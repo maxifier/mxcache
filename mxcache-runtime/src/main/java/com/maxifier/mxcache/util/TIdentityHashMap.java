@@ -3,31 +3,28 @@
  */
 package com.maxifier.mxcache.util;
 
-import gnu.trove.THashMap;
-import gnu.trove.TObjectIdentityHashingStrategy;
+import gnu.trove.map.hash.TCustomHashMap;
+import gnu.trove.strategy.IdentityHashingStrategy;
 
 import java.util.Map;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-@SuppressWarnings ({ "unchecked" })
-public class TIdentityHashMap<K, V> extends THashMap<K, V> {
-    private static final TObjectIdentityHashingStrategy STRATEGY = new TObjectIdentityHashingStrategy();
-
+public class TIdentityHashMap<K, V> extends TCustomHashMap<K, V> {
     public TIdentityHashMap() {
-        super(STRATEGY);
+        super(IdentityHashingStrategy.INSTANCE);
     }
 
     public TIdentityHashMap(int initialCapacity) {
-        super(initialCapacity, STRATEGY);
+        super(IdentityHashingStrategy.INSTANCE, initialCapacity);
     }
 
     public TIdentityHashMap(int initialCapacity, float loadFactor) {
-        super(initialCapacity, loadFactor, STRATEGY);
+        super(IdentityHashingStrategy.INSTANCE, initialCapacity, loadFactor);
     }
 
     public TIdentityHashMap(Map<K, V> kvMap) {
-        super(kvMap, STRATEGY);
+        super(IdentityHashingStrategy.INSTANCE, kvMap);
     }
 }

@@ -5,7 +5,6 @@ package com.maxifier.mxcache.impl.caches.def;
 
 import com.maxifier.mxcache.transform.SmartReference;
 
-import gnu.trove.*;
 import java.util.*;
 
 /**
@@ -24,7 +23,7 @@ public class ObjectFloatWeakTroveStorage<T extends SmartReference> extends Objec
     public ObjectFloatWeakTroveStorage() {
     }
 
-    public ObjectFloatWeakTroveStorage(TObjectHashingStrategy<T> strategy) {
+    public ObjectFloatWeakTroveStorage(gnu.trove.strategy.HashingStrategy<T> strategy) {
         super(strategy);
     }
 
