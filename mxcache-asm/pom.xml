@@ -22,6 +22,19 @@
         <version>2.5</version>
     </parent>
 
+    <url>http://github.com/maxifier/mxcache</url>
+
+    <organization>
+        <name>Maxifier</name>
+        <url>http://maxifier.com</url>
+    </organization>
+
+    <scm>
+        <url>https://github.com/maxifier/mxcache.git</url>
+        <connection>scm:git:git://github.com/maxifier/mxcache.git</connection>
+        <developerConnection>scm:git:git@github.com:maxifier/mxcache.git</developerConnection>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>org.ow2.asm</groupId>

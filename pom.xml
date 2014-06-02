@@ -5,6 +5,10 @@
     <artifactId>mxcache</artifactId>
     <version>2.4.0-SNAPSHOT</version>
     <name>MxCache</name>
+    <description>
+        MxCache parent project.
+        MxCache adds an annotation-driven caching facility to java projects.
+    </description>
 
     <parent>
         <groupId>com.maxifier</groupId>
@@ -30,6 +34,13 @@
         <module>mxcache-idea-api-stubs</module>
         <module>stubgen</module>
     </modules>
+
+    <url>http://github.com/maxifier/mxcache</url>
+
+    <organization>
+        <name>Maxifier</name>
+        <url>http://maxifier.com</url>
+    </organization>
 
     <scm>
         <url>https://github.com/maxifier/mxcache.git</url>
