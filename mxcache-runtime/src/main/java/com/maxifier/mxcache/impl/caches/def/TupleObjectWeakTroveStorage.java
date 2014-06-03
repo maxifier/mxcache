@@ -3,12 +3,11 @@
  */
 package com.maxifier.mxcache.impl.caches.def;
 
-import com.maxifier.mxcache.transform.SmartReference;
 import com.maxifier.mxcache.tuple.Tuple;
+import com.maxifier.mxcache.transform.SmartReference;
+import gnu.trove.strategy.HashingStrategy;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * TupleObjectWeakTroveStorage
@@ -26,6 +25,11 @@ public class TupleObjectWeakTroveStorage<V> extends ObjectObjectTroveStorage<Tup
     }
 
     public TupleObjectWeakTroveStorage(int[] tupleIndices) {
+        this.tupleIndices = tupleIndices;
+    }
+
+    public TupleObjectWeakTroveStorage(HashingStrategy<Tuple> strategy, int[] tupleIndices) {
+        super(strategy);
         this.tupleIndices = tupleIndices;
     }
 

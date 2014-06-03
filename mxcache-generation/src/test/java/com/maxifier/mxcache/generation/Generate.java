@@ -288,6 +288,8 @@ public final class Generate {
         for (WrapperInfo e : wrappers) {
             String out = e.replaceE(replaceName(e, template));
 
+            out = out.replace("#SOURCE#", templateName);
+
             String outFile = pathPrefix + e.getShortName() + pathSuffix;
             writeFile(outFile, out, outputPath);
         }

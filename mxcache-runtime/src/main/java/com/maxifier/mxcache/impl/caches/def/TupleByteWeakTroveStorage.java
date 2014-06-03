@@ -5,6 +5,7 @@ package com.maxifier.mxcache.impl.caches.def;
 
 import com.maxifier.mxcache.tuple.Tuple;
 import com.maxifier.mxcache.transform.SmartReference;
+import gnu.trove.strategy.HashingStrategy;
 
 import java.util.*;
 
@@ -13,7 +14,7 @@ import java.util.*;
  *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
- * GENERATED FROM #SOURCE#
+ * GENERATED FROM O2PTupleWeakTroveStorage.template
  *
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
@@ -31,7 +32,7 @@ public class TupleByteWeakTroveStorage extends ObjectByteTroveStorage<Tuple> {
         this.tupleIndices = tupleIndices;
     }
 
-    public TupleByteWeakTroveStorage(gnu.trove.strategy.HashingStrategy<Tuple> strategy, int[] tupleIndices) {
+    public TupleByteWeakTroveStorage(HashingStrategy<Tuple> strategy, int[] tupleIndices) {
         super(strategy);
         this.tupleIndices = tupleIndices;
     }
