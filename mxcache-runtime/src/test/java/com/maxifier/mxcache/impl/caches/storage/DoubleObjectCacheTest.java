@@ -21,8 +21,6 @@ import java.util.concurrent.locks.*;
 import static org.mockito.Mockito.*;
 
 /**
- * DoubleObjectCacheTest
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2OCacheTest.template

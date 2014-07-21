@@ -7,8 +7,6 @@ import com.maxifier.mxcache.storage.*;
 import org.testng.annotations.Test;
 
 /**
- * CharacterCacheTest - test for CharacterStorageImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM PCacheTest.template

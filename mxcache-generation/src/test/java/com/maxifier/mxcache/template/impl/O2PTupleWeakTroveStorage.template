@@ -10,8 +10,6 @@ import gnu.trove.strategy.HashingStrategy;
 import java.util.*;
 
 /**
- * Tuple#E#WeakTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM #SOURCE#

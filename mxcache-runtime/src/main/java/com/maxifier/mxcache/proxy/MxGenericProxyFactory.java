@@ -74,11 +74,9 @@ public final class MxGenericProxyFactory<T, C> extends MxAbstractProxyFactory {
      * of passed type. It is not guaranteed that proxy will extend this class if it is not interface.
      * Proxy stores a link to container of {@link #getContainerClass()} type. The proxy class has two constructors:
      * default (for serialization) and single parameter-constructor {@link #getContainerClass()}.
-     * <p/>
-     * <p>
+     * </p><p>
      * Proxy overrides {@code toString()} method that returns toString() of stored object from container.
-     * </p>
-     * <p>
+     * </p><p>
      * Proxies for the same container with same target interface and value from container will be considered equal
      * in terms of equals and hashCode.
      * </p>

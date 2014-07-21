@@ -7,8 +7,6 @@ import com.maxifier.mxcache.storage.*;
 import static com.maxifier.mxcache.impl.caches.def.TroveHelper.*;
 
 /**
- * ByteObjectTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2OTroveStorage.template

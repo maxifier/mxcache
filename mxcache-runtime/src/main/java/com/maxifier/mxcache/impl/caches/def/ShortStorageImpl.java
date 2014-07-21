@@ -6,7 +6,6 @@ package com.maxifier.mxcache.impl.caches.def;
 import com.maxifier.mxcache.storage.*;
 
 /**
- * ShortStorageImpl
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM PStorageImpl.template

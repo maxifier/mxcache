@@ -8,8 +8,6 @@ import org.testng.annotations.Test;
 import org.testng.Assert;
 
 /**
- * BooleanFloatCacheTest - test for BooleanFloatTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PCacheTest.template

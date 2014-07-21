@@ -4,8 +4,6 @@
 package com.maxifier.mxcache.storage;
 
 /**
- * AbstractCharacterIntCache
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PStorage.template
@@ -22,7 +20,7 @@ package com.maxifier.mxcache.storage;
  */
 public interface CharacterIntStorage extends Storage {
     /**
-     * @returns true if there's a value in storage for a given key.
+     * @return true if there's a value in storage for a given key.
      */
     boolean isCalculated(char o);
 
@@ -30,12 +28,14 @@ public interface CharacterIntStorage extends Storage {
      * <p>This method is invoked only after corresponding call to isCalculated().</p>
      * <p>It is guaranteed that it would be called with corresponding lock held.</p>
      * <p>The behavior in case of element not present in cache is not defined.<p>
+     *
+     * @return value for given key
      */
-    int load(char o);
+    int load(char key);
 
     /**
      * <p>This method should save a value to a cache</p>
      * <p>It is guaranteed that it would be called with corresponding lock held.</p>
      */
-    void save(char o, int v);
+    void save(char key, int value);
 }

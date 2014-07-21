@@ -19,8 +19,6 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * StorageShortDoubleCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template

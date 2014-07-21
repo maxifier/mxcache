@@ -25,16 +25,16 @@ import com.intellij.openapi.util.Computable;
 import javax.swing.*;
 
 /**
- * StaticInstrumentator
- *
+ * <p>
  * <b>Note:</b> when importing this module into Idea from maven, you may need to manually set type="PLUGIN_MODULE" in module
  * .iml file to be able to debug it in Idea and set <code>META-INF/plugin.xml</code> location to
  * <code>mxcache-ideaplugin/src/main/resources/</code>
- * <p/>
+ * </p><p>
  * You also need to manually remove maven's version of openide and plug the one from your idea distrubution.
- * <p/>
+ * </p><p>
  * This class may be application component but idea 7 doesn't support compiler extension point, so a workaround is
  * used to install it.
+ * </p>
  *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */

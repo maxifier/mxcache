@@ -4,8 +4,6 @@
 package com.maxifier.mxcache.storage;
 
 /**
- * AbstractShortCharacterCache
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PStorage.template
@@ -22,7 +20,7 @@ package com.maxifier.mxcache.storage;
  */
 public interface ShortCharacterStorage extends Storage {
     /**
-     * @returns true if there's a value in storage for a given key.
+     * @return true if there's a value in storage for a given key.
      */
     boolean isCalculated(short o);
 
@@ -30,12 +28,14 @@ public interface ShortCharacterStorage extends Storage {
      * <p>This method is invoked only after corresponding call to isCalculated().</p>
      * <p>It is guaranteed that it would be called with corresponding lock held.</p>
      * <p>The behavior in case of element not present in cache is not defined.<p>
+     *
+     * @return value for given key
      */
-    char load(short o);
+    char load(short key);
 
     /**
      * <p>This method should save a value to a cache</p>
      * <p>It is guaranteed that it would be called with corresponding lock held.</p>
      */
-    void save(short o, char v);
+    void save(short key, char value);
 }

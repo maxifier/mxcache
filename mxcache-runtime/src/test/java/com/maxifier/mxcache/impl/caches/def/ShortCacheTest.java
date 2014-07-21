@@ -7,8 +7,6 @@ import com.maxifier.mxcache.storage.*;
 import org.testng.annotations.Test;
 
 /**
- * ShortCacheTest - test for ShortStorageImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM PCacheTest.template

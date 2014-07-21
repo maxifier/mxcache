@@ -9,8 +9,6 @@ import org.testng.annotations.Test;
 import org.testng.Assert;
 
 /**
- * LongObjectCacheTest - test for LongObjectTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2OCacheTest.template

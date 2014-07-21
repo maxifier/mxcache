@@ -6,8 +6,6 @@ package com.maxifier.mxcache.impl.caches.def;
 import com.maxifier.mxcache.storage.*;
 
 /**
- * DoubleIntTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PTroveStorage.template

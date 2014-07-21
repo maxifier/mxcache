@@ -67,14 +67,15 @@ public final class MxCache {
     }
 
     /**
+     * <p>
      * Executes a piece of code in probe mode.
      * 'Probe mode' disables calculation of caches. If your code queries a cache and there's no value for it yet,
      * the execution will fail and this method will return false.
-     * <br />
+     * </p><p>
      * All exceptions of the original code are rethrown. Checked exceptions are wrapped with RuntimeExceptions.
-     * <br />
+     * </p><p>
      * <b>Probe mode is broken in current implementation as it will wait for lock if the value is calculated from other
-     * thread.</b>
+     * thread.</b></p>
      * @param task the piece of code to execute
      * @return true if execution succeeded, false if it failed due to some caches were not initialized.
      */
@@ -109,14 +110,15 @@ public final class MxCache {
     }
 
     /**
+     * <p>
      * Executes a piece of code in probe mode.
      * 'Probe mode' disables calculation of caches. If your code queries a cache and there's no value for it yet,
      * the execution will fail and this method will throw {@link com.maxifier.mxcache.ProbeFailedException}.
-     * <br />
+     * </p><p>
      * All exceptions of the original code are rethrown. Checked exceptions are wrapped with RuntimeExceptions.
-     * <br />
+     * </p><p>
      * <b>Probe mode is broken in current implementation as it will wait for lock if the value is calculated from other
-     * thread.</b>
+     * thread.</b></p>
      * @param task the piece of code to execute
      * @return the value returned by a piece of code.
      * @throws ProbeFailedException if there was uninitialized cache.
@@ -138,10 +140,14 @@ public final class MxCache {
     }
 
     /**
+     * <p>
      * Use this method if you want to hide dependencies from some resource or cache without breaking dependency
      * tracking completely. Just wrap your code with Callable and pass it to this method.
-     * <br />
+     * </p><p>
      * The callable will be invoked immediately in the same thread, the result will be returned to you.
+     * </p>
+     *
+     * @return the result of original callable
      */
     @PublicAPI
     public static <T> T hideCallerDependencies(CallableWithoutExceptions<T> callable) {
@@ -154,10 +160,14 @@ public final class MxCache {
     }
 
     /**
+     * <p>
      * Use this method if you want to hide dependencies from some resource or cache without breaking dependency
      * tracking completely. Just wrap your code with Callable and pass it to this method.
-     * <br />
+     * </p><p>
      * The callable will be invoked immediately in the same thread, the result will be returned to you.
+     * </p>
+     *
+     * @return the result of original callable
      */
     @PublicAPI
     public static <T> T hideCallerDependencies(Callable<T> callable) throws Exception {
@@ -170,10 +180,12 @@ public final class MxCache {
     }
 
     /**
+     * <p>
      * Use this method if you want to hide dependencies from some resource or cache without breaking dependency
      * tracking completely. Just wrap your code with Callable and pass it to this method.
-     * <br />
+     * </p><p>
      * The runnable will be invoked immediately in the same thread.
+     * </p>
      */
     @PublicAPI
     public static void hideCallerDependencies(Runnable runnable) {

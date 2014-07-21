@@ -6,7 +6,7 @@ package com.maxifier.mxcache.impl.caches.def;
 import com.maxifier.mxcache.storage.*;
 
 /**
- * BooleanIntTroveStorage - default cache storage for caches that has boolean key.
+ * Default cache storage for caches that has boolean key.
  * Though "Trove" is used in name, but it's actually not a map, it's just a set of two values.
  *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!

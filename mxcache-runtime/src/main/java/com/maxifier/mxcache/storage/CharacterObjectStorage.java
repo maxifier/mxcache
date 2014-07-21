@@ -4,8 +4,6 @@
 package com.maxifier.mxcache.storage;
 
 /**
- * CharacterObjectStorage<F>
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2OStorage.template

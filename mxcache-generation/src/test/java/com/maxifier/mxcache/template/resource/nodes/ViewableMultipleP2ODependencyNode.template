@@ -18,7 +18,9 @@ import org.slf4j.LoggerFactory;
 import java.lang.ref.WeakReference;
 
 /**
- * ViewableMultiple#FT#DependencyNode
+ * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
+ *
+ * GENERATED FROM #SOURCE#
  *
  * @author Elena Saymanina (elena.saymanina@maxifier.com) (28.05.13)
  */

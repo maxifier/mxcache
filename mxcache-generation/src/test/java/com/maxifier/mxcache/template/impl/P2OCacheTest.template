@@ -9,8 +9,6 @@ import org.testng.annotations.Test;
 import org.testng.Assert;
 
 /**
- * #E#ObjectCacheTest - test for #E#ObjectTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM #SOURCE#

@@ -28,16 +28,17 @@ import javax.management.MBeanServerConnection;
 import java.beans.PropertyChangeListener;
 
 /**
+ * <p>
  * {@code JConsoleContext} represents a JConsole connection to a target
  * application.
- * <p/>
+ * </p><p>
  * {@code JConsoleContext} notifies any {@code PropertyChangeListeners}
  * about the {@linkplain #CONNECTION_STATE_PROPERTY <i>ConnectionState</i>}
  * property change to {@link ConnectionState#CONNECTED CONNECTED} and
  * {@link ConnectionState#DISCONNECTED DISCONNECTED}.
  * The {@code JConsoleContext} instance will be the source for
  * any generated events.
- * <p/>
+ * </p>
  *
  * @since 1.6
  */

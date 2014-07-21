@@ -16,8 +16,6 @@ import java.util.concurrent.locks.Lock;
 
 
 /**
- * AbstractIntCache
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PCache.template

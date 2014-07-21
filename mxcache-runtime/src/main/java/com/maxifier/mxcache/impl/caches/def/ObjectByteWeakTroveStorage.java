@@ -8,8 +8,6 @@ import com.maxifier.mxcache.transform.SmartReference;
 import java.util.*;
 
 /**
- * ObjectByteWeakTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM O2PWeakTroveStorage.template

@@ -4,8 +4,6 @@
 package com.maxifier.mxcache.storage;
 
 /**
- * AbstractFloatLongCache
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PStorage.template
@@ -22,7 +20,7 @@ package com.maxifier.mxcache.storage;
  */
 public interface FloatLongStorage extends Storage {
     /**
-     * @returns true if there's a value in storage for a given key.
+     * @return true if there's a value in storage for a given key.
      */
     boolean isCalculated(float o);
 
@@ -30,12 +28,14 @@ public interface FloatLongStorage extends Storage {
      * <p>This method is invoked only after corresponding call to isCalculated().</p>
      * <p>It is guaranteed that it would be called with corresponding lock held.</p>
      * <p>The behavior in case of element not present in cache is not defined.<p>
+     *
+     * @return value for given key
      */
-    long load(float o);
+    long load(float key);
 
     /**
      * <p>This method should save a value to a cache</p>
      * <p>It is guaranteed that it would be called with corresponding lock held.</p>
      */
-    void save(float o, long v);
+    void save(float key, long value);
 }

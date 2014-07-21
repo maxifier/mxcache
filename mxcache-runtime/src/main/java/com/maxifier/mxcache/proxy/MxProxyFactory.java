@@ -72,11 +72,9 @@ public final class MxProxyFactory<T, C extends Resolvable<T>> extends MxAbstract
      * Creates proxy-object that implements given interface {@link #getSourceInterface()} and stores a link to
      * container of {@link #getContainerClass()} type. The proxy class has two constructors: default (for serialization)
      * and single parameter-constructor {@link #getContainerClass()}.
-     * <p/>
-     * <p>
+     * </p><p>
      * Proxy overrides {@code toString()} method that returns toString() of stored object from container.
-     * </p>
-     * <p>
+     * </p><p>
      * Proxies for the same container with same target interface and value from container will be considered equal
      * in terms of equals and hashCode.
      * </p>

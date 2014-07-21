@@ -8,8 +8,6 @@ import org.testng.annotations.Test;
 import org.testng.Assert;
 
 /**
- * ShortLongCacheTest - test for ShortLongTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PCacheTest.template

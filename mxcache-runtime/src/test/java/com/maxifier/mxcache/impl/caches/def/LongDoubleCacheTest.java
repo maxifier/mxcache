@@ -8,8 +8,6 @@ import org.testng.annotations.Test;
 import org.testng.Assert;
 
 /**
- * LongDoubleCacheTest - test for LongDoubleTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PCacheTest.template

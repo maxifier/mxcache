@@ -7,8 +7,6 @@ import com.maxifier.mxcache.storage.*;
 import org.testng.annotations.Test;
 
 /**
- * #E#CacheTest - test for #E#StorageImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM #SOURCE#
