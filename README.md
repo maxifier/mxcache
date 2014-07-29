@@ -1,5 +1,7 @@
 #MxCache
 
+![Travis CI build status](https://travis-ci.org/akochurov/mxcache.svg?branch=master)
+
 MxCache adds an annotation-driven caching facility to java projects.
 
 Features:
