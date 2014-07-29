@@ -105,52 +105,56 @@ public class StubGen {
 
         for (String examinedJar : examinedJars) {
             JarFile jar = new JarFile(new File(examinedJar));
-            for (JarEntry jarEntry : Collections.list(jar.entries())) {
-                if (jarEntry.getName().endsWith(".class")) {
-                    ClassReader r = new ClassReader(IOUtils.toByteArray(jar.getInputStream(jarEntry)));
-                    r.accept(new ClassVisitor(Opcodes.ASM5) {
-                        Type thisType;
+            try {
+                for (JarEntry jarEntry : Collections.list(jar.entries())) {
+                    if (jarEntry.getName().endsWith(".class")) {
+                        ClassReader r = new ClassReader(IOUtils.toByteArray(jar.getInputStream(jarEntry)));
+                        r.accept(new ClassVisitor(Opcodes.ASM5) {
+                            Type thisType;
 
-                        @Override
-                        public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-                            thisType = Type.getObjectType(name);
-                            ClassDescription t = typeUsed(thisType);
-                            if (t != null) {
-                                t.implemented = true;
-                            }
-                            if (superName != null) {
-                                typeUsed(Type.getObjectType(superName));
-                            }
-                            if (interfaces != null) {
-                                for (String anInterface : interfaces) {
-                                    typeUsed(Type.getObjectType(anInterface));
+                            @Override
+                            public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+                                thisType = Type.getObjectType(name);
+                                ClassDescription t = typeUsed(thisType);
+                                if (t != null) {
+                                    t.implemented = true;
+                                }
+                                if (superName != null) {
+                                    typeUsed(Type.getObjectType(superName));
+                                }
+                                if (interfaces != null) {
+                                    for (String anInterface : interfaces) {
+                                        typeUsed(Type.getObjectType(anInterface));
+                                    }
                                 }
                             }
-                        }
 
-                        @Override
-                        public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-                            fieldUsed(thisType, name, desc);
-                            return null;
-                        }
+                            @Override
+                            public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+                                fieldUsed(thisType, name, desc);
+                                return null;
+                            }
 
-                        @Override
-                        public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-                            methodUsed(thisType, name, desc);
-                            return new MethodVisitor(Opcodes.ASM5) {
-                                @Override
-                                public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-                                    methodUsed(Type.getObjectType(owner), name, desc);
-                                }
+                            @Override
+                            public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+                                methodUsed(thisType, name, desc);
+                                return new MethodVisitor(Opcodes.ASM5) {
+                                    @Override
+                                    public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+                                        methodUsed(Type.getObjectType(owner), name, desc);
+                                    }
 
-                                @Override
-                                public void visitFieldInsn(int opcode, String owner, String name, String desc) {
-                                    fieldUsed(Type.getObjectType(owner), name, desc);
-                                }
-                            };
-                        }
-                    }, ClassReader.SKIP_FRAMES | ClassReader.SKIP_DEBUG);
+                                    @Override
+                                    public void visitFieldInsn(int opcode, String owner, String name, String desc) {
+                                        fieldUsed(Type.getObjectType(owner), name, desc);
+                                    }
+                                };
+                            }
+                        }, ClassReader.SKIP_FRAMES | ClassReader.SKIP_DEBUG);
+                    }
                 }
+            } finally {
+                jar.close();
             }
         }
 
