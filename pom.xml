@@ -214,7 +214,7 @@
                 <configuration>
                     <tagNameFormat>mxcache-@{project.version}</tagNameFormat>
                     <preparationGoals>clean install</preparationGoals>
-                    <goals>deploy nexus-staging:release -Prelease</goals>
+                    <goals>deploy -Prelease</goals>
                 </configuration>
             </plugin>
 
