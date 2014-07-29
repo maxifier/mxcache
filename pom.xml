@@ -214,7 +214,7 @@
                 <configuration>
                     <tagNameFormat>mxcache-@{project.version}</tagNameFormat>
                     <preparationGoals>clean install</preparationGoals>
-                    <goals>deploy sonar:sonar -Prelease</goals>
+                    <goals>deploy nexus-staging:release -Prelease</goals>
                 </configuration>
             </plugin>
 
@@ -322,6 +322,18 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.2</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>sonatype-nexus-staging</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
