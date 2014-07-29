@@ -23,8 +23,6 @@ import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
 /**
- * LongCacheTest
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PCacheTest.template

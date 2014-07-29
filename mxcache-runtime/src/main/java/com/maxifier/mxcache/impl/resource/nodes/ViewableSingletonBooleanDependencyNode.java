@@ -16,7 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ViewableSingletonBooleanDependencyNode
+ * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
+ *
+ * GENERATED FROM ViewableSingletonP2PDependencyNode.template
  *
  * @author Elena Saymanina (elena.saymanina@maxifier.com) (29.05.13)
  */

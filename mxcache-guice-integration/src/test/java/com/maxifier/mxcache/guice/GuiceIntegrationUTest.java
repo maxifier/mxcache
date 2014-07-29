@@ -68,7 +68,7 @@ public class GuiceIntegrationUTest {
     }
 
     @Test
-    public void testSimpleGuiceIntegration() {
+    public void testGuiceIntegration() {
         Injector injector = Guice.createInjector(new MxCacheGuiceModule(), new AbstractModule() {
             @Override
             protected void configure() {
@@ -91,14 +91,8 @@ public class GuiceIntegrationUTest {
     }
 
     @Test
-    public void testSimpleGuiceIntegrationChildInjector() {
+    public void testGuiceIntegrationChildInjector() {
         Injector injector = Guice.createInjector(new MxCacheGuiceModule());
-
-        X instance = injector.getInstance(X.class);
-        Assert.assertEquals(instance.get(), 0);
-        Assert.assertEquals(instance.get(), 1);
-        Assert.assertEquals(instance.get(), 2);
-        Assert.assertEquals(instance.get(), 3);
 
         Injector child = injector.createChildInjector(new MxCacheGuiceChildModule(ChildCacheContext.class), new AbstractModule() {
             @Override
@@ -116,7 +110,7 @@ public class GuiceIntegrationUTest {
     }
 
     @Test
-    public void testSimpleGuiceContextNames() {
+    public void testGuiceContextNames() {
         Injector injector = Guice.createInjector(new MxCacheGuiceModule("Parent"));
         Assert.assertEquals(injector.getInstance(CacheContext.class).toString(), "Parent");
         Injector child = injector.createChildInjector(new MxCacheGuiceChildModule(ChildCacheContext.class, "Child"));

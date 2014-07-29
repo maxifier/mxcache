@@ -6,8 +6,6 @@ package com.maxifier.mxcache.storage.elementlocked;
 import com.maxifier.mxcache.storage.*;
 
 /**
- * ShortFloatElementLockedStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PStorage.template

@@ -4,7 +4,6 @@
 package com.maxifier.mxcache.caches;
 
 /**
- * ObjectIntCache<E>
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PCache.template

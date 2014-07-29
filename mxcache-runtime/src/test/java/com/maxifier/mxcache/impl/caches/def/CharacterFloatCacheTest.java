@@ -8,8 +8,6 @@ import org.testng.annotations.Test;
 import org.testng.Assert;
 
 /**
- * CharacterFloatCacheTest - test for CharacterFloatTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PCacheTest.template

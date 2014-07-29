@@ -4,8 +4,6 @@
 package com.maxifier.mxcache.caches;
 
 /**
- * ObjectCharacterCache<E>
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PCalculatable.template

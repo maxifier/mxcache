@@ -4,8 +4,6 @@
 package com.maxifier.mxcache.storage;
 
 /**
- * ShortObjectStorage<F>
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2OStorage.template

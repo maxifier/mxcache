@@ -17,8 +17,6 @@ import com.maxifier.mxcache.impl.wrapping.Wrapping;
 import static org.mockito.Mockito.*;
 
 /**
- * ByteCacheBoxValueTest
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM PBoxValueCacheTest.template

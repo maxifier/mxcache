@@ -5,29 +5,26 @@ package com.maxifier.mxcache.mavenplugin;
 
 import com.maxifier.mxcache.PublicAPI;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
 
 /**
- * @author Alexander Kochurov (alexander.kochurov@maxifier.com):5
- * <p/>
+ * Performs mxcache instrumentation of classes.
  *
- * @goal instrument
- * @phase process-classes
- * @threadSafe
- * 
+ * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @SuppressWarnings ({ "JavaDoc" })
 @PublicAPI
+@Mojo(name = "instrument", defaultPhase = LifecyclePhase.PROCESS_CLASSES, threadSafe = true)
 public class InstrumentatorMojo extends AbstractInstrumentatorMojo {
     /**
      * The directory for compiled classes.
-     *
-     * @parameter default-value="${project.build.outputDirectory}"
-     * @required
-     * @readonly
      */
     @SuppressWarnings ({ "UnusedDeclaration" })
+    @Parameter(name = "outputDirectory", defaultValue = "${project.build.outputDirectory}", required = true, readonly = true)
     private File outputDirectory;
 
     @Override

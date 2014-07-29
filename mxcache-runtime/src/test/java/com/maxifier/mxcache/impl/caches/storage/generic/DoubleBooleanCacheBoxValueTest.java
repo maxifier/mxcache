@@ -17,8 +17,6 @@ import com.maxifier.mxcache.impl.wrapping.Wrapping;
 import static org.mockito.Mockito.*;
 
 /**
- * DoubleBooleanCacheBoxValueTest
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PBoxValueCacheTest.template

@@ -18,7 +18,9 @@ import org.slf4j.LoggerFactory;
 import java.lang.ref.WeakReference;
 
 /**
- * ViewableMultipleFloatDependencyNode
+ * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
+ *
+ * GENERATED FROM ViewableMultipleP2PDependencyNode.template
  *
  * @author Elena Saymanina (elena.saymanina@maxifier.com) (28.05.13)
  */

@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * FloatInlineDependencyCache - inline dependency caches are special ones that implement both Cache and DependencyNode.
+ * Inline dependency caches are special ones that implement both Cache and DependencyNode.
  * It is used to reduce memory consumption of memory cache for the simplest types of caches.
  *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!

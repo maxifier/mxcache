@@ -4,8 +4,6 @@
 package com.maxifier.mxcache.storage;
 
 /**
- * ObjectStorage<F>
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2OStorage.template
@@ -22,7 +20,7 @@ public interface ObjectStorage<F> extends Storage {
     /**
      * <p>This method should extract value for given key from internal representation.</p>
      * <p>It is guaranteed that it would be called with corresponding lock held.</p>
-     * @param key key
+     * 
      * @return {@link Storage#UNDEFINED} if no value for key exists, value itself if it's set for given key.
      */
     Object load();
@@ -30,7 +28,7 @@ public interface ObjectStorage<F> extends Storage {
     /**
      * <p>Saves a value to cache.</p>
      * <p>It is guaranteed that it would be called with corresponding lock held.</p>
-     * @param key cache key
+     * 
      * @param value cache value
      */
     void save(F value);

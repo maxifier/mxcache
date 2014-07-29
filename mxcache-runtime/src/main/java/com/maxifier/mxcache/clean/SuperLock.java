@@ -18,7 +18,7 @@ import java.util.concurrent.locks.Lock;
  * It implements a special locking algorithm that should prevents most common deadlocks, though it
  * may lead to starvation.
  * </p><p>
- * The algorithm is as follows:<br />
+ * The algorithm is as follows:</p>
  * <ul>
  *     <li>go sequentially through the underlying locks;</li>
  *     <li>when end of array is reached, start from the beginning again;</li>
@@ -29,9 +29,7 @@ import java.util.concurrent.locks.Lock;
  *         <li>acquire current lock with lock();</li>
  *     </ul>
  *     <li>if not all locks are acquired yet go to start;</li>
- *     </li>
  * </ul>
- * </p>
  *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com) (2014-03-31 11:17)
  */

@@ -18,7 +18,9 @@ import org.slf4j.LoggerFactory;
 import java.lang.ref.WeakReference;
 
 /**
- * ViewableMultipleObjectDependencyNode
+ * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
+ *
+ * GENERATED FROM ViewableMultipleP2ODependencyNode.template
  *
  * @author Elena Saymanina (elena.saymanina@maxifier.com) (28.05.13)
  */
