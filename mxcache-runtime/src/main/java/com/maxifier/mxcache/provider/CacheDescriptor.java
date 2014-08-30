@@ -160,7 +160,7 @@ public class CacheDescriptor<T> {
      * @return tags from @Cached annotation, null if there were none.
      */
     public String[] getTags() {
-        return tags.clone();
+        return tags == null ? null : tags.clone();
     }
 
     /**
