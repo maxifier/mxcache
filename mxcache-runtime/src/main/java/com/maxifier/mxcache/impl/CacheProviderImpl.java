@@ -10,6 +10,7 @@ import com.maxifier.mxcache.mbean.CacheControl;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.provider.CacheProvider;
+import com.maxifier.mxcache.provider.CacheProviderInterceptor;
 import gnu.trove.map.hash.THashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ public class CacheProviderImpl implements CacheProvider {
     private static final Logger logger = LoggerFactory.getLogger(CacheProviderImpl.class);
 
     private final Map<CacheId, RegistryEntry> registry = new THashMap<CacheId, RegistryEntry>();
+    private final CacheProviderInterceptorChain interceptorChain = new CacheProviderInterceptorChain();
 
     public CacheProviderImpl() {
         this(true);
@@ -38,6 +40,16 @@ public class CacheProviderImpl implements CacheProvider {
         if (needsMBean) {
             registerMBean(new CacheControl(this), "com.maxifier.mxcache:service=CacheControl");
         }
+    }
+
+    @Override
+    public void intercept(CacheProviderInterceptor interceptor) {
+        interceptorChain.add(interceptor);
+    }
+
+    @Override
+    public boolean removeInterceptor(CacheProviderInterceptor interceptor) {
+        return interceptorChain.remove(interceptor);
     }
 
     public static void registerMBean(Object mbean, String name) {
@@ -60,6 +72,7 @@ public class CacheProviderImpl implements CacheProvider {
             logger.trace("Register: owner = {}, method = {}, name = {}, id = {}, type = {} -> {}, group = {}, tags = {}", new Object[] {cacheOwner, methodName + methodDesc, cacheName, cacheId, key, value, group, Arrays.toString(tags)});
         }
         CacheDescriptor<T> descriptor = new CacheDescriptor<T>(cacheOwner, cacheId, key, value, calculable, methodName, methodDesc, cacheName, group, tags, null);
+        descriptor = interceptorChain.registerCache(descriptor);
         RegistryEntry<T> entry = new RegistryEntry<T>(descriptor);
         registry.put(new CacheId(cacheOwner, cacheId), entry);
     }
@@ -75,7 +88,9 @@ public class CacheProviderImpl implements CacheProvider {
             throw new IllegalStateException("Unknown cache: " + cacheOwner + " # " + cacheId);
         }
         //noinspection unchecked
-        return registryEntry.createCache(context, instance);
+        Cache res = registryEntry.createCache(context, instance);
+        res = interceptorChain.createCache(registryEntry.getDescriptor(), instance, context, res);
+        return res;
     }
 
     @Override

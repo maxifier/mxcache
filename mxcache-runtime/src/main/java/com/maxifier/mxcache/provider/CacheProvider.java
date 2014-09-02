@@ -60,4 +60,19 @@ public interface CacheProvider {
      * @return return all cache managers that create caches.
      */
     List<CacheManager> getCaches();
+
+    /**
+     * Adds cache interceptor to interceptor chain.
+     * @param interceptor the interceptor to add.
+     */
+    void intercept(CacheProviderInterceptor interceptor);
+
+    /**
+     * Removes given interceptor from the chain. Note: this doesn't undo the modifications
+     * that this interceptor made during its life.
+     *
+     * @param interceptor the interceptor to remove
+     * @return true if the interceptor was registered
+     */
+    boolean removeInterceptor(CacheProviderInterceptor interceptor);
 }

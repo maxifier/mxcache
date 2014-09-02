@@ -21,6 +21,7 @@ import com.maxifier.mxcache.impl.resource.nodes.SingletonDependencyNode;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.provider.CacheProvider;
+import com.maxifier.mxcache.provider.CacheProviderInterceptor;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.util.ClassGenerator;
 import com.maxifier.mxcache.util.CodegenHelper;
@@ -972,6 +973,16 @@ public class DynamicInstrumentationFTest {
         @Override
         public List<CacheManager> getCaches() {
             return provider0.getCaches();
+        }
+
+        @Override
+        public void intercept(CacheProviderInterceptor interceptor) {
+            provider0.intercept(interceptor);
+        }
+
+        @Override
+        public boolean removeInterceptor(CacheProviderInterceptor interceptor) {
+            return provider0.removeInterceptor(interceptor);
         }
 
         public List<Object[]> getQueries() {

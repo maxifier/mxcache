@@ -6,6 +6,7 @@ package com.maxifier.mxcache;
 import com.maxifier.mxcache.clean.CacheCleaner;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
+import com.maxifier.mxcache.provider.CacheProviderInterceptor;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -204,5 +205,31 @@ public final class MxCache {
     @PublicAPI
     public static CacheCleaner getCleaner() {
         return CacheFactory.getCleaner();
+    }
+
+    /**
+     * Adds cache interceptor to interceptor chain.
+     *
+     * @see com.maxifier.mxcache.provider.CacheProviderInterceptor
+     *
+     * @param interceptor the interceptor to install.
+     */
+    @PublicAPI
+    public static void intercept(CacheProviderInterceptor interceptor) {
+        CacheFactory.getProvider().intercept(interceptor);
+    }
+
+    /**
+     * Removes given interceptor from the chain. Note: this doesn't undo the modifications
+     * that this interceptor made during its life.
+     *
+     * @see com.maxifier.mxcache.provider.CacheProviderInterceptor
+     *
+     * @param interceptor the interceptor to remove
+     * @return true if the interceptor was registered
+     */
+    @PublicAPI
+    public static boolean removeInterceptor(CacheProviderInterceptor interceptor) {
+        return CacheFactory.getProvider().removeInterceptor(interceptor);
     }
 }

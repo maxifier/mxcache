@@ -121,6 +121,7 @@ public class CacheDescriptor<T> {
         return new CacheDescriptor<T>(ownerClass, id, signature, calculable, method, null, group, tags, rule, factory, keyTransform, valueTransform, transformedSignature, overrides);
     }
 
+    @PublicAPI
     public CacheDescriptor<T> overrideProxyFactory(Class<? extends ProxyFactory> factory) {
         // cache name is already set in rule, so we pass null
         return new CacheDescriptor<T>(ownerClass, id, signature, calculable, method, null, group, tags, rule, proxyFactory, keyTransform, valueTransform, transformedSignature, new PropertyOverrides(overrides).override(USE_PROXY, factory));
