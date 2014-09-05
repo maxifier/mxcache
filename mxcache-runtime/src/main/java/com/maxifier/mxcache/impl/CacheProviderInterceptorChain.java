@@ -25,7 +25,7 @@ import java.util.List;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com) (2014-09-02 11:03)
  */
 @ThreadSafe
-class CacheProviderInterceptorChain implements CacheProviderInterceptor {
+public class CacheProviderInterceptorChain implements CacheProviderInterceptor {
     private final List<CacheProviderInterceptor> interceptors;
     private static final Logger logger = LoggerFactory.getLogger(CacheProviderImpl.class);
 
@@ -69,20 +69,20 @@ class CacheProviderInterceptorChain implements CacheProviderInterceptor {
      */
     @Override
     @Nonnull
-    public synchronized Cache createCache(CacheDescriptor<?> descriptor,
-                                          @Nullable Object instance,
+    public synchronized <T> Cache createCache(RegistryEntry<T> registryEntry,
+                                          @Nullable T instance,
                                           CacheContext context,
                                           Cache cache) {
         Cache res = cache;
         for (CacheProviderInterceptor interceptor : interceptors) {
             try {
-                Cache override = interceptor.createCache(descriptor, instance, context, res);
+                Cache override = interceptor.createCache(registryEntry, instance, context, res);
                 if (override != null) {
                     res = override;
                 }
             } catch (RuntimeException e) {
                 // do not add instance to log as this may cause another exception in toString()
-                logger.error("Exception in createCache(" + descriptor, " <instance>, " + context + ", " + cache + ") in interceptor " + interceptor, e);
+                logger.error("Exception in createCache(" + registryEntry.getDescriptor(), " <instance>, " + context + ", " + cache + ") in interceptor " + interceptor, e);
             }
         }
         return res;

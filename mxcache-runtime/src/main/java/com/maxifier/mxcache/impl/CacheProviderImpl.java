@@ -89,7 +89,7 @@ public class CacheProviderImpl implements CacheProvider {
         }
         //noinspection unchecked
         Cache res = registryEntry.createCache(context, instance);
-        res = interceptorChain.createCache(registryEntry.getDescriptor(), instance, context, res);
+        res = interceptorChain.createCache(registryEntry, instance, context, res);
         return res;
     }
 

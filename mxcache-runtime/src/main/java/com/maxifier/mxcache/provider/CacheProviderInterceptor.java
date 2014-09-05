@@ -5,6 +5,7 @@ package com.maxifier.mxcache.provider;
 
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.context.CacheContext;
+import com.maxifier.mxcache.impl.RegistryEntry;
 
 import javax.annotation.Nullable;
 
@@ -49,12 +50,12 @@ public interface CacheProviderInterceptor {
      *
      * <b>You should never store direct references to Caches as this may lead to memory leak!</b>
      *
-     * @param descriptor cache descriptor
+     * @param registryEntry registry entry associated with the descriptor
      * @param instance cache owner or null for static cache
      * @param context cache context
      * @param cache original cache created by mxcache
      * @return original or overriding cache; null to override nothing
      */
     @Nullable
-    Cache createCache(CacheDescriptor<?> descriptor, @Nullable Object instance, CacheContext context, Cache cache);
+    <T> Cache createCache(RegistryEntry<T> registryEntry, @Nullable T instance, CacheContext context, Cache cache);
 }

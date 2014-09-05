@@ -48,7 +48,7 @@ public class CacheProviderImplUTest {
 
         @Nullable
         @Override
-        public Cache createCache(CacheDescriptor<?> descriptor, @Nullable Object instance, CacheContext context, Cache cache) {
+        public <T> Cache createCache(RegistryEntry<T> registryEntry, @Nullable T instance, CacheContext context, Cache cache) {
             return null;
         }
     };
@@ -62,7 +62,7 @@ public class CacheProviderImplUTest {
 
         @Nullable
         @Override
-        public Cache createCache(CacheDescriptor<?> descriptor, @Nullable Object instance, CacheContext context, Cache cache) {
+        public <T> Cache createCache(RegistryEntry<T> registryEntry, @Nullable T instance, CacheContext context, Cache cache) {
             return cache;
         }
     };
@@ -76,7 +76,7 @@ public class CacheProviderImplUTest {
 
         @Nullable
         @Override
-        public Cache createCache(CacheDescriptor<?> descriptor, @Nullable Object instance, CacheContext context, Cache cache) {
+        public <T> Cache createCache(RegistryEntry<T> registryEntry, @Nullable T instance, CacheContext context, Cache cache) {
             return null;
         }
     };
@@ -90,7 +90,7 @@ public class CacheProviderImplUTest {
 
         @Nullable
         @Override
-        public Cache createCache(CacheDescriptor<?> descriptor, @Nullable Object instance, CacheContext context, Cache cache) {
+        public <T> Cache createCache(RegistryEntry<T> registryEntry, @Nullable T instance, CacheContext context, Cache cache) {
             throw new IllegalStateException("Test exception");
         }
     };
@@ -109,7 +109,7 @@ public class CacheProviderImplUTest {
 
         @Nullable
         @Override
-        public Cache createCache(CacheDescriptor<?> descriptor, @Nullable Object instance, CacheContext context, Cache cache) {
+        public <T> Cache createCache(RegistryEntry<T> registryEntry, @Nullable T instance, CacheContext context, Cache cache) {
             return null;
         }
     };
@@ -123,7 +123,7 @@ public class CacheProviderImplUTest {
 
         @Nullable
         @Override
-        public Cache createCache(CacheDescriptor<?> descriptor, final @Nullable Object instance, CacheContext context, Cache cache) {
+        public <T> Cache createCache(RegistryEntry<T> registryEntry, final @Nullable T instance, CacheContext context, Cache cache) {
             return new IntCache() {
                 @Override
                 public int getOrCreate() {

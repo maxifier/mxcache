@@ -8,6 +8,7 @@ import com.maxifier.mxcache.MxCache;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.IntIntCache;
 import com.maxifier.mxcache.context.CacheContext;
+import com.maxifier.mxcache.impl.RegistryEntry;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.provider.CacheDescriptor;
@@ -68,8 +69,8 @@ public class CacheProviderInterceptorUTest {
 
         @Nullable
         @Override
-        public Cache createCache(CacheDescriptor<?> descriptor, final @Nullable Object instance, CacheContext context, Cache cache) {
-            if (descriptor.getMethod().getName().equals("intercepted")) {
+        public <T> Cache createCache(RegistryEntry<T> registryEntry, final @Nullable T instance, CacheContext context, Cache cache) {
+            if (registryEntry.getDescriptor().getMethod().getName().equals("intercepted")) {
                 return new IntIntCache() {
                     @Override
                     public int getOrCreate(int o) {
@@ -121,7 +122,7 @@ public class CacheProviderInterceptorUTest {
                 };
             }
             // otherwise no interception
-            if (descriptor.getMethod().getName().equals("plus3")) {
+            if (registryEntry.getDescriptor().getMethod().getName().equals("plus3")) {
                 // two variants to not override:
                 // return original cache...
                 return cache;
