@@ -6,4 +6,11 @@
         </selector>
         <property name="storage.factory" value="com.maxifier.mxcache.impl.caches.batch.BatchFactory" />
     </rule>
+
+    <rule>
+        <selector>
+            <annotated>com.maxifier.model.dao.strategy.ConcurrentCache</annotated>
+        </selector>
+        <property name="storage" value="com.maxifier.mxcache.concurrent.ConcurrentObjectObjectStorage"/>
+    </rule>
 </mxcache>
