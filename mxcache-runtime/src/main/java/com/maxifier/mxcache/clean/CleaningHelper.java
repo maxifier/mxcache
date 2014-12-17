@@ -174,7 +174,12 @@ public final class CleaningHelper {
         return new MappingIterable<CleaningNode, DependencyNode>(elements) {
             @Override
             public DependencyNode map(CleaningNode cleaningNode) {
-                return cleaningNode.getDependencyNode();
+                // How could this happen that cache is null?
+                // Most likely, this happens when an instance of class with caches is being initialized, and cache
+                // cleaning event comes. So caches are extracted from partially initialized object.
+                // That's ok because if certain cache is not created yet, it is definitely not populated, and thus
+                // is not polluted.
+                return cleaningNode == null ? null : cleaningNode.getDependencyNode();
             }
         };
     }
