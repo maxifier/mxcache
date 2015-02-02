@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractFloatByteCache extends AbstractCache implements FloatByteCache, FloatByteStorage {
+public abstract class AbstractFloatByteCache extends AbstractCache implements FloatByteCache, FloatObjectStorage {
     private final FloatByteCalculatable calculatable;
 
     public AbstractFloatByteCache(Object owner, FloatByteCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractFloatByteCache extends AbstractCache implements Fl
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public byte getOrCreate(float o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Byte)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractFloatByteCache extends AbstractCache implements Fl
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Byte)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractFloatByteCache extends AbstractCache implements Fl
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected byte create(float o) {
         long start = System.nanoTime();
         byte t = calculatable.calculate(owner, o);

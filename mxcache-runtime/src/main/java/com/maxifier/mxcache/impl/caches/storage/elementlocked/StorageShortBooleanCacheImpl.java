@@ -26,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageShortBooleanCacheImpl extends AbstractShortBooleanCache implements StorageHolder<ShortBooleanElementLockedStorage> {
-    private ShortBooleanElementLockedStorage storage;
+public class StorageShortBooleanCacheImpl extends AbstractShortBooleanCache implements StorageHolder<ShortObjectElementLockedStorage> {
+    private ShortObjectElementLockedStorage storage;
 
     public StorageShortBooleanCacheImpl(Object owner, ShortBooleanCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull ShortBooleanElementLockedStorage storage) {
+    public void setStorage(@Nonnull ShortObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -42,17 +42,12 @@ public class StorageShortBooleanCacheImpl extends AbstractShortBooleanCache impl
     }
 
     @Override
-    public boolean isCalculated(short key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public boolean load(short key) {
+    public Object load(short key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(short key, boolean value) {
+    public void save(short key, Object value) {
         storage.save(key, value);
     }
 

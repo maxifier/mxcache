@@ -16,36 +16,29 @@ import com.maxifier.mxcache.impl.caches.abs.*;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class LongInlineCacheImpl extends AbstractLongCache {
-    private volatile boolean set;
-    private long value;
+    private Object value = UNDEFINED;
 
     public LongInlineCacheImpl(Object owner, LongCalculatable calculable, MutableStatistics statistics) {
         super(owner, calculable, statistics);
     }
 
     @Override
-    public boolean isCalculated() {
-        return set;
-    }
-
-    @Override
-    public long load() {
+    public Object load() {
         return value; 
     }
 
     @Override
-    public void save(long v) {
-        set = true;
+    public void save(Object v) {
         value = v;
     }
 
     @Override
     public void clear() {
-        set = false;
+        value = UNDEFINED;
     }
 
     @Override
     public int size() {
-        return set ? 1 : 0;
+        return value == UNDEFINED ? 0 : 1;
     }
 }

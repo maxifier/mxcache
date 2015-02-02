@@ -23,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageByteFloatCacheImpl extends AbstractByteFloatCache implements StorageHolder<ByteFloatStorage> {
+public class StorageByteFloatCacheImpl extends AbstractByteFloatCache implements StorageHolder<ByteObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private ByteFloatStorage storage;
+    private ByteObjectStorage storage;
 
     public StorageByteFloatCacheImpl(Object owner, ByteFloatCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull ByteFloatStorage storage) {
+    public void setStorage(@Nonnull ByteObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -41,17 +41,12 @@ public class StorageByteFloatCacheImpl extends AbstractByteFloatCache implements
     }
 
     @Override
-    public boolean isCalculated(byte key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public float load(byte key) {
+    public Object load(byte key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(byte key, float value) {
+    public void save(byte key, Object value) {
         storage.save(key, value);
     }
 

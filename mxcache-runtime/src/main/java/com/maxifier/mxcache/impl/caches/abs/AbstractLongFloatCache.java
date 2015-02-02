@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractLongFloatCache extends AbstractCache implements LongFloatCache, LongFloatStorage {
+public abstract class AbstractLongFloatCache extends AbstractCache implements LongFloatCache, LongObjectStorage {
     private final LongFloatCalculatable calculatable;
 
     public AbstractLongFloatCache(Object owner, LongFloatCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractLongFloatCache extends AbstractCache implements Lo
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public float getOrCreate(long o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Float)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractLongFloatCache extends AbstractCache implements Lo
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Float)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractLongFloatCache extends AbstractCache implements Lo
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected float create(long o) {
         long start = System.nanoTime();
         float t = calculatable.calculate(owner, o);

@@ -8,7 +8,7 @@ import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.caches.BooleanCache;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
-import com.maxifier.mxcache.storage.BooleanStorage;
+import com.maxifier.mxcache.storage.ObjectStorage;
 
 import javax.annotation.Nonnull;
 
@@ -30,7 +30,7 @@ public class ViewableMultipleBooleanDependencyNode extends MultipleDependencyNod
     @Override
     public synchronized void addNode(@Nonnull CleaningNode cache) {
         super.addNode(cache);
-        if (!(cache instanceof BooleanStorage)) {
+        if (!(cache instanceof ObjectStorage)) {
             String owner = "";
             if (cache instanceof Cache) {
                 owner = ((Cache) cache).getDescriptor().toString();
@@ -47,10 +47,10 @@ public class ViewableMultipleBooleanDependencyNode extends MultipleDependencyNod
             for (WeakReference<CleaningNode> ref : instances) {
                 CleaningNode node = ref.get();
                 if (node != null) {
-                    if (node instanceof BooleanStorage && node instanceof BooleanCache) {
-                        BooleanStorage storage = (BooleanStorage) node;
+                    if (node instanceof ObjectStorage && node instanceof BooleanCache) {
+                        ObjectStorage storage = (ObjectStorage) node;
                         BooleanCache cache = (BooleanCache) node;
-                        if (storage.isCalculated() && !DependencyTracker.isDependentResourceView(cache) && cache.getOrCreate() != storage.load()) {
+                        if (!DependencyTracker.isDependentResourceView(cache) && !equal(cache.getOrCreate(), storage.load())) {
                             return true;
                         }
                     } else {

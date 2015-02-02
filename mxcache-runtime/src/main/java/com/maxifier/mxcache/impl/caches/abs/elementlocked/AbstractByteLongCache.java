@@ -21,7 +21,7 @@ import com.maxifier.mxcache.storage.elementlocked.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractByteLongCache extends AbstractElementLockedCache implements ByteLongCache, ByteLongElementLockedStorage {
+public abstract class AbstractByteLongCache extends AbstractElementLockedCache implements ByteLongCache, ByteObjectElementLockedStorage {
     private final ByteLongCalculatable calculatable;
 
     public AbstractByteLongCache(Object owner, ByteLongCalculatable calculatable, MutableStatistics statistics) {
@@ -30,18 +30,19 @@ public abstract class AbstractByteLongCache extends AbstractElementLockedCache i
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public long getOrCreate(byte o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock(o);
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Long)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -57,9 +58,10 @@ public abstract class AbstractByteLongCache extends AbstractElementLockedCache i
                                 } finally {
                                     lock(o);
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Long)v;
                                 }
                             }
                         }
@@ -73,6 +75,7 @@ public abstract class AbstractByteLongCache extends AbstractElementLockedCache i
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected long create(byte key) {
         long start = System.nanoTime();
         long t = calculatable.calculate(owner, key);

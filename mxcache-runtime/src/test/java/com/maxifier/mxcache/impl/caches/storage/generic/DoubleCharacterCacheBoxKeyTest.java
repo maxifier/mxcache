@@ -35,9 +35,9 @@ public class DoubleCharacterCacheBoxKeyTest {
     };
 
     public void testMiss() {
-        ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(42d)).thenReturn(false);
+        when(storage.load(42d)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         DoubleCharacterCache cache = (DoubleCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(double.class, char.class), false).
@@ -54,19 +54,18 @@ public class DoubleCharacterCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42d);
+        verify(storage, atLeast(1)).load(42d);
         verify(storage).save(42d, '*');
         verifyNoMoreInteractions(storage);
     }
 
     public void testHit() {
-        ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         DoubleCharacterCache cache = (DoubleCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(double.class, char.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated(42d)).thenReturn(true);
         when(storage.load(42d)).thenReturn('*');
         when(storage.size()).thenReturn(1);
 
@@ -80,13 +79,13 @@ public class DoubleCharacterCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42d);
+        verify(storage, atLeast(1)).load(42d);
         verify(storage).load(42d);
         verifyNoMoreInteractions(storage);
     }
 
     public void testClear() {
-        ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         DoubleCharacterCache cache = (DoubleCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(double.class, char.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -99,10 +98,9 @@ public class DoubleCharacterCacheBoxKeyTest {
     }
 
     public void testSetDuringDependencyNodeOperations() {
-        ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(42d)).thenReturn(false, true);
-        when(storage.load(42d)).thenReturn('*');
+        when(storage.load(42d)).thenReturn(Storage.UNDEFINED, '*');
 
         DoubleCharacterCalculatable calculatable = mock(DoubleCharacterCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -120,17 +118,16 @@ public class DoubleCharacterCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated(42d);
-        verify(storage).load(42d);
+        verify(storage, times(2)).load(42d);
         verifyNoMoreInteractions(storage);
         verify(calculatable).calculate("123", 42d);
         verifyNoMoreInteractions(calculatable);
     }
 
     public void testResetStat() {
-        ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(42d)).thenReturn(false);
+        when(storage.load(42d)).thenReturn(Storage.UNDEFINED);
 
         DoubleCharacterCache cache = (DoubleCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(double.class, char.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -149,7 +146,7 @@ public class DoubleCharacterCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated(42d);
+        verify(storage, atLeast(1)).load(42d);
         verify(storage).save(42d, '*');
         verifyNoMoreInteractions(storage);
     }

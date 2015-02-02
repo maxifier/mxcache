@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractIntCache extends AbstractCache implements IntCache, IntStorage {
+public abstract class AbstractIntCache extends AbstractCache implements IntCache, ObjectStorage {
     private final IntCalculatable calculatable;
 
     public AbstractIntCache(Object owner, IntCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractIntCache extends AbstractCache implements IntCache
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public int getOrCreate() {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
         } else {
             lock();
             try {
-                if (isCalculated()) {
+                Object v = load();
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load();
+                    return (Integer)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractIntCache extends AbstractCache implements IntCache
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated()) {
+                                v = load();
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load();
+                                    return (Integer)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractIntCache extends AbstractCache implements IntCache
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected int create() {
         long start = System.nanoTime();
         int t = calculatable.calculate(owner);

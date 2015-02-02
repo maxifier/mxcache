@@ -35,9 +35,9 @@ public class IntShortCacheBoxKeyTest {
     };
 
     public void testMiss() {
-        ObjectShortStorage storage = mock(ObjectShortStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(42)).thenReturn(false);
+        when(storage.load(42)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         IntShortCache cache = (IntShortCache) Wrapping.getFactory(new Signature(Object.class, short.class), new Signature(int.class, short.class), false).
@@ -54,19 +54,18 @@ public class IntShortCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42);
+        verify(storage, atLeast(1)).load(42);
         verify(storage).save(42, (short)42);
         verifyNoMoreInteractions(storage);
     }
 
     public void testHit() {
-        ObjectShortStorage storage = mock(ObjectShortStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         IntShortCache cache = (IntShortCache) Wrapping.getFactory(new Signature(Object.class, short.class), new Signature(int.class, short.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated(42)).thenReturn(true);
         when(storage.load(42)).thenReturn((short)42);
         when(storage.size()).thenReturn(1);
 
@@ -80,13 +79,13 @@ public class IntShortCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42);
+        verify(storage, atLeast(1)).load(42);
         verify(storage).load(42);
         verifyNoMoreInteractions(storage);
     }
 
     public void testClear() {
-        ObjectShortStorage storage = mock(ObjectShortStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         IntShortCache cache = (IntShortCache) Wrapping.getFactory(new Signature(Object.class, short.class), new Signature(int.class, short.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -99,10 +98,9 @@ public class IntShortCacheBoxKeyTest {
     }
 
     public void testSetDuringDependencyNodeOperations() {
-        ObjectShortStorage storage = mock(ObjectShortStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(42)).thenReturn(false, true);
-        when(storage.load(42)).thenReturn((short)42);
+        when(storage.load(42)).thenReturn(Storage.UNDEFINED, (short)42);
 
         IntShortCalculatable calculatable = mock(IntShortCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -120,17 +118,16 @@ public class IntShortCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated(42);
-        verify(storage).load(42);
+        verify(storage, times(2)).load(42);
         verifyNoMoreInteractions(storage);
         verify(calculatable).calculate("123", 42);
         verifyNoMoreInteractions(calculatable);
     }
 
     public void testResetStat() {
-        ObjectShortStorage storage = mock(ObjectShortStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(42)).thenReturn(false);
+        when(storage.load(42)).thenReturn(Storage.UNDEFINED);
 
         IntShortCache cache = (IntShortCache) Wrapping.getFactory(new Signature(Object.class, short.class), new Signature(int.class, short.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -149,7 +146,7 @@ public class IntShortCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated(42);
+        verify(storage, atLeast(1)).load(42);
         verify(storage).save(42, (short)42);
         verifyNoMoreInteractions(storage);
     }

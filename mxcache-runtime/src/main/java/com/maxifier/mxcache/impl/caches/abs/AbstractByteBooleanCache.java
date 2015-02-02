@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractByteBooleanCache extends AbstractCache implements ByteBooleanCache, ByteBooleanStorage {
+public abstract class AbstractByteBooleanCache extends AbstractCache implements ByteBooleanCache, ByteObjectStorage {
     private final ByteBooleanCalculatable calculatable;
 
     public AbstractByteBooleanCache(Object owner, ByteBooleanCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractByteBooleanCache extends AbstractCache implements 
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public boolean getOrCreate(byte o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Boolean)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractByteBooleanCache extends AbstractCache implements 
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Boolean)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractByteBooleanCache extends AbstractCache implements 
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected boolean create(byte o) {
         long start = System.nanoTime();
         boolean t = calculatable.calculate(owner, o);

@@ -21,7 +21,7 @@ import com.maxifier.mxcache.storage.elementlocked.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractDoubleFloatCache extends AbstractElementLockedCache implements DoubleFloatCache, DoubleFloatElementLockedStorage {
+public abstract class AbstractDoubleFloatCache extends AbstractElementLockedCache implements DoubleFloatCache, DoubleObjectElementLockedStorage {
     private final DoubleFloatCalculatable calculatable;
 
     public AbstractDoubleFloatCache(Object owner, DoubleFloatCalculatable calculatable, MutableStatistics statistics) {
@@ -30,18 +30,19 @@ public abstract class AbstractDoubleFloatCache extends AbstractElementLockedCach
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public float getOrCreate(double o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock(o);
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Float)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -57,9 +58,10 @@ public abstract class AbstractDoubleFloatCache extends AbstractElementLockedCach
                                 } finally {
                                     lock(o);
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Float)v;
                                 }
                             }
                         }
@@ -73,6 +75,7 @@ public abstract class AbstractDoubleFloatCache extends AbstractElementLockedCach
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected float create(double key) {
         long start = System.nanoTime();
         float t = calculatable.calculate(owner, key);

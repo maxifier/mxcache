@@ -23,7 +23,7 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractByteCache extends AbstractElementLockedCache implements ByteCache, ByteElementLockedStorage {
+public abstract class AbstractByteCache extends AbstractElementLockedCache implements ByteCache, ObjectElementLockedStorage {
     private final ByteCalculatable calculatable;
 
     public AbstractByteCache(Object owner, ByteCalculatable calculatable, MutableStatistics statistics) {
@@ -32,6 +32,7 @@ public abstract class AbstractByteCache extends AbstractElementLockedCache imple
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public byte getOrCreate() {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
@@ -41,12 +42,12 @@ public abstract class AbstractByteCache extends AbstractElementLockedCache imple
                 lock.lock();
             }
             try {
-                if (isCalculated()) {
+                Object v = load();
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load();
+                    return (Byte)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -66,9 +67,10 @@ public abstract class AbstractByteCache extends AbstractElementLockedCache imple
                                         lock.lock();
                                     }
                                 }
-                                if (isCalculated()) {
+                                v = load();
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load();
+                                    return (Byte)v;
                                 }
                             }
                         }
@@ -84,6 +86,7 @@ public abstract class AbstractByteCache extends AbstractElementLockedCache imple
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected byte create() {
         long start = System.nanoTime();
         byte t = calculatable.calculate(owner);

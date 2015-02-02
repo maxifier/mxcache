@@ -21,7 +21,7 @@ import com.maxifier.mxcache.storage.elementlocked.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractCharacterBooleanCache extends AbstractElementLockedCache implements CharacterBooleanCache, CharacterBooleanElementLockedStorage {
+public abstract class AbstractCharacterBooleanCache extends AbstractElementLockedCache implements CharacterBooleanCache, CharacterObjectElementLockedStorage {
     private final CharacterBooleanCalculatable calculatable;
 
     public AbstractCharacterBooleanCache(Object owner, CharacterBooleanCalculatable calculatable, MutableStatistics statistics) {
@@ -30,18 +30,19 @@ public abstract class AbstractCharacterBooleanCache extends AbstractElementLocke
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public boolean getOrCreate(char o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock(o);
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Boolean)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -57,9 +58,10 @@ public abstract class AbstractCharacterBooleanCache extends AbstractElementLocke
                                 } finally {
                                     lock(o);
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Boolean)v;
                                 }
                             }
                         }
@@ -73,6 +75,7 @@ public abstract class AbstractCharacterBooleanCache extends AbstractElementLocke
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected boolean create(char key) {
         long start = System.nanoTime();
         boolean t = calculatable.calculate(owner, key);

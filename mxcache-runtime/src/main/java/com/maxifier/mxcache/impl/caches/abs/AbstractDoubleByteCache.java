@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractDoubleByteCache extends AbstractCache implements DoubleByteCache, DoubleByteStorage {
+public abstract class AbstractDoubleByteCache extends AbstractCache implements DoubleByteCache, DoubleObjectStorage {
     private final DoubleByteCalculatable calculatable;
 
     public AbstractDoubleByteCache(Object owner, DoubleByteCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractDoubleByteCache extends AbstractCache implements D
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public byte getOrCreate(double o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Byte)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractDoubleByteCache extends AbstractCache implements D
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Byte)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractDoubleByteCache extends AbstractCache implements D
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected byte create(double o) {
         long start = System.nanoTime();
         byte t = calculatable.calculate(owner, o);

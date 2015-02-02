@@ -35,9 +35,9 @@ public class ByteByteCacheBoxKeyTest {
     };
 
     public void testMiss() {
-        ObjectByteStorage storage = mock(ObjectByteStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated((byte)42)).thenReturn(false);
+        when(storage.load((byte)42)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         ByteByteCache cache = (ByteByteCache) Wrapping.getFactory(new Signature(Object.class, byte.class), new Signature(byte.class, byte.class), false).
@@ -54,19 +54,18 @@ public class ByteByteCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated((byte)42);
+        verify(storage, atLeast(1)).load((byte)42);
         verify(storage).save((byte)42, (byte)42);
         verifyNoMoreInteractions(storage);
     }
 
     public void testHit() {
-        ObjectByteStorage storage = mock(ObjectByteStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         ByteByteCache cache = (ByteByteCache) Wrapping.getFactory(new Signature(Object.class, byte.class), new Signature(byte.class, byte.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated((byte)42)).thenReturn(true);
         when(storage.load((byte)42)).thenReturn((byte)42);
         when(storage.size()).thenReturn(1);
 
@@ -80,13 +79,13 @@ public class ByteByteCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated((byte)42);
+        verify(storage, atLeast(1)).load((byte)42);
         verify(storage).load((byte)42);
         verifyNoMoreInteractions(storage);
     }
 
     public void testClear() {
-        ObjectByteStorage storage = mock(ObjectByteStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         ByteByteCache cache = (ByteByteCache) Wrapping.getFactory(new Signature(Object.class, byte.class), new Signature(byte.class, byte.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -99,10 +98,9 @@ public class ByteByteCacheBoxKeyTest {
     }
 
     public void testSetDuringDependencyNodeOperations() {
-        ObjectByteStorage storage = mock(ObjectByteStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated((byte)42)).thenReturn(false, true);
-        when(storage.load((byte)42)).thenReturn((byte)42);
+        when(storage.load((byte)42)).thenReturn(Storage.UNDEFINED, (byte)42);
 
         ByteByteCalculatable calculatable = mock(ByteByteCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -120,17 +118,16 @@ public class ByteByteCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated((byte)42);
-        verify(storage).load((byte)42);
+        verify(storage, times(2)).load((byte)42);
         verifyNoMoreInteractions(storage);
         verify(calculatable).calculate("123", (byte)42);
         verifyNoMoreInteractions(calculatable);
     }
 
     public void testResetStat() {
-        ObjectByteStorage storage = mock(ObjectByteStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated((byte)42)).thenReturn(false);
+        when(storage.load((byte)42)).thenReturn(Storage.UNDEFINED);
 
         ByteByteCache cache = (ByteByteCache) Wrapping.getFactory(new Signature(Object.class, byte.class), new Signature(byte.class, byte.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -149,7 +146,7 @@ public class ByteByteCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated((byte)42);
+        verify(storage, atLeast(1)).load((byte)42);
         verify(storage).save((byte)42, (byte)42);
         verifyNoMoreInteractions(storage);
     }

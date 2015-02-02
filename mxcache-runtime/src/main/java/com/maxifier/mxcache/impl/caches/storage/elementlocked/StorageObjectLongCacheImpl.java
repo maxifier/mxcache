@@ -26,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageObjectLongCacheImpl<E> extends AbstractObjectLongCache<E> implements StorageHolder<ObjectLongElementLockedStorage<E>> {
-    private ObjectLongElementLockedStorage<E> storage;
+public class StorageObjectLongCacheImpl<E> extends AbstractObjectLongCache<E> implements StorageHolder<ObjectObjectElementLockedStorage<E>> {
+    private ObjectObjectElementLockedStorage<E> storage;
 
     public StorageObjectLongCacheImpl(Object owner, ObjectLongCalculatable<E> calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull ObjectLongElementLockedStorage<E> storage) {
+    public void setStorage(@Nonnull ObjectObjectElementLockedStorage<E> storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -42,17 +42,12 @@ public class StorageObjectLongCacheImpl<E> extends AbstractObjectLongCache<E> im
     }
 
     @Override
-    public boolean isCalculated(E key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public long load(E key) {
+    public Object load(E key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(E key, long value) {
+    public void save(E key, Object value) {
         storage.save(key, value);
     }
 

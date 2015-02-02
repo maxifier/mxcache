@@ -5,8 +5,8 @@ package com.maxifier.mxcache.impl.caches.storage;
 
 import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.impl.wrapping.Wrapping;
-import com.maxifier.mxcache.storage.LongByteStorage;
-import com.maxifier.mxcache.storage.elementlocked.LongByteElementLockedStorage;
+import com.maxifier.mxcache.storage.*;
+import com.maxifier.mxcache.storage.elementlocked.*;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.impl.MutableStatisticsImpl;
@@ -86,12 +86,12 @@ public class LongByteCacheTest {
         }
     }
 
-    @Test(dataProvider = "both")
+    @Test(dataProvider = "both", timeOut = 60000 /*ms*/)
     public void testOccupied(boolean elementLocked) throws Throwable {
-        LongByteStorage storage = createStorage(elementLocked);
+        LongObjectStorage storage = createStorage(elementLocked);
         Occupied occupied = new Occupied();
 
-        when(storage.isCalculated(42L)).thenReturn(false);
+        when(storage.load(42L)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         final LongByteCache cache = (LongByteCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -138,12 +138,12 @@ public class LongByteCacheTest {
         }
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42L);
+        verify(storage, atLeast(1)).load(42L);
         verify(storage).save(42L, (byte)42);
         if (elementLocked) {
             
-                ((LongByteElementLockedStorage)verify(storage, atLeast(1))).lock(42L);
-                ((LongByteElementLockedStorage)verify(storage, atLeast(1))).unlock(42L);
+                ((LongObjectElementLockedStorage)verify(storage, atLeast(1))).lock(42L);
+                ((LongObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(42L);
             
         }
         verifyNoMoreInteractions(storage);
@@ -151,9 +151,9 @@ public class LongByteCacheTest {
 
     @Test(dataProvider = "both")
     public void testMiss(boolean elementLocked) {
-        LongByteStorage storage = createStorage(elementLocked);
+        LongObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated(42L)).thenReturn(false);
+        when(storage.load(42L)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         LongByteCache cache = (LongByteCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -170,12 +170,12 @@ public class LongByteCacheTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42L);
+        verify(storage, atLeast(1)).load(42L);
         verify(storage).save(42L, (byte)42);
         if (elementLocked) {
             
-                ((LongByteElementLockedStorage)verify(storage, atLeast(1))).lock(42L);
-                ((LongByteElementLockedStorage)verify(storage, atLeast(1))).unlock(42L);
+                ((LongObjectElementLockedStorage)verify(storage, atLeast(1))).lock(42L);
+                ((LongObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(42L);
             
         }
         verifyNoMoreInteractions(storage);
@@ -183,13 +183,12 @@ public class LongByteCacheTest {
 
     @Test(dataProvider = "both")
     public void testHit(boolean elementLocked) {
-        LongByteStorage storage = createStorage(elementLocked);
+        LongObjectStorage storage = createStorage(elementLocked);
 
         LongByteCache cache = (LongByteCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated(42L)).thenReturn(true);
         when(storage.load(42L)).thenReturn((byte)42);
         when(storage.size()).thenReturn(1);
 
@@ -203,12 +202,12 @@ public class LongByteCacheTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42L);
+        verify(storage, atLeast(1)).load(42L);
         verify(storage).load(42L);
         if (elementLocked) {
             
-                ((LongByteElementLockedStorage)verify(storage, atLeast(1))).lock(42L);
-                ((LongByteElementLockedStorage)verify(storage, atLeast(1))).unlock(42L);
+                ((LongObjectElementLockedStorage)verify(storage, atLeast(1))).lock(42L);
+                ((LongObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(42L);
             
         }
         verifyNoMoreInteractions(storage);
@@ -216,7 +215,7 @@ public class LongByteCacheTest {
 
     @Test(dataProvider = "both")
     public void testClear(boolean elementLocked) {
-        LongByteStorage storage = createStorage(elementLocked);
+        LongObjectStorage storage = createStorage(elementLocked);
 
         LongByteCache cache = (LongByteCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -230,10 +229,9 @@ public class LongByteCacheTest {
 
     @Test(dataProvider = "both")
     public void testSetDuringDependencyNodeOperations(boolean elementLocked) {
-        LongByteStorage storage = createStorage(elementLocked);
+        LongObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated(42L)).thenReturn(false, true);
-        when(storage.load(42L)).thenReturn((byte)42);
+        when(storage.load(42L)).thenReturn(Storage.UNDEFINED, (byte)42);
 
         LongByteCalculatable calculatable = mock(LongByteCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -251,12 +249,11 @@ public class LongByteCacheTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated(42L);
-        verify(storage).load(42L);
+        verify(storage, times(2)).load(42L);
         if (elementLocked) {
             
-                ((LongByteElementLockedStorage)verify(storage, atLeast(1))).lock(42L);
-                ((LongByteElementLockedStorage)verify(storage, atLeast(1))).unlock(42L);
+                ((LongObjectElementLockedStorage)verify(storage, atLeast(1))).lock(42L);
+                ((LongObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(42L);
             
         }
         verifyNoMoreInteractions(storage);
@@ -266,9 +263,9 @@ public class LongByteCacheTest {
 
     @Test(dataProvider = "both")
     public void testResetStat(boolean elementLocked) {
-        LongByteStorage storage = createStorage(elementLocked);
+        LongObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated(42L)).thenReturn(false);
+        when(storage.load(42L)).thenReturn(Storage.UNDEFINED);
 
         LongByteCache cache = (LongByteCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -287,22 +284,22 @@ public class LongByteCacheTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated(42L);
+        verify(storage, atLeast(1)).load(42L);
         verify(storage).save(42L, (byte)42);
         if (elementLocked) {
             
-                ((LongByteElementLockedStorage)verify(storage, atLeast(1))).lock(42L);
-                ((LongByteElementLockedStorage)verify(storage, atLeast(1))).unlock(42L);
+                ((LongObjectElementLockedStorage)verify(storage, atLeast(1))).lock(42L);
+                ((LongObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(42L);
             
         }
         verifyNoMoreInteractions(storage);
     }
 
-    private LongByteStorage createStorage(boolean elementLocked) {
+    private LongObjectStorage createStorage(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        LongByteStorage storage = mock((Class<LongByteStorage>)(elementLocked ? LongByteElementLockedStorage.class : LongByteStorage.class));
+        LongObjectStorage storage = mock((Class<LongObjectStorage>)(elementLocked ? LongObjectElementLockedStorage.class : LongObjectStorage.class));
         if (elementLocked) {
-            when(((LongByteElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
+            when(((LongObjectElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
         return storage;
     }    
@@ -310,7 +307,7 @@ public class LongByteCacheTest {
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        LongByteStorage storage = mock((Class<LongByteStorage>)(elementLocked ? LongByteElementLockedStorage.class : LongByteStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
+        LongObjectStorage storage = mock((Class<LongObjectStorage>)(elementLocked ? LongObjectElementLockedStorage.class : LongObjectStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         LongByteCache cache = (LongByteCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());

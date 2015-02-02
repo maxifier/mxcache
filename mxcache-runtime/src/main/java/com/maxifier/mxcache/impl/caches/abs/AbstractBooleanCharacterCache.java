@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractBooleanCharacterCache extends AbstractCache implements BooleanCharacterCache, BooleanCharacterStorage {
+public abstract class AbstractBooleanCharacterCache extends AbstractCache implements BooleanCharacterCache, BooleanObjectStorage {
     private final BooleanCharacterCalculatable calculatable;
 
     public AbstractBooleanCharacterCache(Object owner, BooleanCharacterCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractBooleanCharacterCache extends AbstractCache implem
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public char getOrCreate(boolean o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Character)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractBooleanCharacterCache extends AbstractCache implem
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Character)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractBooleanCharacterCache extends AbstractCache implem
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected char create(boolean o) {
         long start = System.nanoTime();
         char t = calculatable.calculate(owner, o);

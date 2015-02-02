@@ -23,7 +23,7 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractIntCache extends AbstractElementLockedCache implements IntCache, IntElementLockedStorage {
+public abstract class AbstractIntCache extends AbstractElementLockedCache implements IntCache, ObjectElementLockedStorage {
     private final IntCalculatable calculatable;
 
     public AbstractIntCache(Object owner, IntCalculatable calculatable, MutableStatistics statistics) {
@@ -32,6 +32,7 @@ public abstract class AbstractIntCache extends AbstractElementLockedCache implem
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public int getOrCreate() {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
@@ -41,12 +42,12 @@ public abstract class AbstractIntCache extends AbstractElementLockedCache implem
                 lock.lock();
             }
             try {
-                if (isCalculated()) {
+                Object v = load();
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load();
+                    return (Integer)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -66,9 +67,10 @@ public abstract class AbstractIntCache extends AbstractElementLockedCache implem
                                         lock.lock();
                                     }
                                 }
-                                if (isCalculated()) {
+                                v = load();
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load();
+                                    return (Integer)v;
                                 }
                             }
                         }
@@ -84,6 +86,7 @@ public abstract class AbstractIntCache extends AbstractElementLockedCache implem
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected int create() {
         long start = System.nanoTime();
         int t = calculatable.calculate(owner);

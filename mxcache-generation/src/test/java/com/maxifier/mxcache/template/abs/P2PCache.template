@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class Abstract#EG##FG#Cache extends AbstractCache implements #EG##FG#Cache, #EG##FG#Storage {
+public abstract class Abstract#EG##FG#Cache extends AbstractCache implements #EG##FG#Cache, #EG#ObjectStorage {
     private final #EG##FG#Calculatable calculatable;
 
     public Abstract#E##F#Cache(Object owner, #EG##FG#Calculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class Abstract#EG##FG#Cache extends AbstractCache implements #EG
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public #fg# getOrCreate(#IF_E##eg# o#ENDIF#) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner#IF_E#, o#ENDIF#);
         } else {
             lock();
             try {
-                if (isCalculated(#IF_E#o#ENDIF#)) {
+                Object v = load(#IF_E#o#ENDIF#);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(#IF_E#o#ENDIF#);
+                    return (#FT#)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class Abstract#EG##FG#Cache extends AbstractCache implements #EG
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(#IF_E#o#ENDIF#)) {
+                                v = load(#IF_E#o#ENDIF#);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(#IF_E#o#ENDIF#);
+                                    return (#FT#)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class Abstract#EG##FG#Cache extends AbstractCache implements #EG
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected #fg# create(#IF_E##eg# o#ENDIF#) {
         long start = System.nanoTime();
         #fg# t = calculatable.calculate(owner#IF_E#, o#ENDIF#);

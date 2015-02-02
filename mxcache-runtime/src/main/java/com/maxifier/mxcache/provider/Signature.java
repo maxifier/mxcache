@@ -6,6 +6,7 @@ package com.maxifier.mxcache.provider;
 import com.maxifier.mxcache.PublicAPI;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.caches.Cache;
+import com.maxifier.mxcache.caches.Calculable;
 import com.maxifier.mxcache.impl.caches.abs.elementlocked.ElementLockedStorage;
 import com.maxifier.mxcache.impl.resource.nodes.MultipleDependencyNode;
 import com.maxifier.mxcache.impl.resource.nodes.SingletonDependencyNode;
@@ -333,7 +334,7 @@ public class Signature {
     private static class BasicSignature extends Signature {
         private final Class<? extends Cache> cacheInterface;
         private final Class<? extends Storage> storageInterface;
-        private final Class<?> calculatableInterface;
+        private final Class<? extends Calculable> calculatableInterface;
         private final Class<? extends ElementLockedStorage> elementLockedStorageInterface;
         private final Class<? extends SingletonDependencyNode> singletonDependencyNode;
         private final Class<? extends MultipleDependencyNode> multipleDependencyNode;
@@ -341,11 +342,13 @@ public class Signature {
         BasicSignature(Class key, Class value) {
             super(key, value);
             cacheInterface = (Class<? extends Cache>) getImplementationClass(CACHES_PACKAGE_NAME, "Cache");
-            storageInterface = (Class<? extends Storage>) getImplementationClass(STORAGE_PACKAGE_NAME, "Storage");
-            calculatableInterface = getImplementationClass(CACHES_PACKAGE_NAME, "Calculatable");
-            elementLockedStorageInterface = (Class<? extends ElementLockedStorage>) getImplementationClass(LOCKED_STORAGE_PACKAGE_NAME, "ElementLockedStorage");
+            calculatableInterface = (Class<? extends Calculable>) getImplementationClass(CACHES_PACKAGE_NAME, "Calculatable");
             singletonDependencyNode = key == null ? (Class<? extends SingletonDependencyNode>) getImplementationClass(SINGLETON_NODES_PACKAGE_NAME, "DependencyNode") : null;
             multipleDependencyNode = key == null ? (Class<? extends MultipleDependencyNode>) getImplementationClass(MULTIPLE_NODES_PACKAGE_NAME, "DependencyNode") : null;
+
+            // storage value is always boxed
+            storageInterface = (Class<? extends Storage>) getImplementationClass(STORAGE_PACKAGE_NAME, key, Object.class, "Storage");
+            elementLockedStorageInterface = (Class<? extends ElementLockedStorage>) getImplementationClass(LOCKED_STORAGE_PACKAGE_NAME, key, Object.class, "ElementLockedStorage");
         }
 
         @Override
@@ -378,12 +381,16 @@ public class Signature {
             return multipleDependencyNode;
         }
 
+        public Class<?> getImplementationClass(String prefix, Class<?> container, Class<?> value, String postfix) {
+            return findClass(prefix + toString(container) + toString(value) + postfix);
+        }
+
         public String getImplementationClassName(String prefix, String postfix) {
             return prefix + toString(getContainer()) + toString(getValue()) + postfix;
         }
 
         public Class<?> getImplementationClass(String prefix, String postfix) {
-            return findClass(getImplementationClassName(prefix, postfix));
+            return getImplementationClass(prefix, getContainer(), getValue(), postfix);
         }
 
         private static Class<?> findClass(String implName) {

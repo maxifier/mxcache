@@ -8,7 +8,7 @@ import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.caches.ShortCache;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
-import com.maxifier.mxcache.storage.ShortStorage;
+import com.maxifier.mxcache.storage.ObjectStorage;
 
 import javax.annotation.Nonnull;
 
@@ -30,7 +30,7 @@ public class ViewableMultipleShortDependencyNode extends MultipleDependencyNode 
     @Override
     public synchronized void addNode(@Nonnull CleaningNode cache) {
         super.addNode(cache);
-        if (!(cache instanceof ShortStorage)) {
+        if (!(cache instanceof ObjectStorage)) {
             String owner = "";
             if (cache instanceof Cache) {
                 owner = ((Cache) cache).getDescriptor().toString();
@@ -47,10 +47,10 @@ public class ViewableMultipleShortDependencyNode extends MultipleDependencyNode 
             for (WeakReference<CleaningNode> ref : instances) {
                 CleaningNode node = ref.get();
                 if (node != null) {
-                    if (node instanceof ShortStorage && node instanceof ShortCache) {
-                        ShortStorage storage = (ShortStorage) node;
+                    if (node instanceof ObjectStorage && node instanceof ShortCache) {
+                        ObjectStorage storage = (ObjectStorage) node;
                         ShortCache cache = (ShortCache) node;
-                        if (storage.isCalculated() && !DependencyTracker.isDependentResourceView(cache) && cache.getOrCreate() != storage.load()) {
+                        if (!DependencyTracker.isDependentResourceView(cache) && !equal(cache.getOrCreate(), storage.load())) {
                             return true;
                         }
                     } else {

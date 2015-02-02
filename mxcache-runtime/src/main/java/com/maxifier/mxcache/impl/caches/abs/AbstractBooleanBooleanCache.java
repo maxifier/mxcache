@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractBooleanBooleanCache extends AbstractCache implements BooleanBooleanCache, BooleanBooleanStorage {
+public abstract class AbstractBooleanBooleanCache extends AbstractCache implements BooleanBooleanCache, BooleanObjectStorage {
     private final BooleanBooleanCalculatable calculatable;
 
     public AbstractBooleanBooleanCache(Object owner, BooleanBooleanCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractBooleanBooleanCache extends AbstractCache implemen
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public boolean getOrCreate(boolean o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Boolean)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractBooleanBooleanCache extends AbstractCache implemen
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Boolean)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractBooleanBooleanCache extends AbstractCache implemen
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected boolean create(boolean o) {
         long start = System.nanoTime();
         boolean t = calculatable.calculate(owner, o);

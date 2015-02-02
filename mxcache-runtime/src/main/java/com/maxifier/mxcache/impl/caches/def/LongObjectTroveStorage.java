@@ -14,7 +14,7 @@ import static com.maxifier.mxcache.impl.caches.def.TroveHelper.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class LongObjectTroveStorage<T> extends gnu.trove.map.hash.TLongObjectHashMap<Object> implements LongObjectStorage<T> {
+public class LongObjectTroveStorage extends gnu.trove.map.hash.TLongObjectHashMap<Object> implements LongObjectStorage {
     @Override
     public Object load(long key) {
         Object v = get(key);
@@ -28,7 +28,7 @@ public class LongObjectTroveStorage<T> extends gnu.trove.map.hash.TLongObjectHas
     }
 
     @Override
-    public void save(long key, T value) {
+    public void save(long key, Object value) {
         put(key, value == null ? NULL_REPLACEMENT : value);
     }
 }

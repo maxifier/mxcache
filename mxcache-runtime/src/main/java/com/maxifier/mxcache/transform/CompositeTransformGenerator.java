@@ -20,6 +20,16 @@ public class CompositeTransformGenerator implements TransformGenerator {
     public CompositeTransformGenerator(@Nonnull TransformGenerator forward, @Nonnull TransformGenerator backward) {
         this.forward = forward;
         this.backward = backward;
+        if (!isCompatible(forward.getOutType(), backward.getInType())) {
+            throw new IllegalArgumentException("Incompatible forward and backward types: " + forward + " and " + backward);
+        }
+        if (!isCompatible(backward.getOutType(), forward.getInType())) {
+            throw new IllegalArgumentException("Incompatible forward and backward types: " + forward + " and " + backward);
+        }
+    }
+
+    private static boolean isCompatible(Class<?> out, Class<?> in) {
+        return in == null ? out == null : in.isAssignableFrom(out);
     }
 
     @Override
@@ -50,8 +60,13 @@ public class CompositeTransformGenerator implements TransformGenerator {
     }
 
     @Override
-    public Class getTransformedType(Class in) {
-        return forward.getTransformedType(in);
+    public Class getOutType() {
+        return forward.getOutType();
+    }
+
+    @Override
+    public Class getInType() {
+        return forward.getInType();
     }
 
     @Override

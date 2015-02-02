@@ -12,8 +12,8 @@ import com.maxifier.mxcache.impl.instanceprovider.DefaultInstanceProvider;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.provider.*;
-import com.maxifier.mxcache.storage.IntStorage;
 import com.maxifier.mxcache.storage.ObjectObjectStorage;
+import com.maxifier.mxcache.storage.ObjectStorage;
 import com.maxifier.mxcache.storage.Storage;
 import com.maxifier.mxcache.interfaces.Statistics;
 
@@ -699,19 +699,14 @@ public class CacheProviderImplUTest {
         assertEquals(cache.getOrCreate(), 14);
     }
 
-    private static class TestStorage implements IntStorage {
+    private static class TestStorage implements ObjectStorage {
         @Override
-        public boolean isCalculated() {
-            return true;
-        }
-
-        @Override
-        public int load() {
+        public Object load() {
             return TEST_CACHE_FINGERPRINT;
         }
 
         @Override
-        public void save(int v) {
+        public void save(Object v) {
             throw new UnsupportedOperationException();
         }
 

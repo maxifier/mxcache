@@ -5,8 +5,8 @@ package com.maxifier.mxcache.impl.caches.storage;
 
 import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.impl.wrapping.Wrapping;
-import com.maxifier.mxcache.storage.BooleanLongStorage;
-import com.maxifier.mxcache.storage.elementlocked.BooleanLongElementLockedStorage;
+import com.maxifier.mxcache.storage.*;
+import com.maxifier.mxcache.storage.elementlocked.*;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.impl.MutableStatisticsImpl;
@@ -86,12 +86,12 @@ public class BooleanLongCacheTest {
         }
     }
 
-    @Test(dataProvider = "both")
+    @Test(dataProvider = "both", timeOut = 60000 /*ms*/)
     public void testOccupied(boolean elementLocked) throws Throwable {
-        BooleanLongStorage storage = createStorage(elementLocked);
+        BooleanObjectStorage storage = createStorage(elementLocked);
         Occupied occupied = new Occupied();
 
-        when(storage.isCalculated(true)).thenReturn(false);
+        when(storage.load(true)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         final BooleanLongCache cache = (BooleanLongCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -138,12 +138,12 @@ public class BooleanLongCacheTest {
         }
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(true);
+        verify(storage, atLeast(1)).load(true);
         verify(storage).save(true, 42L);
         if (elementLocked) {
             
-                ((BooleanLongElementLockedStorage)verify(storage, atLeast(1))).lock(true);
-                ((BooleanLongElementLockedStorage)verify(storage, atLeast(1))).unlock(true);
+                ((BooleanObjectElementLockedStorage)verify(storage, atLeast(1))).lock(true);
+                ((BooleanObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(true);
             
         }
         verifyNoMoreInteractions(storage);
@@ -151,9 +151,9 @@ public class BooleanLongCacheTest {
 
     @Test(dataProvider = "both")
     public void testMiss(boolean elementLocked) {
-        BooleanLongStorage storage = createStorage(elementLocked);
+        BooleanObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated(true)).thenReturn(false);
+        when(storage.load(true)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         BooleanLongCache cache = (BooleanLongCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -170,12 +170,12 @@ public class BooleanLongCacheTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(true);
+        verify(storage, atLeast(1)).load(true);
         verify(storage).save(true, 42L);
         if (elementLocked) {
             
-                ((BooleanLongElementLockedStorage)verify(storage, atLeast(1))).lock(true);
-                ((BooleanLongElementLockedStorage)verify(storage, atLeast(1))).unlock(true);
+                ((BooleanObjectElementLockedStorage)verify(storage, atLeast(1))).lock(true);
+                ((BooleanObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(true);
             
         }
         verifyNoMoreInteractions(storage);
@@ -183,13 +183,12 @@ public class BooleanLongCacheTest {
 
     @Test(dataProvider = "both")
     public void testHit(boolean elementLocked) {
-        BooleanLongStorage storage = createStorage(elementLocked);
+        BooleanObjectStorage storage = createStorage(elementLocked);
 
         BooleanLongCache cache = (BooleanLongCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated(true)).thenReturn(true);
         when(storage.load(true)).thenReturn(42L);
         when(storage.size()).thenReturn(1);
 
@@ -203,12 +202,12 @@ public class BooleanLongCacheTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(true);
+        verify(storage, atLeast(1)).load(true);
         verify(storage).load(true);
         if (elementLocked) {
             
-                ((BooleanLongElementLockedStorage)verify(storage, atLeast(1))).lock(true);
-                ((BooleanLongElementLockedStorage)verify(storage, atLeast(1))).unlock(true);
+                ((BooleanObjectElementLockedStorage)verify(storage, atLeast(1))).lock(true);
+                ((BooleanObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(true);
             
         }
         verifyNoMoreInteractions(storage);
@@ -216,7 +215,7 @@ public class BooleanLongCacheTest {
 
     @Test(dataProvider = "both")
     public void testClear(boolean elementLocked) {
-        BooleanLongStorage storage = createStorage(elementLocked);
+        BooleanObjectStorage storage = createStorage(elementLocked);
 
         BooleanLongCache cache = (BooleanLongCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -230,10 +229,9 @@ public class BooleanLongCacheTest {
 
     @Test(dataProvider = "both")
     public void testSetDuringDependencyNodeOperations(boolean elementLocked) {
-        BooleanLongStorage storage = createStorage(elementLocked);
+        BooleanObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated(true)).thenReturn(false, true);
-        when(storage.load(true)).thenReturn(42L);
+        when(storage.load(true)).thenReturn(Storage.UNDEFINED, 42L);
 
         BooleanLongCalculatable calculatable = mock(BooleanLongCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -251,12 +249,11 @@ public class BooleanLongCacheTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated(true);
-        verify(storage).load(true);
+        verify(storage, times(2)).load(true);
         if (elementLocked) {
             
-                ((BooleanLongElementLockedStorage)verify(storage, atLeast(1))).lock(true);
-                ((BooleanLongElementLockedStorage)verify(storage, atLeast(1))).unlock(true);
+                ((BooleanObjectElementLockedStorage)verify(storage, atLeast(1))).lock(true);
+                ((BooleanObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(true);
             
         }
         verifyNoMoreInteractions(storage);
@@ -266,9 +263,9 @@ public class BooleanLongCacheTest {
 
     @Test(dataProvider = "both")
     public void testResetStat(boolean elementLocked) {
-        BooleanLongStorage storage = createStorage(elementLocked);
+        BooleanObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated(true)).thenReturn(false);
+        when(storage.load(true)).thenReturn(Storage.UNDEFINED);
 
         BooleanLongCache cache = (BooleanLongCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -287,22 +284,22 @@ public class BooleanLongCacheTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated(true);
+        verify(storage, atLeast(1)).load(true);
         verify(storage).save(true, 42L);
         if (elementLocked) {
             
-                ((BooleanLongElementLockedStorage)verify(storage, atLeast(1))).lock(true);
-                ((BooleanLongElementLockedStorage)verify(storage, atLeast(1))).unlock(true);
+                ((BooleanObjectElementLockedStorage)verify(storage, atLeast(1))).lock(true);
+                ((BooleanObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(true);
             
         }
         verifyNoMoreInteractions(storage);
     }
 
-    private BooleanLongStorage createStorage(boolean elementLocked) {
+    private BooleanObjectStorage createStorage(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        BooleanLongStorage storage = mock((Class<BooleanLongStorage>)(elementLocked ? BooleanLongElementLockedStorage.class : BooleanLongStorage.class));
+        BooleanObjectStorage storage = mock((Class<BooleanObjectStorage>)(elementLocked ? BooleanObjectElementLockedStorage.class : BooleanObjectStorage.class));
         if (elementLocked) {
-            when(((BooleanLongElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
+            when(((BooleanObjectElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
         return storage;
     }    
@@ -310,7 +307,7 @@ public class BooleanLongCacheTest {
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        BooleanLongStorage storage = mock((Class<BooleanLongStorage>)(elementLocked ? BooleanLongElementLockedStorage.class : BooleanLongStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
+        BooleanObjectStorage storage = mock((Class<BooleanObjectStorage>)(elementLocked ? BooleanObjectElementLockedStorage.class : BooleanObjectStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         BooleanLongCache cache = (BooleanLongCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());

@@ -5,8 +5,8 @@ package com.maxifier.mxcache.impl.caches.storage;
 
 import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.impl.wrapping.Wrapping;
-import com.maxifier.mxcache.storage.ShortDoubleStorage;
-import com.maxifier.mxcache.storage.elementlocked.ShortDoubleElementLockedStorage;
+import com.maxifier.mxcache.storage.*;
+import com.maxifier.mxcache.storage.elementlocked.*;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.impl.MutableStatisticsImpl;
@@ -86,12 +86,12 @@ public class ShortDoubleCacheTest {
         }
     }
 
-    @Test(dataProvider = "both")
+    @Test(dataProvider = "both", timeOut = 60000 /*ms*/)
     public void testOccupied(boolean elementLocked) throws Throwable {
-        ShortDoubleStorage storage = createStorage(elementLocked);
+        ShortObjectStorage storage = createStorage(elementLocked);
         Occupied occupied = new Occupied();
 
-        when(storage.isCalculated((short)42)).thenReturn(false);
+        when(storage.load((short)42)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         final ShortDoubleCache cache = (ShortDoubleCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -138,12 +138,12 @@ public class ShortDoubleCacheTest {
         }
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated((short)42);
+        verify(storage, atLeast(1)).load((short)42);
         verify(storage).save((short)42, 42d);
         if (elementLocked) {
             
-                ((ShortDoubleElementLockedStorage)verify(storage, atLeast(1))).lock((short)42);
-                ((ShortDoubleElementLockedStorage)verify(storage, atLeast(1))).unlock((short)42);
+                ((ShortObjectElementLockedStorage)verify(storage, atLeast(1))).lock((short)42);
+                ((ShortObjectElementLockedStorage)verify(storage, atLeast(1))).unlock((short)42);
             
         }
         verifyNoMoreInteractions(storage);
@@ -151,9 +151,9 @@ public class ShortDoubleCacheTest {
 
     @Test(dataProvider = "both")
     public void testMiss(boolean elementLocked) {
-        ShortDoubleStorage storage = createStorage(elementLocked);
+        ShortObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated((short)42)).thenReturn(false);
+        when(storage.load((short)42)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         ShortDoubleCache cache = (ShortDoubleCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -170,12 +170,12 @@ public class ShortDoubleCacheTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated((short)42);
+        verify(storage, atLeast(1)).load((short)42);
         verify(storage).save((short)42, 42d);
         if (elementLocked) {
             
-                ((ShortDoubleElementLockedStorage)verify(storage, atLeast(1))).lock((short)42);
-                ((ShortDoubleElementLockedStorage)verify(storage, atLeast(1))).unlock((short)42);
+                ((ShortObjectElementLockedStorage)verify(storage, atLeast(1))).lock((short)42);
+                ((ShortObjectElementLockedStorage)verify(storage, atLeast(1))).unlock((short)42);
             
         }
         verifyNoMoreInteractions(storage);
@@ -183,13 +183,12 @@ public class ShortDoubleCacheTest {
 
     @Test(dataProvider = "both")
     public void testHit(boolean elementLocked) {
-        ShortDoubleStorage storage = createStorage(elementLocked);
+        ShortObjectStorage storage = createStorage(elementLocked);
 
         ShortDoubleCache cache = (ShortDoubleCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated((short)42)).thenReturn(true);
         when(storage.load((short)42)).thenReturn(42d);
         when(storage.size()).thenReturn(1);
 
@@ -203,12 +202,12 @@ public class ShortDoubleCacheTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated((short)42);
+        verify(storage, atLeast(1)).load((short)42);
         verify(storage).load((short)42);
         if (elementLocked) {
             
-                ((ShortDoubleElementLockedStorage)verify(storage, atLeast(1))).lock((short)42);
-                ((ShortDoubleElementLockedStorage)verify(storage, atLeast(1))).unlock((short)42);
+                ((ShortObjectElementLockedStorage)verify(storage, atLeast(1))).lock((short)42);
+                ((ShortObjectElementLockedStorage)verify(storage, atLeast(1))).unlock((short)42);
             
         }
         verifyNoMoreInteractions(storage);
@@ -216,7 +215,7 @@ public class ShortDoubleCacheTest {
 
     @Test(dataProvider = "both")
     public void testClear(boolean elementLocked) {
-        ShortDoubleStorage storage = createStorage(elementLocked);
+        ShortObjectStorage storage = createStorage(elementLocked);
 
         ShortDoubleCache cache = (ShortDoubleCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -230,10 +229,9 @@ public class ShortDoubleCacheTest {
 
     @Test(dataProvider = "both")
     public void testSetDuringDependencyNodeOperations(boolean elementLocked) {
-        ShortDoubleStorage storage = createStorage(elementLocked);
+        ShortObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated((short)42)).thenReturn(false, true);
-        when(storage.load((short)42)).thenReturn(42d);
+        when(storage.load((short)42)).thenReturn(Storage.UNDEFINED, 42d);
 
         ShortDoubleCalculatable calculatable = mock(ShortDoubleCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -251,12 +249,11 @@ public class ShortDoubleCacheTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated((short)42);
-        verify(storage).load((short)42);
+        verify(storage, times(2)).load((short)42);
         if (elementLocked) {
             
-                ((ShortDoubleElementLockedStorage)verify(storage, atLeast(1))).lock((short)42);
-                ((ShortDoubleElementLockedStorage)verify(storage, atLeast(1))).unlock((short)42);
+                ((ShortObjectElementLockedStorage)verify(storage, atLeast(1))).lock((short)42);
+                ((ShortObjectElementLockedStorage)verify(storage, atLeast(1))).unlock((short)42);
             
         }
         verifyNoMoreInteractions(storage);
@@ -266,9 +263,9 @@ public class ShortDoubleCacheTest {
 
     @Test(dataProvider = "both")
     public void testResetStat(boolean elementLocked) {
-        ShortDoubleStorage storage = createStorage(elementLocked);
+        ShortObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated((short)42)).thenReturn(false);
+        when(storage.load((short)42)).thenReturn(Storage.UNDEFINED);
 
         ShortDoubleCache cache = (ShortDoubleCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -287,22 +284,22 @@ public class ShortDoubleCacheTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated((short)42);
+        verify(storage, atLeast(1)).load((short)42);
         verify(storage).save((short)42, 42d);
         if (elementLocked) {
             
-                ((ShortDoubleElementLockedStorage)verify(storage, atLeast(1))).lock((short)42);
-                ((ShortDoubleElementLockedStorage)verify(storage, atLeast(1))).unlock((short)42);
+                ((ShortObjectElementLockedStorage)verify(storage, atLeast(1))).lock((short)42);
+                ((ShortObjectElementLockedStorage)verify(storage, atLeast(1))).unlock((short)42);
             
         }
         verifyNoMoreInteractions(storage);
     }
 
-    private ShortDoubleStorage createStorage(boolean elementLocked) {
+    private ShortObjectStorage createStorage(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        ShortDoubleStorage storage = mock((Class<ShortDoubleStorage>)(elementLocked ? ShortDoubleElementLockedStorage.class : ShortDoubleStorage.class));
+        ShortObjectStorage storage = mock((Class<ShortObjectStorage>)(elementLocked ? ShortObjectElementLockedStorage.class : ShortObjectStorage.class));
         if (elementLocked) {
-            when(((ShortDoubleElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
+            when(((ShortObjectElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
         return storage;
     }    
@@ -310,7 +307,7 @@ public class ShortDoubleCacheTest {
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        ShortDoubleStorage storage = mock((Class<ShortDoubleStorage>)(elementLocked ? ShortDoubleElementLockedStorage.class : ShortDoubleStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
+        ShortObjectStorage storage = mock((Class<ShortObjectStorage>)(elementLocked ? ShortObjectElementLockedStorage.class : ShortObjectStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         ShortDoubleCache cache = (ShortDoubleCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());

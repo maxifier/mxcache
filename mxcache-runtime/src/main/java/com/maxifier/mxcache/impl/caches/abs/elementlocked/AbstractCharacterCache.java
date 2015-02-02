@@ -23,7 +23,7 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractCharacterCache extends AbstractElementLockedCache implements CharacterCache, CharacterElementLockedStorage {
+public abstract class AbstractCharacterCache extends AbstractElementLockedCache implements CharacterCache, ObjectElementLockedStorage {
     private final CharacterCalculatable calculatable;
 
     public AbstractCharacterCache(Object owner, CharacterCalculatable calculatable, MutableStatistics statistics) {
@@ -32,6 +32,7 @@ public abstract class AbstractCharacterCache extends AbstractElementLockedCache 
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public char getOrCreate() {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
@@ -41,12 +42,12 @@ public abstract class AbstractCharacterCache extends AbstractElementLockedCache 
                 lock.lock();
             }
             try {
-                if (isCalculated()) {
+                Object v = load();
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load();
+                    return (Character)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -66,9 +67,10 @@ public abstract class AbstractCharacterCache extends AbstractElementLockedCache 
                                         lock.lock();
                                     }
                                 }
-                                if (isCalculated()) {
+                                v = load();
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load();
+                                    return (Character)v;
                                 }
                             }
                         }
@@ -84,6 +86,7 @@ public abstract class AbstractCharacterCache extends AbstractElementLockedCache 
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected char create() {
         long start = System.nanoTime();
         char t = calculatable.calculate(owner);

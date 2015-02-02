@@ -5,8 +5,8 @@ package com.maxifier.mxcache.impl.caches.storage;
 
 import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.impl.wrapping.Wrapping;
-import com.maxifier.mxcache.storage.BooleanStorage;
-import com.maxifier.mxcache.storage.elementlocked.BooleanElementLockedStorage;
+import com.maxifier.mxcache.storage.*;
+import com.maxifier.mxcache.storage.elementlocked.*;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.impl.MutableStatisticsImpl;
@@ -86,12 +86,12 @@ public class BooleanCacheTest {
         }
     }
 
-    @Test(dataProvider = "both")
+    @Test(dataProvider = "both", timeOut = 60000 /*ms*/)
     public void testOccupied(boolean elementLocked) throws Throwable {
-        BooleanStorage storage = createStorage(elementLocked);
+        ObjectStorage storage = createStorage(elementLocked);
         Occupied occupied = new Occupied();
 
-        when(storage.isCalculated()).thenReturn(false);
+        when(storage.load()).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         final BooleanCache cache = (BooleanCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -138,11 +138,11 @@ public class BooleanCacheTest {
         }
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated();
+        verify(storage, atLeast(1)).load();
         verify(storage).save(true);
         if (elementLocked) {
             
-                ((BooleanElementLockedStorage)verify(storage, atLeast(1))).getLock();
+                ((ObjectElementLockedStorage)verify(storage, atLeast(1))).getLock();
             
         }
         verifyNoMoreInteractions(storage);
@@ -150,9 +150,9 @@ public class BooleanCacheTest {
 
     @Test(dataProvider = "both")
     public void testMiss(boolean elementLocked) {
-        BooleanStorage storage = createStorage(elementLocked);
+        ObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated()).thenReturn(false);
+        when(storage.load()).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         BooleanCache cache = (BooleanCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -169,11 +169,11 @@ public class BooleanCacheTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated();
+        verify(storage, atLeast(1)).load();
         verify(storage).save(true);
         if (elementLocked) {
             
-                ((BooleanElementLockedStorage)verify(storage, atLeast(1))).getLock();
+                ((ObjectElementLockedStorage)verify(storage, atLeast(1))).getLock();
             
         }
         verifyNoMoreInteractions(storage);
@@ -181,13 +181,12 @@ public class BooleanCacheTest {
 
     @Test(dataProvider = "both")
     public void testHit(boolean elementLocked) {
-        BooleanStorage storage = createStorage(elementLocked);
+        ObjectStorage storage = createStorage(elementLocked);
 
         BooleanCache cache = (BooleanCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated()).thenReturn(true);
         when(storage.load()).thenReturn(true);
         when(storage.size()).thenReturn(1);
 
@@ -201,11 +200,11 @@ public class BooleanCacheTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated();
+        verify(storage, atLeast(1)).load();
         verify(storage).load();
         if (elementLocked) {
             
-                ((BooleanElementLockedStorage)verify(storage, atLeast(1))).getLock();
+                ((ObjectElementLockedStorage)verify(storage, atLeast(1))).getLock();
             
         }
         verifyNoMoreInteractions(storage);
@@ -213,7 +212,7 @@ public class BooleanCacheTest {
 
     @Test(dataProvider = "both")
     public void testClear(boolean elementLocked) {
-        BooleanStorage storage = createStorage(elementLocked);
+        ObjectStorage storage = createStorage(elementLocked);
 
         BooleanCache cache = (BooleanCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -227,10 +226,9 @@ public class BooleanCacheTest {
 
     @Test(dataProvider = "both")
     public void testSetDuringDependencyNodeOperations(boolean elementLocked) {
-        BooleanStorage storage = createStorage(elementLocked);
+        ObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated()).thenReturn(false, true);
-        when(storage.load()).thenReturn(true);
+        when(storage.load()).thenReturn(Storage.UNDEFINED, true);
 
         BooleanCalculatable calculatable = mock(BooleanCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -248,11 +246,10 @@ public class BooleanCacheTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated();
-        verify(storage).load();
+        verify(storage, times(2)).load();
         if (elementLocked) {
             
-                ((BooleanElementLockedStorage)verify(storage, atLeast(1))).getLock();
+                ((ObjectElementLockedStorage)verify(storage, atLeast(1))).getLock();
             
         }
         verifyNoMoreInteractions(storage);
@@ -262,9 +259,9 @@ public class BooleanCacheTest {
 
     @Test(dataProvider = "both")
     public void testResetStat(boolean elementLocked) {
-        BooleanStorage storage = createStorage(elementLocked);
+        ObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated()).thenReturn(false);
+        when(storage.load()).thenReturn(Storage.UNDEFINED);
 
         BooleanCache cache = (BooleanCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -283,21 +280,21 @@ public class BooleanCacheTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated();
+        verify(storage, atLeast(1)).load();
         verify(storage).save(true);
         if (elementLocked) {
             
-                ((BooleanElementLockedStorage)verify(storage, atLeast(1))).getLock();
+                ((ObjectElementLockedStorage)verify(storage, atLeast(1))).getLock();
             
         }
         verifyNoMoreInteractions(storage);
     }
 
-    private BooleanStorage createStorage(boolean elementLocked) {
+    private ObjectStorage createStorage(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        BooleanStorage storage = mock((Class<BooleanStorage>)(elementLocked ? BooleanElementLockedStorage.class : BooleanStorage.class));
+        ObjectStorage storage = mock((Class<ObjectStorage>)(elementLocked ? ObjectElementLockedStorage.class : ObjectStorage.class));
         if (elementLocked) {
-            when(((BooleanElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
+            when(((ObjectElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
         return storage;
     }    
@@ -305,7 +302,7 @@ public class BooleanCacheTest {
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        BooleanStorage storage = mock((Class<BooleanStorage>)(elementLocked ? BooleanElementLockedStorage.class : BooleanStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
+        ObjectStorage storage = mock((Class<ObjectStorage>)(elementLocked ? ObjectElementLockedStorage.class : ObjectStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         BooleanCache cache = (BooleanCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());

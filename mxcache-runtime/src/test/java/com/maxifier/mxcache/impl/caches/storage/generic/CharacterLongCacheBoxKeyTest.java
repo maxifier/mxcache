@@ -35,9 +35,9 @@ public class CharacterLongCacheBoxKeyTest {
     };
 
     public void testMiss() {
-        ObjectLongStorage storage = mock(ObjectLongStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated('*')).thenReturn(false);
+        when(storage.load('*')).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         CharacterLongCache cache = (CharacterLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(char.class, long.class), false).
@@ -54,19 +54,18 @@ public class CharacterLongCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated('*');
+        verify(storage, atLeast(1)).load('*');
         verify(storage).save('*', 42L);
         verifyNoMoreInteractions(storage);
     }
 
     public void testHit() {
-        ObjectLongStorage storage = mock(ObjectLongStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         CharacterLongCache cache = (CharacterLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(char.class, long.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated('*')).thenReturn(true);
         when(storage.load('*')).thenReturn(42L);
         when(storage.size()).thenReturn(1);
 
@@ -80,13 +79,13 @@ public class CharacterLongCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated('*');
+        verify(storage, atLeast(1)).load('*');
         verify(storage).load('*');
         verifyNoMoreInteractions(storage);
     }
 
     public void testClear() {
-        ObjectLongStorage storage = mock(ObjectLongStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         CharacterLongCache cache = (CharacterLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(char.class, long.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -99,10 +98,9 @@ public class CharacterLongCacheBoxKeyTest {
     }
 
     public void testSetDuringDependencyNodeOperations() {
-        ObjectLongStorage storage = mock(ObjectLongStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated('*')).thenReturn(false, true);
-        when(storage.load('*')).thenReturn(42L);
+        when(storage.load('*')).thenReturn(Storage.UNDEFINED, 42L);
 
         CharacterLongCalculatable calculatable = mock(CharacterLongCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -120,17 +118,16 @@ public class CharacterLongCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated('*');
-        verify(storage).load('*');
+        verify(storage, times(2)).load('*');
         verifyNoMoreInteractions(storage);
         verify(calculatable).calculate("123", '*');
         verifyNoMoreInteractions(calculatable);
     }
 
     public void testResetStat() {
-        ObjectLongStorage storage = mock(ObjectLongStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated('*')).thenReturn(false);
+        when(storage.load('*')).thenReturn(Storage.UNDEFINED);
 
         CharacterLongCache cache = (CharacterLongCache) Wrapping.getFactory(new Signature(Object.class, long.class), new Signature(char.class, long.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -149,7 +146,7 @@ public class CharacterLongCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated('*');
+        verify(storage, atLeast(1)).load('*');
         verify(storage).save('*', 42L);
         verifyNoMoreInteractions(storage);
     }

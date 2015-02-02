@@ -13,7 +13,7 @@ import gnu.trove.strategy.HashingStrategy;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class ObjectObjectTroveStorage<K, V> extends TCustomHashMap<K, Object> implements ObjectObjectStorage<K, V> {
+public class ObjectObjectTroveStorage<K> extends TCustomHashMap<K, Object> implements ObjectObjectStorage<K> {
     public ObjectObjectTroveStorage() {
         //noinspection unchecked
         super(DEFAULT_HASHING_STRATEGY);
@@ -36,7 +36,7 @@ public class ObjectObjectTroveStorage<K, V> extends TCustomHashMap<K, Object> im
     }
 
     @Override
-    public void save(K key, V value) {
+    public void save(K key, Object value) {
         put(key, value == null ? TroveHelper.NULL_REPLACEMENT : value);
     }
 }

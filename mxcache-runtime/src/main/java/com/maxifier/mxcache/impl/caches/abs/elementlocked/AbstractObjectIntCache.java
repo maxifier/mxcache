@@ -21,7 +21,7 @@ import com.maxifier.mxcache.storage.elementlocked.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractObjectIntCache<E> extends AbstractElementLockedCache implements ObjectIntCache<E>, ObjectIntElementLockedStorage<E> {
+public abstract class AbstractObjectIntCache<E> extends AbstractElementLockedCache implements ObjectIntCache<E>, ObjectObjectElementLockedStorage<E> {
     private final ObjectIntCalculatable<E> calculatable;
 
     public AbstractObjectIntCache(Object owner, ObjectIntCalculatable<E> calculatable, MutableStatistics statistics) {
@@ -30,18 +30,19 @@ public abstract class AbstractObjectIntCache<E> extends AbstractElementLockedCac
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public int getOrCreate(E o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock(o);
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Integer)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -57,9 +58,10 @@ public abstract class AbstractObjectIntCache<E> extends AbstractElementLockedCac
                                 } finally {
                                     lock(o);
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Integer)v;
                                 }
                             }
                         }
@@ -73,6 +75,7 @@ public abstract class AbstractObjectIntCache<E> extends AbstractElementLockedCac
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected int create(E key) {
         long start = System.nanoTime();
         int t = calculatable.calculate(owner, key);

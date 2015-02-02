@@ -13,9 +13,9 @@ import javax.annotation.Nullable;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class BatchObjectObjectStorage<K, V, C, KeyElement, ValueElement, KeyIterator>
-        implements ObjectObjectStorage<K, V>, CalculableInterceptor, ObjectObjectCalculatable<K, V> {
+        implements ObjectObjectStorage<K>, CalculableInterceptor, ObjectObjectCalculatable<K, V> {
 
-    private final ObjectObjectStorage<KeyElement, ValueElement> storage;
+    private final ObjectObjectStorage<KeyElement> storage;
 
     private final KeyStrategy<K, KeyElement, KeyIterator> keyStrategy;
     private final ValueStrategy<KeyElement, V, ValueElement, C> valueStrategy;
@@ -28,7 +28,7 @@ public class BatchObjectObjectStorage<K, V, C, KeyElement, ValueElement, KeyIter
     private K unknownKey;
     private V knownValue;
 
-    protected BatchObjectObjectStorage(ObjectObjectStorage<KeyElement, ValueElement> storage,
+    protected BatchObjectObjectStorage(ObjectObjectStorage<KeyElement> storage,
                                        KeyStrategy<K, KeyElement, KeyIterator> keyStrategy,
                                        ValueStrategy<KeyElement, V, ValueElement, C> valueStrategy,
 
@@ -62,7 +62,7 @@ public class BatchObjectObjectStorage<K, V, C, KeyElement, ValueElement, KeyIter
     }
 
     @Override
-    public void save(K key, V value) {
+    public void save(K key, Object value) {
         reset();
     }
 

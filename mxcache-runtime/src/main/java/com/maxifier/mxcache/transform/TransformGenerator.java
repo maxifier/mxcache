@@ -8,14 +8,12 @@ import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.util.ClassGenerator;
 
+import javax.annotation.Nullable;
+
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 public interface TransformGenerator {
-    TransformGenerator NO_TRANSFORM = EmptyTransformGenerator.getInstance();
-
-    TransformGenerator IGNORE_TRANSFORM = IgnoreTransformGenerator.getInstance();
-
     void generateForward(Type thisType, int fieldIndex, GeneratorAdapter method);
 
     void generateBackward(Type thisType, int fieldIndex, GeneratorAdapter method);
@@ -27,8 +25,11 @@ public interface TransformGenerator {
     int getFieldCount();
 
     Signature transformKey(Signature in);
-    
+
     Signature transformValue(Signature in);
 
-    Class getTransformedType(Class in);
+    Class<?> getInType();
+
+    @Nullable
+    Class<?> getOutType();
 }

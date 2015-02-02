@@ -21,7 +21,7 @@ import com.maxifier.mxcache.storage.elementlocked.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractObjectObjectCache<E, F> extends AbstractElementLockedCache implements ObjectObjectCache<E, F>, ObjectObjectElementLockedStorage<E, F> {
+public abstract class AbstractObjectObjectCache<E, F> extends AbstractElementLockedCache implements ObjectObjectCache<E, F>, ObjectObjectElementLockedStorage<E> {
     private final ObjectObjectCalculatable<E, F> calculatable;
 
     public AbstractObjectObjectCache(Object owner, ObjectObjectCalculatable<E, F> calculatable, MutableStatistics statistics) {

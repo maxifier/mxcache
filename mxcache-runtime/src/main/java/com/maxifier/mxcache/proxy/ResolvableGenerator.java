@@ -69,7 +69,7 @@ public final class ResolvableGenerator {
         for (int i = 0; i < arguments.length; i++) {
             Type arg = genericArguments[i];
             if (tg != null) {
-                stored[i] = Type.getType(tg[i].getTransformedType(toClass(classLoader, arg)));
+                stored[i] = Type.getType(tg[i].getOutType());
             } else {
                 stored[i] = arg;
             }

@@ -18,7 +18,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public interface IntObjectElementLockedStorage<F> extends IntObjectStorage<F>, ElementLockedStorage {
+public interface IntObjectElementLockedStorage extends IntObjectStorage, ElementLockedStorage {
     /**
      * <p>This method should lock given cache key.</p>
      * <p>If this key is already locked the method should wait for corresponding unlock call.</p>

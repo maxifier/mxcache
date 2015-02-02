@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractBooleanCache extends AbstractCache implements BooleanCache, BooleanStorage {
+public abstract class AbstractBooleanCache extends AbstractCache implements BooleanCache, ObjectStorage {
     private final BooleanCalculatable calculatable;
 
     public AbstractBooleanCache(Object owner, BooleanCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractBooleanCache extends AbstractCache implements Bool
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public boolean getOrCreate() {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
         } else {
             lock();
             try {
-                if (isCalculated()) {
+                Object v = load();
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load();
+                    return (Boolean)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractBooleanCache extends AbstractCache implements Bool
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated()) {
+                                v = load();
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load();
+                                    return (Boolean)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractBooleanCache extends AbstractCache implements Bool
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected boolean create() {
         long start = System.nanoTime();
         boolean t = calculatable.calculate(owner);

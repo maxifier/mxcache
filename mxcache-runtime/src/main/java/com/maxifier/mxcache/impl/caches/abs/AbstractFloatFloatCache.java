@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractFloatFloatCache extends AbstractCache implements FloatFloatCache, FloatFloatStorage {
+public abstract class AbstractFloatFloatCache extends AbstractCache implements FloatFloatCache, FloatObjectStorage {
     private final FloatFloatCalculatable calculatable;
 
     public AbstractFloatFloatCache(Object owner, FloatFloatCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractFloatFloatCache extends AbstractCache implements F
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public float getOrCreate(float o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Float)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractFloatFloatCache extends AbstractCache implements F
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Float)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractFloatFloatCache extends AbstractCache implements F
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected float create(float o) {
         long start = System.nanoTime();
         float t = calculatable.calculate(owner, o);

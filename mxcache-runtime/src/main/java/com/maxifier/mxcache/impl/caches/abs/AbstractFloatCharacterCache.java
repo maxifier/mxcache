@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractFloatCharacterCache extends AbstractCache implements FloatCharacterCache, FloatCharacterStorage {
+public abstract class AbstractFloatCharacterCache extends AbstractCache implements FloatCharacterCache, FloatObjectStorage {
     private final FloatCharacterCalculatable calculatable;
 
     public AbstractFloatCharacterCache(Object owner, FloatCharacterCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractFloatCharacterCache extends AbstractCache implemen
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public char getOrCreate(float o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Character)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractFloatCharacterCache extends AbstractCache implemen
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Character)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractFloatCharacterCache extends AbstractCache implemen
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected char create(float o) {
         long start = System.nanoTime();
         char t = calculatable.calculate(owner, o);

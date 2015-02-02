@@ -5,8 +5,8 @@ package com.maxifier.mxcache.impl.caches.storage;
 
 import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.impl.wrapping.Wrapping;
-import com.maxifier.mxcache.storage.CharacterShortStorage;
-import com.maxifier.mxcache.storage.elementlocked.CharacterShortElementLockedStorage;
+import com.maxifier.mxcache.storage.*;
+import com.maxifier.mxcache.storage.elementlocked.*;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.impl.MutableStatisticsImpl;
@@ -86,12 +86,12 @@ public class CharacterShortCacheTest {
         }
     }
 
-    @Test(dataProvider = "both")
+    @Test(dataProvider = "both", timeOut = 60000 /*ms*/)
     public void testOccupied(boolean elementLocked) throws Throwable {
-        CharacterShortStorage storage = createStorage(elementLocked);
+        CharacterObjectStorage storage = createStorage(elementLocked);
         Occupied occupied = new Occupied();
 
-        when(storage.isCalculated('*')).thenReturn(false);
+        when(storage.load('*')).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         final CharacterShortCache cache = (CharacterShortCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -138,12 +138,12 @@ public class CharacterShortCacheTest {
         }
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated('*');
+        verify(storage, atLeast(1)).load('*');
         verify(storage).save('*', (short)42);
         if (elementLocked) {
             
-                ((CharacterShortElementLockedStorage)verify(storage, atLeast(1))).lock('*');
-                ((CharacterShortElementLockedStorage)verify(storage, atLeast(1))).unlock('*');
+                ((CharacterObjectElementLockedStorage)verify(storage, atLeast(1))).lock('*');
+                ((CharacterObjectElementLockedStorage)verify(storage, atLeast(1))).unlock('*');
             
         }
         verifyNoMoreInteractions(storage);
@@ -151,9 +151,9 @@ public class CharacterShortCacheTest {
 
     @Test(dataProvider = "both")
     public void testMiss(boolean elementLocked) {
-        CharacterShortStorage storage = createStorage(elementLocked);
+        CharacterObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated('*')).thenReturn(false);
+        when(storage.load('*')).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         CharacterShortCache cache = (CharacterShortCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -170,12 +170,12 @@ public class CharacterShortCacheTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated('*');
+        verify(storage, atLeast(1)).load('*');
         verify(storage).save('*', (short)42);
         if (elementLocked) {
             
-                ((CharacterShortElementLockedStorage)verify(storage, atLeast(1))).lock('*');
-                ((CharacterShortElementLockedStorage)verify(storage, atLeast(1))).unlock('*');
+                ((CharacterObjectElementLockedStorage)verify(storage, atLeast(1))).lock('*');
+                ((CharacterObjectElementLockedStorage)verify(storage, atLeast(1))).unlock('*');
             
         }
         verifyNoMoreInteractions(storage);
@@ -183,13 +183,12 @@ public class CharacterShortCacheTest {
 
     @Test(dataProvider = "both")
     public void testHit(boolean elementLocked) {
-        CharacterShortStorage storage = createStorage(elementLocked);
+        CharacterObjectStorage storage = createStorage(elementLocked);
 
         CharacterShortCache cache = (CharacterShortCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated('*')).thenReturn(true);
         when(storage.load('*')).thenReturn((short)42);
         when(storage.size()).thenReturn(1);
 
@@ -203,12 +202,12 @@ public class CharacterShortCacheTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated('*');
+        verify(storage, atLeast(1)).load('*');
         verify(storage).load('*');
         if (elementLocked) {
             
-                ((CharacterShortElementLockedStorage)verify(storage, atLeast(1))).lock('*');
-                ((CharacterShortElementLockedStorage)verify(storage, atLeast(1))).unlock('*');
+                ((CharacterObjectElementLockedStorage)verify(storage, atLeast(1))).lock('*');
+                ((CharacterObjectElementLockedStorage)verify(storage, atLeast(1))).unlock('*');
             
         }
         verifyNoMoreInteractions(storage);
@@ -216,7 +215,7 @@ public class CharacterShortCacheTest {
 
     @Test(dataProvider = "both")
     public void testClear(boolean elementLocked) {
-        CharacterShortStorage storage = createStorage(elementLocked);
+        CharacterObjectStorage storage = createStorage(elementLocked);
 
         CharacterShortCache cache = (CharacterShortCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -230,10 +229,9 @@ public class CharacterShortCacheTest {
 
     @Test(dataProvider = "both")
     public void testSetDuringDependencyNodeOperations(boolean elementLocked) {
-        CharacterShortStorage storage = createStorage(elementLocked);
+        CharacterObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated('*')).thenReturn(false, true);
-        when(storage.load('*')).thenReturn((short)42);
+        when(storage.load('*')).thenReturn(Storage.UNDEFINED, (short)42);
 
         CharacterShortCalculatable calculatable = mock(CharacterShortCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -251,12 +249,11 @@ public class CharacterShortCacheTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated('*');
-        verify(storage).load('*');
+        verify(storage, times(2)).load('*');
         if (elementLocked) {
             
-                ((CharacterShortElementLockedStorage)verify(storage, atLeast(1))).lock('*');
-                ((CharacterShortElementLockedStorage)verify(storage, atLeast(1))).unlock('*');
+                ((CharacterObjectElementLockedStorage)verify(storage, atLeast(1))).lock('*');
+                ((CharacterObjectElementLockedStorage)verify(storage, atLeast(1))).unlock('*');
             
         }
         verifyNoMoreInteractions(storage);
@@ -266,9 +263,9 @@ public class CharacterShortCacheTest {
 
     @Test(dataProvider = "both")
     public void testResetStat(boolean elementLocked) {
-        CharacterShortStorage storage = createStorage(elementLocked);
+        CharacterObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated('*')).thenReturn(false);
+        when(storage.load('*')).thenReturn(Storage.UNDEFINED);
 
         CharacterShortCache cache = (CharacterShortCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -287,22 +284,22 @@ public class CharacterShortCacheTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated('*');
+        verify(storage, atLeast(1)).load('*');
         verify(storage).save('*', (short)42);
         if (elementLocked) {
             
-                ((CharacterShortElementLockedStorage)verify(storage, atLeast(1))).lock('*');
-                ((CharacterShortElementLockedStorage)verify(storage, atLeast(1))).unlock('*');
+                ((CharacterObjectElementLockedStorage)verify(storage, atLeast(1))).lock('*');
+                ((CharacterObjectElementLockedStorage)verify(storage, atLeast(1))).unlock('*');
             
         }
         verifyNoMoreInteractions(storage);
     }
 
-    private CharacterShortStorage createStorage(boolean elementLocked) {
+    private CharacterObjectStorage createStorage(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        CharacterShortStorage storage = mock((Class<CharacterShortStorage>)(elementLocked ? CharacterShortElementLockedStorage.class : CharacterShortStorage.class));
+        CharacterObjectStorage storage = mock((Class<CharacterObjectStorage>)(elementLocked ? CharacterObjectElementLockedStorage.class : CharacterObjectStorage.class));
         if (elementLocked) {
-            when(((CharacterShortElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
+            when(((CharacterObjectElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
         return storage;
     }    
@@ -310,7 +307,7 @@ public class CharacterShortCacheTest {
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        CharacterShortStorage storage = mock((Class<CharacterShortStorage>)(elementLocked ? CharacterShortElementLockedStorage.class : CharacterShortStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
+        CharacterObjectStorage storage = mock((Class<CharacterObjectStorage>)(elementLocked ? CharacterObjectElementLockedStorage.class : CharacterObjectStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         CharacterShortCache cache = (CharacterShortCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());

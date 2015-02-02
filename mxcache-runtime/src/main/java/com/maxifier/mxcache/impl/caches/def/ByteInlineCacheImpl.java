@@ -16,36 +16,29 @@ import com.maxifier.mxcache.impl.caches.abs.*;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ByteInlineCacheImpl extends AbstractByteCache {
-    private volatile boolean set;
-    private byte value;
+    private Object value = UNDEFINED;
 
     public ByteInlineCacheImpl(Object owner, ByteCalculatable calculable, MutableStatistics statistics) {
         super(owner, calculable, statistics);
     }
 
     @Override
-    public boolean isCalculated() {
-        return set;
-    }
-
-    @Override
-    public byte load() {
+    public Object load() {
         return value; 
     }
 
     @Override
-    public void save(byte v) {
-        set = true;
+    public void save(Object v) {
         value = v;
     }
 
     @Override
     public void clear() {
-        set = false;
+        value = UNDEFINED;
     }
 
     @Override
     public int size() {
-        return set ? 1 : 0;
+        return value == UNDEFINED ? 0 : 1;
     }
 }

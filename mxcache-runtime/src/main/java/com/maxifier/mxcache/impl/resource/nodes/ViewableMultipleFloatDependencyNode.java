@@ -8,7 +8,7 @@ import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.caches.FloatCache;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
-import com.maxifier.mxcache.storage.FloatStorage;
+import com.maxifier.mxcache.storage.ObjectStorage;
 
 import javax.annotation.Nonnull;
 
@@ -30,7 +30,7 @@ public class ViewableMultipleFloatDependencyNode extends MultipleDependencyNode 
     @Override
     public synchronized void addNode(@Nonnull CleaningNode cache) {
         super.addNode(cache);
-        if (!(cache instanceof FloatStorage)) {
+        if (!(cache instanceof ObjectStorage)) {
             String owner = "";
             if (cache instanceof Cache) {
                 owner = ((Cache) cache).getDescriptor().toString();
@@ -47,10 +47,10 @@ public class ViewableMultipleFloatDependencyNode extends MultipleDependencyNode 
             for (WeakReference<CleaningNode> ref : instances) {
                 CleaningNode node = ref.get();
                 if (node != null) {
-                    if (node instanceof FloatStorage && node instanceof FloatCache) {
-                        FloatStorage storage = (FloatStorage) node;
+                    if (node instanceof ObjectStorage && node instanceof FloatCache) {
+                        ObjectStorage storage = (ObjectStorage) node;
                         FloatCache cache = (FloatCache) node;
-                        if (storage.isCalculated() && !DependencyTracker.isDependentResourceView(cache) && cache.getOrCreate() != storage.load()) {
+                        if (!DependencyTracker.isDependentResourceView(cache) && !equal(cache.getOrCreate(), storage.load())) {
                             return true;
                         }
                     } else {

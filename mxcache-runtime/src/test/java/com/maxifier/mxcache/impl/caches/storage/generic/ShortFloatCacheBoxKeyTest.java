@@ -35,9 +35,9 @@ public class ShortFloatCacheBoxKeyTest {
     };
 
     public void testMiss() {
-        ObjectFloatStorage storage = mock(ObjectFloatStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated((short)42)).thenReturn(false);
+        when(storage.load((short)42)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         ShortFloatCache cache = (ShortFloatCache) Wrapping.getFactory(new Signature(Object.class, float.class), new Signature(short.class, float.class), false).
@@ -54,19 +54,18 @@ public class ShortFloatCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated((short)42);
+        verify(storage, atLeast(1)).load((short)42);
         verify(storage).save((short)42, 42f);
         verifyNoMoreInteractions(storage);
     }
 
     public void testHit() {
-        ObjectFloatStorage storage = mock(ObjectFloatStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         ShortFloatCache cache = (ShortFloatCache) Wrapping.getFactory(new Signature(Object.class, float.class), new Signature(short.class, float.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated((short)42)).thenReturn(true);
         when(storage.load((short)42)).thenReturn(42f);
         when(storage.size()).thenReturn(1);
 
@@ -80,13 +79,13 @@ public class ShortFloatCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated((short)42);
+        verify(storage, atLeast(1)).load((short)42);
         verify(storage).load((short)42);
         verifyNoMoreInteractions(storage);
     }
 
     public void testClear() {
-        ObjectFloatStorage storage = mock(ObjectFloatStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         ShortFloatCache cache = (ShortFloatCache) Wrapping.getFactory(new Signature(Object.class, float.class), new Signature(short.class, float.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -99,10 +98,9 @@ public class ShortFloatCacheBoxKeyTest {
     }
 
     public void testSetDuringDependencyNodeOperations() {
-        ObjectFloatStorage storage = mock(ObjectFloatStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated((short)42)).thenReturn(false, true);
-        when(storage.load((short)42)).thenReturn(42f);
+        when(storage.load((short)42)).thenReturn(Storage.UNDEFINED, 42f);
 
         ShortFloatCalculatable calculatable = mock(ShortFloatCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -120,17 +118,16 @@ public class ShortFloatCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated((short)42);
-        verify(storage).load((short)42);
+        verify(storage, times(2)).load((short)42);
         verifyNoMoreInteractions(storage);
         verify(calculatable).calculate("123", (short)42);
         verifyNoMoreInteractions(calculatable);
     }
 
     public void testResetStat() {
-        ObjectFloatStorage storage = mock(ObjectFloatStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated((short)42)).thenReturn(false);
+        when(storage.load((short)42)).thenReturn(Storage.UNDEFINED);
 
         ShortFloatCache cache = (ShortFloatCache) Wrapping.getFactory(new Signature(Object.class, float.class), new Signature(short.class, float.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -149,7 +146,7 @@ public class ShortFloatCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated((short)42);
+        verify(storage, atLeast(1)).load((short)42);
         verify(storage).save((short)42, 42f);
         verifyNoMoreInteractions(storage);
     }

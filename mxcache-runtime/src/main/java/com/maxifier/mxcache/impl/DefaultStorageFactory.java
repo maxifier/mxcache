@@ -32,7 +32,7 @@ public class DefaultStorageFactory<T> implements StorageFactory<T> {
     private final int[] tupleIndices;
 
     DefaultStorageFactory(CacheContext context, HashingStrategyFactory hashingStrategyFactory, CacheDescriptor descriptor) {
-        Signature transformedSignature = descriptor.getTransformedSignature();
+        Signature transformedSignature = descriptor.getTransformedSignature().overrideValue(Object.class);
         if (!transformedSignature.hasKeys()) {
             implementation = transformedSignature.getImplementationClass(CACHES_PACKAGE, "StorageImpl");
             tupleIndices = null;

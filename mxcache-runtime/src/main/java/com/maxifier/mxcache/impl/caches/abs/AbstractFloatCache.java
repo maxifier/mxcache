@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractFloatCache extends AbstractCache implements FloatCache, FloatStorage {
+public abstract class AbstractFloatCache extends AbstractCache implements FloatCache, ObjectStorage {
     private final FloatCalculatable calculatable;
 
     public AbstractFloatCache(Object owner, FloatCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractFloatCache extends AbstractCache implements FloatC
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public float getOrCreate() {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
         } else {
             lock();
             try {
-                if (isCalculated()) {
+                Object v = load();
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load();
+                    return (Float)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractFloatCache extends AbstractCache implements FloatC
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated()) {
+                                v = load();
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load();
+                                    return (Float)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractFloatCache extends AbstractCache implements FloatC
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected float create() {
         long start = System.nanoTime();
         float t = calculatable.calculate(owner);

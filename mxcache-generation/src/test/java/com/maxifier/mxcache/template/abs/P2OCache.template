@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class Abstract#EG##FG#Cache extends AbstractCache implements #EG##FG#Cache, #EG##FG#Storage {
+public abstract class Abstract#EG##FG#Cache extends AbstractCache implements #EG##FG#Cache, #EG#ObjectStorage {
     private final #EG##FG#Calculatable calculatable;
 
     public Abstract#E##F#Cache(Object owner, #EG##FG#Calculatable calculatable, MutableStatistics statistics) {

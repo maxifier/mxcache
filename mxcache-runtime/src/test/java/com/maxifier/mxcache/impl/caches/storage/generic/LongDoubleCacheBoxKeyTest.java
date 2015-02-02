@@ -35,9 +35,9 @@ public class LongDoubleCacheBoxKeyTest {
     };
 
     public void testMiss() {
-        ObjectDoubleStorage storage = mock(ObjectDoubleStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(42L)).thenReturn(false);
+        when(storage.load(42L)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         LongDoubleCache cache = (LongDoubleCache) Wrapping.getFactory(new Signature(Object.class, double.class), new Signature(long.class, double.class), false).
@@ -54,19 +54,18 @@ public class LongDoubleCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42L);
+        verify(storage, atLeast(1)).load(42L);
         verify(storage).save(42L, 42d);
         verifyNoMoreInteractions(storage);
     }
 
     public void testHit() {
-        ObjectDoubleStorage storage = mock(ObjectDoubleStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         LongDoubleCache cache = (LongDoubleCache) Wrapping.getFactory(new Signature(Object.class, double.class), new Signature(long.class, double.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated(42L)).thenReturn(true);
         when(storage.load(42L)).thenReturn(42d);
         when(storage.size()).thenReturn(1);
 
@@ -80,13 +79,13 @@ public class LongDoubleCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42L);
+        verify(storage, atLeast(1)).load(42L);
         verify(storage).load(42L);
         verifyNoMoreInteractions(storage);
     }
 
     public void testClear() {
-        ObjectDoubleStorage storage = mock(ObjectDoubleStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         LongDoubleCache cache = (LongDoubleCache) Wrapping.getFactory(new Signature(Object.class, double.class), new Signature(long.class, double.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -99,10 +98,9 @@ public class LongDoubleCacheBoxKeyTest {
     }
 
     public void testSetDuringDependencyNodeOperations() {
-        ObjectDoubleStorage storage = mock(ObjectDoubleStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(42L)).thenReturn(false, true);
-        when(storage.load(42L)).thenReturn(42d);
+        when(storage.load(42L)).thenReturn(Storage.UNDEFINED, 42d);
 
         LongDoubleCalculatable calculatable = mock(LongDoubleCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -120,17 +118,16 @@ public class LongDoubleCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated(42L);
-        verify(storage).load(42L);
+        verify(storage, times(2)).load(42L);
         verifyNoMoreInteractions(storage);
         verify(calculatable).calculate("123", 42L);
         verifyNoMoreInteractions(calculatable);
     }
 
     public void testResetStat() {
-        ObjectDoubleStorage storage = mock(ObjectDoubleStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(42L)).thenReturn(false);
+        when(storage.load(42L)).thenReturn(Storage.UNDEFINED);
 
         LongDoubleCache cache = (LongDoubleCache) Wrapping.getFactory(new Signature(Object.class, double.class), new Signature(long.class, double.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -149,7 +146,7 @@ public class LongDoubleCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated(42L);
+        verify(storage, atLeast(1)).load(42L);
         verify(storage).save(42L, 42d);
         verifyNoMoreInteractions(storage);
     }

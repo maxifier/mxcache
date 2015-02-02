@@ -79,7 +79,7 @@ public class ObjectByteCacheBoxValueTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(2)).load("123");
+        verify(storage, atLeast(1)).load("123");
         verifyNoMoreInteractions(storage);
     }
 

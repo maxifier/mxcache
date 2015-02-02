@@ -18,6 +18,7 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Set;
 
+import com.maxifier.mxcache.transform.EmptyTransformGenerator;
 import com.maxifier.mxcache.transform.TransformGenerator;
 import com.maxifier.mxcache.transform.TransformGeneratorFactoryImpl;
 import com.maxifier.mxcache.util.CodegenHelper;
@@ -77,7 +78,7 @@ public class CacheDescriptor<T> {
     }
 
     private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, @Nullable PropertyOverrides overrides) {
-        this(ownerClass, id, signature, calculable, method, cacheName, group, tags, rule, proxyFactory, TransformGeneratorFactoryImpl.getInstance().forMethod(method), TransformGenerator.NO_TRANSFORM, overrides);
+        this(ownerClass, id, signature, calculable, method, cacheName, group, tags, rule, proxyFactory, TransformGeneratorFactoryImpl.getInstance().forMethod(method), new EmptyTransformGenerator(signature.erased().getValue()), overrides);
     }
 
     private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, PropertyOverrides overrides) {

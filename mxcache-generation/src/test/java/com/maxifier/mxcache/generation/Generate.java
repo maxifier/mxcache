@@ -133,7 +133,6 @@ public final class Generate {
         }
 
         generateP2P("P2OStorage.template", "", "Storage.java", inputPathAbstract, outputPathStorage, WRAPPERS_OBJECT_AND_NONE, ONLY_OBJECT);
-        generateP2P("P2PStorage.template", "", "Storage.java", inputPathAbstract, outputPathStorage, WRAPPERS_OBJECT_AND_NONE, WRAPPERS_NO_OBJECT);
 
         generateP2P("P2OCache.template", "Abstract", "Cache.java", inputPathAbstract, outputPathAbstract, WRAPPERS_OBJECT_AND_NONE, ONLY_OBJECT);
         generateP2P("P2PCache.template", "Abstract", "Cache.java", inputPathAbstract, outputPathAbstract, WRAPPERS_OBJECT_AND_NONE, WRAPPERS_NO_OBJECT);
@@ -156,7 +155,6 @@ public final class Generate {
         }
 
         generateP2P("P2OStorage.template", "", "ElementLockedStorage.java", inputPathAbstract, outputPathStorage, WRAPPERS_OBJECT_AND_NONE, ONLY_OBJECT);
-        generateP2P("P2PStorage.template", "", "ElementLockedStorage.java", inputPathAbstract, outputPathStorage, WRAPPERS_OBJECT_AND_NONE, WRAPPERS_NO_OBJECT);
 
         generateP2P("P2OCache.template", "Abstract", "Cache.java", inputPathAbstract, outputPathAbstract, WRAPPERS_OBJECT_AND_NONE, ONLY_OBJECT);
         generateP2P("P2PCache.template", "Abstract", "Cache.java", inputPathAbstract, outputPathAbstract, WRAPPERS_OBJECT_AND_NONE, WRAPPERS_NO_OBJECT);
@@ -235,17 +233,8 @@ public final class Generate {
             }
         }
 
-        generate("O2PWeakTroveStorage.template", "Object", "WeakTroveStorage.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_OBJECT);
-        generate("O2PTupleWeakTroveStorage.template", "Tuple", "WeakTroveStorage.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_OBJECT);
-
-        //generate("O2PTroveStorage.template", "Object", "TroveStorage.java", inputPathImpl, outputPathImpl, WRAPPERS_FULL);
         generate("P2OTroveStorage.template", "", "ObjectTroveStorage.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_BOOLEAN);
-        generate("B2PTroveStorage.template", "Boolean", "TroveStorage.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_BOOLEAN);
-        generateP2P("P2PTroveStorage.template", "", "TroveStorage.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_BOOLEAN, WRAPPERS_NO_OBJECT);
-        generateP("O2PTroveStorage.template", "Object", "TroveStorage.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_OBJECT);
 
-        // BooleanCacheImpl is manually written
-        generate("PStorageImpl.template", "", "StorageImpl.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_OBJECT);
         generate("PInlineCacheImpl.template", "", "InlineCacheImpl.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_OBJECT);
         generate("PInlineDependencyCache.template", "", "InlineDependencyCache.java", inputPathImpl, outputPathImpl, WRAPPERS_OBJECT);
     }
@@ -279,8 +268,6 @@ public final class Generate {
         }
 
         generate("P2OCacheTest.template", "", "ObjectCacheTest.java", inputPathImpl, outputPathImpl, WRAPPERS_OBJECT);
-        generateP2P("P2PCacheTest.template", "", "CacheTest.java", inputPathImpl, outputPathImpl, WRAPPERS_OBJECT, WRAPPERS_NO_OBJECT);
-        generate("PCacheTest.template", "", "CacheTest.java", inputPathImpl, outputPathImpl, WRAPPERS_NO_OBJECT);
     }
 
     private static void generate(String templateName, String pathPrefix, String pathSuffix, File inputPath, File outputPath, WrapperInfo[] wrappers) throws IOException {
@@ -336,6 +323,8 @@ public final class Generate {
         for (WrapperInfo e : wrappers1) {
             for (WrapperInfo f : wrappers2) {
                 String out = replaceName(e, f, template);
+                out = replaceName(e, out);
+                out = replaceName(f, out);
 
                 out = e.replaceE(out);
                 out = f.replaceF(out);

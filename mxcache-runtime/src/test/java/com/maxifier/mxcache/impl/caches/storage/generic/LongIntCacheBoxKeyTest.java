@@ -35,9 +35,9 @@ public class LongIntCacheBoxKeyTest {
     };
 
     public void testMiss() {
-        ObjectIntStorage storage = mock(ObjectIntStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(42L)).thenReturn(false);
+        when(storage.load(42L)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         LongIntCache cache = (LongIntCache) Wrapping.getFactory(new Signature(Object.class, int.class), new Signature(long.class, int.class), false).
@@ -54,19 +54,18 @@ public class LongIntCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42L);
+        verify(storage, atLeast(1)).load(42L);
         verify(storage).save(42L, 42);
         verifyNoMoreInteractions(storage);
     }
 
     public void testHit() {
-        ObjectIntStorage storage = mock(ObjectIntStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         LongIntCache cache = (LongIntCache) Wrapping.getFactory(new Signature(Object.class, int.class), new Signature(long.class, int.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated(42L)).thenReturn(true);
         when(storage.load(42L)).thenReturn(42);
         when(storage.size()).thenReturn(1);
 
@@ -80,13 +79,13 @@ public class LongIntCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42L);
+        verify(storage, atLeast(1)).load(42L);
         verify(storage).load(42L);
         verifyNoMoreInteractions(storage);
     }
 
     public void testClear() {
-        ObjectIntStorage storage = mock(ObjectIntStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         LongIntCache cache = (LongIntCache) Wrapping.getFactory(new Signature(Object.class, int.class), new Signature(long.class, int.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -99,10 +98,9 @@ public class LongIntCacheBoxKeyTest {
     }
 
     public void testSetDuringDependencyNodeOperations() {
-        ObjectIntStorage storage = mock(ObjectIntStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(42L)).thenReturn(false, true);
-        when(storage.load(42L)).thenReturn(42);
+        when(storage.load(42L)).thenReturn(Storage.UNDEFINED, 42);
 
         LongIntCalculatable calculatable = mock(LongIntCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -120,17 +118,16 @@ public class LongIntCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated(42L);
-        verify(storage).load(42L);
+        verify(storage, times(2)).load(42L);
         verifyNoMoreInteractions(storage);
         verify(calculatable).calculate("123", 42L);
         verifyNoMoreInteractions(calculatable);
     }
 
     public void testResetStat() {
-        ObjectIntStorage storage = mock(ObjectIntStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(42L)).thenReturn(false);
+        when(storage.load(42L)).thenReturn(Storage.UNDEFINED);
 
         LongIntCache cache = (LongIntCache) Wrapping.getFactory(new Signature(Object.class, int.class), new Signature(long.class, int.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -149,7 +146,7 @@ public class LongIntCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated(42L);
+        verify(storage, atLeast(1)).load(42L);
         verify(storage).save(42L, 42);
         verifyNoMoreInteractions(storage);
     }

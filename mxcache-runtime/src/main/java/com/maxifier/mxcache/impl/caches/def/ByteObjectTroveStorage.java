@@ -14,7 +14,7 @@ import static com.maxifier.mxcache.impl.caches.def.TroveHelper.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class ByteObjectTroveStorage<T> extends gnu.trove.map.hash.TByteObjectHashMap<Object> implements ByteObjectStorage<T> {
+public class ByteObjectTroveStorage extends gnu.trove.map.hash.TByteObjectHashMap<Object> implements ByteObjectStorage {
     @Override
     public Object load(byte key) {
         Object v = get(key);
@@ -28,7 +28,7 @@ public class ByteObjectTroveStorage<T> extends gnu.trove.map.hash.TByteObjectHas
     }
 
     @Override
-    public void save(byte key, T value) {
+    public void save(byte key, Object value) {
         put(key, value == null ? NULL_REPLACEMENT : value);
     }
 }

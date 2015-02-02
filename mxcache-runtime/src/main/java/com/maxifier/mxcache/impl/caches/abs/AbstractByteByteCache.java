@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractByteByteCache extends AbstractCache implements ByteByteCache, ByteByteStorage {
+public abstract class AbstractByteByteCache extends AbstractCache implements ByteByteCache, ByteObjectStorage {
     private final ByteByteCalculatable calculatable;
 
     public AbstractByteByteCache(Object owner, ByteByteCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractByteByteCache extends AbstractCache implements Byt
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public byte getOrCreate(byte o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Byte)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractByteByteCache extends AbstractCache implements Byt
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Byte)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractByteByteCache extends AbstractCache implements Byt
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected byte create(byte o) {
         long start = System.nanoTime();
         byte t = calculatable.calculate(owner, o);

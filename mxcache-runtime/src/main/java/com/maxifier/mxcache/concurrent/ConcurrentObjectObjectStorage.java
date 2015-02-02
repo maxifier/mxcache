@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com) (2014-09-06 15:25)
  */
-public class ConcurrentObjectObjectStorage<K, V> implements ObjectObjectElementLockedStorage<K, V> {
+public class ConcurrentObjectObjectStorage<K> implements ObjectObjectElementLockedStorage<K> {
     private static final float LOAD_FACTOR = 0.75f;
 
     // Read-write lock is used to guard overall locking on cache cleaning
@@ -88,7 +88,7 @@ public class ConcurrentObjectObjectStorage<K, V> implements ObjectObjectElementL
     }
 
     @Override
-    public void save(K o, V v) {
+    public void save(K o, Object v) {
         concurrentHashMap.put(o, v == null ? TroveHelper.NULL_REPLACEMENT : v);
     }
 }

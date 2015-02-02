@@ -169,7 +169,7 @@ public class TransformGeneratorManagerUTest {
         ctor.returnValue();
         ctor.endMethod();
 
-        Class output = t.getTransformedType(input);
+        Class output = t.getOutType();
 
         MxGeneratorAdapter forward = w.defineMethod(ACC_PUBLIC, Method.getMethod("Object forward(Object)"));
         forward.start();
@@ -276,8 +276,13 @@ public class TransformGeneratorManagerUTest {
                 }
 
                 @Override
-                public Class getTransformedType(Class in) {
+                public Class getOutType() {
                     return String.class;
+                }
+
+                @Override
+                public Class getInType() {
+                    return Object.class;
                 }
             };
         }

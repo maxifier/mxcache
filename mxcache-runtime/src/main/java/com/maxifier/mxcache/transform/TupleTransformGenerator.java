@@ -72,7 +72,7 @@ class TupleTransformGenerator implements TransformGenerator {
         }
         for (int i = 0, j = 0; i < transformGenerators.length; i++) {
             TransformGenerator transformGenerator = transformGenerators[i];
-            if (transformGenerator != TransformGenerator.IGNORE_TRANSFORM) {
+            if (!(transformGenerator instanceof IgnoreTransformGenerator)) {
                 Type from = Type.getType(inTypes[i]);
                 Type to = Type.getType(outTypes[j]);
                 boolean last = j == outTypes.length - 1;
@@ -156,8 +156,12 @@ class TupleTransformGenerator implements TransformGenerator {
     }
 
     @Override
-    public Class getTransformedType(Class in) {
-        assert in == tupleIn: "Tuple type should match " + in + " and " + tupleIn;
+    public Class getInType() {
+        return tupleIn;
+    }
+
+    @Override
+    public Class getOutType() {
         return container;
     }
 

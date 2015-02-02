@@ -9,8 +9,6 @@ import com.maxifier.mxcache.provider.Signature;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class ScalarTransformGenerator implements TransformGenerator {
-    public abstract Class getTransformedType(Class in);
-
     @Override
     public Signature transformKey(Signature in) {
         if (in.getContainer() == null) {
@@ -20,11 +18,11 @@ public abstract class ScalarTransformGenerator implements TransformGenerator {
         if (keyCount != 1) {
             throw new UnsupportedOperationException("Scalar transform cannot be applied to tuple");
         }
-        return in.overrideKey(getTransformedType(in.getKey(0)));
+        return in.overrideKey(getOutType());
     }
 
     @Override
     public Signature transformValue(Signature in) {
-        return in.overrideValue(getTransformedType(in.getValue()));
+        return in.overrideValue(getOutType());
     }
 }

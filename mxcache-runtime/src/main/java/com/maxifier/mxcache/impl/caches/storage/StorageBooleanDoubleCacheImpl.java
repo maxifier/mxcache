@@ -23,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageBooleanDoubleCacheImpl extends AbstractBooleanDoubleCache implements StorageHolder<BooleanDoubleStorage> {
+public class StorageBooleanDoubleCacheImpl extends AbstractBooleanDoubleCache implements StorageHolder<BooleanObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private BooleanDoubleStorage storage;
+    private BooleanObjectStorage storage;
 
     public StorageBooleanDoubleCacheImpl(Object owner, BooleanDoubleCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull BooleanDoubleStorage storage) {
+    public void setStorage(@Nonnull BooleanObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -41,17 +41,12 @@ public class StorageBooleanDoubleCacheImpl extends AbstractBooleanDoubleCache im
     }
 
     @Override
-    public boolean isCalculated(boolean key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public double load(boolean key) {
+    public Object load(boolean key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(boolean key, double value) {
+    public void save(boolean key, Object value) {
         storage.save(key, value);
     }
 

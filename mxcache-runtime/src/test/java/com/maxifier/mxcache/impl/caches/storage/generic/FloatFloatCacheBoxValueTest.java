@@ -79,7 +79,7 @@ public class FloatFloatCacheBoxValueTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(2)).load(42f);
+        verify(storage, atLeast(1)).load(42f);
         verifyNoMoreInteractions(storage);
     }
 

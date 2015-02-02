@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractIntByteCache extends AbstractCache implements IntByteCache, IntByteStorage {
+public abstract class AbstractIntByteCache extends AbstractCache implements IntByteCache, IntObjectStorage {
     private final IntByteCalculatable calculatable;
 
     public AbstractIntByteCache(Object owner, IntByteCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractIntByteCache extends AbstractCache implements IntB
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public byte getOrCreate(int o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Byte)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractIntByteCache extends AbstractCache implements IntB
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Byte)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractIntByteCache extends AbstractCache implements IntB
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected byte create(int o) {
         long start = System.nanoTime();
         byte t = calculatable.calculate(owner, o);

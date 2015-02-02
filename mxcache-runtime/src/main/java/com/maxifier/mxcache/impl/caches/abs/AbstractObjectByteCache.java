@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractObjectByteCache<E> extends AbstractCache implements ObjectByteCache<E>, ObjectByteStorage<E> {
+public abstract class AbstractObjectByteCache<E> extends AbstractCache implements ObjectByteCache<E>, ObjectObjectStorage<E> {
     private final ObjectByteCalculatable<E> calculatable;
 
     public AbstractObjectByteCache(Object owner, ObjectByteCalculatable<E> calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractObjectByteCache<E> extends AbstractCache implement
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public byte getOrCreate(E o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Byte)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractObjectByteCache<E> extends AbstractCache implement
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Byte)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractObjectByteCache<E> extends AbstractCache implement
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected byte create(E o) {
         long start = System.nanoTime();
         byte t = calculatable.calculate(owner, o);

@@ -11,10 +11,7 @@ import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.proxy.ProxyFactory;
 import com.maxifier.mxcache.proxy.Resolvable;
-import com.maxifier.mxcache.transform.TransformGeneratorFactoryImpl;
-import com.maxifier.mxcache.transform.ReversibleTransform;
-import com.maxifier.mxcache.transform.Transform;
-import com.maxifier.mxcache.transform.TransformGenerator;
+import com.maxifier.mxcache.transform.*;
 import org.mockito.Matchers;
 import org.testng.annotations.Test;
 
@@ -60,7 +57,7 @@ public class ProxyingCacheGeneratorUTest {
     public void testObject2Object() {
         ProxyFactory<String> factory = spy(new TestProxyFactory());
         TestCalculatable1 calculatable = spy(new TestCalculatable1());
-        ObjectObjectCache<String, String> cache = ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, String.class, String.class, ObjectObjectCache.class, TransformGenerator.NO_TRANSFORM);
+        ObjectObjectCache<String, String> cache = ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, String.class, String.class, ObjectObjectCache.class, new EmptyTransformGenerator(Object.class));
         verifyZeroInteractions(factory);
         verifyZeroInteractions(calculatable);
         assertEquals(cache.getOrCreate("123"), "__123");

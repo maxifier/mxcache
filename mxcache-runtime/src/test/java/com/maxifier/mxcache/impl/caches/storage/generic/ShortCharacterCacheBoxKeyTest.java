@@ -35,9 +35,9 @@ public class ShortCharacterCacheBoxKeyTest {
     };
 
     public void testMiss() {
-        ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated((short)42)).thenReturn(false);
+        when(storage.load((short)42)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         ShortCharacterCache cache = (ShortCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(short.class, char.class), false).
@@ -54,19 +54,18 @@ public class ShortCharacterCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated((short)42);
+        verify(storage, atLeast(1)).load((short)42);
         verify(storage).save((short)42, '*');
         verifyNoMoreInteractions(storage);
     }
 
     public void testHit() {
-        ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         ShortCharacterCache cache = (ShortCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(short.class, char.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated((short)42)).thenReturn(true);
         when(storage.load((short)42)).thenReturn('*');
         when(storage.size()).thenReturn(1);
 
@@ -80,13 +79,13 @@ public class ShortCharacterCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated((short)42);
+        verify(storage, atLeast(1)).load((short)42);
         verify(storage).load((short)42);
         verifyNoMoreInteractions(storage);
     }
 
     public void testClear() {
-        ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         ShortCharacterCache cache = (ShortCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(short.class, char.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -99,10 +98,9 @@ public class ShortCharacterCacheBoxKeyTest {
     }
 
     public void testSetDuringDependencyNodeOperations() {
-        ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated((short)42)).thenReturn(false, true);
-        when(storage.load((short)42)).thenReturn('*');
+        when(storage.load((short)42)).thenReturn(Storage.UNDEFINED, '*');
 
         ShortCharacterCalculatable calculatable = mock(ShortCharacterCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -120,17 +118,16 @@ public class ShortCharacterCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated((short)42);
-        verify(storage).load((short)42);
+        verify(storage, times(2)).load((short)42);
         verifyNoMoreInteractions(storage);
         verify(calculatable).calculate("123", (short)42);
         verifyNoMoreInteractions(calculatable);
     }
 
     public void testResetStat() {
-        ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated((short)42)).thenReturn(false);
+        when(storage.load((short)42)).thenReturn(Storage.UNDEFINED);
 
         ShortCharacterCache cache = (ShortCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(short.class, char.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -149,7 +146,7 @@ public class ShortCharacterCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated((short)42);
+        verify(storage, atLeast(1)).load((short)42);
         verify(storage).save((short)42, '*');
         verifyNoMoreInteractions(storage);
     }

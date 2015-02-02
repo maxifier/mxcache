@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractDoubleCharacterCache extends AbstractCache implements DoubleCharacterCache, DoubleCharacterStorage {
+public abstract class AbstractDoubleCharacterCache extends AbstractCache implements DoubleCharacterCache, DoubleObjectStorage {
     private final DoubleCharacterCalculatable calculatable;
 
     public AbstractDoubleCharacterCache(Object owner, DoubleCharacterCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractDoubleCharacterCache extends AbstractCache impleme
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public char getOrCreate(double o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Character)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractDoubleCharacterCache extends AbstractCache impleme
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Character)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractDoubleCharacterCache extends AbstractCache impleme
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected char create(double o) {
         long start = System.nanoTime();
         char t = calculatable.calculate(owner, o);

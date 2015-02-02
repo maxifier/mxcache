@@ -26,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageCharacterObjectCacheImpl<F> extends AbstractCharacterObjectCache<F> implements StorageHolder<CharacterObjectElementLockedStorage<F>> {
-    private CharacterObjectElementLockedStorage<F> storage;
+public class StorageCharacterObjectCacheImpl<F> extends AbstractCharacterObjectCache<F> implements StorageHolder<CharacterObjectElementLockedStorage> {
+    private CharacterObjectElementLockedStorage storage;
 
     public StorageCharacterObjectCacheImpl(Object owner, CharacterObjectCalculatable<F> calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull CharacterObjectElementLockedStorage<F> storage) {
+    public void setStorage(@Nonnull CharacterObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -47,7 +47,7 @@ public class StorageCharacterObjectCacheImpl<F> extends AbstractCharacterObjectC
     }
 
     @Override
-    public void save(char key, F value) {
+    public void save(char key, Object value) {
         storage.save(key, value);
     }
 
