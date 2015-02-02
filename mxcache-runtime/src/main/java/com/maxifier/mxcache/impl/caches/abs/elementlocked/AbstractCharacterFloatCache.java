@@ -21,7 +21,7 @@ import com.maxifier.mxcache.storage.elementlocked.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractCharacterFloatCache extends AbstractElementLockedCache implements CharacterFloatCache, CharacterFloatElementLockedStorage {
+public abstract class AbstractCharacterFloatCache extends AbstractElementLockedCache implements CharacterFloatCache, CharacterObjectElementLockedStorage {
     private final CharacterFloatCalculatable calculatable;
 
     public AbstractCharacterFloatCache(Object owner, CharacterFloatCalculatable calculatable, MutableStatistics statistics) {
@@ -30,18 +30,19 @@ public abstract class AbstractCharacterFloatCache extends AbstractElementLockedC
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public float getOrCreate(char o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock(o);
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Float)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -57,9 +58,10 @@ public abstract class AbstractCharacterFloatCache extends AbstractElementLockedC
                                 } finally {
                                     lock(o);
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Float)v;
                                 }
                             }
                         }
@@ -73,6 +75,7 @@ public abstract class AbstractCharacterFloatCache extends AbstractElementLockedC
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected float create(char key) {
         long start = System.nanoTime();
         float t = calculatable.calculate(owner, key);

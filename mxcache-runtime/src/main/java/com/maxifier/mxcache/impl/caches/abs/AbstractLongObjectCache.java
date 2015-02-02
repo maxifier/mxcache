@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractLongObjectCache<F> extends AbstractCache implements LongObjectCache<F>, LongObjectStorage<F> {
+public abstract class AbstractLongObjectCache<F> extends AbstractCache implements LongObjectCache<F>, LongObjectStorage {
     private final LongObjectCalculatable<F> calculatable;
 
     public AbstractLongObjectCache(Object owner, LongObjectCalculatable<F> calculatable, MutableStatistics statistics) {

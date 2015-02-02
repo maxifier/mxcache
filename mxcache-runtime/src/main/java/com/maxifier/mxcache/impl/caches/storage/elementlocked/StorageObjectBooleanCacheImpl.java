@@ -26,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageObjectBooleanCacheImpl<E> extends AbstractObjectBooleanCache<E> implements StorageHolder<ObjectBooleanElementLockedStorage<E>> {
-    private ObjectBooleanElementLockedStorage<E> storage;
+public class StorageObjectBooleanCacheImpl<E> extends AbstractObjectBooleanCache<E> implements StorageHolder<ObjectObjectElementLockedStorage<E>> {
+    private ObjectObjectElementLockedStorage<E> storage;
 
     public StorageObjectBooleanCacheImpl(Object owner, ObjectBooleanCalculatable<E> calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull ObjectBooleanElementLockedStorage<E> storage) {
+    public void setStorage(@Nonnull ObjectObjectElementLockedStorage<E> storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -42,17 +42,12 @@ public class StorageObjectBooleanCacheImpl<E> extends AbstractObjectBooleanCache
     }
 
     @Override
-    public boolean isCalculated(E key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public boolean load(E key) {
+    public Object load(E key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(E key, boolean value) {
+    public void save(E key, Object value) {
         storage.save(key, value);
     }
 

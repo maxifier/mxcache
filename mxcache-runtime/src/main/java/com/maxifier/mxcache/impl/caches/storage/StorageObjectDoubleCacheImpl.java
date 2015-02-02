@@ -23,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageObjectDoubleCacheImpl<E> extends AbstractObjectDoubleCache<E> implements StorageHolder<ObjectDoubleStorage<E>> {
+public class StorageObjectDoubleCacheImpl<E> extends AbstractObjectDoubleCache<E> implements StorageHolder<ObjectObjectStorage<E>> {
     private static final long serialVersionUID = 100L;
 
-    private ObjectDoubleStorage<E> storage;
+    private ObjectObjectStorage<E> storage;
 
     public StorageObjectDoubleCacheImpl(Object owner, ObjectDoubleCalculatable<E> calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull ObjectDoubleStorage<E> storage) {
+    public void setStorage(@Nonnull ObjectObjectStorage<E> storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -41,17 +41,12 @@ public class StorageObjectDoubleCacheImpl<E> extends AbstractObjectDoubleCache<E
     }
 
     @Override
-    public boolean isCalculated(E key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public double load(E key) {
+    public Object load(E key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(E key, double value) {
+    public void save(E key, Object value) {
         storage.save(key, value);
     }
 

@@ -14,7 +14,7 @@ import static com.maxifier.mxcache.impl.caches.def.TroveHelper.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class FloatObjectTroveStorage<T> extends gnu.trove.map.hash.TFloatObjectHashMap<Object> implements FloatObjectStorage<T> {
+public class FloatObjectTroveStorage extends gnu.trove.map.hash.TFloatObjectHashMap<Object> implements FloatObjectStorage {
     @Override
     public Object load(float key) {
         Object v = get(key);
@@ -28,7 +28,7 @@ public class FloatObjectTroveStorage<T> extends gnu.trove.map.hash.TFloatObjectH
     }
 
     @Override
-    public void save(float key, T value) {
+    public void save(float key, Object value) {
         put(key, value == null ? NULL_REPLACEMENT : value);
     }
 }

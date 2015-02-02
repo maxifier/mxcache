@@ -23,7 +23,7 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache implements #EG##FG#Cache, #EG##FG#ElementLockedStorage {
+public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache implements #EG##FG#Cache, #EG#ObjectElementLockedStorage {
     private final #EG##FG#Calculatable calculatable;
 
     public Abstract#E##F#Cache(Object owner, #EG##FG#Calculatable calculatable, MutableStatistics statistics) {

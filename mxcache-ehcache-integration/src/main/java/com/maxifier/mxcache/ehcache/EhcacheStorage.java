@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class EhcacheStorage<E, F> implements ObjectObjectElementLockedStorage<E, F> {
+public class EhcacheStorage<E> implements ObjectObjectElementLockedStorage<E> {
     private static final Logger logger = LoggerFactory.getLogger(EhcacheStorage.class);
 
     private static final String CLASSPATH_PREFIX = "classpath://";
@@ -110,7 +110,7 @@ public class EhcacheStorage<E, F> implements ObjectObjectElementLockedStorage<E,
     }
 
     @Override
-    public void save(E key, F value) {
+    public void save(E key, Object value) {
         underlyingCache.put(new Element(key, value));
     }
 

@@ -23,7 +23,7 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache implements #EG##FG#Cache, #EG##FG#ElementLockedStorage {
+public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache implements #EG##FG#Cache, #EG#ObjectElementLockedStorage {
     private final #EG##FG#Calculatable calculatable;
 
     public Abstract#E##F#Cache(Object owner, #EG##FG#Calculatable calculatable, MutableStatistics statistics) {
@@ -32,6 +32,7 @@ public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache i
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public #fg# getOrCreate(#IF_E##eg# o#ENDIF#) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner#IF_E#, o#ENDIF#);
@@ -41,12 +42,12 @@ public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache i
                 lock.lock();
             }#ENDIF#
             try {
-                if (isCalculated(#IF_E#o#ENDIF#)) {
+                Object v = load(#IF_E#o#ENDIF#);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(#IF_E#o#ENDIF#);
+                    return (#FT#)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -66,9 +67,10 @@ public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache i
                                         lock.lock();
                                     }#ENDIF#
                                 }
-                                if (isCalculated(#IF_E#o#ENDIF#)) {
+                                v = load(#IF_E#o#ENDIF#);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(#IF_E#o#ENDIF#);
+                                    return (#FT#)v;
                                 }
                             }
                         }
@@ -84,6 +86,7 @@ public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache i
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected #fg# create(#IF_E##eg# key#ENDIF#) {
         long start = System.nanoTime();
         #fg# t = calculatable.calculate(owner#IF_E#, key#ENDIF#);

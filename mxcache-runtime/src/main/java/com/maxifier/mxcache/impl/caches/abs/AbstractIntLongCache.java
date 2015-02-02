@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractIntLongCache extends AbstractCache implements IntLongCache, IntLongStorage {
+public abstract class AbstractIntLongCache extends AbstractCache implements IntLongCache, IntObjectStorage {
     private final IntLongCalculatable calculatable;
 
     public AbstractIntLongCache(Object owner, IntLongCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractIntLongCache extends AbstractCache implements IntL
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public long getOrCreate(int o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Long)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractIntLongCache extends AbstractCache implements IntL
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Long)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractIntLongCache extends AbstractCache implements IntL
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected long create(int o) {
         long start = System.nanoTime();
         long t = calculatable.calculate(owner, o);

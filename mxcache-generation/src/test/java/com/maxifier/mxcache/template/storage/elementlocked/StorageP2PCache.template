@@ -26,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class Storage#EG##FG#CacheImpl extends Abstract#EG##FG#Cache implements StorageHolder<#EG##FG#ElementLockedStorage> {
-    private #EG##FG#ElementLockedStorage storage;
+public class Storage#EG##FG#CacheImpl extends Abstract#EG##FG#Cache implements StorageHolder<#EG#ObjectElementLockedStorage> {
+    private #EG#ObjectElementLockedStorage storage;
 
     public Storage#E##F#CacheImpl(Object owner, #EG##FG#Calculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull #EG##FG#ElementLockedStorage storage) {
+    public void setStorage(@Nonnull #EG#ObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -42,17 +42,12 @@ public class Storage#EG##FG#CacheImpl extends Abstract#EG##FG#Cache implements S
     }
 
     @Override
-    public boolean isCalculated(#IF_E##eg# key#ENDIF#) {
-        return storage.isCalculated(#IF_E#key#ENDIF#);
-    }
-
-    @Override
-    public #fg# load(#IF_E##eg# key#ENDIF#) {
+    public Object load(#IF_E##eg# key#ENDIF#) {
         return storage.load(#IF_E#key#ENDIF#);
     }
 
     @Override
-    public void save(#IF_E##eg# key, #ENDIF##fg# value) {
+    public void save(#IF_E##eg# key, #ENDIF#Object value) {
         storage.save(#IF_E#key, #ENDIF#value);
     }
 

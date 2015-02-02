@@ -24,7 +24,13 @@ public interface Storage {
     };
 
     /** This object is returned by reference-value storages if no value is set for given key */
-    Object UNDEFINED = new Serializable() {
+    Object UNDEFINED = new Undefined();
+
+    void clear();
+
+    int size();
+
+    class Undefined implements Serializable {
         private static final long serialVersionUID = 0x1000L;
 
         @Override
@@ -41,9 +47,5 @@ public interface Storage {
         private Object readResolve() {
             return UNDEFINED;
         }
-    };
-
-    void clear();
-
-    int size();
+    }
 }

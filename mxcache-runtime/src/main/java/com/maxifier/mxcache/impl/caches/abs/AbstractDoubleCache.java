@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractDoubleCache extends AbstractCache implements DoubleCache, DoubleStorage {
+public abstract class AbstractDoubleCache extends AbstractCache implements DoubleCache, ObjectStorage {
     private final DoubleCalculatable calculatable;
 
     public AbstractDoubleCache(Object owner, DoubleCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractDoubleCache extends AbstractCache implements Doubl
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public double getOrCreate() {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
         } else {
             lock();
             try {
-                if (isCalculated()) {
+                Object v = load();
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load();
+                    return (Double)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractDoubleCache extends AbstractCache implements Doubl
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated()) {
+                                v = load();
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load();
+                                    return (Double)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractDoubleCache extends AbstractCache implements Doubl
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected double create() {
         long start = System.nanoTime();
         double t = calculatable.calculate(owner);

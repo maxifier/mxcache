@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractObjectIntCache<E> extends AbstractCache implements ObjectIntCache<E>, ObjectIntStorage<E> {
+public abstract class AbstractObjectIntCache<E> extends AbstractCache implements ObjectIntCache<E>, ObjectObjectStorage<E> {
     private final ObjectIntCalculatable<E> calculatable;
 
     public AbstractObjectIntCache(Object owner, ObjectIntCalculatable<E> calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractObjectIntCache<E> extends AbstractCache implements
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public int getOrCreate(E o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Integer)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractObjectIntCache<E> extends AbstractCache implements
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Integer)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractObjectIntCache<E> extends AbstractCache implements
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected int create(E o) {
         long start = System.nanoTime();
         int t = calculatable.calculate(owner, o);

@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractShortShortCache extends AbstractCache implements ShortShortCache, ShortShortStorage {
+public abstract class AbstractShortShortCache extends AbstractCache implements ShortShortCache, ShortObjectStorage {
     private final ShortShortCalculatable calculatable;
 
     public AbstractShortShortCache(Object owner, ShortShortCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractShortShortCache extends AbstractCache implements S
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public short getOrCreate(short o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Short)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractShortShortCache extends AbstractCache implements S
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Short)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractShortShortCache extends AbstractCache implements S
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected short create(short o) {
         long start = System.nanoTime();
         short t = calculatable.calculate(owner, o);

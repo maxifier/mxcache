@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractCharacterCache extends AbstractCache implements CharacterCache, CharacterStorage {
+public abstract class AbstractCharacterCache extends AbstractCache implements CharacterCache, ObjectStorage {
     private final CharacterCalculatable calculatable;
 
     public AbstractCharacterCache(Object owner, CharacterCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractCharacterCache extends AbstractCache implements Ch
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public char getOrCreate() {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
         } else {
             lock();
             try {
-                if (isCalculated()) {
+                Object v = load();
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load();
+                    return (Character)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractCharacterCache extends AbstractCache implements Ch
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated()) {
+                                v = load();
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load();
+                                    return (Character)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractCharacterCache extends AbstractCache implements Ch
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected char create() {
         long start = System.nanoTime();
         char t = calculatable.calculate(owner);

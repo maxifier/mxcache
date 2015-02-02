@@ -4,6 +4,7 @@
 package com.maxifier.mxcache.transform;
 
 import com.maxifier.mxcache.CacheFactory;
+import com.maxifier.mxcache.tuple.TupleGenerator;
 
 import javax.annotation.Nonnull;
 
@@ -38,7 +39,7 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
             Class[] params = method.getParameterTypes();
             switch (params.length) {
                 case 0:
-                    return TransformGenerator.NO_TRANSFORM;
+                    return new EmptyTransformGenerator(Object.class);
                 case 1:
                     return forArgument(method.getParameterAnnotations()[0], params[0]);
                 default:
@@ -144,7 +145,7 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
         @Override
         TransformGenerator get(Annotation[] allAnnotations) {
             TransformGenerator forward = getTransformator(paramType, annotation.forward());
-            TransformGenerator backward = getTransformator(forward.getTransformedType(paramType), annotation.backward());
+            TransformGenerator backward = getTransformator(forward.getOutType(), annotation.backward());
             return new CompositeTransformGenerator(forward, backward);
         }
     }
@@ -160,7 +161,7 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
             }
         }
         if (refs.isEmpty()) {
-            return TransformGenerator.NO_TRANSFORM;
+            return new EmptyTransformGenerator(argType);
         }
         if (refs.size() > 1) {
             throw new InvalidTransformAnnotations("Too many transform annotations: " + refs);
@@ -171,7 +172,7 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
     @Nullable
     private TransformGeneratorRef forAnnotation(Class argType, Annotation annotation) {
         if (annotation instanceof Ignore) {
-            return new ConstTransformGeneratorRef<Ignore>((Ignore)annotation, argType, TransformGenerator.IGNORE_TRANSFORM);
+            return new ConstTransformGeneratorRef<Ignore>((Ignore)annotation, argType, new IgnoreTransformGenerator(argType));
         }
         if (annotation instanceof Transform) {
             return new SimpleTransformGeneratorRef((Transform) annotation, argType);
@@ -218,18 +219,19 @@ public final class TransformGeneratorFactoryImpl implements TransformGeneratorFa
             Annotation[] paramAnnotation = paramAnnotations[i];
             Class paramType = params[i];
             TransformGenerator transformGenerator = forArgument(paramAnnotation, paramType);
-            if (transformGenerator == TransformGenerator.NO_TRANSFORM) {
+            if (transformGenerator instanceof EmptyTransformGenerator) {
                 transformedParams[outParams++] = paramType;
             } else {
                 onlyNoTransforms = false;
                 transformGenerators[i] = transformGenerator;
-                if (transformGenerator != TransformGenerator.IGNORE_TRANSFORM) {
-                    transformedParams[outParams++] = transformGenerator.getTransformedType(paramType);
+                Class<?> outType = transformGenerator.getOutType();
+                if (outType != null) {
+                    transformedParams[outParams++] = outType;
                 }
             }
         }
         if (onlyNoTransforms) {
-            return TransformGenerator.NO_TRANSFORM;
+            return new EmptyTransformGenerator(TupleGenerator.getTupleClass(params));
         }
 
         transformedParams = outParams != transformedParams.length ? Arrays.copyOf(transformedParams, outParams) : transformedParams;

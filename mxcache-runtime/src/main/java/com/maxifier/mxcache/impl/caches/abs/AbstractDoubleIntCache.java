@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractDoubleIntCache extends AbstractCache implements DoubleIntCache, DoubleIntStorage {
+public abstract class AbstractDoubleIntCache extends AbstractCache implements DoubleIntCache, DoubleObjectStorage {
     private final DoubleIntCalculatable calculatable;
 
     public AbstractDoubleIntCache(Object owner, DoubleIntCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractDoubleIntCache extends AbstractCache implements Do
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public int getOrCreate(double o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Integer)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractDoubleIntCache extends AbstractCache implements Do
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Integer)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractDoubleIntCache extends AbstractCache implements Do
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected int create(double o) {
         long start = System.nanoTime();
         int t = calculatable.calculate(owner, o);

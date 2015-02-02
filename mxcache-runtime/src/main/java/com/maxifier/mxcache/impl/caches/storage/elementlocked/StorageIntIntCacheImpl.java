@@ -26,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageIntIntCacheImpl extends AbstractIntIntCache implements StorageHolder<IntIntElementLockedStorage> {
-    private IntIntElementLockedStorage storage;
+public class StorageIntIntCacheImpl extends AbstractIntIntCache implements StorageHolder<IntObjectElementLockedStorage> {
+    private IntObjectElementLockedStorage storage;
 
     public StorageIntIntCacheImpl(Object owner, IntIntCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull IntIntElementLockedStorage storage) {
+    public void setStorage(@Nonnull IntObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -42,17 +42,12 @@ public class StorageIntIntCacheImpl extends AbstractIntIntCache implements Stora
     }
 
     @Override
-    public boolean isCalculated(int key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public int load(int key) {
+    public Object load(int key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(int key, int value) {
+    public void save(int key, Object value) {
         storage.save(key, value);
     }
 

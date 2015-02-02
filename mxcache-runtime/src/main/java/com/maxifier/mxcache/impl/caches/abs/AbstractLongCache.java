@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractLongCache extends AbstractCache implements LongCache, LongStorage {
+public abstract class AbstractLongCache extends AbstractCache implements LongCache, ObjectStorage {
     private final LongCalculatable calculatable;
 
     public AbstractLongCache(Object owner, LongCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractLongCache extends AbstractCache implements LongCac
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public long getOrCreate() {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
         } else {
             lock();
             try {
-                if (isCalculated()) {
+                Object v = load();
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load();
+                    return (Long)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractLongCache extends AbstractCache implements LongCac
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated()) {
+                                v = load();
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load();
+                                    return (Long)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractLongCache extends AbstractCache implements LongCac
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected long create() {
         long start = System.nanoTime();
         long t = calculatable.calculate(owner);

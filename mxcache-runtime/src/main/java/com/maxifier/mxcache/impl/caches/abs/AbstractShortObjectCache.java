@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractShortObjectCache<F> extends AbstractCache implements ShortObjectCache<F>, ShortObjectStorage<F> {
+public abstract class AbstractShortObjectCache<F> extends AbstractCache implements ShortObjectCache<F>, ShortObjectStorage {
     private final ShortObjectCalculatable<F> calculatable;
 
     public AbstractShortObjectCache(Object owner, ShortObjectCalculatable<F> calculatable, MutableStatistics statistics) {

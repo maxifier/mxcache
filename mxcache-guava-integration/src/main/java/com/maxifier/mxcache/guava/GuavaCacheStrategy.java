@@ -183,7 +183,7 @@ public class GuavaCacheStrategy implements CachingStrategy {
         }
 
         @Override
-        public void save(K key, V value) {
+        public void save(K key, Object value) {
             throw new UnsupportedOperationException();
         }
 

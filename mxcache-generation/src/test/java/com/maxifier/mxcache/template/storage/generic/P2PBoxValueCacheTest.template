@@ -79,7 +79,7 @@ public class #E##F#CacheBoxValueTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(2)).load(#ETEST#);
+        verify(storage, atLeast(1)).load(#ETEST#);
         verifyNoMoreInteractions(storage);
     }
 

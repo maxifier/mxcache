@@ -21,6 +21,13 @@ public final class ChainedTransformGenerator implements TransformGenerator {
     private ChainedTransformGenerator(@Nonnull TransformGenerator first, @Nonnull TransformGenerator second) {
         this.first = first;
         this.second = second;
+        if (!isCompatible(first.getOutType(), second.getInType())) {
+            throw new IllegalArgumentException("Type mismatch");
+        }
+    }
+
+    private static boolean isCompatible(Class<?> out, Class<?> in) {
+        return in == null ? out == null : in.isAssignableFrom(out);
     }
 
     @Override
@@ -53,8 +60,13 @@ public final class ChainedTransformGenerator implements TransformGenerator {
     }
 
     @Override
-    public Class getTransformedType(Class in) {
-        return second.getTransformedType(first.getTransformedType(in));
+    public Class getOutType() {
+        return second.getOutType();
+    }
+
+    @Override
+    public Class<?> getInType() {
+        return first.getInType();
     }
 
     @Override
@@ -92,13 +104,13 @@ public final class ChainedTransformGenerator implements TransformGenerator {
     }
 
     @Nonnull
-    public static TransformGenerator chain(@Nonnull TransformGenerator a, @Nonnull TransformGenerator b) {
-        if (a == NO_TRANSFORM) {
+    public static TransformGenerator chain(@Nonnull TransformGenerator first, @Nonnull TransformGenerator b) {
+        if (first instanceof EmptyTransformGenerator) {
             return b;
         }
-        if (b == NO_TRANSFORM) {
-            return a;
+        if (b instanceof EmptyTransformGenerator) {
+            return first;
         }
-        return new ChainedTransformGenerator(a, b);
+        return new ChainedTransformGenerator(first, b);
     }
 }

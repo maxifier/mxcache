@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractObjectShortCache<E> extends AbstractCache implements ObjectShortCache<E>, ObjectShortStorage<E> {
+public abstract class AbstractObjectShortCache<E> extends AbstractCache implements ObjectShortCache<E>, ObjectObjectStorage<E> {
     private final ObjectShortCalculatable<E> calculatable;
 
     public AbstractObjectShortCache(Object owner, ObjectShortCalculatable<E> calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractObjectShortCache<E> extends AbstractCache implemen
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public short getOrCreate(E o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Short)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractObjectShortCache<E> extends AbstractCache implemen
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Short)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractObjectShortCache<E> extends AbstractCache implemen
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected short create(E o) {
         long start = System.nanoTime();
         short t = calculatable.calculate(owner, o);

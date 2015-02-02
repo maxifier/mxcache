@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractBooleanIntCache extends AbstractCache implements BooleanIntCache, BooleanIntStorage {
+public abstract class AbstractBooleanIntCache extends AbstractCache implements BooleanIntCache, BooleanObjectStorage {
     private final BooleanIntCalculatable calculatable;
 
     public AbstractBooleanIntCache(Object owner, BooleanIntCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractBooleanIntCache extends AbstractCache implements B
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public int getOrCreate(boolean o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Integer)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractBooleanIntCache extends AbstractCache implements B
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Integer)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractBooleanIntCache extends AbstractCache implements B
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected int create(boolean o) {
         long start = System.nanoTime();
         int t = calculatable.calculate(owner, o);

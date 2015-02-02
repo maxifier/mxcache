@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractCharacterByteCache extends AbstractCache implements CharacterByteCache, CharacterByteStorage {
+public abstract class AbstractCharacterByteCache extends AbstractCache implements CharacterByteCache, CharacterObjectStorage {
     private final CharacterByteCalculatable calculatable;
 
     public AbstractCharacterByteCache(Object owner, CharacterByteCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractCharacterByteCache extends AbstractCache implement
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public byte getOrCreate(char o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Byte)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractCharacterByteCache extends AbstractCache implement
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Byte)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractCharacterByteCache extends AbstractCache implement
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected byte create(char o) {
         long start = System.nanoTime();
         byte t = calculatable.calculate(owner, o);

@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractDoubleFloatCache extends AbstractCache implements DoubleFloatCache, DoubleFloatStorage {
+public abstract class AbstractDoubleFloatCache extends AbstractCache implements DoubleFloatCache, DoubleObjectStorage {
     private final DoubleFloatCalculatable calculatable;
 
     public AbstractDoubleFloatCache(Object owner, DoubleFloatCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractDoubleFloatCache extends AbstractCache implements 
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public float getOrCreate(double o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Float)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractDoubleFloatCache extends AbstractCache implements 
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Float)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractDoubleFloatCache extends AbstractCache implements 
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected float create(double o) {
         long start = System.nanoTime();
         float t = calculatable.calculate(owner, o);

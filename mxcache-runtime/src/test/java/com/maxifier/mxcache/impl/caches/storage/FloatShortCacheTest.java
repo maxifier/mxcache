@@ -5,8 +5,8 @@ package com.maxifier.mxcache.impl.caches.storage;
 
 import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.impl.wrapping.Wrapping;
-import com.maxifier.mxcache.storage.FloatShortStorage;
-import com.maxifier.mxcache.storage.elementlocked.FloatShortElementLockedStorage;
+import com.maxifier.mxcache.storage.*;
+import com.maxifier.mxcache.storage.elementlocked.*;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.impl.MutableStatisticsImpl;
@@ -86,12 +86,12 @@ public class FloatShortCacheTest {
         }
     }
 
-    @Test(dataProvider = "both")
+    @Test(dataProvider = "both", timeOut = 60000 /*ms*/)
     public void testOccupied(boolean elementLocked) throws Throwable {
-        FloatShortStorage storage = createStorage(elementLocked);
+        FloatObjectStorage storage = createStorage(elementLocked);
         Occupied occupied = new Occupied();
 
-        when(storage.isCalculated(42f)).thenReturn(false);
+        when(storage.load(42f)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         final FloatShortCache cache = (FloatShortCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -138,12 +138,12 @@ public class FloatShortCacheTest {
         }
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42f);
+        verify(storage, atLeast(1)).load(42f);
         verify(storage).save(42f, (short)42);
         if (elementLocked) {
             
-                ((FloatShortElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
-                ((FloatShortElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
             
         }
         verifyNoMoreInteractions(storage);
@@ -151,9 +151,9 @@ public class FloatShortCacheTest {
 
     @Test(dataProvider = "both")
     public void testMiss(boolean elementLocked) {
-        FloatShortStorage storage = createStorage(elementLocked);
+        FloatObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated(42f)).thenReturn(false);
+        when(storage.load(42f)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         FloatShortCache cache = (FloatShortCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -170,12 +170,12 @@ public class FloatShortCacheTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42f);
+        verify(storage, atLeast(1)).load(42f);
         verify(storage).save(42f, (short)42);
         if (elementLocked) {
             
-                ((FloatShortElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
-                ((FloatShortElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
             
         }
         verifyNoMoreInteractions(storage);
@@ -183,13 +183,12 @@ public class FloatShortCacheTest {
 
     @Test(dataProvider = "both")
     public void testHit(boolean elementLocked) {
-        FloatShortStorage storage = createStorage(elementLocked);
+        FloatObjectStorage storage = createStorage(elementLocked);
 
         FloatShortCache cache = (FloatShortCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated(42f)).thenReturn(true);
         when(storage.load(42f)).thenReturn((short)42);
         when(storage.size()).thenReturn(1);
 
@@ -203,12 +202,12 @@ public class FloatShortCacheTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42f);
+        verify(storage, atLeast(1)).load(42f);
         verify(storage).load(42f);
         if (elementLocked) {
             
-                ((FloatShortElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
-                ((FloatShortElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
             
         }
         verifyNoMoreInteractions(storage);
@@ -216,7 +215,7 @@ public class FloatShortCacheTest {
 
     @Test(dataProvider = "both")
     public void testClear(boolean elementLocked) {
-        FloatShortStorage storage = createStorage(elementLocked);
+        FloatObjectStorage storage = createStorage(elementLocked);
 
         FloatShortCache cache = (FloatShortCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -230,10 +229,9 @@ public class FloatShortCacheTest {
 
     @Test(dataProvider = "both")
     public void testSetDuringDependencyNodeOperations(boolean elementLocked) {
-        FloatShortStorage storage = createStorage(elementLocked);
+        FloatObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated(42f)).thenReturn(false, true);
-        when(storage.load(42f)).thenReturn((short)42);
+        when(storage.load(42f)).thenReturn(Storage.UNDEFINED, (short)42);
 
         FloatShortCalculatable calculatable = mock(FloatShortCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -251,12 +249,11 @@ public class FloatShortCacheTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated(42f);
-        verify(storage).load(42f);
+        verify(storage, times(2)).load(42f);
         if (elementLocked) {
             
-                ((FloatShortElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
-                ((FloatShortElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
             
         }
         verifyNoMoreInteractions(storage);
@@ -266,9 +263,9 @@ public class FloatShortCacheTest {
 
     @Test(dataProvider = "both")
     public void testResetStat(boolean elementLocked) {
-        FloatShortStorage storage = createStorage(elementLocked);
+        FloatObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated(42f)).thenReturn(false);
+        when(storage.load(42f)).thenReturn(Storage.UNDEFINED);
 
         FloatShortCache cache = (FloatShortCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -287,22 +284,22 @@ public class FloatShortCacheTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated(42f);
+        verify(storage, atLeast(1)).load(42f);
         verify(storage).save(42f, (short)42);
         if (elementLocked) {
             
-                ((FloatShortElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
-                ((FloatShortElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
             
         }
         verifyNoMoreInteractions(storage);
     }
 
-    private FloatShortStorage createStorage(boolean elementLocked) {
+    private FloatObjectStorage createStorage(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        FloatShortStorage storage = mock((Class<FloatShortStorage>)(elementLocked ? FloatShortElementLockedStorage.class : FloatShortStorage.class));
+        FloatObjectStorage storage = mock((Class<FloatObjectStorage>)(elementLocked ? FloatObjectElementLockedStorage.class : FloatObjectStorage.class));
         if (elementLocked) {
-            when(((FloatShortElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
+            when(((FloatObjectElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
         return storage;
     }    
@@ -310,7 +307,7 @@ public class FloatShortCacheTest {
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        FloatShortStorage storage = mock((Class<FloatShortStorage>)(elementLocked ? FloatShortElementLockedStorage.class : FloatShortStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
+        FloatObjectStorage storage = mock((Class<FloatObjectStorage>)(elementLocked ? FloatObjectElementLockedStorage.class : FloatObjectStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         FloatShortCache cache = (FloatShortCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());

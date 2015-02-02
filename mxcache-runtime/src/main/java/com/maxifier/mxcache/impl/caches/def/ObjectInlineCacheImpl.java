@@ -23,7 +23,7 @@ public class ObjectInlineCacheImpl<T> extends AbstractObjectCache<T> {
     }
 
     @Override
-    public void save(T v) {
+    public void save(Object v) {
         value = v;
     }
 

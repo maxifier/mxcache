@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractBooleanObjectCache<F> extends AbstractCache implements BooleanObjectCache<F>, BooleanObjectStorage<F> {
+public abstract class AbstractBooleanObjectCache<F> extends AbstractCache implements BooleanObjectCache<F>, BooleanObjectStorage {
     private final BooleanObjectCalculatable<F> calculatable;
 
     public AbstractBooleanObjectCache(Object owner, BooleanObjectCalculatable<F> calculatable, MutableStatistics statistics) {

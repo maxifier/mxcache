@@ -12,11 +12,19 @@ package com.maxifier.mxcache.storage;
  * This is a basic implementation of cache storage. It is very similar to a usual map.
  * It supports two main operations: load and save for corresponding key and value types.
  * </p>
+ * <p>
+ * There are no storages with primitive value types due to the following:
+ * <ul>
+ * <li>using object as value allows to store special marker-values (UNDEFINED, exceptions, etc.) without an overhead;
+ * </li>
+ * <li>it simplifies the code: you don't need to have a separate 'isCalculated(key)' method.</li>
+ * </ul>
+ * </p>
  *
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public interface ShortObjectStorage<F> extends Storage {
+public interface ShortObjectStorage extends Storage {
     /**
      * <p>This method should extract value for given key from internal representation.</p>
      * <p>It is guaranteed that it would be called with corresponding lock held.</p>
@@ -31,5 +39,5 @@ public interface ShortObjectStorage<F> extends Storage {
      * @param key cache key
      * @param value cache value
      */
-    void save(short key, F value);
+    void save(short key, Object value);
 }

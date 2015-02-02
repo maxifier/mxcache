@@ -23,7 +23,7 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractBooleanCache extends AbstractElementLockedCache implements BooleanCache, BooleanElementLockedStorage {
+public abstract class AbstractBooleanCache extends AbstractElementLockedCache implements BooleanCache, ObjectElementLockedStorage {
     private final BooleanCalculatable calculatable;
 
     public AbstractBooleanCache(Object owner, BooleanCalculatable calculatable, MutableStatistics statistics) {
@@ -32,6 +32,7 @@ public abstract class AbstractBooleanCache extends AbstractElementLockedCache im
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public boolean getOrCreate() {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
@@ -41,12 +42,12 @@ public abstract class AbstractBooleanCache extends AbstractElementLockedCache im
                 lock.lock();
             }
             try {
-                if (isCalculated()) {
+                Object v = load();
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load();
+                    return (Boolean)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -66,9 +67,10 @@ public abstract class AbstractBooleanCache extends AbstractElementLockedCache im
                                         lock.lock();
                                     }
                                 }
-                                if (isCalculated()) {
+                                v = load();
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load();
+                                    return (Boolean)v;
                                 }
                             }
                         }
@@ -84,6 +86,7 @@ public abstract class AbstractBooleanCache extends AbstractElementLockedCache im
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected boolean create() {
         long start = System.nanoTime();
         boolean t = calculatable.calculate(owner);

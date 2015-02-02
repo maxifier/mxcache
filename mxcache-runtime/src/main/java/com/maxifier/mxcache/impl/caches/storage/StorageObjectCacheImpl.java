@@ -23,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageObjectCacheImpl<F> extends AbstractObjectCache<F> implements StorageHolder<ObjectStorage<F>> {
+public class StorageObjectCacheImpl<F> extends AbstractObjectCache<F> implements StorageHolder<ObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private ObjectStorage<F> storage;
+    private ObjectStorage storage;
 
     public StorageObjectCacheImpl(Object owner, ObjectCalculatable<F> calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull ObjectStorage<F> storage) {
+    public void setStorage(@Nonnull ObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -46,7 +46,7 @@ public class StorageObjectCacheImpl<F> extends AbstractObjectCache<F> implements
     }
 
     @Override
-    public void save(F value) {
+    public void save(Object value) {
         storage.save(value);
     }
 

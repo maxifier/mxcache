@@ -21,7 +21,7 @@ import com.maxifier.mxcache.storage.elementlocked.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractCharacterDoubleCache extends AbstractElementLockedCache implements CharacterDoubleCache, CharacterDoubleElementLockedStorage {
+public abstract class AbstractCharacterDoubleCache extends AbstractElementLockedCache implements CharacterDoubleCache, CharacterObjectElementLockedStorage {
     private final CharacterDoubleCalculatable calculatable;
 
     public AbstractCharacterDoubleCache(Object owner, CharacterDoubleCalculatable calculatable, MutableStatistics statistics) {
@@ -30,18 +30,19 @@ public abstract class AbstractCharacterDoubleCache extends AbstractElementLocked
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public double getOrCreate(char o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock(o);
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Double)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -57,9 +58,10 @@ public abstract class AbstractCharacterDoubleCache extends AbstractElementLocked
                                 } finally {
                                     lock(o);
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Double)v;
                                 }
                             }
                         }
@@ -73,6 +75,7 @@ public abstract class AbstractCharacterDoubleCache extends AbstractElementLocked
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected double create(char key) {
         long start = System.nanoTime();
         double t = calculatable.calculate(owner, key);

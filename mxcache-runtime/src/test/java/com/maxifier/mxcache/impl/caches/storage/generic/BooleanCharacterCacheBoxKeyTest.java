@@ -35,9 +35,9 @@ public class BooleanCharacterCacheBoxKeyTest {
     };
 
     public void testMiss() {
-        ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(true)).thenReturn(false);
+        when(storage.load(true)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         BooleanCharacterCache cache = (BooleanCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(boolean.class, char.class), false).
@@ -54,19 +54,18 @@ public class BooleanCharacterCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(true);
+        verify(storage, atLeast(1)).load(true);
         verify(storage).save(true, '*');
         verifyNoMoreInteractions(storage);
     }
 
     public void testHit() {
-        ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         BooleanCharacterCache cache = (BooleanCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(boolean.class, char.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated(true)).thenReturn(true);
         when(storage.load(true)).thenReturn('*');
         when(storage.size()).thenReturn(1);
 
@@ -80,13 +79,13 @@ public class BooleanCharacterCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(true);
+        verify(storage, atLeast(1)).load(true);
         verify(storage).load(true);
         verifyNoMoreInteractions(storage);
     }
 
     public void testClear() {
-        ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         BooleanCharacterCache cache = (BooleanCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(boolean.class, char.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -99,10 +98,9 @@ public class BooleanCharacterCacheBoxKeyTest {
     }
 
     public void testSetDuringDependencyNodeOperations() {
-        ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(true)).thenReturn(false, true);
-        when(storage.load(true)).thenReturn('*');
+        when(storage.load(true)).thenReturn(Storage.UNDEFINED, '*');
 
         BooleanCharacterCalculatable calculatable = mock(BooleanCharacterCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -120,17 +118,16 @@ public class BooleanCharacterCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated(true);
-        verify(storage).load(true);
+        verify(storage, times(2)).load(true);
         verifyNoMoreInteractions(storage);
         verify(calculatable).calculate("123", true);
         verifyNoMoreInteractions(calculatable);
     }
 
     public void testResetStat() {
-        ObjectCharacterStorage storage = mock(ObjectCharacterStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(true)).thenReturn(false);
+        when(storage.load(true)).thenReturn(Storage.UNDEFINED);
 
         BooleanCharacterCache cache = (BooleanCharacterCache) Wrapping.getFactory(new Signature(Object.class, char.class), new Signature(boolean.class, char.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -149,7 +146,7 @@ public class BooleanCharacterCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated(true);
+        verify(storage, atLeast(1)).load(true);
         verify(storage).save(true, '*');
         verifyNoMoreInteractions(storage);
     }

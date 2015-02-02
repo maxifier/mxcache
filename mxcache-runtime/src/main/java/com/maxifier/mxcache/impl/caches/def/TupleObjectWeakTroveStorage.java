@@ -15,7 +15,7 @@ import java.util.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class TupleObjectWeakTroveStorage<V> extends ObjectObjectTroveStorage<Tuple, V> {
+public class TupleObjectWeakTroveStorage extends ObjectObjectTroveStorage<Tuple> {
     private final List<Tuple> removed = Collections.synchronizedList(new ArrayList<Tuple>());
 
     private final int[] tupleIndices;
@@ -47,7 +47,7 @@ public class TupleObjectWeakTroveStorage<V> extends ObjectObjectTroveStorage<Tup
     }
 
     @Override
-    public void save(Tuple o, V t) {
+    public void save(Tuple o, Object t) {
         cleanup();
         Callback callback = new Callback(o);
         for (int index : tupleIndices) {

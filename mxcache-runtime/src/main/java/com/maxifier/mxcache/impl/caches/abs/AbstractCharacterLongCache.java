@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractCharacterLongCache extends AbstractCache implements CharacterLongCache, CharacterLongStorage {
+public abstract class AbstractCharacterLongCache extends AbstractCache implements CharacterLongCache, CharacterObjectStorage {
     private final CharacterLongCalculatable calculatable;
 
     public AbstractCharacterLongCache(Object owner, CharacterLongCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractCharacterLongCache extends AbstractCache implement
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public long getOrCreate(char o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Long)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractCharacterLongCache extends AbstractCache implement
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Long)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractCharacterLongCache extends AbstractCache implement
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected long create(char o) {
         long start = System.nanoTime();
         long t = calculatable.calculate(owner, o);

@@ -21,7 +21,7 @@ import com.maxifier.mxcache.storage.elementlocked.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractDoubleBooleanCache extends AbstractElementLockedCache implements DoubleBooleanCache, DoubleBooleanElementLockedStorage {
+public abstract class AbstractDoubleBooleanCache extends AbstractElementLockedCache implements DoubleBooleanCache, DoubleObjectElementLockedStorage {
     private final DoubleBooleanCalculatable calculatable;
 
     public AbstractDoubleBooleanCache(Object owner, DoubleBooleanCalculatable calculatable, MutableStatistics statistics) {
@@ -30,18 +30,19 @@ public abstract class AbstractDoubleBooleanCache extends AbstractElementLockedCa
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public boolean getOrCreate(double o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock(o);
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Boolean)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -57,9 +58,10 @@ public abstract class AbstractDoubleBooleanCache extends AbstractElementLockedCa
                                 } finally {
                                     lock(o);
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Boolean)v;
                                 }
                             }
                         }
@@ -73,6 +75,7 @@ public abstract class AbstractDoubleBooleanCache extends AbstractElementLockedCa
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected boolean create(double key) {
         long start = System.nanoTime();
         boolean t = calculatable.calculate(owner, key);

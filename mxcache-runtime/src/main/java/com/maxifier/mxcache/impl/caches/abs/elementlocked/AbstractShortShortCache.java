@@ -21,7 +21,7 @@ import com.maxifier.mxcache.storage.elementlocked.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractShortShortCache extends AbstractElementLockedCache implements ShortShortCache, ShortShortElementLockedStorage {
+public abstract class AbstractShortShortCache extends AbstractElementLockedCache implements ShortShortCache, ShortObjectElementLockedStorage {
     private final ShortShortCalculatable calculatable;
 
     public AbstractShortShortCache(Object owner, ShortShortCalculatable calculatable, MutableStatistics statistics) {
@@ -30,18 +30,19 @@ public abstract class AbstractShortShortCache extends AbstractElementLockedCache
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public short getOrCreate(short o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock(o);
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Short)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -57,9 +58,10 @@ public abstract class AbstractShortShortCache extends AbstractElementLockedCache
                                 } finally {
                                     lock(o);
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Short)v;
                                 }
                             }
                         }
@@ -73,6 +75,7 @@ public abstract class AbstractShortShortCache extends AbstractElementLockedCache
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected short create(short key) {
         long start = System.nanoTime();
         short t = calculatable.calculate(owner, key);

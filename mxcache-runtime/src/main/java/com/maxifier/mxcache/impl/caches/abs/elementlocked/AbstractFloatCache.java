@@ -23,7 +23,7 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractFloatCache extends AbstractElementLockedCache implements FloatCache, FloatElementLockedStorage {
+public abstract class AbstractFloatCache extends AbstractElementLockedCache implements FloatCache, ObjectElementLockedStorage {
     private final FloatCalculatable calculatable;
 
     public AbstractFloatCache(Object owner, FloatCalculatable calculatable, MutableStatistics statistics) {
@@ -32,6 +32,7 @@ public abstract class AbstractFloatCache extends AbstractElementLockedCache impl
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public float getOrCreate() {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
@@ -41,12 +42,12 @@ public abstract class AbstractFloatCache extends AbstractElementLockedCache impl
                 lock.lock();
             }
             try {
-                if (isCalculated()) {
+                Object v = load();
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load();
+                    return (Float)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -66,9 +67,10 @@ public abstract class AbstractFloatCache extends AbstractElementLockedCache impl
                                         lock.lock();
                                     }
                                 }
-                                if (isCalculated()) {
+                                v = load();
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load();
+                                    return (Float)v;
                                 }
                             }
                         }
@@ -84,6 +86,7 @@ public abstract class AbstractFloatCache extends AbstractElementLockedCache impl
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected float create() {
         long start = System.nanoTime();
         float t = calculatable.calculate(owner);

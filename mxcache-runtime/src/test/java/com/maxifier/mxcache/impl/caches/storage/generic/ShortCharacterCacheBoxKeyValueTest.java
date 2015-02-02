@@ -79,7 +79,7 @@ public class ShortCharacterCacheBoxKeyValueTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(2)).load((short)42);
+        verify(storage, atLeast(1)).load((short)42);
         verifyNoMoreInteractions(storage);
     }
 

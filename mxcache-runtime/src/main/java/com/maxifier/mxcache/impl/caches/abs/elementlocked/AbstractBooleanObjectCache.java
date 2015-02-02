@@ -21,7 +21,7 @@ import com.maxifier.mxcache.storage.elementlocked.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractBooleanObjectCache<F> extends AbstractElementLockedCache implements BooleanObjectCache<F>, BooleanObjectElementLockedStorage<F> {
+public abstract class AbstractBooleanObjectCache<F> extends AbstractElementLockedCache implements BooleanObjectCache<F>, BooleanObjectElementLockedStorage {
     private final BooleanObjectCalculatable<F> calculatable;
 
     public AbstractBooleanObjectCache(Object owner, BooleanObjectCalculatable<F> calculatable, MutableStatistics statistics) {

@@ -23,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageIntByteCacheImpl extends AbstractIntByteCache implements StorageHolder<IntByteStorage> {
+public class StorageIntByteCacheImpl extends AbstractIntByteCache implements StorageHolder<IntObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private IntByteStorage storage;
+    private IntObjectStorage storage;
 
     public StorageIntByteCacheImpl(Object owner, IntByteCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull IntByteStorage storage) {
+    public void setStorage(@Nonnull IntObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -41,17 +41,12 @@ public class StorageIntByteCacheImpl extends AbstractIntByteCache implements Sto
     }
 
     @Override
-    public boolean isCalculated(int key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public byte load(int key) {
+    public Object load(int key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(int key, byte value) {
+    public void save(int key, Object value) {
         storage.save(key, value);
     }
 

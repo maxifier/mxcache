@@ -13,9 +13,11 @@ import javax.annotation.Nonnull;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 public class BoxTransformGenerator extends ScalarTransformGenerator {
+    private final Class cls;
     private final Type type;
 
-    public BoxTransformGenerator(@Nonnull Type type) {
+    public BoxTransformGenerator(Class cls, @Nonnull Type type) {
+        this.cls = cls;
         this.type = type;
     }
 
@@ -43,7 +45,12 @@ public class BoxTransformGenerator extends ScalarTransformGenerator {
     }
 
     @Override
-    public Class getTransformedType(Class in) {
+    public Class<?> getInType() {
+        return cls;
+    }
+
+    @Override
+    public Class<?> getOutType() {
         return Object.class;
     }
 

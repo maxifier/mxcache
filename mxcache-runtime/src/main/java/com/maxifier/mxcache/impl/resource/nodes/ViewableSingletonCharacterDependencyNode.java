@@ -8,7 +8,7 @@ import com.maxifier.mxcache.caches.CharacterCache;
 import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
-import com.maxifier.mxcache.storage.CharacterStorage;
+import com.maxifier.mxcache.storage.ObjectStorage;
 
 import javax.annotation.Nonnull;
 
@@ -28,7 +28,7 @@ public class ViewableSingletonCharacterDependencyNode extends SingletonDependenc
     @Override
     public synchronized void addNode(@Nonnull CleaningNode cache) {
         super.addNode(cache);
-        if (!(cache instanceof CharacterStorage)) {
+        if (!(cache instanceof ObjectStorage)) {
             String owner = "";
             if (cache instanceof Cache) {
                 owner = ((Cache) cache).getDescriptor().toString();
@@ -40,12 +40,12 @@ public class ViewableSingletonCharacterDependencyNode extends SingletonDependenc
 
     @Override
     public boolean isChanged() {
-        if (instance instanceof CharacterStorage && instance instanceof CharacterCache) {
-            CharacterStorage storage = (CharacterStorage) instance;
+        if (instance instanceof ObjectStorage && instance instanceof CharacterCache) {
+            ObjectStorage storage = (ObjectStorage) instance;
             CharacterCache cache = (CharacterCache) instance;
             DependencyNode prevNode = DependencyTracker.track(DependencyTracker.NOCACHE_NODE);
             try {
-                return storage.isCalculated() && !DependencyTracker.isDependentResourceView(cache) && cache.getOrCreate() != storage.load();
+                return !DependencyTracker.isDependentResourceView(cache) && !equal(cache.getOrCreate(), storage.load());
             } catch (Exception e) {
                 // can't evaluate the function, will invalidate cache anyway
                 return true;

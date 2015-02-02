@@ -46,8 +46,13 @@ public class UnboxTransformGenerator extends ScalarTransformGenerator {
     }
 
     @Override
-    public Class getTransformedType(Class in) {
+    public Class getOutType() {
         return cls;
+    }
+
+    @Override
+    public Class<?> getInType() {
+        return Object.class;
     }
 
     @Override

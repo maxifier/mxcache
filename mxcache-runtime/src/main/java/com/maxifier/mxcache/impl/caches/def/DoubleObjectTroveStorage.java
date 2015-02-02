@@ -14,7 +14,7 @@ import static com.maxifier.mxcache.impl.caches.def.TroveHelper.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class DoubleObjectTroveStorage<T> extends gnu.trove.map.hash.TDoubleObjectHashMap<Object> implements DoubleObjectStorage<T> {
+public class DoubleObjectTroveStorage extends gnu.trove.map.hash.TDoubleObjectHashMap<Object> implements DoubleObjectStorage {
     @Override
     public Object load(double key) {
         Object v = get(key);
@@ -28,7 +28,7 @@ public class DoubleObjectTroveStorage<T> extends gnu.trove.map.hash.TDoubleObjec
     }
 
     @Override
-    public void save(double key, T value) {
+    public void save(double key, Object value) {
         put(key, value == null ? NULL_REPLACEMENT : value);
     }
 }

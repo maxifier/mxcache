@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 @Test
 public class ObjectCacheTest {
     public void testCache() {
-        ObjectStorage<String> cache = new ObjectStorageImpl<String>();
+        ObjectStorage cache = new ObjectStorageImpl();
         assert cache.load() == Storage.UNDEFINED;
         assert cache.size() == 0;
         cache.save("123");

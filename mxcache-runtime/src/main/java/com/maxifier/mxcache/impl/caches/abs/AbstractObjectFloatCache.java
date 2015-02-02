@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractObjectFloatCache<E> extends AbstractCache implements ObjectFloatCache<E>, ObjectFloatStorage<E> {
+public abstract class AbstractObjectFloatCache<E> extends AbstractCache implements ObjectFloatCache<E>, ObjectObjectStorage<E> {
     private final ObjectFloatCalculatable<E> calculatable;
 
     public AbstractObjectFloatCache(Object owner, ObjectFloatCalculatable<E> calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractObjectFloatCache<E> extends AbstractCache implemen
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public float getOrCreate(E o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Float)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractObjectFloatCache<E> extends AbstractCache implemen
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Float)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractObjectFloatCache<E> extends AbstractCache implemen
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected float create(E o) {
         long start = System.nanoTime();
         float t = calculatable.calculate(owner, o);

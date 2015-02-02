@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractLongLongCache extends AbstractCache implements LongLongCache, LongLongStorage {
+public abstract class AbstractLongLongCache extends AbstractCache implements LongLongCache, LongObjectStorage {
     private final LongLongCalculatable calculatable;
 
     public AbstractLongLongCache(Object owner, LongLongCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractLongLongCache extends AbstractCache implements Lon
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public long getOrCreate(long o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Long)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractLongLongCache extends AbstractCache implements Lon
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Long)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractLongLongCache extends AbstractCache implements Lon
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected long create(long o) {
         long start = System.nanoTime();
         long t = calculatable.calculate(owner, o);

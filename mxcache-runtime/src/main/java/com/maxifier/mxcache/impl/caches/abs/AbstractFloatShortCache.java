@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractFloatShortCache extends AbstractCache implements FloatShortCache, FloatShortStorage {
+public abstract class AbstractFloatShortCache extends AbstractCache implements FloatShortCache, FloatObjectStorage {
     private final FloatShortCalculatable calculatable;
 
     public AbstractFloatShortCache(Object owner, FloatShortCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractFloatShortCache extends AbstractCache implements F
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public short getOrCreate(float o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Short)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractFloatShortCache extends AbstractCache implements F
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Short)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractFloatShortCache extends AbstractCache implements F
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected short create(float o) {
         long start = System.nanoTime();
         short t = calculatable.calculate(owner, o);

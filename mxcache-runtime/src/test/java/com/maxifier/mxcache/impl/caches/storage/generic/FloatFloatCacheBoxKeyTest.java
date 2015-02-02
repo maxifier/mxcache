@@ -35,9 +35,9 @@ public class FloatFloatCacheBoxKeyTest {
     };
 
     public void testMiss() {
-        ObjectFloatStorage storage = mock(ObjectFloatStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(42f)).thenReturn(false);
+        when(storage.load(42f)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         FloatFloatCache cache = (FloatFloatCache) Wrapping.getFactory(new Signature(Object.class, float.class), new Signature(float.class, float.class), false).
@@ -54,19 +54,18 @@ public class FloatFloatCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42f);
+        verify(storage, atLeast(1)).load(42f);
         verify(storage).save(42f, 42f);
         verifyNoMoreInteractions(storage);
     }
 
     public void testHit() {
-        ObjectFloatStorage storage = mock(ObjectFloatStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         FloatFloatCache cache = (FloatFloatCache) Wrapping.getFactory(new Signature(Object.class, float.class), new Signature(float.class, float.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated(42f)).thenReturn(true);
         when(storage.load(42f)).thenReturn(42f);
         when(storage.size()).thenReturn(1);
 
@@ -80,13 +79,13 @@ public class FloatFloatCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42f);
+        verify(storage, atLeast(1)).load(42f);
         verify(storage).load(42f);
         verifyNoMoreInteractions(storage);
     }
 
     public void testClear() {
-        ObjectFloatStorage storage = mock(ObjectFloatStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         FloatFloatCache cache = (FloatFloatCache) Wrapping.getFactory(new Signature(Object.class, float.class), new Signature(float.class, float.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -99,10 +98,9 @@ public class FloatFloatCacheBoxKeyTest {
     }
 
     public void testSetDuringDependencyNodeOperations() {
-        ObjectFloatStorage storage = mock(ObjectFloatStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(42f)).thenReturn(false, true);
-        when(storage.load(42f)).thenReturn(42f);
+        when(storage.load(42f)).thenReturn(Storage.UNDEFINED, 42f);
 
         FloatFloatCalculatable calculatable = mock(FloatFloatCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -120,17 +118,16 @@ public class FloatFloatCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated(42f);
-        verify(storage).load(42f);
+        verify(storage, times(2)).load(42f);
         verifyNoMoreInteractions(storage);
         verify(calculatable).calculate("123", 42f);
         verifyNoMoreInteractions(calculatable);
     }
 
     public void testResetStat() {
-        ObjectFloatStorage storage = mock(ObjectFloatStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(42f)).thenReturn(false);
+        when(storage.load(42f)).thenReturn(Storage.UNDEFINED);
 
         FloatFloatCache cache = (FloatFloatCache) Wrapping.getFactory(new Signature(Object.class, float.class), new Signature(float.class, float.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -149,7 +146,7 @@ public class FloatFloatCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated(42f);
+        verify(storage, atLeast(1)).load(42f);
         verify(storage).save(42f, 42f);
         verifyNoMoreInteractions(storage);
     }

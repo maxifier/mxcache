@@ -26,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageDoubleLongCacheImpl extends AbstractDoubleLongCache implements StorageHolder<DoubleLongElementLockedStorage> {
-    private DoubleLongElementLockedStorage storage;
+public class StorageDoubleLongCacheImpl extends AbstractDoubleLongCache implements StorageHolder<DoubleObjectElementLockedStorage> {
+    private DoubleObjectElementLockedStorage storage;
 
     public StorageDoubleLongCacheImpl(Object owner, DoubleLongCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull DoubleLongElementLockedStorage storage) {
+    public void setStorage(@Nonnull DoubleObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -42,17 +42,12 @@ public class StorageDoubleLongCacheImpl extends AbstractDoubleLongCache implemen
     }
 
     @Override
-    public boolean isCalculated(double key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public long load(double key) {
+    public Object load(double key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(double key, long value) {
+    public void save(double key, Object value) {
         storage.save(key, value);
     }
 

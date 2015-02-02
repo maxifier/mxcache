@@ -35,9 +35,9 @@ public class IntCacheUnboxValueTest {
     };
 
     public void testMiss() {
-        IntStorage storage = mock(IntStorage.class);
+        ObjectStorage storage = mock(ObjectStorage.class);
 
-        when(storage.isCalculated()).thenReturn(false);
+        when(storage.load()).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         ObjectCache cache = (ObjectCache) Wrapping.getFactory(new Signature(null, int.class), new Signature(null, Object.class), false).
@@ -51,7 +51,7 @@ public class IntCacheUnboxValueTest {
         assertEquals(cache.getOrCreate(), 42);
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated();
+        verify(storage, atLeast(1)).load();
         verify(storage).save(42);
         verifyNoMoreInteractions(storage);
 
@@ -60,13 +60,12 @@ public class IntCacheUnboxValueTest {
     }
 
     public void testHit() {
-        IntStorage storage = mock(IntStorage.class);
+        ObjectStorage storage = mock(ObjectStorage.class);
 
         ObjectCache cache = (ObjectCache) Wrapping.getFactory(new Signature(null, int.class), new Signature(null, Object.class), false).
                     wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated()).thenReturn(true);
         when(storage.load()).thenReturn(42);
         when(storage.size()).thenReturn(1);
 
@@ -77,7 +76,6 @@ public class IntCacheUnboxValueTest {
         assertEquals(cache.getOrCreate(), 42);
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated();
         verify(storage).load();
         verifyNoMoreInteractions(storage);
 
@@ -86,7 +84,7 @@ public class IntCacheUnboxValueTest {
     }
 
     public void testClear() {
-        IntStorage storage = mock(IntStorage.class);
+        ObjectStorage storage = mock(ObjectStorage.class);
 
         ObjectCache cache = (ObjectCache) Wrapping.getFactory(new Signature(null, int.class), new Signature(null, Object.class), false).
                     wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -99,10 +97,9 @@ public class IntCacheUnboxValueTest {
     }
 
     public void testSetDuringDependencyNodeOperations() {
-        IntStorage storage = mock(IntStorage.class);
+        ObjectStorage storage = mock(ObjectStorage.class);
 
-        when(storage.isCalculated()).thenReturn(false, true);
-        when(storage.load()).thenReturn(42);
+        when(storage.load()).thenReturn(Storage.UNDEFINED, 42);
 
         ObjectCalculatable calculatable = mock(ObjectCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -120,17 +117,16 @@ public class IntCacheUnboxValueTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated();
-        verify(storage).load();
+        verify(storage, times(2)).load();
         verifyNoMoreInteractions(storage);
         verify(calculatable).calculate("123");
         verifyNoMoreInteractions(calculatable);
     }
 
     public void testResetStat() {
-        IntStorage storage = mock(IntStorage.class);
+        ObjectStorage storage = mock(ObjectStorage.class);
 
-        when(storage.isCalculated()).thenReturn(false);
+        when(storage.load()).thenReturn(Storage.UNDEFINED);
 
         ObjectCache cache = (ObjectCache) Wrapping.getFactory(new Signature(null, int.class), new Signature(null, Object.class), false).
                     wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -149,7 +145,7 @@ public class IntCacheUnboxValueTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated();
+        verify(storage, atLeast(1)).load();
         verify(storage).save(42);
         verifyNoMoreInteractions(storage);
     }

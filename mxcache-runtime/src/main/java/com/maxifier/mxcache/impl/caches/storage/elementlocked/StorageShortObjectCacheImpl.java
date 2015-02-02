@@ -26,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageShortObjectCacheImpl<F> extends AbstractShortObjectCache<F> implements StorageHolder<ShortObjectElementLockedStorage<F>> {
-    private ShortObjectElementLockedStorage<F> storage;
+public class StorageShortObjectCacheImpl<F> extends AbstractShortObjectCache<F> implements StorageHolder<ShortObjectElementLockedStorage> {
+    private ShortObjectElementLockedStorage storage;
 
     public StorageShortObjectCacheImpl(Object owner, ShortObjectCalculatable<F> calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull ShortObjectElementLockedStorage<F> storage) {
+    public void setStorage(@Nonnull ShortObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -47,7 +47,7 @@ public class StorageShortObjectCacheImpl<F> extends AbstractShortObjectCache<F> 
     }
 
     @Override
-    public void save(short key, F value) {
+    public void save(short key, Object value) {
         storage.save(key, value);
     }
 

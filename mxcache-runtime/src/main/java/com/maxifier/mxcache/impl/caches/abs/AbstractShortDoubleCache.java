@@ -20,7 +20,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractShortDoubleCache extends AbstractCache implements ShortDoubleCache, ShortDoubleStorage {
+public abstract class AbstractShortDoubleCache extends AbstractCache implements ShortDoubleCache, ShortObjectStorage {
     private final ShortDoubleCalculatable calculatable;
 
     public AbstractShortDoubleCache(Object owner, ShortDoubleCalculatable calculatable, MutableStatistics statistics) {
@@ -29,16 +29,18 @@ public abstract class AbstractShortDoubleCache extends AbstractCache implements 
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public double getOrCreate(short o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Double)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -55,9 +57,10 @@ public abstract class AbstractShortDoubleCache extends AbstractCache implements 
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Double)v;
                                 }
                             }
                         }
@@ -71,6 +74,7 @@ public abstract class AbstractShortDoubleCache extends AbstractCache implements 
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected double create(short o) {
         long start = System.nanoTime();
         double t = calculatable.calculate(owner, o);

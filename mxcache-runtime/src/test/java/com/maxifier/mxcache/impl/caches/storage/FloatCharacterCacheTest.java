@@ -5,8 +5,8 @@ package com.maxifier.mxcache.impl.caches.storage;
 
 import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.impl.wrapping.Wrapping;
-import com.maxifier.mxcache.storage.FloatCharacterStorage;
-import com.maxifier.mxcache.storage.elementlocked.FloatCharacterElementLockedStorage;
+import com.maxifier.mxcache.storage.*;
+import com.maxifier.mxcache.storage.elementlocked.*;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.impl.MutableStatisticsImpl;
@@ -86,12 +86,12 @@ public class FloatCharacterCacheTest {
         }
     }
 
-    @Test(dataProvider = "both")
+    @Test(dataProvider = "both", timeOut = 60000 /*ms*/)
     public void testOccupied(boolean elementLocked) throws Throwable {
-        FloatCharacterStorage storage = createStorage(elementLocked);
+        FloatObjectStorage storage = createStorage(elementLocked);
         Occupied occupied = new Occupied();
 
-        when(storage.isCalculated(42f)).thenReturn(false);
+        when(storage.load(42f)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         final FloatCharacterCache cache = (FloatCharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -138,12 +138,12 @@ public class FloatCharacterCacheTest {
         }
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42f);
+        verify(storage, atLeast(1)).load(42f);
         verify(storage).save(42f, '*');
         if (elementLocked) {
             
-                ((FloatCharacterElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
-                ((FloatCharacterElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
             
         }
         verifyNoMoreInteractions(storage);
@@ -151,9 +151,9 @@ public class FloatCharacterCacheTest {
 
     @Test(dataProvider = "both")
     public void testMiss(boolean elementLocked) {
-        FloatCharacterStorage storage = createStorage(elementLocked);
+        FloatObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated(42f)).thenReturn(false);
+        when(storage.load(42f)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         FloatCharacterCache cache = (FloatCharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -170,12 +170,12 @@ public class FloatCharacterCacheTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42f);
+        verify(storage, atLeast(1)).load(42f);
         verify(storage).save(42f, '*');
         if (elementLocked) {
             
-                ((FloatCharacterElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
-                ((FloatCharacterElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
             
         }
         verifyNoMoreInteractions(storage);
@@ -183,13 +183,12 @@ public class FloatCharacterCacheTest {
 
     @Test(dataProvider = "both")
     public void testHit(boolean elementLocked) {
-        FloatCharacterStorage storage = createStorage(elementLocked);
+        FloatObjectStorage storage = createStorage(elementLocked);
 
         FloatCharacterCache cache = (FloatCharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated(42f)).thenReturn(true);
         when(storage.load(42f)).thenReturn('*');
         when(storage.size()).thenReturn(1);
 
@@ -203,12 +202,12 @@ public class FloatCharacterCacheTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(42f);
+        verify(storage, atLeast(1)).load(42f);
         verify(storage).load(42f);
         if (elementLocked) {
             
-                ((FloatCharacterElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
-                ((FloatCharacterElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
             
         }
         verifyNoMoreInteractions(storage);
@@ -216,7 +215,7 @@ public class FloatCharacterCacheTest {
 
     @Test(dataProvider = "both")
     public void testClear(boolean elementLocked) {
-        FloatCharacterStorage storage = createStorage(elementLocked);
+        FloatObjectStorage storage = createStorage(elementLocked);
 
         FloatCharacterCache cache = (FloatCharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -230,10 +229,9 @@ public class FloatCharacterCacheTest {
 
     @Test(dataProvider = "both")
     public void testSetDuringDependencyNodeOperations(boolean elementLocked) {
-        FloatCharacterStorage storage = createStorage(elementLocked);
+        FloatObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated(42f)).thenReturn(false, true);
-        when(storage.load(42f)).thenReturn('*');
+        when(storage.load(42f)).thenReturn(Storage.UNDEFINED, '*');
 
         FloatCharacterCalculatable calculatable = mock(FloatCharacterCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -251,12 +249,11 @@ public class FloatCharacterCacheTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated(42f);
-        verify(storage).load(42f);
+        verify(storage, times(2)).load(42f);
         if (elementLocked) {
             
-                ((FloatCharacterElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
-                ((FloatCharacterElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
             
         }
         verifyNoMoreInteractions(storage);
@@ -266,9 +263,9 @@ public class FloatCharacterCacheTest {
 
     @Test(dataProvider = "both")
     public void testResetStat(boolean elementLocked) {
-        FloatCharacterStorage storage = createStorage(elementLocked);
+        FloatObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated(42f)).thenReturn(false);
+        when(storage.load(42f)).thenReturn(Storage.UNDEFINED);
 
         FloatCharacterCache cache = (FloatCharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -287,22 +284,22 @@ public class FloatCharacterCacheTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated(42f);
+        verify(storage, atLeast(1)).load(42f);
         verify(storage).save(42f, '*');
         if (elementLocked) {
             
-                ((FloatCharacterElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
-                ((FloatCharacterElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).lock(42f);
+                ((FloatObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(42f);
             
         }
         verifyNoMoreInteractions(storage);
     }
 
-    private FloatCharacterStorage createStorage(boolean elementLocked) {
+    private FloatObjectStorage createStorage(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        FloatCharacterStorage storage = mock((Class<FloatCharacterStorage>)(elementLocked ? FloatCharacterElementLockedStorage.class : FloatCharacterStorage.class));
+        FloatObjectStorage storage = mock((Class<FloatObjectStorage>)(elementLocked ? FloatObjectElementLockedStorage.class : FloatObjectStorage.class));
         if (elementLocked) {
-            when(((FloatCharacterElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
+            when(((FloatObjectElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
         return storage;
     }    
@@ -310,7 +307,7 @@ public class FloatCharacterCacheTest {
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        FloatCharacterStorage storage = mock((Class<FloatCharacterStorage>)(elementLocked ? FloatCharacterElementLockedStorage.class : FloatCharacterStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
+        FloatObjectStorage storage = mock((Class<FloatObjectStorage>)(elementLocked ? FloatObjectElementLockedStorage.class : FloatObjectStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         FloatCharacterCache cache = (FloatCharacterCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());

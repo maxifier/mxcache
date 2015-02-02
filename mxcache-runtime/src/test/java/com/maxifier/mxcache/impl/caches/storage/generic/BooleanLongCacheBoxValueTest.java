@@ -79,7 +79,7 @@ public class BooleanLongCacheBoxValueTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(2)).load(true);
+        verify(storage, atLeast(1)).load(true);
         verifyNoMoreInteractions(storage);
     }
 

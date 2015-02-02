@@ -8,7 +8,7 @@ import com.maxifier.mxcache.caches.LongCache;
 import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
-import com.maxifier.mxcache.storage.LongStorage;
+import com.maxifier.mxcache.storage.ObjectStorage;
 
 import javax.annotation.Nonnull;
 
@@ -28,7 +28,7 @@ public class ViewableSingletonLongDependencyNode extends SingletonDependencyNode
     @Override
     public synchronized void addNode(@Nonnull CleaningNode cache) {
         super.addNode(cache);
-        if (!(cache instanceof LongStorage)) {
+        if (!(cache instanceof ObjectStorage)) {
             String owner = "";
             if (cache instanceof Cache) {
                 owner = ((Cache) cache).getDescriptor().toString();
@@ -40,12 +40,12 @@ public class ViewableSingletonLongDependencyNode extends SingletonDependencyNode
 
     @Override
     public boolean isChanged() {
-        if (instance instanceof LongStorage && instance instanceof LongCache) {
-            LongStorage storage = (LongStorage) instance;
+        if (instance instanceof ObjectStorage && instance instanceof LongCache) {
+            ObjectStorage storage = (ObjectStorage) instance;
             LongCache cache = (LongCache) instance;
             DependencyNode prevNode = DependencyTracker.track(DependencyTracker.NOCACHE_NODE);
             try {
-                return storage.isCalculated() && !DependencyTracker.isDependentResourceView(cache) && cache.getOrCreate() != storage.load();
+                return !DependencyTracker.isDependentResourceView(cache) && !equal(cache.getOrCreate(), storage.load());
             } catch (Exception e) {
                 // can't evaluate the function, will invalidate cache anyway
                 return true;

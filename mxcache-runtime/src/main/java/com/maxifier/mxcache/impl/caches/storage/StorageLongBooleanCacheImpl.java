@@ -23,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageLongBooleanCacheImpl extends AbstractLongBooleanCache implements StorageHolder<LongBooleanStorage> {
+public class StorageLongBooleanCacheImpl extends AbstractLongBooleanCache implements StorageHolder<LongObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private LongBooleanStorage storage;
+    private LongObjectStorage storage;
 
     public StorageLongBooleanCacheImpl(Object owner, LongBooleanCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull LongBooleanStorage storage) {
+    public void setStorage(@Nonnull LongObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -41,17 +41,12 @@ public class StorageLongBooleanCacheImpl extends AbstractLongBooleanCache implem
     }
 
     @Override
-    public boolean isCalculated(long key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public boolean load(long key) {
+    public Object load(long key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(long key, boolean value) {
+    public void save(long key, Object value) {
         storage.save(key, value);
     }
 

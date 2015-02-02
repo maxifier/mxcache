@@ -23,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageShortShortCacheImpl extends AbstractShortShortCache implements StorageHolder<ShortShortStorage> {
+public class StorageShortShortCacheImpl extends AbstractShortShortCache implements StorageHolder<ShortObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private ShortShortStorage storage;
+    private ShortObjectStorage storage;
 
     public StorageShortShortCacheImpl(Object owner, ShortShortCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull ShortShortStorage storage) {
+    public void setStorage(@Nonnull ShortObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -41,17 +41,12 @@ public class StorageShortShortCacheImpl extends AbstractShortShortCache implemen
     }
 
     @Override
-    public boolean isCalculated(short key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public short load(short key) {
+    public Object load(short key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(short key, short value) {
+    public void save(short key, Object value) {
         storage.save(key, value);
     }
 

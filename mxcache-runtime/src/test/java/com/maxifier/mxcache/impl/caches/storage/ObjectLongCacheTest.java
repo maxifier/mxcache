@@ -5,8 +5,8 @@ package com.maxifier.mxcache.impl.caches.storage;
 
 import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.impl.wrapping.Wrapping;
-import com.maxifier.mxcache.storage.ObjectLongStorage;
-import com.maxifier.mxcache.storage.elementlocked.ObjectLongElementLockedStorage;
+import com.maxifier.mxcache.storage.*;
+import com.maxifier.mxcache.storage.elementlocked.*;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.impl.MutableStatisticsImpl;
@@ -86,12 +86,12 @@ public class ObjectLongCacheTest {
         }
     }
 
-    @Test(dataProvider = "both")
+    @Test(dataProvider = "both", timeOut = 60000 /*ms*/)
     public void testOccupied(boolean elementLocked) throws Throwable {
-        ObjectLongStorage storage = createStorage(elementLocked);
+        ObjectObjectStorage storage = createStorage(elementLocked);
         Occupied occupied = new Occupied();
 
-        when(storage.isCalculated("123")).thenReturn(false);
+        when(storage.load("123")).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         final ObjectLongCache cache = (ObjectLongCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -138,12 +138,12 @@ public class ObjectLongCacheTest {
         }
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated("123");
+        verify(storage, atLeast(1)).load("123");
         verify(storage).save("123", 42L);
         if (elementLocked) {
             
-                ((ObjectLongElementLockedStorage)verify(storage, atLeast(1))).lock("123");
-                ((ObjectLongElementLockedStorage)verify(storage, atLeast(1))).unlock("123");
+                ((ObjectObjectElementLockedStorage)verify(storage, atLeast(1))).lock("123");
+                ((ObjectObjectElementLockedStorage)verify(storage, atLeast(1))).unlock("123");
             
         }
         verifyNoMoreInteractions(storage);
@@ -151,9 +151,9 @@ public class ObjectLongCacheTest {
 
     @Test(dataProvider = "both")
     public void testMiss(boolean elementLocked) {
-        ObjectLongStorage storage = createStorage(elementLocked);
+        ObjectObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated("123")).thenReturn(false);
+        when(storage.load("123")).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         ObjectLongCache cache = (ObjectLongCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
@@ -170,12 +170,12 @@ public class ObjectLongCacheTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated("123");
+        verify(storage, atLeast(1)).load("123");
         verify(storage).save("123", 42L);
         if (elementLocked) {
             
-                ((ObjectLongElementLockedStorage)verify(storage, atLeast(1))).lock("123");
-                ((ObjectLongElementLockedStorage)verify(storage, atLeast(1))).unlock("123");
+                ((ObjectObjectElementLockedStorage)verify(storage, atLeast(1))).lock("123");
+                ((ObjectObjectElementLockedStorage)verify(storage, atLeast(1))).unlock("123");
             
         }
         verifyNoMoreInteractions(storage);
@@ -183,13 +183,12 @@ public class ObjectLongCacheTest {
 
     @Test(dataProvider = "both")
     public void testHit(boolean elementLocked) {
-        ObjectLongStorage storage = createStorage(elementLocked);
+        ObjectObjectStorage storage = createStorage(elementLocked);
 
         ObjectLongCache cache = (ObjectLongCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated("123")).thenReturn(true);
         when(storage.load("123")).thenReturn(42L);
         when(storage.size()).thenReturn(1);
 
@@ -203,12 +202,12 @@ public class ObjectLongCacheTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated("123");
+        verify(storage, atLeast(1)).load("123");
         verify(storage).load("123");
         if (elementLocked) {
             
-                ((ObjectLongElementLockedStorage)verify(storage, atLeast(1))).lock("123");
-                ((ObjectLongElementLockedStorage)verify(storage, atLeast(1))).unlock("123");
+                ((ObjectObjectElementLockedStorage)verify(storage, atLeast(1))).lock("123");
+                ((ObjectObjectElementLockedStorage)verify(storage, atLeast(1))).unlock("123");
             
         }
         verifyNoMoreInteractions(storage);
@@ -216,7 +215,7 @@ public class ObjectLongCacheTest {
 
     @Test(dataProvider = "both")
     public void testClear(boolean elementLocked) {
-        ObjectLongStorage storage = createStorage(elementLocked);
+        ObjectObjectStorage storage = createStorage(elementLocked);
 
         ObjectLongCache cache = (ObjectLongCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -230,10 +229,9 @@ public class ObjectLongCacheTest {
 
     @Test(dataProvider = "both")
     public void testSetDuringDependencyNodeOperations(boolean elementLocked) {
-        ObjectLongStorage storage = createStorage(elementLocked);
+        ObjectObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated("123")).thenReturn(false, true);
-        when(storage.load("123")).thenReturn(42L);
+        when(storage.load("123")).thenReturn(Storage.UNDEFINED, 42L);
 
         ObjectLongCalculatable calculatable = mock(ObjectLongCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -251,12 +249,11 @@ public class ObjectLongCacheTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated("123");
-        verify(storage).load("123");
+        verify(storage, times(2)).load("123");
         if (elementLocked) {
             
-                ((ObjectLongElementLockedStorage)verify(storage, atLeast(1))).lock("123");
-                ((ObjectLongElementLockedStorage)verify(storage, atLeast(1))).unlock("123");
+                ((ObjectObjectElementLockedStorage)verify(storage, atLeast(1))).lock("123");
+                ((ObjectObjectElementLockedStorage)verify(storage, atLeast(1))).unlock("123");
             
         }
         verifyNoMoreInteractions(storage);
@@ -266,9 +263,9 @@ public class ObjectLongCacheTest {
 
     @Test(dataProvider = "both")
     public void testResetStat(boolean elementLocked) {
-        ObjectLongStorage storage = createStorage(elementLocked);
+        ObjectObjectStorage storage = createStorage(elementLocked);
 
-        when(storage.isCalculated("123")).thenReturn(false);
+        when(storage.load("123")).thenReturn(Storage.UNDEFINED);
 
         ObjectLongCache cache = (ObjectLongCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -287,22 +284,22 @@ public class ObjectLongCacheTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated("123");
+        verify(storage, atLeast(1)).load("123");
         verify(storage).save("123", 42L);
         if (elementLocked) {
             
-                ((ObjectLongElementLockedStorage)verify(storage, atLeast(1))).lock("123");
-                ((ObjectLongElementLockedStorage)verify(storage, atLeast(1))).unlock("123");
+                ((ObjectObjectElementLockedStorage)verify(storage, atLeast(1))).lock("123");
+                ((ObjectObjectElementLockedStorage)verify(storage, atLeast(1))).unlock("123");
             
         }
         verifyNoMoreInteractions(storage);
     }
 
-    private ObjectLongStorage createStorage(boolean elementLocked) {
+    private ObjectObjectStorage createStorage(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        ObjectLongStorage storage = mock((Class<ObjectLongStorage>)(elementLocked ? ObjectLongElementLockedStorage.class : ObjectLongStorage.class));
+        ObjectObjectStorage storage = mock((Class<ObjectObjectStorage>)(elementLocked ? ObjectObjectElementLockedStorage.class : ObjectObjectStorage.class));
         if (elementLocked) {
-            when(((ObjectLongElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
+            when(((ObjectObjectElementLockedStorage)storage).getLock()).thenReturn(new ReentrantLock());
         }
         return storage;
     }    
@@ -310,7 +307,7 @@ public class ObjectLongCacheTest {
     @Test(dataProvider = "both")
     public void testTransparentStat(boolean elementLocked) {
         // cast necessary for JDK8 compilation
-        ObjectLongStorage storage = mock((Class<ObjectLongStorage>)(elementLocked ? ObjectLongElementLockedStorage.class : ObjectLongStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
+        ObjectObjectStorage storage = mock((Class<ObjectObjectStorage>)(elementLocked ? ObjectObjectElementLockedStorage.class : ObjectObjectStorage.class), withSettings().extraInterfaces(StatisticsHolder.class));
 
         ObjectLongCache cache = (ObjectLongCache) Wrapping.getFactory(SIGNATURE, SIGNATURE, elementLocked).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());

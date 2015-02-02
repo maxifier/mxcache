@@ -21,7 +21,7 @@ import com.maxifier.mxcache.storage.elementlocked.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractLongCharacterCache extends AbstractElementLockedCache implements LongCharacterCache, LongCharacterElementLockedStorage {
+public abstract class AbstractLongCharacterCache extends AbstractElementLockedCache implements LongCharacterCache, LongObjectElementLockedStorage {
     private final LongCharacterCalculatable calculatable;
 
     public AbstractLongCharacterCache(Object owner, LongCharacterCalculatable calculatable, MutableStatistics statistics) {
@@ -30,18 +30,19 @@ public abstract class AbstractLongCharacterCache extends AbstractElementLockedCa
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public char getOrCreate(long o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
             lock(o);
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Character)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -57,9 +58,10 @@ public abstract class AbstractLongCharacterCache extends AbstractElementLockedCa
                                 } finally {
                                     lock(o);
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Character)v;
                                 }
                             }
                         }
@@ -73,6 +75,7 @@ public abstract class AbstractLongCharacterCache extends AbstractElementLockedCa
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected char create(long key) {
         long start = System.nanoTime();
         char t = calculatable.calculate(owner, key);

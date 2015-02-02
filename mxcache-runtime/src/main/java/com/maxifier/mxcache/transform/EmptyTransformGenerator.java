@@ -11,14 +11,11 @@ import com.maxifier.mxcache.util.ClassGenerator;
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
-final class EmptyTransformGenerator implements TransformGenerator {
-    private static final TransformGenerator INSTANCE = new EmptyTransformGenerator();
+public final class EmptyTransformGenerator implements TransformGenerator {
+    private final Class<?> type;
 
-    public static TransformGenerator getInstance() {
-        return INSTANCE;
-    }
-
-    private EmptyTransformGenerator() {
+    public EmptyTransformGenerator(Class<?> type) {
+        this.type = type;
     }
 
     @Override
@@ -43,8 +40,13 @@ final class EmptyTransformGenerator implements TransformGenerator {
     }
 
     @Override
-    public Class getTransformedType(Class in) {
-        return in;
+    public Class getOutType() {
+        return type;
+    }
+
+    @Override
+    public Class getInType() {
+        return type;
     }
 
     @Override

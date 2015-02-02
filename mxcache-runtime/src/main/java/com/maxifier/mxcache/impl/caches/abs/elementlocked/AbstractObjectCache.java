@@ -23,7 +23,7 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractObjectCache<F> extends AbstractElementLockedCache implements ObjectCache<F>, ObjectElementLockedStorage<F> {
+public abstract class AbstractObjectCache<F> extends AbstractElementLockedCache implements ObjectCache<F>, ObjectElementLockedStorage {
     private final ObjectCalculatable<F> calculatable;
 
     public AbstractObjectCache(Object owner, ObjectCalculatable<F> calculatable, MutableStatistics statistics) {

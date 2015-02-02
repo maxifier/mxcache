@@ -35,9 +35,9 @@ public class BooleanIntCacheBoxKeyTest {
     };
 
     public void testMiss() {
-        ObjectIntStorage storage = mock(ObjectIntStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(true)).thenReturn(false);
+        when(storage.load(true)).thenReturn(Storage.UNDEFINED);
         when(storage.size()).thenReturn(0);
 
         BooleanIntCache cache = (BooleanIntCache) Wrapping.getFactory(new Signature(Object.class, int.class), new Signature(boolean.class, int.class), false).
@@ -54,19 +54,18 @@ public class BooleanIntCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 1;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(true);
+        verify(storage, atLeast(1)).load(true);
         verify(storage).save(true, 42);
         verifyNoMoreInteractions(storage);
     }
 
     public void testHit() {
-        ObjectIntStorage storage = mock(ObjectIntStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         BooleanIntCache cache = (BooleanIntCache) Wrapping.getFactory(new Signature(Object.class, int.class), new Signature(boolean.class, int.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        when(storage.isCalculated(true)).thenReturn(true);
         when(storage.load(true)).thenReturn(42);
         when(storage.size()).thenReturn(1);
 
@@ -80,13 +79,13 @@ public class BooleanIntCacheBoxKeyTest {
         assert cache.getStatistics().getMisses() == 0;
 
         verify(storage).size();
-        verify(storage, atLeast(1)).isCalculated(true);
+        verify(storage, atLeast(1)).load(true);
         verify(storage).load(true);
         verifyNoMoreInteractions(storage);
     }
 
     public void testClear() {
-        ObjectIntStorage storage = mock(ObjectIntStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
         BooleanIntCache cache = (BooleanIntCache) Wrapping.getFactory(new Signature(Object.class, int.class), new Signature(boolean.class, int.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -99,10 +98,9 @@ public class BooleanIntCacheBoxKeyTest {
     }
 
     public void testSetDuringDependencyNodeOperations() {
-        ObjectIntStorage storage = mock(ObjectIntStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(true)).thenReturn(false, true);
-        when(storage.load(true)).thenReturn(42);
+        when(storage.load(true)).thenReturn(Storage.UNDEFINED, 42);
 
         BooleanIntCalculatable calculatable = mock(BooleanIntCalculatable.class);
         MxResource r = mock(MxResource.class);
@@ -120,17 +118,16 @@ public class BooleanIntCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 1;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, times(2)).isCalculated(true);
-        verify(storage).load(true);
+        verify(storage, times(2)).load(true);
         verifyNoMoreInteractions(storage);
         verify(calculatable).calculate("123", true);
         verifyNoMoreInteractions(calculatable);
     }
 
     public void testResetStat() {
-        ObjectIntStorage storage = mock(ObjectIntStorage.class);
+        ObjectObjectStorage storage = mock(ObjectObjectStorage.class);
 
-        when(storage.isCalculated(true)).thenReturn(false);
+        when(storage.load(true)).thenReturn(Storage.UNDEFINED);
 
         BooleanIntCache cache = (BooleanIntCache) Wrapping.getFactory(new Signature(Object.class, int.class), new Signature(boolean.class, int.class), false).
                 wrap("123", CALCULATABLE, storage, new MutableStatisticsImpl());
@@ -149,7 +146,7 @@ public class BooleanIntCacheBoxKeyTest {
         assert cache.getStatistics().getHits() == 0;
         assert cache.getStatistics().getMisses() == 0;
 
-        verify(storage, atLeast(1)).isCalculated(true);
+        verify(storage, atLeast(1)).load(true);
         verify(storage).save(true, 42);
         verifyNoMoreInteractions(storage);
     }

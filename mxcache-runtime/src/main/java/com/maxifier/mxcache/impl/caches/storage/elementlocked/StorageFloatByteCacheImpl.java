@@ -26,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageFloatByteCacheImpl extends AbstractFloatByteCache implements StorageHolder<FloatByteElementLockedStorage> {
-    private FloatByteElementLockedStorage storage;
+public class StorageFloatByteCacheImpl extends AbstractFloatByteCache implements StorageHolder<FloatObjectElementLockedStorage> {
+    private FloatObjectElementLockedStorage storage;
 
     public StorageFloatByteCacheImpl(Object owner, FloatByteCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull FloatByteElementLockedStorage storage) {
+    public void setStorage(@Nonnull FloatObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -42,17 +42,12 @@ public class StorageFloatByteCacheImpl extends AbstractFloatByteCache implements
     }
 
     @Override
-    public boolean isCalculated(float key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public byte load(float key) {
+    public Object load(float key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(float key, byte value) {
+    public void save(float key, Object value) {
         storage.save(key, value);
     }
 
