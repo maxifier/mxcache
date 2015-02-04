@@ -9,6 +9,7 @@ import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.ObjectObjectCache;
 import com.maxifier.mxcache.caches.ObjectObjectCalculatable;
+import com.maxifier.mxcache.exceptions.ExceptionRecord;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.caches.storage.StorageHolder;
 import com.maxifier.mxcache.impl.resource.AbstractDependencyNode;
@@ -175,6 +176,9 @@ public final class Wrapping {
                 method.getStatic(STORAGE_TYPE, "UNDEFINED", OBJECT_TYPE);
                 Label end = new Label();
                 method.ifCmp(OBJECT_TYPE, GeneratorAdapter.EQ, end);
+                method.dup();
+                method.instanceOf(Type.getType(ExceptionRecord.class));
+                method.ifZCmp(GeneratorAdapter.NE, end);
                 transformGenerator.generateForward(thisType, fieldIndex, method);
                 method.mark(end);
             }
@@ -185,6 +189,9 @@ public final class Wrapping {
                 method.getStatic(STORAGE_TYPE, "UNDEFINED", OBJECT_TYPE);
                 Label end = new Label();
                 method.ifCmp(OBJECT_TYPE, GeneratorAdapter.EQ, end);
+                method.dup();
+                method.instanceOf(Type.getType(ExceptionRecord.class));
+                method.ifZCmp(GeneratorAdapter.NE, end);
                 transformGenerator.generateBackward(thisType, fieldIndex, method);
                 method.mark(end);
             }

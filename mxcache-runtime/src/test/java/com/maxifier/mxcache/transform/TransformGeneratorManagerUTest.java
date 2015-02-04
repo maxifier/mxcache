@@ -263,19 +263,6 @@ public class TransformGeneratorManagerUTest {
                 }
 
                 @Override
-                public void generateFields(Type thisType, int fieldIndex, ClassGenerator writer) {
-                }
-
-                @Override
-                public void generateAcquire(Type thisType, int fieldIndex, GeneratorAdapter ctor, int contextLocal) {
-                }
-
-                @Override
-                public int getFieldCount() {
-                    return 0;
-                }
-
-                @Override
                 public Class getOutType() {
                     return String.class;
                 }

@@ -8,6 +8,7 @@ import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.Calculable;
 import com.maxifier.mxcache.config.Rule;
 import com.maxifier.mxcache.context.CacheContext;
+import com.maxifier.mxcache.exceptions.CacheExceptionHandler;
 import com.maxifier.mxcache.proxy.UseProxy;
 import com.maxifier.mxcache.proxy.ProxyFactory;
 
@@ -54,6 +55,7 @@ public class CacheDescriptor<T> {
     private final ProxyFactory proxyFactory;
     private final TransformGenerator keyTransform;
     private final TransformGenerator valueTransform;
+    private final CacheExceptionHandler exceptionHandler;
 
     private final PropertyOverrides overrides;
 
@@ -104,6 +106,8 @@ public class CacheDescriptor<T> {
         this.transformedSignature = transformedSignature;
         this.overrides = overrides;
         rule.override(method, cacheName);
+
+        exceptionHandler = new CacheExceptionHandler(method.getAnnotation(CacheExceptionPolicy.class));
     }
 
     @PublicAPI
@@ -126,6 +130,15 @@ public class CacheDescriptor<T> {
     public CacheDescriptor<T> overrideProxyFactory(Class<? extends ProxyFactory> factory) {
         // cache name is already set in rule, so we pass null
         return new CacheDescriptor<T>(ownerClass, id, signature, calculable, method, null, group, tags, rule, proxyFactory, keyTransform, valueTransform, transformedSignature, new PropertyOverrides(overrides).override(USE_PROXY, factory));
+    }
+
+    /**
+     * @see com.maxifier.mxcache.CacheExceptionPolicy
+     *
+     * @return exception handler for cached method
+     */
+    public CacheExceptionHandler getExceptionHandler() {
+        return exceptionHandler;
     }
 
     public Class getKeyType() {

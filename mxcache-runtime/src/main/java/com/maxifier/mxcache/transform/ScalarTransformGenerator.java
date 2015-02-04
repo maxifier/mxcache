@@ -3,7 +3,10 @@
  */
 package com.maxifier.mxcache.transform;
 
+import com.maxifier.mxcache.asm.Type;
+import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
 import com.maxifier.mxcache.provider.Signature;
+import com.maxifier.mxcache.util.ClassGenerator;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
@@ -24,5 +27,20 @@ public abstract class ScalarTransformGenerator implements TransformGenerator {
     @Override
     public Signature transformValue(Signature in) {
         return in.overrideValue(getOutType());
+    }
+
+    @Override
+    public int getFieldCount() {
+        return 0;
+    }
+
+    @Override
+    public void generateAcquire(Type thisType, int fieldIndex, GeneratorAdapter ctor, int contextLocal) {
+
+    }
+
+    @Override
+    public void generateFields(Type thisType, int fieldIndex, ClassGenerator writer) {
+
     }
 }

@@ -5,6 +5,7 @@ package com.maxifier.mxcache.impl.caches.abs;
 
 import com.maxifier.mxcache.CacheFactory;
 import com.maxifier.mxcache.caches.*;
+import com.maxifier.mxcache.exceptions.*;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.CacheId;
 import com.maxifier.mxcache.impl.CalculatableHelper;
@@ -40,6 +41,7 @@ public abstract class AbstractBooleanCache extends AbstractCache implements Bool
                 if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
+                    ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                     return (Boolean)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
@@ -60,6 +62,7 @@ public abstract class AbstractBooleanCache extends AbstractCache implements Bool
                                 v = load();
                                 if (v != UNDEFINED) {
                                     hit();
+                                    ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                                     return (Boolean)v;
                                 }
                             }
@@ -77,11 +80,42 @@ public abstract class AbstractBooleanCache extends AbstractCache implements Bool
     @SuppressWarnings({ "unchecked" })
     protected boolean create() {
         long start = System.nanoTime();
-        boolean t = calculatable.calculate(owner);
-        long end = System.nanoTime();
-        miss(end - start);
-        save(t);
-        return t;
+        try {
+            int retry = 0;
+            // retry on exception loop
+            while (true) {
+                try {
+                    boolean t = calculatable.calculate(owner);
+                    // successful invocation => just store the value and return
+                    save(t);
+                    return t;
+                } catch (Exception e) {
+                    // We catch Exception here, but not Error and not Throwable.
+                    // this is because in case of Error we are likely have no chance even to save
+                    // an ExceptionRecord to a storage, so don't even try to do so.
+                    // For example in case of OOM (out of memory) it may be impossible to create
+                    // even a single new object.
+                    CacheExceptionHandler exceptionHandler = getDescriptor().getExceptionHandler();
+                    switch (exceptionHandler.getAction(retry, e)) {
+                        case RETRY:
+                            retry++;
+                            continue;
+                        case REMEMBER_AND_RETHROW:
+                            save(new ExceptionRecord(e, exceptionHandler.getRememberExceptionExpirationTimestamp(e)));
+                            // fall through
+                        case RETHROW:
+                        default:
+                            // this method always throws an exception
+                            ExceptionHelper.throwCheckedExceptionHack(e);
+                            break;
+                    }
+                }
+            }
+        } finally {
+            // record calculation time even if calculation fails
+            long end = System.nanoTime();
+            miss(end - start);
+        }
     }
 
     @Override

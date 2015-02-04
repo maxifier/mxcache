@@ -21,4 +21,20 @@ public final class ExceptionHelper {
     public static void throwCheckedExceptionHack(Throwable t) {
         ExceptionHelper.<RuntimeException>throwCheckedExceptionHack0(t);
     }
+
+    /**
+     * If given value represents an {@link com.maxifier.mxcache.exceptions.ExceptionRecord} and the record is not
+     * expired, this method will rethrow it immediately. Otherwise it will do nothing.
+     *
+     * @param value cache value
+     */
+    public static void throwIfExceptionRecordNotExpired(Object value) {
+        if (value instanceof ExceptionRecord) {
+            ExceptionRecord exceptionRecord = (ExceptionRecord) value;
+            long expirationTime = exceptionRecord.getExpirationTime();
+            if (expirationTime == 0 || expirationTime < System.currentTimeMillis()) {
+                throwCheckedExceptionHack(exceptionRecord.getException());
+            }
+        }
+    }
 }
