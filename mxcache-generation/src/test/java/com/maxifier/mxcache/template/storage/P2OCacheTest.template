@@ -198,6 +198,42 @@ public class #E#ObjectCacheTest {
         verifyNoMoreInteractions(storage);
     }
 
+    @Test(dataProvide = "both")
+    public void testExceptionPolicy(boolean elementLocked) {
+        #E##F#Storage storage = createStorage(elementLocked);
+
+        when(storage.load(#ETEST#)).thenReturn(Storage.UNDEFINED, "123");
+
+        #E#ObjectCalculatable calculatable = mock(#E#ObjectCalculatable.class);
+        MxResource r = mock(MxResource.class);
+        when(calculatable.calculate("123"#IF_E#, #ETEST##ENDIF#)).thenThrow(new ResourceOccupied(r));
+
+        #E#ObjectCache cache = (#E#ObjectCache) Wrapping.getFactory(SINGATURE, SINGATURE, elementLocked).
+                    wrap("123", calculatable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
+
+        assert cache.getStatistics().getHits() == 0;
+        assert cache.getStatistics().getMisses() == 0;
+
+        assert cache.getOrCreate(#ETEST#).equals("123");
+
+        assert cache.getStatistics().getHits() == 1;
+        assert cache.getStatistics().getMisses() == 0;
+
+        verify(storage, times(2)).load(#ETEST#);
+        if (elementLocked) {
+            #IF_E#
+                ((#E#ObjectElementLockedStorage)verify(storage, atLeast(1))).lock(#ETEST#);
+                ((#E#ObjectElementLockedStorage)verify(storage, atLeast(1))).unlock(#ETEST#);
+            #ELSE#
+                ((#E#ObjectElementLockedStorage)verify(storage, atLeast(1))).getLock();
+            #ENDIF#
+        }
+        verifyNoMoreInteractions(storage);
+        verify(calculatable).calculate("123"#IF_E#, #ETEST##ENDIF#);
+        verifyNoMoreInteractions(calculatable);
+    }
+
     private #E##F#Storage createStorage(boolean elementLocked) {
         // cast necessary for JDK8 compilation
         #E##F#Storage storage = mock((Class<#E##F#Storage>)(elementLocked ? #E##F#ElementLockedStorage.class : #E##F#Storage.class));

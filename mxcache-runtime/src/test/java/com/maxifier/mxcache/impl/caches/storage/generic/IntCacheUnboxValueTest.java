@@ -115,7 +115,8 @@ public class IntCacheUnboxValueTest {
         assertEquals(cache.getOrCreate(), 42);
 
         assert cache.getStatistics().getHits() == 1;
-        assert cache.getStatistics().getMisses() == 0;
+        // calculatable.calculate will throw ResourceOccupied and a finally block will record it as a miss.
+        assert cache.getStatistics().getMisses() == 1;
 
         verify(storage, times(2)).load();
         verifyNoMoreInteractions(storage);
