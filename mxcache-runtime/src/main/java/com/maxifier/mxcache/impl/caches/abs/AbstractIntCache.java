@@ -38,10 +38,10 @@ public abstract class AbstractIntCache extends AbstractCache implements IntCache
             lock();
             try {
                 Object v = load();
-                ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                 if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
+                    ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                     return (Integer)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
@@ -60,9 +60,9 @@ public abstract class AbstractIntCache extends AbstractCache implements IntCache
                                     lock();
                                 }
                                 v = load();
-                                ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                                 if (v != UNDEFINED) {
                                     hit();
+                                    ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                                     return (Integer)v;
                                 }
                             }

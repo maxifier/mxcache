@@ -27,6 +27,24 @@ public final class ExceptionRecord {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ExceptionRecord that = (ExceptionRecord) o;
+
+        return expirationTime == that.expirationTime && exception.equals(that.exception);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = exception.hashCode();
+        result = 31 * result + (int) (expirationTime ^ (expirationTime >>> 32));
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "ExceptionRecord{" +
                 "exception=" + exception +

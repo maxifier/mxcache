@@ -38,10 +38,10 @@ public abstract class Abstract#EG##FG#Cache extends AbstractCache implements #EG
             lock();
             try {
                 Object v = load(#IF_E#o#ENDIF#);
-                ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                 if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
+                    ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                     return (#fg#)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
@@ -60,9 +60,9 @@ public abstract class Abstract#EG##FG#Cache extends AbstractCache implements #EG
                                     lock();
                                 }
                                 v = load(#IF_E#o#ENDIF#);
-                                ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                                 if (v != UNDEFINED) {
                                     hit();
+                                    ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                                     return (#fg#)v;
                                 }
                             }

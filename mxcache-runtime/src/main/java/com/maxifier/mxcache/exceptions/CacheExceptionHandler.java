@@ -32,30 +32,35 @@ public class CacheExceptionHandler {
                 if (retries < 0) {
                     retries = policy.retries();
                 }
-                if (retry <= retries) {
+                if (retry < retries) {
                     long sleep = specialCase.sleepBeforeRetryMillis();
                     if (sleep < 0) {
                         sleep = policy.sleepBeforeRetryMillis();
                     }
-                    try {
-                        Thread.sleep(sleep);
-                    } catch (InterruptedException interrupted) {
-                        // we will immediately rethrow an exception on interruption to prevent hanging
-                        Thread.interrupted();
-                        return Action.RETHROW;
+                    if (sleep > 0) {
+                        try {
+                            Thread.sleep(sleep);
+                        } catch (InterruptedException interrupted) {
+                            // we will immediately rethrow an exception on interruption to prevent hanging
+                            Thread.interrupted();
+                            return Action.RETHROW;
+                        }
                     }
                     return Action.RETRY;
                 }
                 return specialCase.rememberExceptions() ? Action.REMEMBER_AND_RETHROW : Action.RETHROW;
             }
         }
-        if (retry <= policy.retries()) {
-            try {
-                Thread.sleep(policy.sleepBeforeRetryMillis());
-            } catch (InterruptedException interrupted) {
-                // we will immediately rethrow an exception on interruption to prevent hanging
-                Thread.interrupted();
-                return Action.RETHROW;
+        if (retry < policy.retries()) {
+            long sleep = policy.sleepBeforeRetryMillis();
+            if (sleep > 0) {
+                try {
+                    Thread.sleep(sleep);
+                } catch (InterruptedException interrupted) {
+                    // we will immediately rethrow an exception on interruption to prevent hanging
+                    Thread.interrupted();
+                    return Action.RETHROW;
+                }
             }
             return Action.RETRY;
         }

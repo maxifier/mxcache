@@ -38,10 +38,10 @@ public abstract class AbstractByteFloatCache extends AbstractCache implements By
             lock();
             try {
                 Object v = load(o);
-                ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                 if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
+                    ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                     return (Float)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
@@ -60,9 +60,9 @@ public abstract class AbstractByteFloatCache extends AbstractCache implements By
                                     lock();
                                 }
                                 v = load(o);
-                                ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                                 if (v != UNDEFINED) {
                                     hit();
+                                    ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                                     return (Float)v;
                                 }
                             }

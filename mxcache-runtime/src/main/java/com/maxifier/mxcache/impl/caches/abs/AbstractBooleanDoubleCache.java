@@ -38,10 +38,10 @@ public abstract class AbstractBooleanDoubleCache extends AbstractCache implement
             lock();
             try {
                 Object v = load(o);
-                ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                 if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
+                    ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                     return (Double)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
@@ -60,9 +60,9 @@ public abstract class AbstractBooleanDoubleCache extends AbstractCache implement
                                     lock();
                                 }
                                 v = load(o);
-                                ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                                 if (v != UNDEFINED) {
                                     hit();
+                                    ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                                     return (Double)v;
                                 }
                             }
