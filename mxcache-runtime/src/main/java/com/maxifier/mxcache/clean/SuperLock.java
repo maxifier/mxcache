@@ -8,6 +8,7 @@ import com.maxifier.mxcache.util.TIdentityHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.locks.Lock;
@@ -33,6 +34,7 @@ import java.util.concurrent.locks.Lock;
  *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com) (2014-03-31 11:17)
  */
+@NotThreadSafe
 public class SuperLock {
     private static final Logger logger = LoggerFactory.getLogger(SuperLock.class);
 
@@ -73,24 +75,42 @@ public class SuperLock {
         if (n != 0) {
             throw new IllegalMonitorStateException("SuperLock already locked");
         }
-        while (locked < locks.length) {
-            Lock lock = locks[i];
-            if (!lock.tryLock()) {
+        boolean needsUnlock = true;
+        try {
+            while (locked < locks.length) {
+                Lock lock = locks[i];
+                if (!lock.tryLock()) {
+                    for (; locked > 0; locked--) {
+                        locks[firstLockedIndex++].unlock();
+                        if (firstLockedIndex == locks.length) {
+                            firstLockedIndex = 0;
+                        }
+                    }
+                    lock.lock();
+                }
+                locked++;
+                i++;
+                if (i == locks.length) {
+                    i = 0;
+                }
+            }
+            n = locked;
+            // clear the flag only if all locks were successfully acquired.
+            // otherwise (e.g. if some locks thrown IllegalMonitorStateException or any other exception
+            // we should unlock all the locks that were acquired so far
+
+            // this is necessary because if SuperLock.lock() throws an exception nobody will call unlock on it
+            needsUnlock = false;
+        } finally {
+            if (needsUnlock) {
                 for (; locked > 0; locked--) {
                     locks[firstLockedIndex++].unlock();
                     if (firstLockedIndex == locks.length) {
                         firstLockedIndex = 0;
                     }
                 }
-                lock.lock();
-            }
-            locked++;
-            i++;
-            if (i == locks.length) {
-                i = 0;
             }
         }
-        n = locks.length;
     }
 
     public void unlock() {

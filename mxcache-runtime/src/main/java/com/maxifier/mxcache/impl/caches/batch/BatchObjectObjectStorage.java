@@ -128,20 +128,22 @@ public class BatchObjectObjectStorage<K, V, C, KeyElement, ValueElement, KeyIter
 
     @Override
     public V calculate(Object owner, K key) {
+        boolean success = false;
         try {
             K unknownKey = this.unknownKey;
             V calculated = realCalculable.calculate(owner, unknownKey);
 
             saveReal(unknownKey, calculated);
-            return valueStrategy.compose(knownValue, calculated, composition);
-        } catch (RuntimeException e) {
-            // to prevent memory leak if exception is thrown
-            reset();
-            throw e;
-        } catch (Error e) {
-            // to prevent memory leak if exception is thrown
-            reset();
-            throw e;
+            V res = valueStrategy.compose(knownValue, calculated, composition);
+            // there are many cases when exception can be thrown, e.g. OOM on valueStrategy.compose
+            // we need to reset current value in all cases when the methods hasn't succeeded.
+            success = true;
+            return res;
+        } finally {
+            if (!success) {
+                // to prevent memory leak if exception is thrown
+                reset();
+            }
         }
     }
 }

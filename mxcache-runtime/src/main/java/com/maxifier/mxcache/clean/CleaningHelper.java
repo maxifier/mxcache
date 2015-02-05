@@ -124,26 +124,26 @@ public final class CleaningHelper {
         TIdentityHashSet<CleaningNode> elements = DependencyTracker.getAllDependentNodes(Collections.singleton(rootNode));
         Iterable<DependencyNode> nodes = nodeMapping(elements);
         while (true) {
+            boolean needUnlock = true;
             SuperLock superLock = getSuperLock(elements);
             superLock.lock();
             try {
                 TIdentityHashSet<CleaningNode> newElements = DependencyTracker.getAllDependentNodes(nodes, elements);
                 if (!newElements.containsAll(elements)) {
-                    // we have to unlock all locks and lock them again among with new ones as advanced locking algorithm
-                    // locks guarantees the absence of deadlocks only if all locks are locked at once.
-                    superLock.unlock();
                     elements.addAll(newElements);
                     continue;
                 }
-                return new RecursiveLock(elements, superLock);
-            } catch (Error e) {
-                // we have to unlock it on exception
-                superLock.unlock();
-                throw e;
-            } catch (RuntimeException e) {
-                // we have to unlock it on exception
-                superLock.unlock();
-                throw e;
+                RecursiveLock res = new RecursiveLock(elements, superLock);
+                // first we create an instance of RecursiveLock to prevent an OOM here and only then
+                // clear the flag 'needUnlock'
+                needUnlock = false;
+                return res;
+            } finally {
+                if (needUnlock) {
+                    // we have to unlock it on exception only, on successful return we don't
+                    // in case of successful return the lock should be unlocked at caller side
+                    superLock.unlock();
+                }
             }
         }
     }
