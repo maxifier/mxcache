@@ -46,6 +46,9 @@ public class ViewableSingletonBooleanDependencyNode extends SingletonDependencyN
             DependencyNode prevNode = DependencyTracker.track(DependencyTracker.NOCACHE_NODE);
             try {
                 return storage.isCalculated() && !DependencyTracker.isDependentResourceView(cache) && cache.getOrCreate() != storage.load();
+            } catch (Exception e) {
+                // can't evaluate the function, will invalidate cache anyway
+                return true;
             } finally {
                 DependencyTracker.exit(prevNode);
             }

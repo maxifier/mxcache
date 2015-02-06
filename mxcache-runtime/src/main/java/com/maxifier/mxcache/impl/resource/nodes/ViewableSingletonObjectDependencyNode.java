@@ -46,6 +46,9 @@ public class ViewableSingletonObjectDependencyNode extends SingletonDependencyNo
             DependencyNode prevNode = DependencyTracker.track(DependencyTracker.NOCACHE_NODE);
             try {
                 return !DependencyTracker.isDependentResourceView(cache) && !equal(cache.getOrCreate(), storage.load());
+            } catch (Exception e) {
+                // can't evaluate the function, will invalidate cache anyway
+                return true;
             } finally {
                 DependencyTracker.exit(prevNode);
             }
