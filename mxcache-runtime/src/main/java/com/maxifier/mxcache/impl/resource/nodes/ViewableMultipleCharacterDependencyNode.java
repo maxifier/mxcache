@@ -58,6 +58,9 @@ public class ViewableMultipleCharacterDependencyNode extends MultipleDependencyN
                     }
                 }
             }
+        } catch (Exception e) {
+            // can't evaluate the function, will invalidate cache anyway
+            return true;
         } finally {
             DependencyTracker.exit(prevNode);
         }

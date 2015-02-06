@@ -8,12 +8,13 @@ import com.maxifier.mxcache.impl.caches.def.ObjectStorageImpl;
 import com.maxifier.mxcache.impl.resource.MxResourceFactory;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.resource.TrackDependency;
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.testng.Assert.*;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
@@ -45,304 +46,304 @@ public class CacheDependencyTrackingUTest {
     }
 
     public void testClearByTag() {
-        Assert.assertEquals(x.a(), 0);
-        Assert.assertEquals(b(), 0);
+        assertEquals(x.a(), 0);
+        assertEquals(b(), 0);
 
         x.x = 2;
-        Assert.assertEquals(x.a(), 0);
-        Assert.assertEquals(b(), 0);
+        assertEquals(x.a(), 0);
+        assertEquals(b(), 0);
 
         CacheFactory.getCleaner().clearCacheByTag("x_dep");
 
-        Assert.assertEquals(x.a(), 2);
-        Assert.assertEquals(b(), 2);
+        assertEquals(x.a(), 2);
+        assertEquals(b(), 2);
     }
 
     public void testClearByGroup() {
-        Assert.assertEquals(x.a(), 0);
-        Assert.assertEquals(b(), 0);
+        assertEquals(x.a(), 0);
+        assertEquals(b(), 0);
 
         x.x = 2;
-        Assert.assertEquals(x.a(), 0);
-        Assert.assertEquals(b(), 0);
+        assertEquals(x.a(), 0);
+        assertEquals(b(), 0);
 
         CacheFactory.getCleaner().clearCacheByGroup("x_group");
 
-        Assert.assertEquals(x.a(), 2);
-        Assert.assertEquals(b(), 2);
+        assertEquals(x.a(), 2);
+        assertEquals(b(), 2);
     }
 
     public void testClearInstanceByTag() {
-        Assert.assertEquals(x.a(), 0);
-        Assert.assertEquals(b(), 0);
+        assertEquals(x.a(), 0);
+        assertEquals(b(), 0);
 
         x.x = 2;
-        Assert.assertEquals(x.a(), 0);
-        Assert.assertEquals(b(), 0);
+        assertEquals(x.a(), 0);
+        assertEquals(b(), 0);
 
         CacheFactory.getCleaner().clearInstanceByTag(x, "x_dep");
 
-        Assert.assertEquals(x.a(), 2);
-        Assert.assertEquals(b(), 2);
+        assertEquals(x.a(), 2);
+        assertEquals(b(), 2);
     }
 
     public void testClearInstanceByGroup() {
-        Assert.assertEquals(x.a(), 0);
-        Assert.assertEquals(b(), 0);
+        assertEquals(x.a(), 0);
+        assertEquals(b(), 0);
 
         x.x = 2;
-        Assert.assertEquals(x.a(), 0);
-        Assert.assertEquals(b(), 0);
+        assertEquals(x.a(), 0);
+        assertEquals(b(), 0);
 
         CacheFactory.getCleaner().clearInstanceByGroup(x, "x_group");
 
-        Assert.assertEquals(x.a(), 2);
-        Assert.assertEquals(b(), 2);
+        assertEquals(x.a(), 2);
+        assertEquals(b(), 2);
     }
 
     public void testClearByInstance() {
-        Assert.assertEquals(x.a(), 0);
-        Assert.assertEquals(b(), 0);
+        assertEquals(x.a(), 0);
+        assertEquals(b(), 0);
 
         x.x = 2;
-        Assert.assertEquals(x.a(), 0);
-        Assert.assertEquals(b(), 0);
+        assertEquals(x.a(), 0);
+        assertEquals(b(), 0);
 
         CacheFactory.getCleaner().clearCacheByInstance(x);
 
-        Assert.assertEquals(x.a(), 2);
-        Assert.assertEquals(b(), 2);
+        assertEquals(x.a(), 2);
+        assertEquals(b(), 2);
     }
 
     public void testClearByClass() {
-        Assert.assertEquals(x.a(), 0);
-        Assert.assertEquals(b(), 0);
+        assertEquals(x.a(), 0);
+        assertEquals(b(), 0);
 
         x.x = 2;
-        Assert.assertEquals(x.a(), 0);
-        Assert.assertEquals(b(), 0);
+        assertEquals(x.a(), 0);
+        assertEquals(b(), 0);
 
         CacheFactory.getCleaner().clearCacheByClass(X.class);
 
-        Assert.assertEquals(x.a(), 2);
-        Assert.assertEquals(b(), 2);
+        assertEquals(x.a(), 2);
+        assertEquals(b(), 2);
     }
 
     @Test
     public void testClearByTagForViewDouble() {
         PointImpl point = new PointImpl(3L, 4L);
-        Assert.assertEquals(point.getX(), 3L);
-        Assert.assertEquals(point.getY(), 4L);
-        Assert.assertEquals(point.getRadius(), 5.0);
-        Assert.assertEquals(point.getViewCount1(), 1);
+        assertEquals(point.getX(), 3L);
+        assertEquals(point.getY(), 4L);
+        assertEquals(point.getRadius(), 5.0);
+        assertEquals(point.getViewCount1(), 1);
 
         CacheFactory.getCleaner().clearCacheByTag("param");
-        Assert.assertEquals(point.getViewCount1(), 1);
-        Assert.assertEquals(point.getX(), 3L);
-        Assert.assertEquals(point.getY(), 4L);
-        Assert.assertEquals(point.getRadius(), 5.0);
-        Assert.assertEquals(point.getViewCount1(), 2);
+        assertEquals(point.getViewCount1(), 1);
+        assertEquals(point.getX(), 3L);
+        assertEquals(point.getY(), 4L);
+        assertEquals(point.getRadius(), 5.0);
+        assertEquals(point.getViewCount1(), 2);
 
         point.x = 4L;
         point.y = 3L;
 
-        Assert.assertEquals(point.getX(), 3L);
-        Assert.assertEquals(point.getY(), 4L);
-        Assert.assertEquals(point.getRadius(), 5.0);
-        Assert.assertEquals(point.getViewCount1(), 2);
+        assertEquals(point.getX(), 3L);
+        assertEquals(point.getY(), 4L);
+        assertEquals(point.getRadius(), 5.0);
+        assertEquals(point.getViewCount1(), 2);
 
         CacheFactory.getCleaner().clearCacheByTag("param");
-        Assert.assertEquals(point.getViewCount1(), 2);
-        Assert.assertEquals(point.getX(), 4L);
-        Assert.assertEquals(point.getY(), 3L);
-        Assert.assertEquals(point.getRadius(), 5.0);
-        Assert.assertEquals(point.getViewCount1(), 3);
+        assertEquals(point.getViewCount1(), 2);
+        assertEquals(point.getX(), 4L);
+        assertEquals(point.getY(), 3L);
+        assertEquals(point.getRadius(), 5.0);
+        assertEquals(point.getViewCount1(), 3);
 
 
         point.y = 0L;
-        Assert.assertEquals(point.getY(), 3L);
-        Assert.assertEquals(point.getRadius(), 5.0);
-        Assert.assertEquals(point.getViewCount1(), 3);
+        assertEquals(point.getY(), 3L);
+        assertEquals(point.getRadius(), 5.0);
+        assertEquals(point.getViewCount1(), 3);
 
         CacheFactory.getCleaner().clearCacheByTag("param");
-        Assert.assertEquals(point.getViewCount1(), 3);
-        Assert.assertEquals(point.getY(), 0L);
-        Assert.assertEquals(point.getRadius(), 4.0);
-        Assert.assertEquals(point.getViewCount1(), 4);
+        assertEquals(point.getViewCount1(), 3);
+        assertEquals(point.getY(), 0L);
+        assertEquals(point.getRadius(), 4.0);
+        assertEquals(point.getViewCount1(), 4);
     }
 
     @Test
     public void testClearResourceForViewDouble() {
         PointImpl point = new PointImpl(3L, 4L);
-        Assert.assertEquals(point.getX(), 3L);
-        Assert.assertEquals(point.getY(), 4L);
-        Assert.assertEquals(point.getRadius(), 5.0);
-        Assert.assertEquals(point.getViewCount1(), 1);
+        assertEquals(point.getX(), 3L);
+        assertEquals(point.getY(), 4L);
+        assertEquals(point.getRadius(), 5.0);
+        assertEquals(point.getViewCount1(), 1);
 
         point.setX(3L);
-        Assert.assertEquals(point.getViewCount1(), 2);
-        Assert.assertEquals(point.getX(), 3L);
-        Assert.assertEquals(point.getY(), 4L);
-        Assert.assertEquals(point.getRadius(), 5.0);
-        Assert.assertEquals(point.getViewCount1(), 2);
+        assertEquals(point.getViewCount1(), 2);
+        assertEquals(point.getX(), 3L);
+        assertEquals(point.getY(), 4L);
+        assertEquals(point.getRadius(), 5.0);
+        assertEquals(point.getViewCount1(), 2);
 
         point.setNewXY(4L, 3L);
-        Assert.assertEquals(point.getViewCount1(), 3);
-        Assert.assertEquals(point.getX(), 4L);
-        Assert.assertEquals(point.getY(), 3L);
-        Assert.assertEquals(point.getRadius(), 5.0);
-        Assert.assertEquals(point.getViewCount1(), 3);
+        assertEquals(point.getViewCount1(), 3);
+        assertEquals(point.getX(), 4L);
+        assertEquals(point.getY(), 3L);
+        assertEquals(point.getRadius(), 5.0);
+        assertEquals(point.getViewCount1(), 3);
 
         point.setY(0L);
-        Assert.assertEquals(point.getViewCount1(), 4);
-        Assert.assertEquals(point.getY(), 0L);
-        Assert.assertEquals(point.getRadius(), 4.0);
-        Assert.assertEquals(point.getViewCount1(), 5);
+        assertEquals(point.getViewCount1(), 4);
+        assertEquals(point.getY(), 0L);
+        assertEquals(point.getRadius(), 4.0);
+        assertEquals(point.getViewCount1(), 5);
     }
 
     @Test
     public void testClearForViewLong() {
         PointImpl point = new PointImpl(3L, 4L);
-        Assert.assertEquals(point.getX(), 3L);
-        Assert.assertEquals(point.getY(), 4L);
-        Assert.assertEquals(point.getPerimeter(), 14L);
-        Assert.assertEquals(point.getViewCount2(), 1);
+        assertEquals(point.getX(), 3L);
+        assertEquals(point.getY(), 4L);
+        assertEquals(point.getPerimeter(), 14L);
+        assertEquals(point.getViewCount2(), 1);
 
         point.setX(3L);
-        Assert.assertEquals(point.getViewCount2(), 2);
-        Assert.assertEquals(point.getX(), 3L);
-        Assert.assertEquals(point.getY(), 4L);
-        Assert.assertEquals(point.getPerimeter(), 14L);
-        Assert.assertEquals(point.getViewCount2(), 2);
+        assertEquals(point.getViewCount2(), 2);
+        assertEquals(point.getX(), 3L);
+        assertEquals(point.getY(), 4L);
+        assertEquals(point.getPerimeter(), 14L);
+        assertEquals(point.getViewCount2(), 2);
 
         point.setNewXY(4L, 3L);
-        Assert.assertEquals(point.getViewCount2(), 3);
-        Assert.assertEquals(point.getX(), 4L);
-        Assert.assertEquals(point.getY(), 3L);
-        Assert.assertEquals(point.getPerimeter(), 14L);
-        Assert.assertEquals(point.getViewCount2(), 3);
+        assertEquals(point.getViewCount2(), 3);
+        assertEquals(point.getX(), 4L);
+        assertEquals(point.getY(), 3L);
+        assertEquals(point.getPerimeter(), 14L);
+        assertEquals(point.getViewCount2(), 3);
 
         point.setY(0L);
-        Assert.assertEquals(point.getViewCount2(), 4);
-        Assert.assertEquals(point.getY(), 0L);
-        Assert.assertEquals(point.getPerimeter(), 8L);
-        Assert.assertEquals(point.getViewCount2(), 5);
+        assertEquals(point.getViewCount2(), 4);
+        assertEquals(point.getY(), 0L);
+        assertEquals(point.getPerimeter(), 8L);
+        assertEquals(point.getViewCount2(), 5);
     }
 
 
     @Test
     public void testClearForViewWithKey() {
         PointImpl point = new PointImpl(3L, 4L);
-        Assert.assertEquals(point.getX(), 3L);
-        Assert.assertEquals(point.getY(), 4L);
-        Assert.assertEquals(point.getRadius(0L), 5.0);
-        Assert.assertEquals(point.getViewCount3(), 1);
+        assertEquals(point.getX(), 3L);
+        assertEquals(point.getY(), 4L);
+        assertEquals(point.getRadius(0L), 5.0);
+        assertEquals(point.getViewCount3(), 1);
 
         point.setX(3L);
-        Assert.assertEquals(point.getViewCount3(), 1);
-        Assert.assertEquals(point.getX(), 3L);
-        Assert.assertEquals(point.getY(), 4L);
-        Assert.assertEquals(point.getRadius(0L), 5.0);
-        Assert.assertEquals(point.getViewCount3(), 2);
+        assertEquals(point.getViewCount3(), 1);
+        assertEquals(point.getX(), 3L);
+        assertEquals(point.getY(), 4L);
+        assertEquals(point.getRadius(0L), 5.0);
+        assertEquals(point.getViewCount3(), 2);
 
         point.setNewXY(4L, 3L);
-        Assert.assertEquals(point.getViewCount3(), 2);
-        Assert.assertEquals(point.getX(), 4L);
-        Assert.assertEquals(point.getY(), 3L);
-        Assert.assertEquals(point.getRadius(0L), 5.0);
-        Assert.assertEquals(point.getViewCount3(), 3);
+        assertEquals(point.getViewCount3(), 2);
+        assertEquals(point.getX(), 4L);
+        assertEquals(point.getY(), 3L);
+        assertEquals(point.getRadius(0L), 5.0);
+        assertEquals(point.getViewCount3(), 3);
 
         point.setY(0L);
-        Assert.assertEquals(point.getViewCount3(), 3);
-        Assert.assertEquals(point.getY(), 0L);
-        Assert.assertEquals(point.getRadius(0L), 4.0);
-        Assert.assertEquals(point.getViewCount3(), 4);
+        assertEquals(point.getViewCount3(), 3);
+        assertEquals(point.getY(), 0L);
+        assertEquals(point.getRadius(0L), 4.0);
+        assertEquals(point.getViewCount3(), 4);
     }
 
     @Test
     public void testClearForViewObject() {
         PointImpl point = new PointImpl(3L, 4L);
-        Assert.assertEquals(point.toString(), "PointImpl{radius=5.0}");
-        Assert.assertEquals(point.getViewCount4(), 1);
+        assertEquals(point.toString(), "PointImpl{radius=5.0}");
+        assertEquals(point.getViewCount4(), 1);
 
         point.setX(3L);
-        Assert.assertEquals(point.getViewCount4(), 2);
-        Assert.assertEquals(point.toString(), "PointImpl{radius=5.0}");
-        Assert.assertEquals(point.getViewCount4(), 2);
+        assertEquals(point.getViewCount4(), 2);
+        assertEquals(point.toString(), "PointImpl{radius=5.0}");
+        assertEquals(point.getViewCount4(), 2);
 
         point.setNewXY(4L, 3L);
-        Assert.assertEquals(point.getViewCount4(), 3);
-        Assert.assertEquals(point.toString(), "PointImpl{radius=5.0}");
-        Assert.assertEquals(point.getViewCount4(), 3);
+        assertEquals(point.getViewCount4(), 3);
+        assertEquals(point.toString(), "PointImpl{radius=5.0}");
+        assertEquals(point.getViewCount4(), 3);
 
         point.setY(0L);
-        Assert.assertEquals(point.getViewCount4(), 4);
-        Assert.assertEquals(point.toString(), "PointImpl{radius=4.0}");
-        Assert.assertEquals(point.getViewCount4(), 5);
+        assertEquals(point.getViewCount4(), 4);
+        assertEquals(point.toString(), "PointImpl{radius=4.0}");
+        assertEquals(point.getViewCount4(), 5);
 
         point.setNewXY(4L, 3L);
-        Assert.assertEquals(point.getViewCount4(), 6);
-        Assert.assertEquals(point.toString(), "PointImpl{radius=5.0}");
-        Assert.assertEquals(point.getViewCount4(), 7);
+        assertEquals(point.getViewCount4(), 6);
+        assertEquals(point.toString(), "PointImpl{radius=5.0}");
+        assertEquals(point.getViewCount4(), 7);
     }
 
     @Test
     public void testClearDependentFromView() {
         PointImpl point = new PointImpl(3L, 4L);
-        Assert.assertEquals(point.getX(), 3L);
-        Assert.assertEquals(point.getY(), 4L);
-        Assert.assertEquals(point.getDiameter(), 10);
-        Assert.assertEquals(point.getViewCount5(), 1);
+        assertEquals(point.getX(), 3L);
+        assertEquals(point.getY(), 4L);
+        assertEquals(point.getDiameter(), 10);
+        assertEquals(point.getViewCount5(), 1);
 
         point.setX(3L);
-        Assert.assertEquals(point.getViewCount5(), 1);
-        Assert.assertEquals(point.getX(), 3L);
-        Assert.assertEquals(point.getY(), 4L);
-        Assert.assertEquals(point.getDiameter(), 10);
-        Assert.assertEquals(point.getViewCount5(), 1);
+        assertEquals(point.getViewCount5(), 1);
+        assertEquals(point.getX(), 3L);
+        assertEquals(point.getY(), 4L);
+        assertEquals(point.getDiameter(), 10);
+        assertEquals(point.getViewCount5(), 1);
 
         point.setNewXY(4L, 3L);
-        Assert.assertEquals(point.getViewCount5(), 1);
-        Assert.assertEquals(point.getX(), 4L);
-        Assert.assertEquals(point.getY(), 3L);
-        Assert.assertEquals(point.getDiameter(), 10);
-        Assert.assertEquals(point.getViewCount5(), 1);
+        assertEquals(point.getViewCount5(), 1);
+        assertEquals(point.getX(), 4L);
+        assertEquals(point.getY(), 3L);
+        assertEquals(point.getDiameter(), 10);
+        assertEquals(point.getViewCount5(), 1);
 
         point.setY(0L);
-        Assert.assertEquals(point.getViewCount5(), 1);
-        Assert.assertEquals(point.getY(), 0L);
-        Assert.assertEquals(point.getDiameter(), 8);
-        Assert.assertEquals(point.getViewCount5(), 2);
+        assertEquals(point.getViewCount5(), 1);
+        assertEquals(point.getY(), 0L);
+        assertEquals(point.getDiameter(), 8);
+        assertEquals(point.getViewCount5(), 2);
     }
 
 
     @Test
     public void testClearNonStorageView() {
         PointImpl point = new PointImpl(3L, 4L);
-        Assert.assertEquals(point.getX(), 3L);
-        Assert.assertEquals(point.getY(), 4L);
-        Assert.assertEquals(point.getCircuit(), 31L);
-        Assert.assertEquals(point.getViewCount6(), 1);
+        assertEquals(point.getX(), 3L);
+        assertEquals(point.getY(), 4L);
+        assertEquals(point.getCircuit(), 31L);
+        assertEquals(point.getViewCount6(), 1);
 
         point.setX(3L);
-        Assert.assertEquals(point.getViewCount6(), 1);
-        Assert.assertEquals(point.getX(), 3L);
-        Assert.assertEquals(point.getY(), 4L);
-        Assert.assertEquals(point.getCircuit(), 31L);
-        Assert.assertEquals(point.getViewCount6(), 2);
+        assertEquals(point.getViewCount6(), 1);
+        assertEquals(point.getX(), 3L);
+        assertEquals(point.getY(), 4L);
+        assertEquals(point.getCircuit(), 31L);
+        assertEquals(point.getViewCount6(), 2);
 
         point.setNewXY(4L, 3L);
-        Assert.assertEquals(point.getViewCount6(), 2);
-        Assert.assertEquals(point.getX(), 4L);
-        Assert.assertEquals(point.getY(), 3L);
-        Assert.assertEquals(point.getCircuit(), 31L);
-        Assert.assertEquals(point.getViewCount6(), 3);
+        assertEquals(point.getViewCount6(), 2);
+        assertEquals(point.getX(), 4L);
+        assertEquals(point.getY(), 3L);
+        assertEquals(point.getCircuit(), 31L);
+        assertEquals(point.getViewCount6(), 3);
 
         point.setY(0L);
-        Assert.assertEquals(point.getViewCount6(), 3);
-        Assert.assertEquals(point.getY(), 0L);
-        Assert.assertEquals(point.getCircuit(), 25L);
-        Assert.assertEquals(point.getViewCount6(), 4);
+        assertEquals(point.getViewCount6(), 3);
+        assertEquals(point.getY(), 0L);
+        assertEquals(point.getCircuit(), 25L);
+        assertEquals(point.getViewCount6(), 4);
     }
 
     @Test
@@ -351,35 +352,62 @@ public class CacheDependencyTrackingUTest {
         PointImpl p1 = storage.createPoint(4L, 3L);
         PointImpl p2 = storage.createPoint(0L, 3L);
 
-        Assert.assertEquals(p1.getRadius(), 5.0);
-        Assert.assertEquals(p2.getRadius(), 3.0);
-        Assert.assertEquals(storage.getAverageRadius(), 4.0);
-        Assert.assertTrue(p1.isGreaterAvgRadius());
-        Assert.assertFalse(p2.isGreaterAvgRadius());
-        Assert.assertEquals(p1.getViewCount7(), 1);
-        Assert.assertEquals(p2.getViewCount7(), 1);
+        assertEquals(p1.getRadius(), 5.0);
+        assertEquals(p2.getRadius(), 3.0);
+        assertEquals(storage.getAverageRadius(), 4.0);
+        assertTrue(p1.isGreaterAvgRadius());
+        assertFalse(p2.isGreaterAvgRadius());
+        assertEquals(p1.getViewCount7(), 1);
+        assertEquals(p2.getViewCount7(), 1);
 
         storage.resource.writeStart();
         try {
             p1.setX(0L);
-            Assert.assertEquals(p1.getViewCount7(), 1);
-            Assert.assertEquals(p2.getViewCount7(), 1);
-            Assert.assertEquals(p1.getRadius(), 3.0);
-            Assert.assertEquals(p2.getRadius(), 3.0);
+            assertEquals(p1.getViewCount7(), 1);
+            assertEquals(p2.getViewCount7(), 1);
+            assertEquals(p1.getRadius(), 3.0);
+            assertEquals(p2.getRadius(), 3.0);
         } finally {
             storage.resource.writeEnd();
         }
 
-        Assert.assertEquals(p1.getRadius(), 3.0);
-        Assert.assertEquals(p2.getRadius(), 3.0);
-        Assert.assertEquals(storage.getAverageRadius(), 3.0);
-        Assert.assertEquals(p1.getViewCount7(), 2);
-        Assert.assertEquals(p2.getViewCount7(), 2);
+        assertEquals(p1.getRadius(), 3.0);
+        assertEquals(p2.getRadius(), 3.0);
+        assertEquals(storage.getAverageRadius(), 3.0);
+        assertEquals(p1.getViewCount7(), 2);
+        assertEquals(p2.getViewCount7(), 2);
 
-        Assert.assertFalse(p1.isGreaterAvgRadius());
-        Assert.assertFalse(p2.isGreaterAvgRadius());
-        Assert.assertEquals(p1.getViewCount7(), 3);
-        Assert.assertEquals(p2.getViewCount7(), 2);
+        assertFalse(p1.isGreaterAvgRadius());
+        assertFalse(p2.isGreaterAvgRadius());
+        assertEquals(p1.getViewCount7(), 3);
+        assertEquals(p2.getViewCount7(), 2);
+    }
+
+    @Test
+    public void testExceptionOnRecalculation() {
+        PointStorage storage = new PointStorage();
+        PointImpl p1 = storage.createPoint(4L, 3L);
+
+        assertEquals(p1.getDiameter(), 10);
+
+        storage.resource.writeStart();
+        try {
+            p1.fail = true;
+            p1.setX(3);
+        } finally {
+            storage.resource.writeEnd();
+        }
+        // no exception is thrown, the cache should be cleaned
+        assertEquals(p1.exceptionCount, 1);
+
+        try {
+            p1.getDiameter();
+        } catch (RuntimeException e) {
+            assertEquals(e, PointImpl.TEST_EXCEPTION);
+        }
+        p1.fail = false;
+        // (int)(2 * sqrt(18))
+        assertEquals(p1.getDiameter(), 8);
     }
 
     static class PointStorage {
@@ -413,6 +441,7 @@ public class CacheDependencyTrackingUTest {
     }
 
     static class PointImpl {
+        public static final RuntimeException TEST_EXCEPTION = new RuntimeException("Test exception");
         protected final MxResource xyRes = MxResourceFactory.getResource("xy");
         private final PointStorage storage;
 
@@ -423,6 +452,8 @@ public class CacheDependencyTrackingUTest {
         private int viewCount5 = 0;
         private int viewCount6 = 0;
         private int viewCount7 = 0;
+        private int exceptionCount = 0;
+        private boolean fail = false;
 
         public long x;
         public long y;
@@ -531,6 +562,10 @@ public class CacheDependencyTrackingUTest {
         @TrackDependency(DependencyTracking.INSTANCE)
         @ResourceView
         public double getRadius() {
+            if (fail) {
+                exceptionCount++;
+                throw TEST_EXCEPTION;
+            }
             long x1 = getX();
             long y1 = getY();
             viewCount1++;
@@ -541,6 +576,10 @@ public class CacheDependencyTrackingUTest {
         @TrackDependency(DependencyTracking.INSTANCE)
         @ResourceView
         boolean isGreaterAvgRadius() {
+            if (fail) {
+                exceptionCount++;
+                throw TEST_EXCEPTION;
+            }
             viewCount7++;
             return getRadius() - storage.getAverageRadius() > 0;
         }
@@ -557,6 +596,10 @@ public class CacheDependencyTrackingUTest {
         @ResourceView
         @UseStorage(ObjectStorageImpl.class)
         public long getPerimeter() {
+            if (fail) {
+                exceptionCount++;
+                throw TEST_EXCEPTION;
+            }
             long x1 = getX();
             long y1 = getY();
             viewCount2++;
@@ -567,6 +610,10 @@ public class CacheDependencyTrackingUTest {
         @TrackDependency(DependencyTracking.INSTANCE)
         @ResourceView
         public double getRadius(long z) {
+            if (fail) {
+                exceptionCount++;
+                throw TEST_EXCEPTION;
+            }
             long x1 = getX();
             long y1 = getY();
             viewCount3++;
@@ -578,6 +625,10 @@ public class CacheDependencyTrackingUTest {
         @Strategy(NonStorageStrategy.class)
         @ResourceView
         public long getCircuit() {
+            if (fail) {
+                exceptionCount++;
+                throw TEST_EXCEPTION;
+            }
             long x1 = getX();
             long y1 = getY();
             viewCount6++;
