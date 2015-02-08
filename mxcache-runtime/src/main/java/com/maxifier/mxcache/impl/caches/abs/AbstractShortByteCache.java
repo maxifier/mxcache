@@ -35,6 +35,7 @@ public abstract class AbstractShortByteCache extends AbstractCache implements Sh
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
+            preCheckDirty();
             lock();
             try {
                 Object v = load(o);
@@ -73,6 +74,7 @@ public abstract class AbstractShortByteCache extends AbstractCache implements Sh
                 }
             } finally {
                 unlock();
+                postCheckDirty();
             }
         }
     }

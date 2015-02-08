@@ -7,6 +7,9 @@ import com.maxifier.mxcache.Cached;
 import com.maxifier.mxcache.NonInstrumentedCacheException;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.CleaningNode;
+import com.maxifier.mxcache.impl.resource.AbstractDependencyNode;
+import com.maxifier.mxcache.impl.resource.DependencyNode;
+import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import gnu.trove.map.hash.THashMap;
 import org.slf4j.Logger;
@@ -29,8 +32,9 @@ public final class CleanableRegister implements CacheCleaner {
     private static final Logger logger = LoggerFactory.getLogger(CleanableRegister.class);
 
     private final Map<Class<?>, ClassCleanableInstanceList<?>> classCleanMap = new THashMap<Class<?>, ClassCleanableInstanceList<?>>();
-    private final Map<String, CustomCleanableInstanceList> groupCleanMap = new THashMap<String, CustomCleanableInstanceList>();
-    private final Map<String, CustomCleanableInstanceList> tagCleanMap = new THashMap<String, CustomCleanableInstanceList>();
+    private final Map<Class<?>, DependencyNode> classMapping = new THashMap<Class<?>, DependencyNode>();
+    private final Map<String, DependencyNode> groupMapping = new THashMap<String, DependencyNode>();
+    private final Map<String, DependencyNode> tagMapping = new THashMap<String, DependencyNode>();
 
     private static final Cleanable<?> EMPTY_CLEANABLE = new EmptyCleanable();
 
@@ -53,20 +57,8 @@ public final class CleanableRegister implements CacheCleaner {
         //noinspection unchecked
         ClassCleanableInstanceList<T> instanceList = new ClassCleanableInstanceList<T>(superClassList, cleanable, groups, tags, clazz);
         ClassCleanableInstanceList<?> oldValue = classCleanMap.put(clazz, instanceList);
-
         if (oldValue != null) {
             throw new IllegalStateException(clazz + " already registered");
-        }
-
-        for (Class<?> intf : clazz.getInterfaces()) {
-            getInterfaceList(intf).addChild(instanceList);
-        }
-
-        if (groups != null) {
-            registerByString(instanceList, groupCleanMap, groups);
-        }
-        if (tags != null) {
-            registerByString(instanceList, tagCleanMap, tags);
         }
     }
 
@@ -84,30 +76,6 @@ public final class CleanableRegister implements CacheCleaner {
         return list;
     }
 
-    @SuppressWarnings({ "unchecked" })
-    private synchronized ClassCleanableInstanceList<Object> getInterfaceList(Class cls) {
-        assert cls.isInterface();
-        ClassCleanableInstanceList list = classCleanMap.get(cls);
-        if (list == null) {
-            list = new ClassCleanableInstanceList(null, EMPTY_CLEANABLE, null, null, cls);
-            classCleanMap.put(cls, list);
-        }
-        return list;
-    }
-
-    private static <T> void registerByString(ClassCleanableInstanceList<T> instanceList, Map<String, CustomCleanableInstanceList> cacheMap, Map<String, ClassCacheIds> map) {
-        for (Map.Entry<String, ClassCacheIds> entry : map.entrySet()) {
-            ClassCacheIds value = entry.getValue();
-            String key = entry.getKey();
-            CustomCleanableInstanceList list = cacheMap.get(key);
-            if (list == null) {
-                list = new CustomCleanableInstanceList();
-                cacheMap.put(key, list);
-            }
-            list.add(instanceList, value.getStaticIds(), value.getInstanceIds());
-        }
-    }
-
     //---- Called from modified constructor of instrumented class ---------------------------------------
 
     public void registerInstance(Object o, Class<?> aClass) {
@@ -120,9 +88,9 @@ public final class CleanableRegister implements CacheCleaner {
 
     @SuppressWarnings({"unchecked"})
     public List<Cache> getCaches(@Nonnull CacheDescriptor descriptor) {
-        ClassCleanableInstanceList<?> list = getListByClass(descriptor.getOwnerClass());
+        ClassCleanableInstanceList<?> list = getListByClass(descriptor.getDeclaringClass());
         if (list == null) {
-            logger.error("Unknown class required: " + descriptor.getOwnerClass());
+            logger.error("Unknown class required: " + descriptor.getDeclaringClass());
             return Collections.emptyList();
         }
         Cleanable cleanable = list.getCleanable();
@@ -218,48 +186,44 @@ public final class CleanableRegister implements CacheCleaner {
     }
 
     @Override
-    public void clearCacheByClass(Class<?> aClass) {
-        ClassCleanableInstanceList<?> instanceList = getListByClass(aClass);
-        if (instanceList == null) {
-            checkNonInstrumentedCaches(aClass);
-            // subclasses may be loaded later
-            logger.warn("There is no subclasses of " + aClass + " with caches yet");
-            return;
+    public void clearCacheByClass(Class<?> clazz) {
+        checkNonInstrumentedCaches(clazz);
+
+        DependencyNode node;
+        synchronized (this) {
+            node = classMapping.get(clazz);
         }
-        instanceList.clearCache();
+        if (node == null) {
+            logger.warn("There is no subclasses of " + clazz + " with caches yet");
+        } else {
+            DependencyTracker.deepInvalidate(node);
+        }
     }
 
     @Override
     public void clearCacheByGroup(String group) {
-        CustomCleanableInstanceList list = getListByGroup(group);
-        if (list != null) {
-            list.clearCache();
-        } else {
-            logger.warn("There is no caches of group <" + group + "> yet");
+        DependencyNode node;
+        synchronized (this) {
+            node = groupMapping.get(group);
         }
-    }
-
-    private synchronized CustomCleanableInstanceList getListByGroup(String group) {
-        return groupCleanMap.get(group);
+        if (node == null) {
+            logger.warn("There is no caches of group <" + group + "> yet");
+        } else {
+            DependencyTracker.deepInvalidate(node);
+        }
     }
 
     @Override
     public void clearCacheByTag(String tag) {
-        CustomCleanableInstanceList list = getListByTag(tag);
-        if (list != null) {
-            list.clearCache();
-        } else {
-            logger.warn("There is no caches with tag <" + tag + "> yet");
+        DependencyNode node;
+        synchronized (this) {
+            node = tagMapping.get(tag);
         }
-    }
-
-    private synchronized CustomCleanableInstanceList getListByTag(String tag) {
-        return tagCleanMap.get(tag);
-    }
-
-    @Override
-    public void clearAll(Collection<? extends CleaningNode> elements) {
-        CleaningHelper.lockAndClear(elements);
+        if (node == null) {
+            logger.warn("There is no caches with tag <" + tag + "> yet");
+        } else {
+            DependencyTracker.deepInvalidate(node);
+        }
     }
 
     /**
@@ -267,20 +231,46 @@ public final class CleanableRegister implements CacheCleaner {
      */
     @Override
     public void clearCacheByAnnotation(Class<? extends Annotation> annotationClass) {
-        CustomCleanableInstanceList list = getListByTag("@" + annotationClass.getName());
-        if (list != null) {
-            list.clearCache();
-        } else {
+        DependencyNode node;
+        synchronized (this) {
+            node = tagMapping.get("@" + annotationClass.getName());
+        }
+        if (node == null) {
             logger.warn("Can`t find cache for annotation " + annotationClass);
+        } else {
+            DependencyTracker.deepInvalidate(node);
         }
     }
 
-    private static class EmptyCleanable implements Cleanable<Object> {
-        @Override
-        public void appendStaticCachesTo(List<CleaningNode> locks) {
-            // interfaces has no caches
+    @Nullable
+    public synchronized DependencyNode getClassDependencyNode(Class<?> clazz) {
+        DependencyNode tagNode = classMapping.get(clazz);
+        if (tagNode == null) {
+            tagNode = new EmptyDependencyNode("class:" + clazz.getName());
+            classMapping.put(clazz, tagNode);
         }
+        return tagNode;
+    }
 
+    public synchronized DependencyNode getTagDependencyNode(String tag) {
+        DependencyNode tagNode = tagMapping.get(tag);
+        if (tagNode == null) {
+            tagNode = new EmptyDependencyNode("tag:" + tag);
+            tagMapping.put(tag, tagNode);
+        }
+        return tagNode;
+    }
+
+    public synchronized DependencyNode getGroupDependencyNode(String group) {
+        DependencyNode groupNode = groupMapping.get(group);
+        if (groupNode == null) {
+            groupNode = new EmptyDependencyNode("group:" + group);
+            groupMapping.put(group, groupNode);
+        }
+        return groupNode;
+    }
+
+    private static class EmptyCleanable implements Cleanable<Object> {
         @Override
         public void appendInstanceCachesTo(List<CleaningNode> locks, Object o) {
             // interfaces has no caches
@@ -294,6 +284,29 @@ public final class CleanableRegister implements CacheCleaner {
         @Override
         public Cache getInstanceCache(Object o, int id) {
             throw new IllegalArgumentException("Interface has no caches");
+        }
+    }
+
+    private static class EmptyDependencyNode extends AbstractDependencyNode {
+        private final String name;
+
+        public EmptyDependencyNode(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public void invalidate() {
+            // do nothing
+        }
+
+        @Override
+        public void addNode(@Nonnull CleaningNode cache) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String toString() {
+            return name;
         }
     }
 }

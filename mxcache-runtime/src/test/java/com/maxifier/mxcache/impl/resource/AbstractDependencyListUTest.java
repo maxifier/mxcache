@@ -4,28 +4,34 @@
 package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.caches.CleaningNode;
-import com.maxifier.mxcache.util.TIdentityHashSet;
+import gnu.trove.set.hash.THashSet;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.annotation.Nonnull;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 import java.lang.ref.WeakReference;
+
+import static org.testng.Assert.*;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 @Test
 public class AbstractDependencyListUTest {
-    // да ничо особо тут не проверяется - так, на всякий случай
-    public void testSelfDependenct() {
-        TestNode a = new TestNode("A");
-        a.trackDependency(a);
-        assert a.getApproxSize() == 1;
-        Set<DependencyNode> nodes = DependencyTestHelper.getAllDependentNodes(a);
-        assert nodes.size() == 1;
-        assert nodes.contains(a);
+    /**
+     * @param node node
+     * @return список всех узлов, зависящих от данного, в том числе транзитивные зависимости. Сам узел включается в
+     * этот список.
+     */
+    static Set<DependencyNode> getAllDependentNodes(DependencyNode node) {
+        Set<DependencyNode> nodes = new THashSet<DependencyNode>();
+        DependencyTracker.deepVisit(Collections.singleton(node), new CollectingDeepVisitor(nodes));
+        return nodes;
     }
 
     public void testGCnode() throws Exception {
@@ -38,16 +44,25 @@ public class AbstractDependencyListUTest {
         a.trackDependency(d);
         b.trackDependency(c);
 
-        // тут примерные размер известен точно, потому что все элементы живы
-        assert a.getApproxSize() == 2;
-        assert b.getApproxSize() == 1;
-        assert c.getApproxSize() == 0;
+        //
+        //  (A) <-- (B) <-- (C)
+        //   ^
+        //    \
+        //     \
+        //     (D)
 
-        Set<DependencyNode> nodes = DependencyTestHelper.getAllDependentNodes(a);
-        assert nodes.size() == 3;
-        assert nodes.contains(b);
-        assert nodes.contains(c);
-        assert nodes.contains(d);
+
+        // тут примерные размер известен точно, потому что все элементы живы
+        assertEquals(a.getApproxSize(), 2);
+        assertEquals(b.getApproxSize(), 1);
+        assertEquals(c.getApproxSize(), 0);
+
+        Set<DependencyNode> nodes = getAllDependentNodes(a);
+        assertEquals(nodes.size(), 4);
+        assertTrue(nodes.contains(a));
+        assertTrue(nodes.contains(b));
+        assertTrue(nodes.contains(c));
+        assertTrue(nodes.contains(d));
 
         // ссылка на b сохраняется в списке, поэтому его тоже надо удалить
         //noinspection UnusedAssignment,ReuseOfLocalVariable
@@ -62,12 +77,13 @@ public class AbstractDependencyListUTest {
         }
 
         // тут мы можем только сказать, что новых узлов нет. старый мог и не быть удален
-        assert a.getApproxSize() <= 2;
+        assertTrue(a.getApproxSize() <= 2);
 
-        Set<DependencyNode> nodes2 = DependencyTestHelper.getAllDependentNodes(a);
+        Set<DependencyNode> nodes2 = getAllDependentNodes(a);
         // теперь все связи через b разорваны.
-        assert nodes2.size() == 1;
-        assert nodes2.contains(d);
+        assertEquals(nodes2.size(), 2);
+        assertTrue(nodes2.contains(a));
+        assertTrue(nodes2.contains(d));
     }
 
     public void testCyclicDependency() {
@@ -90,9 +106,9 @@ public class AbstractDependencyListUTest {
         //     v  /
         //     (D)
 
-        Set<DependencyNode> nodes = DependencyTestHelper.getAllDependentNodes(a);
+        Set<DependencyNode> nodes = getAllDependentNodes(a);
 
-        Assert.assertEquals(nodes.size(), 5);
+        assertEquals(nodes.size(), 5);
         // сам узел тоже попадает, потому что зависит от D
         Assert.assertTrue(nodes.contains(a));
         Assert.assertTrue(nodes.contains(b));
@@ -100,19 +116,19 @@ public class AbstractDependencyListUTest {
         Assert.assertTrue(nodes.contains(d));
         Assert.assertTrue(nodes.contains(e));
 
-        Set<DependencyNode> nodes2 = DependencyTestHelper.getAllDependentNodes(d);
+        Set<DependencyNode> nodes2 = getAllDependentNodes(d);
 
-        Assert.assertEquals(nodes2.size(), 5);
+        assertEquals(nodes2.size(), 5);
         Assert.assertTrue(nodes2.contains(a));
         Assert.assertTrue(nodes2.contains(b));
         Assert.assertTrue(nodes2.contains(c));
         Assert.assertTrue(nodes2.contains(d));
         Assert.assertTrue(nodes2.contains(e));
 
-        Set<DependencyNode> nodes3 = DependencyTestHelper.getAllDependentNodes(c);
+        Set<DependencyNode> nodes3 = getAllDependentNodes(c);
 
-        Assert.assertEquals(nodes3.size(), 1);
-        // а сам узел C не попал.
+        assertEquals(nodes3.size(), 2);
+        Assert.assertTrue(nodes3.contains(c));
         Assert.assertTrue(nodes3.contains(e));
     }
 
@@ -124,7 +140,7 @@ public class AbstractDependencyListUTest {
         }
 
         @Override
-        public void appendNodes(TIdentityHashSet<CleaningNode> elements) {
+        public void invalidate() {
             throw new UnsupportedOperationException();
         }
 
@@ -136,6 +152,31 @@ public class AbstractDependencyListUTest {
         @Override
         public String toString() {
             return name;
+        }
+    }
+
+    /**
+     * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+     */
+    static class CollectingDeepVisitor implements DependencyNode.Visitor {
+        private final Set<DependencyNode> visitedNodes;
+        private final Queue<DependencyNode> queue;
+
+        public CollectingDeepVisitor(Set<DependencyNode> visitedNodes) {
+            this.visitedNodes = visitedNodes;
+            this.queue = new LinkedList<DependencyNode>();
+        }
+
+        @Override
+        public void visit(DependencyNode node) {
+            if (visitedNodes.add(node)) {
+                queue.add(node);
+            }
+        }
+
+        @Override
+        public Queue<DependencyNode> getQueue() {
+            return queue;
         }
     }
 }

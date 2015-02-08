@@ -10,7 +10,6 @@ import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.context.CacheContextImpl;
 import com.maxifier.mxcache.impl.instanceprovider.DefaultInstanceProvider;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
-import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.provider.*;
 import com.maxifier.mxcache.storage.ObjectObjectStorage;
 import com.maxifier.mxcache.storage.ObjectStorage;
@@ -25,7 +24,6 @@ import org.testng.annotations.Test;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
@@ -145,26 +143,14 @@ public class CacheProviderImplUTest {
 
                 }
 
-                @Nullable
-                @Override
-                public Lock getLock() {
-                    return null;
-                }
-
-                @Override
-                public void clear() {
-
-                }
-
                 @Override
                 public DependencyNode getDependencyNode() {
-                    return null;
+                    throw new UnsupportedOperationException();
                 }
 
-                @Nullable
                 @Override
-                public Object getCacheOwner() {
-                    return instance;
+                public void invalidate() {
+
                 }
 
                 @Nullable
@@ -179,7 +165,7 @@ public class CacheProviderImplUTest {
     static class Y implements CachingStrategy {
         @Nonnull
         @Override
-        public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
+        public <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
             throw new UnsupportedOperationException();
         }
     }
@@ -208,7 +194,7 @@ public class CacheProviderImplUTest {
 
         @Nonnull
         @Override
-        public synchronized <T> CacheManager<T> getManager(CacheContext context, final CacheDescriptor<T> descriptor) {
+        public synchronized <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass, final CacheDescriptor<T> descriptor) {
             return new XManager<T>(descriptor);
         }
 
@@ -237,12 +223,12 @@ public class CacheProviderImplUTest {
                     }
 
                     @Override
-                    public Lock getLock() {
+                    public DependencyNode getDependencyNode() {
                         throw new UnsupportedOperationException();
                     }
 
                     @Override
-                    public void clear() {
+                    public void invalidate() {
                         throw new UnsupportedOperationException();
                     }
 
@@ -260,16 +246,6 @@ public class CacheProviderImplUTest {
                     public CacheDescriptor getDescriptor() {
                         return null;
                     }
-
-                    @Override
-                    public DependencyNode getDependencyNode() {
-                        return DependencyTracker.DUMMY_NODE;
-                    }
-
-                    @Override
-                    public Object getCacheOwner() {
-                        return owner;
-                    }
                 };
             }
 
@@ -280,6 +256,11 @@ public class CacheProviderImplUTest {
 
             @Override
             public CacheContext getContext() {
+                return null;
+            }
+
+            @Override
+            public Class<?> getOwnerClass() {
                 return null;
             }
         }
@@ -542,7 +523,7 @@ public class CacheProviderImplUTest {
         List<CacheManager> caches = p.getCaches();
         assert caches.size() == 1;
         CacheDescriptor descriptor = caches.get(0).getDescriptor();
-        assert descriptor.getOwnerClass() == this.getClass();
+        assert descriptor.getDeclaringClass() == this.getClass();
         assert descriptor.getId() == 0;
 
         assert c != null;
@@ -734,7 +715,7 @@ public class CacheProviderImplUTest {
         when(sp.forClass(X.class)).thenReturn(new X() {
             @Nonnull
             @Override
-            public synchronized <T> CacheManager<T> getManager(final CacheContext context, CacheDescriptor<T> descriptor) {
+            public synchronized <T> CacheManager<T> getManager(final CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
                 return new XManager<T>(descriptor) {
                     @Override
                     public String toString() {

@@ -10,9 +10,13 @@ import javax.annotation.Nullable;
 /**
  * Every CacheManager corresponds to exactly one @Cache method. It holds an associated CacheDescriptor.
  *
+ * CacheManagers are created for each combination of owner class, method and context.
+ *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface CacheManager<T> {
+    Class<?> getOwnerClass();
+
     /**
      * @return descriptor for the cache
      */

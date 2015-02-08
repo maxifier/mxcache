@@ -35,6 +35,7 @@ public abstract class AbstractBooleanBooleanCache extends AbstractCache implemen
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
+            preCheckDirty();
             lock();
             try {
                 Object v = load(o);
@@ -73,6 +74,7 @@ public abstract class AbstractBooleanBooleanCache extends AbstractCache implemen
                 }
             } finally {
                 unlock();
+                postCheckDirty();
             }
         }
     }

@@ -11,6 +11,8 @@ public class CacheInfo {
 
     private final String owner;
 
+    private final String declaringClass;
+
     private final String implementation;
 
     private final String keyType;
@@ -37,7 +39,7 @@ public class CacheInfo {
 
     private final double averageCalculation;
 
-    public CacheInfo(String context, String keyType, String valueType, String method, String name, int id, int count, int total, String group, String[] tags, String implementation, String owner, int totalHits, int totalMisses, double averageCalculation) {
+    public CacheInfo(String context, String keyType, String valueType, String method, String name, int id, int count, int total, String group, String[] tags, String implementation, String owner, String declaringClass, int totalHits, int totalMisses, double averageCalculation) {
         this.keyType = keyType;
         this.valueType = valueType;
         this.method = method;
@@ -49,10 +51,15 @@ public class CacheInfo {
         this.tags = tags;
         this.implementation = implementation;
         this.owner = owner;
+        this.declaringClass = declaringClass;
         this.totalHits = totalHits;
         this.totalMisses = totalMisses;
         this.averageCalculation = averageCalculation;
         this.context = context;
+    }
+
+    public String getDeclaringClass() {
+        return declaringClass;
     }
 
     public String getKeyType() {

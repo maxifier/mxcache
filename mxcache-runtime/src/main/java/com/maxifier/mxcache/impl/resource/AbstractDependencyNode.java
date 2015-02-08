@@ -21,7 +21,8 @@ public abstract class AbstractDependencyNode implements DependencyNode {
 
     private Reference<DependencyNode> selfReference;
 
-    public synchronized void visitDependantNodes(DependencyNodeVisitor visitor) {
+    @Override
+    public synchronized void visitDependantNodes(Visitor visitor) {
         if (dependentNodes != null) {
             for (Iterator<Reference<DependencyNode>> it = dependentNodes.iterator(); it.hasNext();) {
                 Reference<DependencyNode> ref = it.next();

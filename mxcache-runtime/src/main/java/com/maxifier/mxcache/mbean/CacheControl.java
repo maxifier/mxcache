@@ -81,7 +81,7 @@ public class CacheControl implements CacheControlMXBean {
                 averageCalculation  += statistics.getTotalCalculationTime();
             }
             CacheDescriptor<?> descriptor = cacheManager.getDescriptor();
-            Class<?> ownerClass = descriptor.getOwnerClass();
+            Class<?> ownerClass = cacheManager.getOwnerClass();
             CacheContext context = cacheManager.getContext();
             res.add(new CacheInfo(context == null ? "<no context>" : context.toString(), descriptor.getKeyType() == null ? null : getDisplayName(descriptor.getKeyType()),
                                   getDisplayName(descriptor.getValueType()),
@@ -91,7 +91,8 @@ public class CacheControl implements CacheControlMXBean {
                                   descriptor.getTags(),
                                   impl,
                                   getDisplayName(ownerClass),
-                                  totalHits, totalMisses, totalMisses == 0 ? 0.0 : averageCalculation / totalMisses));
+                    getDisplayName(descriptor.getDeclaringClass()),
+                    totalHits, totalMisses, totalMisses == 0 ? 0.0 : averageCalculation / totalMisses));
         }
         return res;
     }

@@ -50,13 +50,13 @@ public class GuavaCacheStrategy implements CachingStrategy {
 
     @Nonnull
     @Override
-    public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
-        return new GuavaCacheManager<T>(context, descriptor);
+    public <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+        return new GuavaCacheManager<T>(context, ownerClass, descriptor);
     }
 
     private static class GuavaCacheManager<T> extends AbstractCacheManager<T> {
-        public GuavaCacheManager(CacheContext context, CacheDescriptor<T> descriptor) {
-            super(context, descriptor);
+        public GuavaCacheManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+            super(context, ownerClass, descriptor);
         }
 
         @Nonnull

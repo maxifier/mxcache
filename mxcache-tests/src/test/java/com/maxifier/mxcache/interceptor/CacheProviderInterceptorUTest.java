@@ -16,7 +16,6 @@ import com.maxifier.mxcache.provider.CacheProviderInterceptor;
 import org.testng.annotations.Test;
 
 import javax.annotation.Nullable;
-import java.util.concurrent.locks.Lock;
 
 import static org.testng.Assert.assertEquals;
 
@@ -92,26 +91,14 @@ public class CacheProviderInterceptorUTest {
 
                     }
 
-                    @Nullable
-                    @Override
-                    public Lock getLock() {
-                        return null;
-                    }
-
-                    @Override
-                    public void clear() {
-
-                    }
-
                     @Override
                     public DependencyNode getDependencyNode() {
-                        return null;
+                        throw new UnsupportedOperationException();
                     }
 
-                    @Nullable
                     @Override
-                    public Object getCacheOwner() {
-                        return instance;
+                    public void invalidate() {
+
                     }
 
                     @Nullable

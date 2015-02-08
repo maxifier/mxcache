@@ -29,7 +29,7 @@ import java.util.*;
 public class CacheProviderImpl implements CacheProvider {
     private static final Logger logger = LoggerFactory.getLogger(CacheProviderImpl.class);
 
-    private final Map<CacheId, RegistryEntry> registry = new THashMap<CacheId, RegistryEntry>();
+    private final Map<CacheId, RegistryCatalogue> registry = new THashMap<CacheId, RegistryCatalogue>();
     private final CacheProviderInterceptorChain interceptorChain = new CacheProviderInterceptorChain();
 
     public CacheProviderImpl() {
@@ -67,27 +67,28 @@ public class CacheProviderImpl implements CacheProvider {
     }
 
     @Override
-    public synchronized <T> void registerCache(Class<T> cacheOwner, int cacheId, Class key, Class value, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, String cacheName) {
+    public synchronized <T> void registerCache(Class<T> declaringClass, int cacheId, Class key, Class value, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, String cacheName) {
         if (logger.isTraceEnabled()) {
-            logger.trace("Register: owner = {}, method = {}, name = {}, id = {}, type = {} -> {}, group = {}, tags = {}", new Object[] {cacheOwner, methodName + methodDesc, cacheName, cacheId, key, value, group, Arrays.toString(tags)});
+            logger.trace("Register: owner = {}, method = {}, name = {}, id = {}, type = {} -> {}, group = {}, tags = {}", new Object[] {declaringClass, methodName + methodDesc, cacheName, cacheId, key, value, group, Arrays.toString(tags)});
         }
-        CacheDescriptor<T> descriptor = new CacheDescriptor<T>(cacheOwner, cacheId, key, value, calculable, methodName, methodDesc, cacheName, group, tags, null);
+        CacheDescriptor<T> descriptor = new CacheDescriptor<T>(declaringClass, cacheId, key, value, calculable, methodName, methodDesc, cacheName, group, tags, null);
         descriptor = interceptorChain.registerCache(descriptor);
-        RegistryEntry<T> entry = new RegistryEntry<T>(descriptor);
-        registry.put(new CacheId(cacheOwner, cacheId), entry);
+        RegistryCatalogue<T> entry = new RegistryCatalogue<T>(descriptor);
+        registry.put(new CacheId(declaringClass, cacheId), entry);
     }
 
     @Override
-    public synchronized Cache createCache(@Nonnull Class cacheOwner, int cacheId, @Nullable Object instance, CacheContext context) {
+    public synchronized Cache createCache(@Nonnull Class declaringClass, int cacheId, @Nullable Object instance, CacheContext context) {
         if (logger.isTraceEnabled()) {
-            logger.trace("createCache({}, {}, {})", new Object[] {cacheOwner, cacheId, instance});
+            logger.trace("createCache({}, {}, {})", new Object[] {declaringClass, cacheId, instance});
         }
 
-        RegistryEntry registryEntry = registry.get(new CacheId(cacheOwner, cacheId));
-        if (registryEntry == null) {
-            throw new IllegalStateException("Unknown cache: " + cacheOwner + " # " + cacheId);
+        RegistryCatalogue catalogue = registry.get(new CacheId(declaringClass, cacheId));
+        if (catalogue == null) {
+            throw new IllegalStateException("Unknown cache: " + declaringClass + " # " + cacheId);
         }
         //noinspection unchecked
+        RegistryEntry registryEntry = catalogue.forClass(instance == null ? declaringClass : instance.getClass());
         Cache res = registryEntry.createCache(context, instance);
         res = interceptorChain.createCache(registryEntry, instance, context, res);
         return res;
@@ -98,7 +99,7 @@ public class CacheProviderImpl implements CacheProvider {
         if (id == null) {
             return null;
         }
-        RegistryEntry entry = registry.get(id);
+        RegistryCatalogue entry = registry.get(id);
         if (entry == null) {
             return null;
         }
@@ -108,9 +109,10 @@ public class CacheProviderImpl implements CacheProvider {
     @Override
     public synchronized List<CacheManager> getCaches() {
         List<CacheManager> res = new ArrayList<CacheManager>(registry.size());
-        for (RegistryEntry<?> registryEntry : registry.values()) {
-            res.addAll(registryEntry.getManagers());
+        for (RegistryCatalogue<?> catalogue : registry.values()) {
+            catalogue.addManagers(res);
         }
         return res;
     }
+
 }

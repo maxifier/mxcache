@@ -45,7 +45,7 @@ public final class ProxyingCacheGenerator {
     private static final Method SIZE_METHOD = new Method("getSize", INT_TYPE, EMPTY_TYPES);
     private static final Method OWNER_METHOD = new Method("getCacheOwner", OBJECT_TYPE, EMPTY_TYPES);
     private static final Method GET_LOCK_METHOD = new Method("getLock", LOCK_TYPE, EMPTY_TYPES);
-    private static final Method CLEAR_METHOD = Method.getMethod("void clear()");
+    private static final Method INVALIDATE_METHOD = Method.getMethod("void invalidate()");
     private static final Method PROXY_METHOD = new Method("proxy", OBJECT_TYPE, new Type[] { CLASS_TYPE, RESOLVABLE_TYPE });
 
     private static final String GET_OR_CREATE = "getOrCreate";
@@ -62,7 +62,7 @@ public final class ProxyingCacheGenerator {
         Class value = descriptor.getValueType();
         Class<T> cacheInterface = descriptor.getCacheInterface();
         TransformGenerator keyTransform = descriptor.getKeyTransform();
-        ClassLoader owner = descriptor.getOwnerClass().getClassLoader();
+        ClassLoader owner = descriptor.getDeclaringClass().getClassLoader();
         return wrapCacheWithProxy(owner, cache, proxyFactory, key, value, cacheInterface, keyTransform);
     }
 
@@ -117,7 +117,7 @@ public final class ProxyingCacheGenerator {
 
         generateGetLock(writer, cacheField);
 
-        generateClear(writer, cacheField);
+        generateInvalidate(writer, cacheField);
 
         writer.visitEnd();
 
@@ -169,11 +169,11 @@ public final class ProxyingCacheGenerator {
         return loadClass(owner, bytecode);
     }
 
-    private static void generateClear(ClassGenerator writer, MxField cacheField) {
-        MxGeneratorAdapter clear = writer.defineMethod(ACC_PUBLIC, CLEAR_METHOD);
+    private static void generateInvalidate(ClassGenerator writer, MxField cacheField) {
+        MxGeneratorAdapter clear = writer.defineMethod(ACC_PUBLIC, INVALIDATE_METHOD);
         clear.visitCode();
         clear.get(cacheField);
-        clear.invokeInterface(cacheField.getType(), CLEAR_METHOD);
+        clear.invokeInterface(cacheField.getType(), INVALIDATE_METHOD);
         clear.returnValue();
         clear.endMethod();
     }

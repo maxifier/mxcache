@@ -35,6 +35,7 @@ public abstract class AbstractFloatShortCache extends AbstractCache implements F
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
+            preCheckDirty();
             lock();
             try {
                 Object v = load(o);
@@ -73,6 +74,7 @@ public abstract class AbstractFloatShortCache extends AbstractCache implements F
                 }
             } finally {
                 unlock();
+                postCheckDirty();
             }
         }
     }

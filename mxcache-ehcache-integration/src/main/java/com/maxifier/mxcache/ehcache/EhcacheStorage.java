@@ -78,7 +78,7 @@ public class EhcacheStorage<E> implements ObjectObjectElementLockedStorage<E> {
     private static URL getConfigurationURL(CacheDescriptor<?> descriptor, String configURL) throws MalformedURLException {
         if (configURL.startsWith(CLASSPATH_PREFIX)) {
             String path = configURL.substring(CLASSPATH_PREFIX.length());
-            return descriptor.getOwnerClass().getClassLoader().getResource(path);
+            return descriptor.getDeclaringClass().getClassLoader().getResource(path);
         }
         return new URL(configURL);
     }

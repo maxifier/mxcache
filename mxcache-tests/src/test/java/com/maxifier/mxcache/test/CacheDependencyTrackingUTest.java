@@ -363,8 +363,8 @@ public class CacheDependencyTrackingUTest {
         storage.resource.writeStart();
         try {
             p1.setX(0L);
-            assertEquals(p1.getViewCount7(), 1);
-            assertEquals(p2.getViewCount7(), 1);
+            assertEquals(p1.getViewCount7(), 2);
+            assertEquals(p2.getViewCount7(), 2);
             assertEquals(p1.getRadius(), 3.0);
             assertEquals(p2.getRadius(), 3.0);
         } finally {
@@ -374,13 +374,13 @@ public class CacheDependencyTrackingUTest {
         assertEquals(p1.getRadius(), 3.0);
         assertEquals(p2.getRadius(), 3.0);
         assertEquals(storage.getAverageRadius(), 3.0);
-        assertEquals(p1.getViewCount7(), 2);
-        assertEquals(p2.getViewCount7(), 2);
+        assertEquals(p1.getViewCount7(), 3);
+        assertEquals(p2.getViewCount7(), 3);
 
         assertFalse(p1.isGreaterAvgRadius());
         assertFalse(p2.isGreaterAvgRadius());
-        assertEquals(p1.getViewCount7(), 3);
-        assertEquals(p2.getViewCount7(), 2);
+        assertEquals(p1.getViewCount7(), 4);
+        assertEquals(p2.getViewCount7(), 4);
     }
 
     @Test

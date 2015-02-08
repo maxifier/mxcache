@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 public class NonStorageStrategy implements CachingStrategy {
     @Nonnull
     @Override
-    public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
-        return new NotStorageCacheManager<T>(context, descriptor);
+    public <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+        return new NotStorageCacheManager<T>(context, ownerClass, descriptor);
     }
 }

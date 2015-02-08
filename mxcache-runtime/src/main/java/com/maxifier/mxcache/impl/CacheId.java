@@ -10,36 +10,44 @@ import javax.annotation.Nonnull;
  */
 public final class CacheId {
     @Nonnull
-    private final Class owner;
+    private final Class declaringClass;
 
     private final int id;
 
-    public CacheId(@Nonnull Class owner, int id) {
-        this.owner = owner;
+    public CacheId(@Nonnull Class declaringClass, int id) {
+        this.declaringClass = declaringClass;
         this.id = id;
+    }
+
+    @Nonnull
+    public Class getDeclaringClass() {
+        return declaringClass;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         CacheId cacheId = (CacheId) o;
 
-        return id == cacheId.id && owner == cacheId.owner;
+        return id == cacheId.id && declaringClass.equals(cacheId.declaringClass);
+
     }
 
     @Override
     public int hashCode() {
-        return 31 * owner.hashCode() + id;
+        int result = declaringClass.hashCode();
+        result = 31 * result + id;
+        return result;
     }
 
     @Override
     public String toString() {
-        return "CacheId{owner=" + owner + ", id=" + id + '}';
+        return "CacheId{declaringClass=" + declaringClass +  ", id=" + id +  '}';
     }
 }

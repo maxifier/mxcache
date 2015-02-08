@@ -38,6 +38,7 @@ public abstract class AbstractLongCache extends AbstractElementLockedCache imple
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
         } else {
+            preCheckDirty();
             Lock lock = getLock();
             if (lock != null) {
                 lock.lock();
@@ -85,6 +86,7 @@ public abstract class AbstractLongCache extends AbstractElementLockedCache imple
                 if (lock != null) {
                     lock.unlock();
                 }
+                postCheckDirty();
             }
         }
     }

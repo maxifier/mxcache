@@ -226,9 +226,6 @@ public final class Generate {
             throw new FileNotFoundException("\"" + outputPath + "\" does not exist");
         }
 
-        generateP("ViewableMultipleP2ODependencyNode.template", "ViewableMultiple", "DependencyNode.java", inputPath, outputPath, ONLY_OBJECT);
-        generateP("ViewableMultipleP2PDependencyNode.template", "ViewableMultiple", "DependencyNode.java", inputPath, outputPath, WRAPPERS_NO_OBJECT);
-
         generateP("ViewableSingletonP2ODependencyNode.template", "ViewableSingleton", "DependencyNode.java", inputPath, outputPath, ONLY_OBJECT);
         generateP("ViewableSingletonP2PDependencyNode.template", "ViewableSingleton", "DependencyNode.java", inputPath, outputPath, WRAPPERS_NO_OBJECT);
     }

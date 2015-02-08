@@ -45,16 +45,19 @@ public class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheMa
         }
     };
 
+    private final Class<?> ownerClass;
+
     private final CacheDescriptor<T> descriptor;
 
     private final CacheManager<T> nullCacheManager;
 
     private final WeakHashMap<CacheContext, Void> relatedContexts;
 
-    public RegistryEntry(CacheDescriptor<T> descriptor) {
+    public RegistryEntry(Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+        this.ownerClass = ownerClass;
         this.descriptor = descriptor;
         if (descriptor.isDisabled()) {
-            nullCacheManager = new NullCacheManager<T>(descriptor);
+            nullCacheManager = new NullCacheManager<T>(ownerClass, descriptor);
             relatedContexts = null;
         } else {
             nullCacheManager = null;
@@ -110,7 +113,7 @@ public class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheMa
                 context.setRelated(this, manager);
             } catch (Exception e) {
                 logger.error("Cannot instantiate cache for " + descriptor + ", will use default", e);
-                return DefaultStrategy.getInstance().getManager(context, descriptor);
+                return DefaultStrategy.getInstance().getManager(context, ownerClass, descriptor);
             }
         }
         return manager;
@@ -128,7 +131,7 @@ public class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheMa
             return getManager(context).createCache(instance);
         } catch (RuntimeException e) {
             logger.error("Cannot create cache for " + instance + ", DefaultStrategy will be used", e);
-            return DefaultStrategy.getInstance().getManager(context, descriptor).createCache(instance);
+            return DefaultStrategy.getInstance().getManager(context, ownerClass, descriptor).createCache(instance);
         }
     }
 
@@ -167,10 +170,10 @@ public class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheMa
         checkTooManyStrategies(storageFactoryClass, storageClass, strategyClass);
 
         if (storageFactoryClass != null) {
-            return new StorageBasedCacheManager<T>(context, descriptor, DefaultStrategy.getInstance().getStorageFactory(context, descriptor, storageFactoryClass));
+            return new StorageBasedCacheManager<T>(context, ownerClass, descriptor, DefaultStrategy.getInstance().getStorageFactory(context, descriptor, storageFactoryClass));
         }
         if (storageClass != null) {
-            return new StorageBasedCacheManager<T>(context, descriptor, new CustomStorageFactory<T>(context, descriptor, storageClass));
+            return new StorageBasedCacheManager<T>(context, ownerClass, descriptor, new CustomStorageFactory<T>(context, descriptor, storageClass));
         }
         if (strategyClass == null) {
             strategyClass = DefaultStrategy.class;
@@ -178,14 +181,14 @@ public class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheMa
         CachingStrategy strategy = getStrategyInstance(context, strategyClass);
         CacheManager<T> manager;
         try {
-            manager = strategy.getManager(context, descriptor);
+            manager = strategy.getManager(context, ownerClass, descriptor);
         } catch (RuntimeException e) {
             logger.error("Strategy failed: " + strategy + ", will try default strategy", e);
-            return DefaultStrategy.getInstance().getManager(context, descriptor);
+            return DefaultStrategy.getInstance().getManager(context, ownerClass, descriptor);
         }
         if (manager == null) {
             logger.error("Strategy failed: " + strategy + " returned null manager");
-            return DefaultStrategy.getInstance().getManager(context, descriptor);
+            return DefaultStrategy.getInstance().getManager(context, ownerClass, descriptor);
         }
         return manager;
     }

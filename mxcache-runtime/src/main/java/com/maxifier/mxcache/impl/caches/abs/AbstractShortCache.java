@@ -35,6 +35,7 @@ public abstract class AbstractShortCache extends AbstractCache implements ShortC
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
         } else {
+            preCheckDirty();
             lock();
             try {
                 Object v = load();
@@ -73,6 +74,7 @@ public abstract class AbstractShortCache extends AbstractCache implements ShortC
                 }
             } finally {
                 unlock();
+                postCheckDirty();
             }
         }
     }

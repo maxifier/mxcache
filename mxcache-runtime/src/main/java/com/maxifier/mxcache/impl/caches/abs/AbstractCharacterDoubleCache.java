@@ -35,6 +35,7 @@ public abstract class AbstractCharacterDoubleCache extends AbstractCache impleme
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
+            preCheckDirty();
             lock();
             try {
                 Object v = load(o);
@@ -73,6 +74,7 @@ public abstract class AbstractCharacterDoubleCache extends AbstractCache impleme
                 }
             } finally {
                 unlock();
+                postCheckDirty();
             }
         }
     }

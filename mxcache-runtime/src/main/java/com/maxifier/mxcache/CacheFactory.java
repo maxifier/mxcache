@@ -9,6 +9,7 @@ import com.maxifier.mxcache.config.MxCacheConfigProvider;
 import com.maxifier.mxcache.config.MxCacheConfigProviderImpl;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.impl.CacheProviderImpl;
+import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheProvider;
 import com.maxifier.mxcache.clean.CleanableRegister;
@@ -56,6 +57,18 @@ public final class CacheFactory {
 
     public static CacheCleaner getCleaner() {
         return REGISTRY;
+    }
+
+    public static DependencyNode getClassDependencyNode(Class<?> clazz) {
+        return REGISTRY.getClassDependencyNode(clazz);
+    }
+
+    public static DependencyNode getTagDependencyNode(String tag) {
+        return REGISTRY.getTagDependencyNode(tag);
+    }
+
+    public static DependencyNode getGroupDependencyNode(String group) {
+        return REGISTRY.getGroupDependencyNode(group);
     }
 
     @PublicAPI

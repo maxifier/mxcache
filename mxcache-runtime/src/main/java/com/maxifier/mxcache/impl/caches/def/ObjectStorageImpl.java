@@ -33,4 +33,9 @@ public class ObjectStorageImpl implements ObjectStorage {
     public int size() {
         return value == UNDEFINED ? 0 : 1;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
 }

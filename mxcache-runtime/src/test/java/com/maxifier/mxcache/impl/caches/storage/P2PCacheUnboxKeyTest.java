@@ -3,20 +3,26 @@
  */
 package com.maxifier.mxcache.impl.caches.storage;
 
+import com.maxifier.mxcache.CacheExceptionPolicy;
+import com.maxifier.mxcache.CacheFactory;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.Calculable;
 import com.maxifier.mxcache.caches.ObjectObjectCalculatable;
+import com.maxifier.mxcache.exceptions.CacheExceptionHandler;
+import com.maxifier.mxcache.exceptions.ExceptionRecord;
+import com.maxifier.mxcache.impl.CacheId;
 import com.maxifier.mxcache.impl.MutableStatisticsImpl;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.impl.resource.ResourceOccupied;
 import com.maxifier.mxcache.impl.wrapping.Wrapping;
+import com.maxifier.mxcache.provider.CacheDescriptor;
+import com.maxifier.mxcache.provider.CacheProvider;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.storage.Storage;
 import com.maxifier.mxcache.transform.ScalarTransformGenerator;
-import com.maxifier.mxcache.util.ClassGenerator;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -99,20 +105,6 @@ public class P2PCacheUnboxKeyTest {
             }
 
             @Override
-            public void generateFields(Type thisType, int fieldIndex, ClassGenerator writer) {
-            }
-
-            @Override
-            public void generateAcquire(Type thisType, int fieldIndex, GeneratorAdapter ctor, int contextLocal) {
-
-            }
-
-            @Override
-            public int getFieldCount() {
-                return 0;
-            }
-
-            @Override
             public Class<?> getInType() {
                 return valueType;
             }
@@ -123,6 +115,212 @@ public class P2PCacheUnboxKeyTest {
                 return valueType;
             }
         };
+    }
+
+    @Test(dataProvider = "getAllTypes")
+    public <K, V> void testExceptionTransparency(Class<K> keyType, Class<V> valueType, final K key, final V value) throws Throwable {
+        CacheProvider provider = mock(CacheProvider.class);
+        CacheDescriptor descriptor = mock(CacheDescriptor.class);
+        CacheExceptionPolicy policy = mock(CacheExceptionPolicy.class);
+        when(policy.rememberExceptions()).thenReturn(true);
+        when(policy.retries()).thenReturn(0);
+        when(policy.specialCases()).thenReturn(new CacheExceptionPolicy.SpecialCase[]{});
+        when(descriptor.getExceptionHandler()).thenReturn(new CacheExceptionHandler(policy));
+        when(provider.getDescriptor(any(CacheId.class))).thenReturn(descriptor);
+        CacheFactory.setProviderOverride(provider);
+        try {
+            Signature signature = new Signature(keyType, valueType);
+            Storage storage = mock(signature.getStorageInterface());
+            Calculable calculable = mock(ObjectObjectCalculatable.class);
+            RuntimeException e1 = new RuntimeException("1");
+            when(calculate(calculable, key)).thenThrow(e1, new RuntimeException("2"), new RuntimeException("3"));
+
+            when(load(storage, key)).thenReturn(Storage.UNDEFINED);
+            when(storage.size()).thenReturn(0);
+
+            Cache cache = Wrapping.getFactory(signature, BOXED_SIGNATURE, null, fakeTransform(valueType), false).
+                    wrap("123", calculable, storage, new MutableStatisticsImpl());
+            cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
+
+            assertEquals(cache.getSize(), 0);
+            assertEquals(cache.getStatistics().getHits(), 0);
+            assertEquals(cache.getStatistics().getMisses(), 0);
+
+            try {
+                assertEquals(getOrCreate(cache, key), value);
+            } catch (RuntimeException e) {
+                assertEquals(e.getMessage(), "1");
+            }
+
+            assertEquals(cache.getStatistics().getHits(), 0);
+            // exception is also a miss
+            assertEquals(cache.getStatistics().getMisses(), 1);
+
+            calculate(verify(calculable, times(1)), key);
+            verifyNoMoreInteractions(calculable);
+
+            verify(storage).size();
+            load(verify(storage, atLeast(1)), key);
+            save(verify(storage), key, new ExceptionRecord(e1, 0));
+            verifyNoMoreInteractions(storage);
+        } finally {
+            CacheFactory.setProviderOverride(null);
+        }
+    }
+
+    @Test(dataProvider = "getAllTypes")
+    public <K, V> void testExceptionNoRemember(Class<K> keyType, Class<V> valueType, final K key, final V value) throws Throwable {
+        CacheProvider provider = mock(CacheProvider.class);
+        CacheDescriptor descriptor = mock(CacheDescriptor.class);
+        CacheExceptionPolicy policy = mock(CacheExceptionPolicy.class);
+        when(policy.rememberExceptions()).thenReturn(false);
+        when(policy.retries()).thenReturn(0);
+        when(policy.specialCases()).thenReturn(new CacheExceptionPolicy.SpecialCase[]{});
+        when(descriptor.getExceptionHandler()).thenReturn(new CacheExceptionHandler(policy));
+        when(provider.getDescriptor(any(CacheId.class))).thenReturn(descriptor);
+        CacheFactory.setProviderOverride(provider);
+        try {
+            Signature signature = new Signature(keyType, valueType);
+            Storage storage = mock(signature.getStorageInterface());
+            Calculable calculable = mock(ObjectObjectCalculatable.class);
+            when(calculate(calculable, key)).thenThrow(new RuntimeException("1"), new RuntimeException("2"), new RuntimeException("3"));
+
+            when(load(storage, key)).thenReturn(Storage.UNDEFINED);
+            when(storage.size()).thenReturn(0);
+
+            Cache cache = Wrapping.getFactory(signature, BOXED_SIGNATURE, null, fakeTransform(valueType), false).
+                    wrap("123", calculable, storage, new MutableStatisticsImpl());
+            cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
+
+            assertEquals(cache.getSize(), 0);
+            assertEquals(cache.getStatistics().getHits(), 0);
+            assertEquals(cache.getStatistics().getMisses(), 0);
+
+            try {
+                assertEquals(getOrCreate(cache, key), value);
+            } catch (RuntimeException e) {
+                assertEquals(e.getMessage(), "1");
+            }
+            try {
+                assertEquals(getOrCreate(cache, key), value);
+            } catch (RuntimeException e) {
+                assertEquals(e.getMessage(), "2");
+            }
+            try {
+                assertEquals(getOrCreate(cache, key), value);
+            } catch (RuntimeException e) {
+                assertEquals(e.getMessage(), "3");
+            }
+
+            assertEquals(cache.getStatistics().getHits(), 0);
+            // exception is also a miss
+            assertEquals(cache.getStatistics().getMisses(), 3);
+
+            calculate(verify(calculable, times(3)), key);
+            verifyNoMoreInteractions(calculable);
+
+            verify(storage).size();
+            load(verify(storage, atLeast(2)), key);
+            verifyNoMoreInteractions(storage);
+        } finally {
+            CacheFactory.setProviderOverride(null);
+        }
+    }
+
+    @Test(dataProvider = "getAllTypes")
+    public <K, V> void testExceptionRetry(Class<K> keyType, Class<V> valueType, final K key, final V value) throws Throwable {
+        CacheProvider provider = mock(CacheProvider.class);
+        CacheDescriptor descriptor = mock(CacheDescriptor.class);
+        CacheExceptionPolicy policy = mock(CacheExceptionPolicy.class);
+        when(policy.rememberExceptions()).thenReturn(true);
+        when(policy.retries()).thenReturn(1);
+        when(policy.specialCases()).thenReturn(new CacheExceptionPolicy.SpecialCase[]{});
+        when(descriptor.getExceptionHandler()).thenReturn(new CacheExceptionHandler(policy));
+        when(provider.getDescriptor(any(CacheId.class))).thenReturn(descriptor);
+        CacheFactory.setProviderOverride(provider);
+        try {
+            Signature signature = new Signature(keyType, valueType);
+            Storage storage = mock(signature.getStorageInterface());
+            Calculable calculable = mock(ObjectObjectCalculatable.class);
+            RuntimeException e2 = new RuntimeException("2");
+            when(calculate(calculable, key)).thenThrow(new RuntimeException("1"), e2, new RuntimeException("3"));
+
+            when(load(storage, key)).thenReturn(Storage.UNDEFINED);
+            when(storage.size()).thenReturn(0);
+
+            Cache cache = Wrapping.getFactory(signature, BOXED_SIGNATURE, null, fakeTransform(valueType), false).
+                    wrap("123", calculable, storage, new MutableStatisticsImpl());
+            cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
+
+            assertEquals(cache.getSize(), 0);
+            assertEquals(cache.getStatistics().getHits(), 0);
+            assertEquals(cache.getStatistics().getMisses(), 0);
+
+            try {
+                assertEquals(getOrCreate(cache, key), value);
+            } catch (RuntimeException e) {
+                assertEquals(e.getMessage(), "2");
+            }
+
+            assertEquals(cache.getStatistics().getHits(), 0);
+            // exception is also a miss
+            assertEquals(cache.getStatistics().getMisses(), 1);
+
+            calculate(verify(calculable, times(2)), key);
+            verifyNoMoreInteractions(calculable);
+
+            verify(storage).size();
+            load(verify(storage, atLeast(1)), key);
+            save(verify(storage), key, new ExceptionRecord(e2, 0));
+            verifyNoMoreInteractions(storage);
+        } finally {
+            CacheFactory.setProviderOverride(null);
+        }
+    }
+
+    @Test(dataProvider = "getAllTypes")
+    public <K, V> void testExceptionTransparency2(Class<K> keyType, Class<V> valueType, final K key, final V value) throws Throwable {
+        CacheProvider provider = mock(CacheProvider.class);
+        CacheDescriptor descriptor = mock(CacheDescriptor.class);
+        CacheExceptionPolicy policy = mock(CacheExceptionPolicy.class);
+        when(policy.rememberExceptions()).thenReturn(true);
+        when(policy.retries()).thenReturn(0);
+        when(policy.specialCases()).thenReturn(new CacheExceptionPolicy.SpecialCase[]{});
+        when(descriptor.getExceptionHandler()).thenReturn(new CacheExceptionHandler(policy));
+        when(provider.getDescriptor(any(CacheId.class))).thenReturn(descriptor);
+        CacheFactory.setProviderOverride(provider);
+        try {
+            Signature signature = new Signature(keyType, valueType);
+            Storage storage = mock(signature.getStorageInterface());
+            Calculable calculable = mock(ObjectObjectCalculatable.class);
+            when(calculate(calculable, key)).thenReturn(value);
+
+            when(load(storage, key)).thenReturn(new ExceptionRecord(new RuntimeException("1"), 0));
+            when(storage.size()).thenReturn(0);
+
+            Cache cache = Wrapping.getFactory(signature, BOXED_SIGNATURE, null, fakeTransform(valueType), false).
+                    wrap("123", calculable, storage, new MutableStatisticsImpl());
+            cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
+
+            assertEquals(cache.getSize(), 0);
+            assertEquals(cache.getStatistics().getHits(), 0);
+            assertEquals(cache.getStatistics().getMisses(), 0);
+
+            try {
+                assertEquals(getOrCreate(cache, key), value);
+            } catch (RuntimeException e) {
+                assertEquals(e.getMessage(), "1");
+            }
+
+            assertEquals(cache.getStatistics().getHits(), 1);
+            assertEquals(cache.getStatistics().getMisses(), 0);
+
+            verify(storage).size();
+            load(verify(storage, atLeast(1)), key);
+            verifyNoMoreInteractions(storage);
+        } finally {
+            CacheFactory.setProviderOverride(null);
+        }
     }
 
     @Test(dataProvider = "getAllTypes")
@@ -164,7 +362,7 @@ public class P2PCacheUnboxKeyTest {
                 wrap("123", calculable, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        cache.clear();
+        cache.invalidate();
 
         verify(storage).clear();
         verifyNoMoreInteractions(storage);
@@ -192,7 +390,8 @@ public class P2PCacheUnboxKeyTest {
         Assert.assertEquals(getOrCreate(cache, key), value);
 
         assertEquals(cache.getStatistics().getHits(), 1);
-        assertEquals(cache.getStatistics().getMisses(), 0);
+        // an invocation to calculable that throws ResourceOccupied is also considered a miss.
+        assertEquals(cache.getStatistics().getMisses(), 1);
 
         load(verify(storage, times(2)), key);
         verifyNoMoreInteractions(storage);

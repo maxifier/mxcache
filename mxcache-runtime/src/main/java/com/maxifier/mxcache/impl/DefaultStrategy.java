@@ -45,8 +45,8 @@ public class DefaultStrategy implements CachingStrategy {
 
     @Nonnull
     @Override
-    public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
-        return new StorageBasedCacheManager<T>(context, descriptor, new DefaultStorageFactory<T>(context, hashingStrategyFactory, descriptor));
+    public <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+        return new StorageBasedCacheManager<T>(context, ownerClass, descriptor, new DefaultStorageFactory<T>(context, hashingStrategyFactory, descriptor));
     }
 
     /**

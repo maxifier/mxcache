@@ -35,6 +35,7 @@ public abstract class AbstractByteCache extends AbstractCache implements ByteCac
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
         } else {
+            preCheckDirty();
             lock();
             try {
                 Object v = load();
@@ -73,6 +74,7 @@ public abstract class AbstractByteCache extends AbstractCache implements ByteCac
                 }
             } finally {
                 unlock();
+                postCheckDirty();
             }
         }
     }

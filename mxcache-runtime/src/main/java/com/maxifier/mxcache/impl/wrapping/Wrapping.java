@@ -146,8 +146,8 @@ public final class Wrapping {
 
     public static AbstractDependencyNode getMultipleNode(CacheDescriptor descriptor) {
         Constructor<? extends MultipleDependencyNode> onlyConstructor = null;
-        if (descriptor.isResourceView() && descriptor.getKeyType() == null) {
-            onlyConstructor = getOnlyConstructor(getMultipleDependencyNodeClass(descriptor.getSignature()));
+        if (descriptor.isResourceView()) {
+            throw new IllegalArgumentException("@ResourceView should have instance cache " + descriptor);
         }
         return onlyConstructor == null ? new MultipleDependencyNode() : new NodeWrapperFactoryImpl(onlyConstructor).wrap();
     }
@@ -454,11 +454,6 @@ public final class Wrapping {
     @SuppressWarnings({"unchecked"})
     public static Class<? extends SingletonDependencyNode> getSingletonDependencyNodeClass(Signature nodeSignature) {
         return (Class<? extends SingletonDependencyNode>) nodeSignature.getImplementationClass(NODES_PACKAGE + ".ViewableSingleton", "DependencyNode");
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public static Class<? extends MultipleDependencyNode> getMultipleDependencyNodeClass(Signature nodeSignature) {
-        return (Class<? extends MultipleDependencyNode>) nodeSignature.getImplementationClass(NODES_PACKAGE + ".ViewableMultiple", "DependencyNode");
     }
 
     private static String getWrapperPackage(boolean perElementLocking) {

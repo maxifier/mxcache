@@ -36,6 +36,7 @@ public abstract class AbstractCharacterDoubleCache extends AbstractElementLocked
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
+            preCheckDirty();
             lock(o);
             try {
                 Object v = load(o);
@@ -74,6 +75,7 @@ public abstract class AbstractCharacterDoubleCache extends AbstractElementLocked
                 }
             } finally {
                 unlock(o);
+                postCheckDirty();
             }
         }
     }

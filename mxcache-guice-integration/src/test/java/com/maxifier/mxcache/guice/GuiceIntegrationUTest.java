@@ -29,16 +29,16 @@ public class GuiceIntegrationUTest {
     public static class TestStrategy implements CachingStrategy {
         @Nonnull
         @Override
-        public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
-            return new NullCacheManager<T>(descriptor);
+        public <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+            return new NullCacheManager<T>(ownerClass, descriptor);
         }
     }
 
     public static class StrategyOverride extends TestStrategy {
         @Nonnull
         @Override
-        public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
-            return DefaultStrategy.getInstance().getManager(context, descriptor);
+        public <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+            return DefaultStrategy.getInstance().getManager(context, ownerClass, descriptor);
         }
     }
 

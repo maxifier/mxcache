@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 public class TestStrategy implements CachingStrategy {
     @Nonnull
     @Override
-    public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
-        return new NullCacheManager<T>(descriptor);
+    public <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+        return new NullCacheManager<T>(ownerClass, descriptor);
     }
 }

@@ -5,7 +5,6 @@ package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.util.HashWeakReference;
-import com.maxifier.mxcache.util.TIdentityHashSet;
 import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.*;
@@ -77,12 +76,12 @@ public class DependencyTrackerUTest {
         }
 
         @Override
-        public void visitDependantNodes(DependencyNodeVisitor visitor) {
+        public void visitDependantNodes(Visitor visitor) {
             fail("Should not reach here");
         }
 
         @Override
-        public void appendNodes(TIdentityHashSet<CleaningNode> elements) {
+        public void invalidate() {
             fail("Should not reach here");
         }
 
@@ -104,19 +103,9 @@ public class DependencyTrackerUTest {
     }
 
     public void testDummyEnqueueDependentNodes() {
-        DependencyNodeVisitor mock = mock(DependencyNodeVisitor.class);
+        DependencyNode.Visitor mock = mock(DependencyNode.Visitor.class);
         DUMMY_NODE.visitDependantNodes(mock);
         verifyZeroInteractions(mock);
 
-    }
-
-    @Test (expectedExceptions = UnsupportedOperationException.class)
-    public void testDummyAppendElements() {
-        DUMMY_NODE.appendNodes(new TIdentityHashSet<CleaningNode>());
-    }
-
-    @Test (expectedExceptions = UnsupportedOperationException.class)
-    public void testDummyTrackDependency() {
-        DUMMY_NODE.trackDependency(DUMMY_NODE);
     }
 }
