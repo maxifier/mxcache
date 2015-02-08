@@ -8,7 +8,6 @@ import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.Calculable;
 import com.maxifier.mxcache.impl.caches.abs.elementlocked.ElementLockedStorage;
-import com.maxifier.mxcache.impl.resource.nodes.MultipleDependencyNode;
 import com.maxifier.mxcache.impl.resource.nodes.SingletonDependencyNode;
 import com.maxifier.mxcache.storage.Storage;
 import gnu.trove.map.hash.THashMap;
@@ -27,7 +26,6 @@ public class Signature {
     private static final String STORAGE_PACKAGE_NAME = "com.maxifier.mxcache.storage.";
     private static final String LOCKED_STORAGE_PACKAGE_NAME = "com.maxifier.mxcache.storage.elementlocked.";
     private static final String SINGLETON_NODES_PACKAGE_NAME = "com.maxifier.mxcache.impl.resource.nodes.ViewableSingleton";
-    private static final String MULTIPLE_NODES_PACKAGE_NAME = "com.maxifier.mxcache.impl.resource.nodes.ViewableMultiple";
     private static final int PRIMITIVE_TYPE_COUNT = 8;
 
     private static final Class[] BASIC_TYPES = {boolean.class, byte.class, short.class, char.class,
@@ -53,7 +51,6 @@ public class Signature {
                     CACHE.put(s.getElementLockedStorageInterface(), s);
                     if (e == null) {
                         CACHE.put(s.getSingletonDependencyNodeInterface(), s);
-                        CACHE.put(s.getMultipleDependencyNodeInterface(), s);
                     }
                     byValue.put(f, s);
                 }
@@ -294,11 +291,6 @@ public class Signature {
         return erased.getSingletonDependencyNodeInterface();
     }
 
-    @SuppressWarnings({"unchecked"})
-    public Class<? extends MultipleDependencyNode> getMultipleDependencyNodeInterface() {
-        return erased.getMultipleDependencyNodeInterface();
-    }
-
     /**
      * @param other other signature
      * @return true only if object with other signature can be transparently replaced with object with this signature,
@@ -339,14 +331,12 @@ public class Signature {
         private final Class<? extends Calculable> calculatableInterface;
         private final Class<? extends ElementLockedStorage> elementLockedStorageInterface;
         private final Class<? extends SingletonDependencyNode> singletonDependencyNode;
-        private final Class<? extends MultipleDependencyNode> multipleDependencyNode;
 
         BasicSignature(Class key, Class value) {
             super(key, value);
             cacheInterface = (Class<? extends Cache>) getImplementationClass(CACHES_PACKAGE_NAME, "Cache");
             calculatableInterface = (Class<? extends Calculable>) getImplementationClass(CACHES_PACKAGE_NAME, "Calculatable");
             singletonDependencyNode = key == null ? (Class<? extends SingletonDependencyNode>) getImplementationClass(SINGLETON_NODES_PACKAGE_NAME, "DependencyNode") : null;
-            multipleDependencyNode = key == null ? (Class<? extends MultipleDependencyNode>) getImplementationClass(MULTIPLE_NODES_PACKAGE_NAME, "DependencyNode") : null;
 
             // storage value is always boxed
             storageInterface = (Class<? extends Storage>) getImplementationClass(STORAGE_PACKAGE_NAME, key, Object.class, "Storage");
@@ -376,11 +366,6 @@ public class Signature {
         @Override
         public Class<? extends SingletonDependencyNode> getSingletonDependencyNodeInterface() {
             return singletonDependencyNode;
-        }
-
-        @Override
-        public Class<? extends MultipleDependencyNode> getMultipleDependencyNodeInterface() {
-            return multipleDependencyNode;
         }
 
         public Class<?> getImplementationClass(String prefix, Class<?> container, Class<?> value, String postfix) {

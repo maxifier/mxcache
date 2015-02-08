@@ -284,9 +284,6 @@ public class DynamicInstrumentationFTest {
         DependencyNode dn1 = new SingletonDependencyNode(n1);
         DependencyNode dn2 = new SingletonDependencyNode(n2);
 
-        when(n1.getDependencyNode()).thenReturn(dn1);
-        when(n2.getDependencyNode()).thenReturn(dn2);
-
         DependencyNode p = DependencyTracker.track(dn1);
         o1.readResource();
 
@@ -305,38 +302,24 @@ public class DynamicInstrumentationFTest {
 
         o1.writeResource();
 
-        verify(n1).clear();
-        verify(n1, atLeast(1)).getDependencyNode();
-        verify(n1, atLeast(1)).getLock();
+        verify(n1).invalidate();
 
         verifyZeroInteractions(n2);
 
         o2.writeResource();
         verifyZeroInteractions(n1);
 
-        verify(n2).clear();
-        verify(n2, atLeast(1)).getDependencyNode();
-        verify(n2, atLeast(1)).getLock();
+        verify(n2).invalidate();
 
         o1.writeStatic();
 
-        verify(n2, times(2)).clear();
-        verify(n2, atLeast(1)).getDependencyNode();
-        verify(n2, atLeast(1)).getLock();
-
-        verify(n1, times(2)).clear();
-        verify(n1, atLeast(1)).getDependencyNode();
-        verify(n1, atLeast(1)).getLock();
+        verify(n2, times(2)).invalidate();
+        verify(n1, times(2)).invalidate();
 
         o2.writeStatic();
 
-        verify(n2, times(3)).clear();
-        verify(n2, atLeast(1)).getDependencyNode();
-        verify(n2, atLeast(1)).getLock();
-
-        verify(n1, times(3)).clear();
-        verify(n1, atLeast(1)).getDependencyNode();
-        verify(n1, atLeast(1)).getLock();
+        verify(n2, times(3)).invalidate();
+        verify(n1, times(3)).invalidate();
     }
 
     @Test(dataProvider = "v2228")
@@ -352,9 +335,6 @@ public class DynamicInstrumentationFTest {
         DependencyNode dn1 = new SingletonDependencyNode(n1);
         DependencyNode dn2 = new SingletonDependencyNode(n2);
 
-        when(n1.getDependencyNode()).thenReturn(dn1);
-        when(n2.getDependencyNode()).thenReturn(dn2);
-
         DependencyNode p = DependencyTracker.track(dn1);
         o1.readResource();
 
@@ -373,38 +353,24 @@ public class DynamicInstrumentationFTest {
 
         o1.writeResource();
 
-        verify(n1).clear();
-        verify(n1, atLeast(1)).getDependencyNode();
-        verify(n1, atLeast(1)).getLock();
+        verify(n1).invalidate();
 
         verifyZeroInteractions(n2);
 
         o2.writeResource();
         verifyZeroInteractions(n1);
 
-        verify(n2).clear();
-        verify(n2, atLeast(1)).getDependencyNode();
-        verify(n2, atLeast(1)).getLock();
+        verify(n2).invalidate();
 
         o1.writeStatic();
 
-        verify(n2, times(2)).clear();
-        verify(n2, atLeast(1)).getDependencyNode();
-        verify(n2, atLeast(1)).getLock();
-
-        verify(n1, times(2)).clear();
-        verify(n1, atLeast(1)).getDependencyNode();
-        verify(n1, atLeast(1)).getLock();
+        verify(n2, times(2)).invalidate();
+        verify(n1, times(2)).invalidate();
 
         o2.writeStatic();
 
-        verify(n2, times(3)).clear();
-        verify(n2, atLeast(1)).getDependencyNode();
-        verify(n2, atLeast(1)).getLock();
-
-        verify(n1, times(3)).clear();
-        verify(n1, atLeast(1)).getDependencyNode();
-        verify(n1, atLeast(1)).getLock();
+        verify(n2, times(3)).invalidate();
+        verify(n1, times(3)).invalidate();
     }
 
     @Test(dataProvider = "v229")

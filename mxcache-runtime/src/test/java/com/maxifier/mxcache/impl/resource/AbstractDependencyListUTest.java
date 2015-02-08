@@ -4,7 +4,6 @@
 package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.caches.CleaningNode;
-import com.maxifier.mxcache.util.TIdentityHashSet;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -124,7 +123,7 @@ public class AbstractDependencyListUTest {
         }
 
         @Override
-        public void appendNodes(TIdentityHashSet<CleaningNode> elements) {
+        public void invalidate() {
             throw new UnsupportedOperationException();
         }
 

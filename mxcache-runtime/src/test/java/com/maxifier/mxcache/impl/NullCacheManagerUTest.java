@@ -37,7 +37,5 @@ public class NullCacheManagerUTest {
         Assert.assertEquals(cache1.getOrCreate("123"), 4);
         Assert.assertEquals(cache2.getOrCreate("123"), 5);
         Assert.assertEquals(cache2.getOrCreate("123"), 6);
-        Assert.assertEquals(cache1.getCacheOwner(), "owner1");
-        Assert.assertEquals(cache2.getCacheOwner(), "owner2");
     }
 }

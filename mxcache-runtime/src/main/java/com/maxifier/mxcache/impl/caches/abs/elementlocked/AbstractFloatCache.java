@@ -38,6 +38,7 @@ public abstract class AbstractFloatCache extends AbstractElementLockedCache impl
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
         } else {
+            preCheckDirty();
             Lock lock = getLock();
             if (lock != null) {
                 lock.lock();
@@ -85,6 +86,7 @@ public abstract class AbstractFloatCache extends AbstractElementLockedCache impl
                 if (lock != null) {
                     lock.unlock();
                 }
+                postCheckDirty();
             }
         }
     }

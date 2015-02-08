@@ -131,7 +131,6 @@ public class DefaultStorageFactoryUTest {
         // it should be empty
         assertEquals(c.getSize(), 0);
         // and also it should have lock assigned
-        assertNotNull(c.getLock());
         int[] a1 = { 3, 4 };
         int[] a2 = { 3, 4 };
         assert a1 != a2;
@@ -154,7 +153,6 @@ public class DefaultStorageFactoryUTest {
         CacheManager<T> d = createDefaultManager(desc);
         ObjectObjectCache<int[], int[]> c = (ObjectObjectCache) d.createCache(INSTANCE);
         Assert.assertEquals(c.getOrCreate(null), TEST_ARRAY);
-        Assert.assertNotNull(c.getDependencyNode());
     }
 
     private static <T> CacheManager<T> createDefaultManager(CacheDescriptor<T> desc) {
@@ -174,8 +172,6 @@ public class DefaultStorageFactoryUTest {
         assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
         // it should be empty
         assert c.getSize() == 0;
-        // and also it should have lock assigned
-        assert c.getLock() != null;
         assert c.getOrCreate("123") == null;
         assert c.getOrCreate("123") == null;
         assert c.getOrCreate("123") == null;
@@ -197,8 +193,6 @@ public class DefaultStorageFactoryUTest {
         assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
         // it should be empty
         assert c.getSize() == 0;
-        // and also it should have lock assigned
-        assert c.getLock() != null;
         assert c.getOrCreate("123") == null;
         assert c.getOrCreate("123") == null;
         assert c.getOrCreate("123") == null;
@@ -238,8 +232,6 @@ public class DefaultStorageFactoryUTest {
         assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
         // it should be empty
         assertEquals(c.getSize(), 0);
-        // and also it should have lock assigned
-        assertNotNull(c.getLock());
         assertTrue(cache.isInstance(c), "Cache for " + key + " -> " + value + " should be instance of " + cache + " but is " + c.getClass());
     }
 

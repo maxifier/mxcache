@@ -256,7 +256,7 @@ public class P2PCacheTest {
                 wrap("123", calculable, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        cache.clear();
+        cache.invalidate();
 
         verify(storage).clear();
         verifyNoMoreInteractions(storage);
@@ -367,5 +367,116 @@ public class P2PCacheTest {
 
         verify((StatisticsHolder) storage).getStatistics();
         verifyNoMoreInteractions(storage);
+    }
+
+    @Test(dataProvider = "getAllTypes")
+    public <K, V> void testCleanWhileCalculating(Class<K> keyType, Class<V> valueType, final K key, final V value, boolean elementLocked) throws Throwable {
+        Signature signature = new Signature(keyType, valueType);
+        final Sequence s = new Sequence();
+
+        final ReentrantLock lock = new ReentrantLock();
+
+        Calculable calculable = mock(signature.getCalculableInterface());
+        when(calculate(calculable, key)).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                s.order(0);
+                s.order(3);
+                return value;
+            }
+        });
+
+        // cast necessary for JDK8 compilation
+        Storage storage = mock((Class<Storage>) (elementLocked ? signature.getElementLockedStorageInterface() : signature.getStorageInterface()), withSettings().extraInterfaces(StatisticsHolder.class));
+        when(load(storage, key)).thenReturn(Storage.UNDEFINED);
+        if (elementLocked) {
+            setLock(key, signature, lock, storage);
+        }
+
+
+        final Cache cache = Wrapping.getFactory(signature, signature, elementLocked).
+                wrap("123", calculable, storage, new MutableStatisticsImpl());
+        cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
+
+        Thread t = new Thread("Test thread") {
+            @Override
+            public void run() {
+                try {
+                    assertEquals(getOrCreate(cache, key), value);
+                } catch (Throwable e) {
+                    s.fail(e);
+                }
+            }
+        };
+        t.start();
+        s.order(1);
+
+        load(verify(storage), key);
+        if (elementLocked) {
+            if (signature.getContainer() != null) {
+                lock(verify(storage, atLeast(1)), key);
+            } else {
+                ((ElementLockedStorage) verify(storage, atLeast(1))).getLock();
+            }
+        }
+        verifyNoMoreInteractions(storage);
+        reset(storage);
+        if (elementLocked) {
+            setLock(key, signature, lock, storage);
+        }
+
+        // invalidate must be non-blocking
+        cache.invalidate();
+
+
+        if (elementLocked) {
+            // the lock is acquired to set dirty flag
+            ((ElementLockedStorage) verify(storage, atLeast(1))).getLock();
+            verifyNoMoreInteractions(storage);
+        } else {
+            // storage should not be cleaned until the calculate is terminated and lock is released!
+            verifyZeroInteractions(storage);
+        }
+        reset(storage);
+        if (elementLocked) {
+            setLock(key, signature, lock, storage);
+        }
+
+        s.order(2);
+
+        t.join();
+        s.check();
+
+        save(verify(storage), key, value);
+        if (elementLocked) {
+            if (signature.getContainer() != null) {
+                unlock(verify(storage, atLeast(1)), key);
+            }
+            // it is locked for cleaning
+            ((ElementLockedStorage) verify(storage, atLeast(1))).getLock();
+        }
+        // it should be cleared immediately after  the unlock
+        verify(storage).clear();
+        verifyNoMoreInteractions(storage);
+    }
+
+    private <K> void setLock(K key, Signature signature, final ReentrantLock lock, Storage storage) throws InvocationTargetException, IllegalAccessException {
+        when(((ElementLockedStorage) storage).getLock()).thenReturn(lock);
+        if (signature.getContainer() != null) {
+            lock(doAnswer(new Answer<Object>() {
+                @Override
+                public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                    lock.lock();
+                    return null;
+                }
+            }).when(storage), key);
+            unlock(doAnswer(new Answer<Object>() {
+                @Override
+                public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                    lock.unlock();
+                    return null;
+                }
+            }).when(storage), key);
+        }
     }
 }

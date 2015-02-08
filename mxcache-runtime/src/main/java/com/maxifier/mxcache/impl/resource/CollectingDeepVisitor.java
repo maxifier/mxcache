@@ -3,31 +3,27 @@
  */
 package com.maxifier.mxcache.impl.resource;
 
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-class CollectingDependencyNodeVisitor implements DependencyNodeVisitor {
-    private final Set<DependencyNode> nodes;
+class CollectingDeepVisitor implements DependencyNode.Visitor {
+    private final Set<DependencyNode> visitedNodes;
     private final Queue<DependencyNode> queue;
 
-    public CollectingDependencyNodeVisitor(Set<DependencyNode> nodes, Queue<DependencyNode> queue) {
-        this.nodes = nodes;
-        this.queue = queue;
+    public CollectingDeepVisitor(Set<DependencyNode> visitedNodes) {
+        this.visitedNodes = visitedNodes;
+        this.queue = new LinkedList<DependencyNode>();
     }
 
     @Override
     public void visit(DependencyNode node) {
-        if (nodes.add(node)) {
+        if (visitedNodes.add(node)) {
             queue.add(node);
         }
-    }
-
-    @Override
-    public Set<DependencyNode> getNodes() {
-        return nodes;
     }
 
     @Override

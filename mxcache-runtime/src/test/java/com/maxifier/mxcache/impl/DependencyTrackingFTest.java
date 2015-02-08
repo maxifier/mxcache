@@ -16,14 +16,14 @@ import com.maxifier.mxcache.resource.TrackDependency;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.resource.MxResource;
-import com.maxifier.mxcache.util.TIdentityHashSet;
 import org.testng.annotations.Test;
 import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.DependencyTracking;
 
-import java.util.Arrays;
 import java.util.Set;
 
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.testng.Assert.*;
 
 /**
@@ -38,7 +38,7 @@ public class DependencyTrackingFTest {
 
         public MyClass(CacheManager<MyClass> d) {
             // static cache don't want instance!
-            cache = (IntIntCache) d.createCache(d.getDescriptor().isStatic() ? null : this);
+            cache = spy((IntIntCache) d.createCache(d.getDescriptor().isStatic() ? null : this));
         }
 
         @Cached
@@ -76,9 +76,8 @@ public class DependencyTrackingFTest {
         assertEquals(nodes.size(), 1);
         DependencyNode node = nodes.iterator().next();
         assertTrue(node instanceof MultipleDependencyNode);
-        TIdentityHashSet<CleaningNode> elements = new TIdentityHashSet<CleaningNode>();
-        node.appendNodes(elements);
-        assertEquals(elements, Arrays.asList(t.cache));
+        node.invalidate();
+        verify(t.cache).invalidate();
     }
 
     private CacheManager<MyClass> createDefaultManager(CacheDescriptor<MyClass> d) {
@@ -101,12 +100,9 @@ public class DependencyTrackingFTest {
         assert nodes.size() == 1;
         DependencyNode node = nodes.iterator().next();
         assert node instanceof SingletonDependencyNode;
-        TIdentityHashSet<CleaningNode> elements = new TIdentityHashSet<CleaningNode>();
-        node.appendNodes(elements);
-        assert elements.size() == 1;
-        // элемент тут должен быть только один
-        CleaningNode element = elements.iterator().next();
-        assert element == t.cache;
+
+        node.invalidate();
+        verify(t.cache).invalidate();
     }
 
     public void testInstanceMethodWithStaticTracking() {
@@ -125,12 +121,8 @@ public class DependencyTrackingFTest {
         assert nodes.size() == 1;
         DependencyNode node = nodes.iterator().next();
         assert node instanceof MultipleDependencyNode;
-        TIdentityHashSet<CleaningNode> elements = new TIdentityHashSet<CleaningNode>();
-        node.appendNodes(elements);
-        assert elements.size() == 1;
-        // элемент тут должен быть только один
-        CleaningNode element = elements.iterator().next();
-        assert element == t.cache;
+        node.invalidate();
+        verify(t.cache).invalidate();
     }
 
     public void testInstanceMethodWithInstanceTracking() {
@@ -149,12 +141,8 @@ public class DependencyTrackingFTest {
         assert nodes.size() == 1;
         DependencyNode node = nodes.iterator().next();
         assert node instanceof SingletonDependencyNode;
-        TIdentityHashSet<CleaningNode> elements = new TIdentityHashSet<CleaningNode>();
-        node.appendNodes(elements);
-        assert elements.size() == 1;
-        // элемент тут должен быть только один
-        CleaningNode element = elements.iterator().next();
-        assert element == t.cache;
+        node.invalidate();
+        verify(t.cache).invalidate();
     }
 
     private static class MyIntIntCalculatable implements IntIntCalculatable {

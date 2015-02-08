@@ -10,7 +10,6 @@ import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.context.CacheContextImpl;
 import com.maxifier.mxcache.impl.instanceprovider.DefaultInstanceProvider;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
-import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.provider.*;
 import com.maxifier.mxcache.storage.ObjectObjectStorage;
 import com.maxifier.mxcache.storage.ObjectStorage;
@@ -25,7 +24,6 @@ import org.testng.annotations.Test;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
@@ -145,26 +143,9 @@ public class CacheProviderImplUTest {
 
                 }
 
-                @Nullable
                 @Override
-                public Lock getLock() {
-                    return null;
-                }
+                public void invalidate() {
 
-                @Override
-                public void clear() {
-
-                }
-
-                @Override
-                public DependencyNode getDependencyNode() {
-                    return null;
-                }
-
-                @Nullable
-                @Override
-                public Object getCacheOwner() {
-                    return instance;
                 }
 
                 @Nullable
@@ -237,12 +218,7 @@ public class CacheProviderImplUTest {
                     }
 
                     @Override
-                    public Lock getLock() {
-                        throw new UnsupportedOperationException();
-                    }
-
-                    @Override
-                    public void clear() {
+                    public void invalidate() {
                         throw new UnsupportedOperationException();
                     }
 
@@ -259,16 +235,6 @@ public class CacheProviderImplUTest {
                     @Override
                     public CacheDescriptor getDescriptor() {
                         return null;
-                    }
-
-                    @Override
-                    public DependencyNode getDependencyNode() {
-                        return DependencyTracker.DUMMY_NODE;
-                    }
-
-                    @Override
-                    public Object getCacheOwner() {
-                        return owner;
                     }
                 };
             }

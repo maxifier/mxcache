@@ -45,7 +45,7 @@ public class ViewableSingletonShortDependencyNode extends SingletonDependencyNod
             ShortCache cache = (ShortCache) instance;
             DependencyNode prevNode = DependencyTracker.track(DependencyTracker.NOCACHE_NODE);
             try {
-                return !DependencyTracker.isDependentResourceView(cache) && !equal(cache.getOrCreate(), storage.load());
+                return !DependencyTracker.isDependentResourceView(this) && !equal(cache.getOrCreate(), storage.load());
             } catch (Exception e) {
                 // can't evaluate the function, will invalidate cache anyway
                 return true;

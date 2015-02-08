@@ -35,6 +35,7 @@ public abstract class AbstractDoubleCache extends AbstractCache implements Doubl
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
         } else {
+            preCheckDirty();
             lock();
             try {
                 Object v = load();
@@ -73,6 +74,7 @@ public abstract class AbstractDoubleCache extends AbstractCache implements Doubl
                 }
             } finally {
                 unlock();
+                postCheckDirty();
             }
         }
     }

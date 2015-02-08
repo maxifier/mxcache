@@ -5,10 +5,11 @@ package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.InternalProbeFailedError;
 import com.maxifier.mxcache.caches.CleaningNode;
-import com.maxifier.mxcache.resource.MxResource;
+import com.maxifier.mxcache.impl.resource.nodes.ResourceViewable;
 import com.maxifier.mxcache.util.HashWeakReference;
 import com.maxifier.mxcache.util.TIdentityHashSet;
-import gnu.trove.set.hash.THashSet;
+import gnu.trove.map.hash.TCustomHashMap;
+import gnu.trove.strategy.IdentityHashingStrategy;
 
 import javax.annotation.Nonnull;
 
@@ -23,7 +24,7 @@ import java.util.*;
  */
 public final class DependencyTracker {
     private static final ThreadLocal<DependencyNode> NODE = new ThreadLocal<DependencyNode>();
-    private static final ThreadLocal<TIdentityHashSet<CleaningNode>> RESOURCE_VIEW_NODES = new ThreadLocal<TIdentityHashSet<CleaningNode>>();
+    private static final ThreadLocal<TIdentityHashSet<ResourceViewable>> RESOURCE_VIEW_NODES = new ThreadLocal<TIdentityHashSet<ResourceViewable>>();
 
     /** ???? ???? ????????????, ???? ?? ????? ???????????????? ???????????? */
     public static final DependencyNode DUMMY_NODE = new DummyDependencyNode("<DUMMY>");
@@ -89,40 +90,19 @@ public final class DependencyTracker {
         return NODE.get() != null;
     }
 
-    public static void addExplicitDependency(DependencyNode node, MxResource resource) {
-        if (resource instanceof MxResourceImpl) {
-            ((MxResourceImpl) resource).trackDependency(node);
-        } else {
-            throw new UnsupportedOperationException("Current implementation of dependency tracker cannot deal with resource class " + resource.getClass());
-        }
-    }
-
-    public static TIdentityHashSet<CleaningNode> saveResourceViewNodes(DependencyNode node) {
-        TIdentityHashSet<CleaningNode> oldNodes = RESOURCE_VIEW_NODES.get();
+    public static TIdentityHashSet<ResourceViewable> saveResourceViewNodes(DependencyNode node) {
+        TIdentityHashSet<ResourceViewable> oldNodes = RESOURCE_VIEW_NODES.get();
         RESOURCE_VIEW_NODES.set(DependencyTracker.getResourceViewDependentNodes(node));
         return oldNodes;
     }
 
-    public static boolean isDependentResourceView(CleaningNode node) {
-        TIdentityHashSet<CleaningNode> cleaningNodes = RESOURCE_VIEW_NODES.get();
+    public static boolean isDependentResourceView(ResourceViewable node) {
+        TIdentityHashSet<ResourceViewable> cleaningNodes = RESOURCE_VIEW_NODES.get();
         return cleaningNodes != null && cleaningNodes.contains(node);
     }
 
-    public static void exitDependentResourceView(TIdentityHashSet<CleaningNode> oldNodes) {
+    public static void exitDependentResourceView(TIdentityHashSet<ResourceViewable> oldNodes) {
         RESOURCE_VIEW_NODES.set(oldNodes);
-    }
-
-    public static TIdentityHashSet<CleaningNode> getAllDependentNodes(Iterable<DependencyNode> src) {
-        return getAllDependentNodes(src, Collections.<CleaningNode>emptySet());
-    }
-
-    public static TIdentityHashSet<CleaningNode> getAllDependentNodes(Iterable<DependencyNode> src, Collection<? extends CleaningNode> initial) {
-        Set<DependencyNode> nodes = new THashSet<DependencyNode>();
-        Queue<DependencyNode> queue = new LinkedList<DependencyNode>();
-
-        DependencyNodeVisitor visitor = new CollectingDependencyNodeVisitor(nodes, queue);
-
-        return getDependentNodes(src, initial, visitor);
     }
 
     /**
@@ -131,47 +111,20 @@ public final class DependencyTracker {
      * @param sourceNode initial dependency node to start searching dependent caches from
      * @return set of dependent caches
      */
-    public static TIdentityHashSet<CleaningNode> getResourceViewDependentNodes(DependencyNode sourceNode) {
-        Set<DependencyNode> resourceViewableNodes = new THashSet<DependencyNode>();
-        Queue<DependencyNode> queue = new LinkedList<DependencyNode>();
-
-        DependencyNodeVisitor visitor = new ResourceViewDependencyNodeVisitor(resourceViewableNodes, queue);
-
-        return getDependentNodes(Collections.singleton(sourceNode), Collections.<CleaningNode>emptySet(), visitor);
+    public static TIdentityHashSet<ResourceViewable> getResourceViewDependentNodes(DependencyNode sourceNode) {
+        ResourceViewDeepVisitor visitor = new ResourceViewDeepVisitor();
+        deepVisit(Collections.singleton(sourceNode), visitor);
+        return visitor.getResult();
     }
 
-    /**
-     * Finds dependent caches taking ResourceView annotation into account.
-     *
-     * @param sourceNode initial dependency node to start searching dependent caches from
-     * @return set of dependent caches
-     */
-    public static TIdentityHashSet<CleaningNode> getChangedDependentNodes(DependencyNode sourceNode) {
-        Set<DependencyNode> nodes = new THashSet<DependencyNode>();
-        Queue<DependencyNode> queue = new LinkedList<DependencyNode>();
-
-        DependencyNodeVisitor visitor = new CollectingChangedDependencyNodeVisitor(nodes, queue);
-
-        return getDependentNodes(Collections.singleton(sourceNode), Collections.<CleaningNode>emptySet(), visitor);
-    }
-
-    private static TIdentityHashSet<CleaningNode> getDependentNodes(Iterable<DependencyNode> src, Collection<? extends CleaningNode> initial, DependencyNodeVisitor visitor) {
-        // we enqueue this but we don't add it cause we don't want to call it's appendElements(Set)
+    public static void deepVisit(Iterable<DependencyNode> src, DependencyNode.Visitor visitor) {
         for (DependencyNode node : src) {
-            node.visitDependantNodes(visitor);
+            visitor.visit(node);
         }
-
         Queue<DependencyNode> queue = visitor.getQueue();
         while (!queue.isEmpty()) {
             queue.poll().visitDependantNodes(visitor);
         }
-        Set<DependencyNode> nodes = visitor.getNodes();
-        TIdentityHashSet<CleaningNode> result = new TIdentityHashSet<CleaningNode>(nodes.size() + initial.size());
-        result.addAll(initial);
-        for (DependencyNode node : nodes) {
-            node.appendNodes(result);
-        }
-        return result;
     }
 
     public static boolean isDummyNode(DependencyNode node) {
@@ -180,6 +133,18 @@ public final class DependencyTracker {
 
     public static boolean isBypassCaches() {
         return NOCACHE_NODE.equals(get());
+    }
+
+    public static void deepInvalidate(DependencyNode node) {
+        deepVisit(Collections.singleton(node), new InvalidateAllVisitor());
+    }
+
+    public static void deepInvalidateWithResourceView(DependencyNode node) {
+        deepVisit(Collections.singleton(node), new InvalidateChangedVisitor());
+    }
+
+    public static void deepInvalidate(final Collection<? extends CleaningNode> elements) {
+        deepInvalidate(new WrapDependencyNode(elements));
     }
 
     private static final class DummyDependencyNode implements DependencyNode {
@@ -191,12 +156,12 @@ public final class DependencyTracker {
         }
 
         @Override
-        public void visitDependantNodes(DependencyNodeVisitor visitor) {
+        public void visitDependantNodes(Visitor visitor) {
             // do nothing, we don't track dependencies for that cache
         }
 
         @Override
-        public void appendNodes(TIdentityHashSet<CleaningNode> elements) {
+        public void invalidate() {
             throw new UnsupportedOperationException();
         }
 
@@ -230,12 +195,12 @@ public final class DependencyTracker {
         }
 
         @Override
-        public void visitDependantNodes(DependencyNodeVisitor visitor) {
+        public void visitDependantNodes(Visitor visitor) {
             // do nothing
         }
 
         @Override
-        public void appendNodes(TIdentityHashSet<CleaningNode> elements) {
+        public void invalidate() {
             // do nothing
         }
 
@@ -252,6 +217,72 @@ public final class DependencyTracker {
         @Override
         public String toString() {
             return "HiddenCaller - see MxCache.hideCallerDependencies";
+        }
+    }
+
+    private static class WrapDependencyNode extends AbstractDependencyNode {
+        private final Collection<? extends CleaningNode> elements;
+
+        public WrapDependencyNode(Collection<? extends CleaningNode> elements) {
+            this.elements = elements;
+        }
+
+        @Override
+        public void invalidate() {
+            for (CleaningNode element : elements) {
+                element.invalidate();
+            }
+        }
+
+        @Override
+        public void addNode(@Nonnull CleaningNode cache) {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    private static class InvalidateAllVisitor implements DependencyNode.Visitor {
+        private final Queue<DependencyNode> queue = new LinkedList<DependencyNode>();
+        private final TIdentityHashSet<DependencyNode> visitedNodes = new TIdentityHashSet<DependencyNode>();
+
+        @Override
+        public Queue<DependencyNode> getQueue() {
+            return queue;
+        }
+
+        @Override
+        public void visit(DependencyNode node) {
+            if (visitedNodes.add(node)) {
+                queue.add(node);
+                node.invalidate();
+            }
+        }
+    }
+
+    private static class InvalidateChangedVisitor implements DependencyNode.Visitor {
+        private final Queue<DependencyNode> queue = new LinkedList<DependencyNode>();
+        private final TIdentityHashSet<DependencyNode> visitedNodes = new TIdentityHashSet<DependencyNode>();
+        private final Map<ResourceViewable, Boolean> changedCache = new TCustomHashMap<ResourceViewable, Boolean>(IdentityHashingStrategy.INSTANCE);
+
+        private boolean isChanged(ResourceViewable resourceViewable) {
+            Boolean res = changedCache.get(resourceViewable);
+            if (res == null) {
+                res = resourceViewable.isChanged();
+                changedCache.put(resourceViewable, res);
+            }
+            return res;
+        }
+
+        @Override
+        public Queue<DependencyNode> getQueue() {
+            return queue;
+        }
+
+        @Override
+        public void visit(DependencyNode node) {
+            if (visitedNodes.add(node) && (!(node instanceof ResourceViewable) || isChanged((ResourceViewable) node))) {
+                queue.add(node);
+                node.invalidate();
+            }
         }
     }
 }

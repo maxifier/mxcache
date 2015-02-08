@@ -3,7 +3,6 @@
  */
 package com.maxifier.mxcache.impl.resource;
 
-import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -11,8 +10,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.io.Serializable;
 
 import com.maxifier.mxcache.caches.CleaningNode;
-import com.maxifier.mxcache.clean.CleaningHelper;
-import com.maxifier.mxcache.clean.SuperLock;
+import com.maxifier.mxcache.impl.resource.nodes.ResourceViewable;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.resource.ResourceModificationException;
 import com.maxifier.mxcache.util.TIdentityHashSet;
@@ -25,7 +23,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-class MxResourceImpl extends AbstractDependencyNode implements MxResource, Serializable, CleaningNode {
+class MxResourceImpl extends AbstractDependencyNode implements MxResource, Serializable {
     private static final Logger logger = LoggerFactory.getLogger(MxResourceImpl.class);
 
     private static final long serialVersionUID = 100L;
@@ -41,7 +39,7 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
     private final ResourceReadLock resourceReadLock;
     private final ResourceWriteLock resourceWriteLock;
 
-    private TIdentityHashSet<CleaningNode> oldDependentResourceViewNodes;
+    private TIdentityHashSet<ResourceViewable> oldDependentResourceViewNodes;
 
     public MxResourceImpl(Object owner, @Nonnull String name) {
         this.owner = owner;
@@ -106,76 +104,9 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
         }
     }
 
-    private void clearDependentCachesInternal() {
-        if (!lock.isWriteLockedByCurrentThread()) {
-            throw new IllegalStateException("clearDependentCachesInternal is invoked with write lock held");
-        }
-
-        boolean readLockAcquired = false;
-        TIdentityHashSet<CleaningNode> elementsAndDependent = null;
-        SuperLock superLock = null;
-        try {
-            try {
-                CleaningHelper.RecursiveLock lock = CleaningHelper.lockRecursive(this);
-                elementsAndDependent = lock.elements;
-                superLock = lock.lock;
-                readLock.lock();
-                readLockAcquired = true;
-            } finally {
-                DependencyTracker.exitDependentResourceView(oldDependentResourceViewNodes);
-                oldDependentResourceViewNodes = null;
-                writeLock.unlock();
-            }
-
-            //elementsAndDependent will be changed during the invocation
-            TIdentityHashSet<CleaningNode> changedDependentNodes = narrowDependenciesSet(superLock, elementsAndDependent);
-
-            //clear changed nodes
-            for (CleaningNode element : changedDependentNodes) {
-                element.clear();
-            }
-        } finally {
-            if (superLock != null) {
-                superLock.unlock();
-            }
-
-            if (readLockAcquired) {
-                readLock.unlock();
-            }
-        }
-    }
-
-    private TIdentityHashSet<CleaningNode> narrowDependenciesSet(SuperLock superLock, TIdentityHashSet<CleaningNode> elementsAndDependent) {
-        TIdentityHashSet<CleaningNode> changedDependentNodes = DependencyTracker.getChangedDependentNodes(this);
-
-        //remove new nodes
-        for (Iterator<CleaningNode> it = changedDependentNodes.iterator(); it.hasNext(); ) {
-            CleaningNode node = it.next();
-            if (!elementsAndDependent.contains(node)) {
-                it.remove();
-            }
-        }
-
-        //unlock not changed nodes
-        TIdentityHashSet<Lock> locksToRelease = new TIdentityHashSet<Lock>(elementsAndDependent.size());
-        for (Iterator<CleaningNode> it = elementsAndDependent.iterator(); it.hasNext(); ) {
-            CleaningNode element = it.next();
-            if (!changedDependentNodes.contains(element)) {
-                Lock lock = element.getLock();
-                if (lock != null) {
-                    it.remove();
-                    locksToRelease.add(lock);
-                }
-            }
-        }
-        superLock.unlockPartially(locksToRelease);
-        return changedDependentNodes;
-    }
-
     @Override
     public void clearDependentCaches() {
-        writeLock.lock();
-        clearDependentCachesInternal();
+        DependencyTracker.deepInvalidate(this);
     }
 
     @Override
@@ -184,34 +115,14 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
     }
 
     @Override
-    public void appendNodes(TIdentityHashSet<CleaningNode> elements) {
-        // appendNodes should not be invoked because resource is never added to DependencyTracker
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void addNode(@Nonnull CleaningNode cache) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Lock getLock() {
-        return writeLock;
-    }
-
-    @Override
-    public void clear() {
-        // nothing to do
-    }
-
-    @Override
-    public DependencyNode getDependencyNode() {
-        return this;
-    }
-
-    @Override
-    public Object getCacheOwner() {
-        return owner;
+    public void invalidate() {
+        // invalidate should not be invoked because resource is never added to DependencyTracker
+        throw new UnsupportedOperationException();
     }
 
     @Nonnull
@@ -352,7 +263,16 @@ class MxResourceImpl extends AbstractDependencyNode implements MxResource, Seria
 
         @Override
         public void unlock() {
-            clearDependentCachesInternal();
+            if (!lock.isWriteLockedByCurrentThread()) {
+                throw new IllegalStateException("clearDependentCachesInternal is invoked with write lock held");
+            }
+            try {
+                DependencyTracker.deepInvalidateWithResourceView(MxResourceImpl.this);
+                DependencyTracker.exitDependentResourceView(oldDependentResourceViewNodes);
+                oldDependentResourceViewNodes = null;
+            } finally {
+                writeLock.unlock();
+            }
         }
 
         @Nonnull

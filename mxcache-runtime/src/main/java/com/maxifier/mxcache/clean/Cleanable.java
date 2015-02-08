@@ -21,15 +21,13 @@ import java.util.List;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface Cleanable<T> {
-    void appendStaticCachesTo(List<CleaningNode> locks);
-
     /**
      * @param id id of cache
      * @return cache instance
      */
     Cache getStaticCache(int id);
 
-    void appendInstanceCachesTo(List<CleaningNode> locks, T t);
+    void appendInstanceCachesTo(List<CleaningNode> result, T instance);
 
     /**
      * @param t instance of cached class

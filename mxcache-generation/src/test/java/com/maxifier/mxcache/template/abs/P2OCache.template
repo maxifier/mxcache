@@ -35,6 +35,7 @@ public abstract class Abstract#EG##FG#Cache extends AbstractCache implements #EG
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner#IF_E#, o#ENDIF#);
         } else {
+            preCheckDirty();
             lock();
             try {
                 Object v = load(#IF_E#o#ENDIF#);
@@ -73,6 +74,7 @@ public abstract class Abstract#EG##FG#Cache extends AbstractCache implements #EG
                 }
             } finally {
                 unlock();
+                postCheckDirty();
             }
         }
     }

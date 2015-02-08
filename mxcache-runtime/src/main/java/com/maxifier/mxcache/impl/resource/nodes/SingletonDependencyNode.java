@@ -5,7 +5,6 @@ package com.maxifier.mxcache.impl.resource.nodes;
 
 import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.impl.resource.AbstractDependencyNode;
-import com.maxifier.mxcache.util.TIdentityHashSet;
 
 import javax.annotation.Nonnull;
 
@@ -14,7 +13,7 @@ import javax.annotation.Nonnull;
  */
 public class SingletonDependencyNode extends AbstractDependencyNode {
     // we don't need to store reference here cause this node exists only if object itself is not gc'ed
-    protected CleaningNode instance;
+    protected volatile CleaningNode instance;
 
     public SingletonDependencyNode() {
         // do nothing - instance is set by addNode.
@@ -25,7 +24,7 @@ public class SingletonDependencyNode extends AbstractDependencyNode {
     }
 
     @Override
-    public synchronized void addNode(@Nonnull CleaningNode cache) {
+    public void addNode(@Nonnull CleaningNode cache) {
         if (instance != null) {
             throw new UnsupportedOperationException("Singleton dependency node should has only one cache");
         }
@@ -33,8 +32,8 @@ public class SingletonDependencyNode extends AbstractDependencyNode {
     }
 
     @Override
-    public synchronized void appendNodes(TIdentityHashSet<CleaningNode> elements) {
-        elements.add(instance);
+    public void invalidate() {
+        instance.invalidate();
     }
 
     @Override

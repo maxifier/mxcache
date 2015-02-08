@@ -36,6 +36,7 @@ public abstract class AbstractLongObjectCache<F> extends AbstractElementLockedCa
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
+            preCheckDirty();
             lock(o);
             try {
                 Object v = load(o);
@@ -74,6 +75,7 @@ public abstract class AbstractLongObjectCache<F> extends AbstractElementLockedCa
                 }
             } finally {
                 unlock(o);
+                postCheckDirty();
             }
         }
     }

@@ -12,11 +12,14 @@ import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.caches.Cache;
-import com.maxifier.mxcache.resource.MxResource;
+import gnu.trove.set.hash.THashSet;
+
 import javax.annotation.Nullable;
 
 import javax.annotation.Nonnull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -31,7 +34,7 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     private final DependencyNode staticNode;
 
     private final DependencyTracking trackDependency;
-    private final MxResource[] resourceDependencies;
+    private final DependencyNode[] explicitDependencies;
 
     private final CacheContext context;
 
@@ -59,11 +62,11 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
         }
 
         trackDependency = convertStatic(convertDefault(descriptor.getTrackDependency()));
-        resourceDependencies = getResources(descriptor.getResourceDependencies());
+        explicitDependencies = getExplicitDependencies(descriptor);
 
         switch (trackDependency) {
             case NONE:
-                if (resourceDependencies == null) {
+                if (explicitDependencies == null) {
                     staticNode = null;
                 } else {
                     staticNode = createStaticNode();
@@ -80,16 +83,40 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
         }
     }
 
-    private MxResource[] getResources(Set<String> resourceNames) {
-        if (resourceNames == null || resourceNames.isEmpty()) {
-            return null;
+    @Nullable
+    private static DependencyNode[] getExplicitDependencies(CacheDescriptor<?> descriptor) {
+        List<DependencyNode> res = new ArrayList<DependencyNode>();
+        Set<String> resourceNames = descriptor.getResourceDependencies();
+        if (resourceNames != null) {
+            for (String resourceName : resourceNames) {
+                res.add((DependencyNode) MxResourceFactory.getResource(resourceName));
+            }
         }
-        MxResource[] res = new MxResource[resourceNames.size()];
-        int i = 0;
-        for (String resourceName : resourceNames) {
-            res[i++] = MxResourceFactory.getResource(resourceName);
+        String[] tags = descriptor.getTags();
+        if (tags != null) {
+            for (String tag : tags) {
+                res.add(CacheFactory.getTagDependencyNode(tag));
+            }
         }
-        return res;
+        String group = descriptor.getGroup();
+        if (group != null) {
+            res.add(CacheFactory.getGroupDependencyNode(group));
+        }
+        Set<Class<?>> visitedClasses = new THashSet<Class<?>>();
+        addAllSuperClassesAndInterfaces(res, visitedClasses, descriptor.getMethod().getDeclaringClass());
+        return res.isEmpty() ? null : res.toArray(new DependencyNode[res.size()]);
+    }
+
+    private static void addAllSuperClassesAndInterfaces(List<DependencyNode> res, Set<Class<?>> visitedClasses, Class<?> clazz) {
+        while (clazz != null && clazz != Object.class) {
+            if (visitedClasses.add(clazz)) {
+                res.add(CacheFactory.getClassDependencyNode(clazz));
+                for (Class<?> intf : clazz.getInterfaces()) {
+                    addAllSuperClassesAndInterfaces(res, visitedClasses, intf);
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
     }
 
     protected StatisticsModeEnum getStatisticsMode() {
@@ -124,6 +151,9 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     }
 
     private DependencyTracking convertStatic(DependencyTracking tracking) {
+        if (descriptor.isResourceView()) {
+            return DependencyTracking.INSTANCE;
+        }
         if (descriptor.isStatic() && tracking == DependencyTracking.INSTANCE) {
             return DependencyTracking.STATIC;
         }
@@ -140,9 +170,9 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
      * @param node dependency node
      */
     protected void registerExplicitDependencies(DependencyNode node) {
-        if (resourceDependencies != null) {
-            for (MxResource resourceId : resourceDependencies) {
-                DependencyTracker.addExplicitDependency(node, resourceId);
+        if (explicitDependencies != null) {
+            for (DependencyNode explicitDependency : explicitDependencies) {
+                explicitDependency.trackDependency(node);
             }
         }
     }

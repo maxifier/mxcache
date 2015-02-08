@@ -35,6 +35,7 @@ public abstract class AbstractLongIntCache extends AbstractCache implements Long
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
+            preCheckDirty();
             lock();
             try {
                 Object v = load(o);
@@ -73,6 +74,7 @@ public abstract class AbstractLongIntCache extends AbstractCache implements Long
                 }
             } finally {
                 unlock();
+                postCheckDirty();
             }
         }
     }

@@ -35,6 +35,7 @@ public abstract class AbstractIntCache extends AbstractCache implements IntCache
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
         } else {
+            preCheckDirty();
             lock();
             try {
                 Object v = load();
@@ -73,6 +74,7 @@ public abstract class AbstractIntCache extends AbstractCache implements IntCache
                 }
             } finally {
                 unlock();
+                postCheckDirty();
             }
         }
     }

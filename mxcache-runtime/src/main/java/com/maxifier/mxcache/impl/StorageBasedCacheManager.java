@@ -8,7 +8,6 @@ import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.impl.caches.def.*;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
-import com.maxifier.mxcache.impl.resource.DependencyNodeVisitor;
 import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.interfaces.StatisticsHolder;
 import com.maxifier.mxcache.provider.CacheDescriptor;
@@ -20,7 +19,6 @@ import com.maxifier.mxcache.provider.StorageFactory;
 import com.maxifier.mxcache.storage.CalculableInterceptor;
 import com.maxifier.mxcache.storage.Storage;
 import com.maxifier.mxcache.storage.elementlocked.ElementLockedStorage;
-import com.maxifier.mxcache.util.TIdentityHashSet;
 
 import javax.annotation.Nonnull;
 
@@ -189,12 +187,12 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
         }
 
         @Override
-        public void visitDependantNodes(DependencyNodeVisitor visitor) {
+        public void visitDependantNodes(Visitor visitor) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void appendNodes(TIdentityHashSet<CleaningNode> elements) {
+        public void invalidate() {
             throw new UnsupportedOperationException();
         }
 

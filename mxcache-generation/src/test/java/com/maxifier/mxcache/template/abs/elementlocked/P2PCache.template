@@ -38,6 +38,7 @@ public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache i
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner#IF_E#, o#ENDIF#);
         } else {
+            preCheckDirty();
             #IF_E#lock(o);#ELSE#Lock lock = getLock();
             if (lock != null) {
                 lock.lock();
@@ -85,6 +86,7 @@ public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache i
                 #IF_E#unlock(o);#ELSE#if (lock != null) {
                     lock.unlock();
                 }#ENDIF#
+                postCheckDirty();
             }
         }
     }

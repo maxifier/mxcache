@@ -5,7 +5,6 @@ package com.maxifier.mxcache.impl.resource.nodes;
 
 import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.impl.resource.AbstractDependencyNode;
-import com.maxifier.mxcache.util.TIdentityHashSet;
 
 import java.util.*;
 import java.lang.ref.WeakReference;
@@ -24,12 +23,12 @@ public class MultipleDependencyNode extends AbstractDependencyNode {
     }
 
     @Override
-    public synchronized void appendNodes(TIdentityHashSet<CleaningNode> elements) {
+    public synchronized void invalidate() {
         for (Iterator<WeakReference<CleaningNode>> it = instances.iterator(); it.hasNext();) {
             WeakReference<CleaningNode> ref = it.next();
             CleaningNode node = ref.get();
             if (node != null) {
-                elements.add(node);
+                node.invalidate();
             } else {
                 it.remove();
             }
@@ -37,7 +36,7 @@ public class MultipleDependencyNode extends AbstractDependencyNode {
     }
 
     @Override
-    public String toString() {
+    public synchronized String toString() {
         StringBuilder b = new StringBuilder("DependencyNode<");
         int gc = 0;
         int n = 0;

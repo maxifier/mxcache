@@ -6,9 +6,7 @@ package com.maxifier.mxcache.impl.caches.def;
 import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
-import com.maxifier.mxcache.impl.resource.DependencyNodeVisitor;
 import com.maxifier.mxcache.util.HashWeakReference;
-import com.maxifier.mxcache.util.TIdentityHashSet;
 import gnu.trove.set.hash.THashSet;
 
 import javax.annotation.Nonnull;
@@ -41,7 +39,8 @@ public class DoubleInlineDependencyCache extends DoubleInlineCacheImpl implement
         setDependencyNode(this);
     }
 
-    public synchronized void visitDependantNodes(DependencyNodeVisitor visitor) {
+    @Override
+    public synchronized void visitDependantNodes(Visitor visitor) {
         if (dependentNodes != null) {
             for (Iterator<Reference<DependencyNode>> it = dependentNodes.iterator(); it.hasNext();) {
                 Reference<DependencyNode> ref = it.next();
@@ -72,12 +71,7 @@ public class DoubleInlineDependencyCache extends DoubleInlineCacheImpl implement
     }
 
     @Override
-    public synchronized void addNode(@Nonnull CleaningNode cache) {
+    public void addNode(@Nonnull CleaningNode cache) {
         throw new UnsupportedOperationException("Inline dependency node should has only one cache");
-    }
-
-    @Override
-    public synchronized void appendNodes(TIdentityHashSet<CleaningNode> elements) {
-        elements.add(this);
     }
 }

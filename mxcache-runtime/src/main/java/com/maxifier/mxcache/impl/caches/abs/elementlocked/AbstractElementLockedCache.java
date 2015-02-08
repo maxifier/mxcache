@@ -18,6 +18,7 @@ abstract class AbstractElementLockedCache implements Cache, ElementLockedStorage
     private final MutableStatistics statistics;
 
     private DependencyNode node;
+    private boolean dirty;
 
     protected AbstractElementLockedCache(Object owner, MutableStatistics statistics) {
         this.owner = owner;
@@ -29,11 +30,11 @@ abstract class AbstractElementLockedCache implements Cache, ElementLockedStorage
         this.node = node;
     }
 
-    public void miss(long dt) {
+    protected void miss(long dt) {
         statistics.miss(dt);
     }
 
-    public void hit() {
+    protected void hit() {
         statistics.hit();
     }
 
@@ -43,11 +44,55 @@ abstract class AbstractElementLockedCache implements Cache, ElementLockedStorage
     }
 
     @Override
+    public void invalidate() {
+        Lock lock = getLock();
+        dirty = true;
+        if (lock.tryLock()) {
+            try {
+                if (dirty) {
+                    clear();
+                    dirty = false;
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    protected void postCheckDirty() {
+        if (dirty) {
+            Lock lock = getLock();
+            if (lock.tryLock()) {
+                try {
+                    if (dirty) {
+                        clear();
+                        dirty = false;
+                    }
+                } finally {
+                    lock.unlock();
+                }
+            }
+        }
+    }
+
+    protected void preCheckDirty() {
+        if (dirty) {
+            Lock lock = getLock();
+            lock.lock();
+            try {
+                if (dirty) {
+                    clear();
+                    dirty = false;
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    @Override
     public int getSize() {
         Lock lock = getLock();
-        if (lock == null) {
-            return size();
-        }
         lock.lock();
         try {
             return size();
@@ -56,15 +101,7 @@ abstract class AbstractElementLockedCache implements Cache, ElementLockedStorage
         }
     }
 
-    @Override
-    public DependencyNode getDependencyNode() {
+    protected DependencyNode getDependencyNode() {
         return node;
     }
-
-
-    @Override
-    public Object getCacheOwner() {
-        return owner;
-    }
-
 }

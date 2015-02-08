@@ -4,10 +4,8 @@
 package com.maxifier.mxcache.clean;
 
 import com.maxifier.mxcache.PublicAPI;
-import com.maxifier.mxcache.caches.CleaningNode;
 
 import java.lang.annotation.Annotation;
-import java.util.Collection;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
@@ -66,10 +64,4 @@ public interface CacheCleaner {
      */
     @PublicAPI
     void clearCacheByAnnotation(Class<? extends Annotation> annotationClass);
-
-    /**
-     * Clears all passed cleaning nodes
-     */
-    @PublicAPI
-    void clearAll(Collection<? extends CleaningNode> elements);
 }

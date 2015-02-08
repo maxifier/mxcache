@@ -35,6 +35,7 @@ public abstract class AbstractObjectCache<F> extends AbstractCache implements Ob
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
         } else {
+            preCheckDirty();
             lock();
             try {
                 Object v = load();
@@ -73,6 +74,7 @@ public abstract class AbstractObjectCache<F> extends AbstractCache implements Ob
                 }
             } finally {
                 unlock();
+                postCheckDirty();
             }
         }
     }

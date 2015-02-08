@@ -10,8 +10,6 @@ import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import javax.annotation.Nullable;
 
-import java.util.concurrent.locks.Lock;
-
 /**
 * AbstractObjectObjectCacheWrapper
 *
@@ -39,20 +37,9 @@ public abstract class AbstractObjectObjectCacheWrapper<K, V> implements Cache {
         delegate.setDependencyNode(node);
     }
 
-    @Nullable
     @Override
-    public Lock getLock() {
-        return delegate.getLock();
-    }
-
-    @Override
-    public void clear() {
-        delegate.clear();
-    }
-
-    @Override
-    public DependencyNode getDependencyNode() {
-        return delegate.getDependencyNode();
+    public void invalidate() {
+        delegate.invalidate();
     }
 
     @Nullable

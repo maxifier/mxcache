@@ -5,11 +5,16 @@ package com.maxifier.mxcache.impl.resource.nodes;
 
 import com.maxifier.mxcache.caches.CleaningNode;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
-import com.maxifier.mxcache.util.TIdentityHashSet;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.concurrent.locks.Lock;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertNull;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
@@ -17,11 +22,16 @@ import java.util.concurrent.locks.Lock;
 @SuppressWarnings({"UnusedAssignment"})
 @Test
 public class DependencyNodeUTest {
-    public void testMultipleNodeToString() throws InterruptedException {
+    public void testNoDirectReferencesInMultipleNode() throws InterruptedException {
         DependencyNode node = new MultipleDependencyNode();
 
-        CleaningNode n1 = new TestCleaningNode("Node1");
-        CleaningNode n2 = new TestCleaningNode("Node2");
+        CleaningNode n1 = mock(CleaningNode.class);
+        CleaningNode n2 = mock(CleaningNode.class);
+        when(n1.toString()).thenReturn("Node1");
+        when(n2.toString()).thenReturn("Node2");
+
+        Reference<CleaningNode> n1ref = new WeakReference<CleaningNode>(n1);
+        Reference<CleaningNode> n2ref = new WeakReference<CleaningNode>(n2);
 
         node.addNode(n1);
         node.addNode(n2);
@@ -29,72 +39,45 @@ public class DependencyNodeUTest {
         // order doesn't matter
         Assert.assertTrue(s.equals("DependencyNode<Node1, Node2>") || s.equals("DependencyNode<Node2, Node1>"));
 
-        TIdentityHashSet<CleaningNode> set = new TIdentityHashSet<CleaningNode>();
-        node.appendNodes(set);
+        node.invalidate();
 
-        Assert.assertEqualsNoOrder(set.toArray(), new Object[]{n1, n2});
-        set.clear();
+        verify(n1).invalidate();
+        verify(n2).invalidate();
 
         n2 = null;
         bigGc();
 
-        Assert.assertEquals(node.toString(), "DependencyNode<Node1, 1 GCed>");
+        assertNull(n2ref.get());
+
+        node.invalidate();
+        verify(n1).invalidate();
 
         n1 = null;
         bigGc();
 
-        Assert.assertEquals(node.toString(), "DependencyNode<2 GCed>");
+        assertNull(n1ref.get());
 
-        node.appendNodes(set);
-        Assert.assertTrue(set.isEmpty());
+        // no NPE here, no exceptions...
+        node.invalidate();
     }
 
     public void testSingletonNodeToString() throws InterruptedException {
         DependencyNode node = new SingletonDependencyNode();
 
-        CleaningNode n1 = new TestCleaningNode("Node1");
+        CleaningNode n1 = mock(CleaningNode.class);
 
         node.addNode(n1);
-        Assert.assertEquals(node.toString(), "DependencyNode<Node1>");
+
+        node.invalidate();
+        verify(n1).invalidate();
     }
 
+    // yep, there's no guarantee, but we can try...
     private static void bigGc() throws InterruptedException {
         System.gc();
         Thread.sleep(100);
         System.gc();
         Thread.sleep(100);
         System.gc();
-    }
-
-    private static class TestCleaningNode implements CleaningNode {
-        private final String name;
-
-        public TestCleaningNode(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public Lock getLock() {
-            return null;
-        }
-
-        @Override
-        public void clear() {
-        }
-
-        @Override
-        public DependencyNode getDependencyNode() {
-            return null;
-        }
-
-        @Override
-        public Object getCacheOwner() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
     }
 }

@@ -35,6 +35,7 @@ public abstract class AbstractFloatCache extends AbstractCache implements FloatC
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner);
         } else {
+            preCheckDirty();
             lock();
             try {
                 Object v = load();
@@ -73,6 +74,7 @@ public abstract class AbstractFloatCache extends AbstractCache implements FloatC
                 }
             } finally {
                 unlock();
+                postCheckDirty();
             }
         }
     }

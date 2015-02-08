@@ -362,7 +362,7 @@ public class P2PCacheUnboxKeyTest {
                 wrap("123", calculable, storage, new MutableStatisticsImpl());
         cache.setDependencyNode(DependencyTracker.DUMMY_NODE);
 
-        cache.clear();
+        cache.invalidate();
 
         verify(storage).clear();
         verifyNoMoreInteractions(storage);
