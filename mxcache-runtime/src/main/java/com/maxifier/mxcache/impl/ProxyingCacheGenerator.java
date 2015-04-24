@@ -98,7 +98,7 @@ public final class ProxyingCacheGenerator {
         Type calculatableType = Type.getObjectType(calculatableName);
         Type cacheType = getType(cacheInterface);
 
-        ClassGenerator writer = new ClassGenerator(ACC_PUBLIC, thisName, OBJECT_TYPE, cacheType);
+        ClassGenerator writer = new ClassGenerator(ACC_PUBLIC | ACC_SUPER | ACC_SYNTHETIC, thisName, OBJECT_TYPE, cacheType);
 
         MxField cacheField = writer.defineField(ACC_PRIVATE | ACC_FINAL, CACHE_FIELD, cacheType);
         MxField proxyFactoryField = writer.defineField(ACC_PRIVATE | ACC_FINAL, PROXY_FACTORY_FIELD, PROXY_FACTORY_TYPE);

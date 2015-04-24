@@ -177,7 +177,7 @@ public final class Wrapping {
         String superName = cacheSignature.getImplementationClassName(getAbstractCachePackage(perElementLocking) + "/Abstract", "Cache");
         String className = getCacheImplClassName(storageSignature, cacheSignature);
 
-        ClassGenerator w = new ClassGenerator(ACC_PUBLIC | ACC_SUPER, className, Type.getObjectType(superName), STORAGE_HOLDER_TYPE);
+        ClassGenerator w = new ClassGenerator(ACC_PUBLIC | ACC_SUPER | ACC_SYNTHETIC, className, Type.getObjectType(superName), STORAGE_HOLDER_TYPE);
 
         Type wrapperType = Type.getObjectType(className);
 

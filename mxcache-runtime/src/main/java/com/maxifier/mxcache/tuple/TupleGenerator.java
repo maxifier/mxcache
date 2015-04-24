@@ -129,7 +129,7 @@ public final class TupleGenerator {
     }
 
     public static byte[] generateTupleClassBytecode(String tupleClassName, Type[] types) {
-        ClassGenerator classWriter = new ClassGenerator(ACC_PUBLIC | ACC_SYNTHETIC, tupleClassName, TUPLE_TYPE);
+        ClassGenerator classWriter = new ClassGenerator(ACC_PUBLIC | ACC_SUPER | ACC_SYNTHETIC, tupleClassName, TUPLE_TYPE);
         Type tupleType = classWriter.getThisType();
         MxField[] fields = new MxField[types.length];
         for (int i = 0; i < types.length; i++) {

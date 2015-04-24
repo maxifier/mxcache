@@ -124,7 +124,7 @@ final class StubMethodFactory {
         String calculable = CalculatableHelper.getCalculatableName(thisClass, methodName, id);
 
         Type superType = getCalculatableType(keyType, returnType);
-        ClassGenerator w = new ClassGenerator(0, calculable, OBJECT_TYPE, superType);
+        ClassGenerator w = new ClassGenerator(ACC_PUBLIC | ACC_SUPER | ACC_SYNTHETIC | ACC_FINAL, calculable, OBJECT_TYPE, superType);
 
         Type calculatableType = w.getThisType();
 

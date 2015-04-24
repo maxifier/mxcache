@@ -61,7 +61,7 @@ public class NullCacheManager<T> implements CacheManager<T> {
     private static synchronized Constructor createImplementation(Signature signature) {
         String name = Type.getInternalName(NullCacheManager.class) + "$" + signature.getCacheInterface().getSimpleName() + "Impl$" + id++;
         Type cacheType = Type.getType(signature.getCacheInterface());
-        ClassGenerator cw = new ClassGenerator(ACC_FINAL | ACC_SUPER, name, OBJECT_TYPE, cacheType);
+        ClassGenerator cw = new ClassGenerator(ACC_PUBLIC | ACC_SUPER | ACC_SYNTHETIC | ACC_FINAL, name, OBJECT_TYPE, cacheType);
 
         Type calculableType = Type.getType(signature.getCalculableInterface());
 
