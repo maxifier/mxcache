@@ -99,7 +99,7 @@ class CachedMethodVisitor extends MxGeneratorAdapter {
             String thisName = thisClass.getInternalName();
             assert internalName.startsWith(thisName + "$");
             assert Character.isJavaIdentifierStart(internalName.charAt(thisName.length() + 1));
-            classVisitor.visitInnerClass(internalName, thisName, internalName.substring(thisName.length() + 1), ACC_PRIVATE);
+            classVisitor.visitInnerClass(internalName, thisName, internalName.substring(thisName.length() + 1), ACC_PRIVATE | ACC_STATIC | ACC_SYNTHETIC);
         }
 
         @Override

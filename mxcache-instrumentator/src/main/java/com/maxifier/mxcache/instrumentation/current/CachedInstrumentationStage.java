@@ -88,7 +88,7 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
             cleanableWriter = new ClassGenerator(ACC_PUBLIC | ACC_SUPER | ACC_SYNTHETIC | ACC_FINAL, className + "$" + CLEANABLE_INNER_NAME, OBJECT_TYPE, CLEANABLE_TYPE);
             cleanableClass = cleanableWriter.getThisType();
 
-            visitInnerClass(cleanableClass.getInternalName(), thisType.getInternalName(), CLEANABLE_INNER_NAME, ACC_PRIVATE | ACC_STATIC);
+            visitInnerClass(cleanableClass.getInternalName(), thisType.getInternalName(), CLEANABLE_INNER_NAME, ACC_PRIVATE | ACC_STATIC | ACC_SYNTHETIC);
             cleanableWriter.visitOuterClass(thisType.getInternalName(), null, null);
 
             addMarkerAnnotation();
