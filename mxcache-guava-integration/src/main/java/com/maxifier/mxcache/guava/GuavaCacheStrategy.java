@@ -21,6 +21,7 @@ import com.maxifier.mxcache.provider.*;
 import com.maxifier.mxcache.storage.Storage;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ExecutionException;
@@ -35,6 +36,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com) (2012-10-08 18:15)
  * @author Aleksey Dergunov (aleksey.dergunov@maxifier.com) (2013-09-06 17:39)
  */
+@ParametersAreNonnullByDefault
 public class GuavaCacheStrategy implements CachingStrategy {
     private static final StrategyProperty<Long> MAXIMUM_SIZE = StrategyProperty.create("guava.maxSize", long.class, UseGuava.class, "maxSize");
     private static final StrategyProperty<Long> MAXIMUM_WEIGHT = StrategyProperty.create("guava.maxWeight", long.class, UseGuava.class, "maxWeight");
@@ -225,6 +227,12 @@ public class GuavaCacheStrategy implements CachingStrategy {
         @Override
         public void clear() {
             cache.invalidateAll();
+            // invalidateAll doesn't actually clear all the caches, it only guarantees that no old (dirty) data may
+            // be read back from cache after invalidation. Actually, the references to old keys/values are still
+            // retained in recencyQueue in case of limited cache which leads to a memory leak: recency queues are
+            // per cache segment, so if no one reads certain segment, the queue never gets drained and thus a
+            // reference to an old object is retained forever.
+            cache.cleanUp();
         }
 
         @Override
