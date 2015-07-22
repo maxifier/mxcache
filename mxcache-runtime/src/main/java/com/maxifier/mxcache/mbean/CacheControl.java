@@ -50,7 +50,7 @@ public class CacheControl implements CacheControlMXBean {
     public List<CacheInfo> getCaches() {
         List<CacheManager> caches = provider.getCaches();
         List<CacheInfo> res = new ArrayList<CacheInfo>(caches.size());
-        for (CacheManager<?> cacheManager : caches) {
+        for (CacheManager cacheManager : caches) {
             String impl;
             try {
                 impl = cacheManager.getImplementationDetails();
@@ -80,7 +80,7 @@ public class CacheControl implements CacheControlMXBean {
                 totalMisses += statistics.getMisses();
                 averageCalculation  += statistics.getTotalCalculationTime();
             }
-            CacheDescriptor<?> descriptor = cacheManager.getDescriptor();
+            CacheDescriptor descriptor = cacheManager.getDescriptor();
             Class<?> ownerClass = cacheManager.getOwnerClass();
             CacheContext context = cacheManager.getContext();
             res.add(new CacheInfo(context == null ? "<no context>" : context.toString(), descriptor.getKeyType() == null ? null : getDisplayName(descriptor.getKeyType()),

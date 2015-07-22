@@ -42,7 +42,7 @@ public class ConcurrentObjectObjectStorage<K> implements ObjectObjectElementLock
     private final ConcurrentHashMap<K, Object> concurrentHashMap;
 
     @PublicAPI
-    public ConcurrentObjectObjectStorage(CacheDescriptor<?> descriptor) {
+    public ConcurrentObjectObjectStorage(CacheDescriptor descriptor) {
         ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
         readLock = readWriteLock.readLock();
         writeLock = readWriteLock.writeLock();

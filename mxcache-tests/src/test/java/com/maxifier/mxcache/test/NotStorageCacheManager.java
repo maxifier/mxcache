@@ -19,8 +19,8 @@ import java.lang.reflect.InvocationTargetException;
  *
  * @author Elena Saymanina (elena.saymanina@maxifier.com) (06.06.13)
  */
-public class NotStorageCacheManager<T> extends AbstractCacheManager<T> {
-    public NotStorageCacheManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+public class NotStorageCacheManager extends AbstractCacheManager {
+    public NotStorageCacheManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor) {
         super(context, ownerClass, descriptor);
     }
 

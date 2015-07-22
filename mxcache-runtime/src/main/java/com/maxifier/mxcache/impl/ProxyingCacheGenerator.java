@@ -3,6 +3,7 @@
  */
 package com.maxifier.mxcache.impl;
 
+import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
@@ -56,24 +57,24 @@ public final class ProxyingCacheGenerator {
     }
 
     @SuppressWarnings({ "unchecked" })
-    public static <T> T wrapCacheWithProxy(CacheDescriptor descriptor, CacheContext context, T cache) {
+    public static Cache wrapCacheWithProxy(CacheDescriptor descriptor, CacheContext context, Cache cache) {
         ProxyFactory proxyFactory = descriptor.getProxyFactory(context);
         Class key = descriptor.getKeyType();
         Class value = descriptor.getValueType();
-        Class<T> cacheInterface = descriptor.getCacheInterface();
+        Class<?> cacheInterface = descriptor.getCacheInterface();
         TransformGenerator keyTransform = descriptor.getKeyTransform();
         ClassLoader owner = descriptor.getDeclaringClass().getClassLoader();
         return wrapCacheWithProxy(owner, cache, proxyFactory, key, value, cacheInterface, keyTransform);
     }
 
     @SuppressWarnings({ "unchecked" })
-    public static <T> T wrapCacheWithProxy(ClassLoader owner, T cache, ProxyFactory proxyFactory, Class key, Class value, Class<T> cacheInterface, TransformGenerator keyTransform) {
+    public static Cache wrapCacheWithProxy(ClassLoader owner, Cache cache, ProxyFactory proxyFactory, Class key, Class value, Class<?> cacheInterface, TransformGenerator keyTransform) {
         if (proxyFactory == null) {
             return cache;
         }
         Class calculatableClass = generateProxyingCacheClass(owner, key, value, cacheInterface, keyTransform);
         try {
-            return (T) calculatableClass.getConstructors()[0].newInstance(cache, proxyFactory);
+            return (Cache)calculatableClass.getConstructors()[0].newInstance(cache, proxyFactory);
         } catch (InstantiationException e) {
             throw new IllegalStateException("Invalid calculatable generated", e);
         } catch (IllegalAccessException e) {

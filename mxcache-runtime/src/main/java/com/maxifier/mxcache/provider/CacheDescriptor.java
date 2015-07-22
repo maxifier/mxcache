@@ -36,14 +36,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class CacheDescriptor<T> {
+public class CacheDescriptor {
     private static final Logger logger = LoggerFactory.getLogger(CacheDescriptor.class);
 
     private static final StrategyProperty<Class> USE_PROXY = StrategyProperty.create("use.proxy", Class.class, UseProxy.class, "value");
 
     private static final StrategyProperty<StatisticsModeEnum> STATISTICS_MODE = StrategyProperty.create("statistics.mode", StatisticsModeEnum.class, StatisticsMode.class, "value");
 
-    private final Class<T> declaringClass;
+    private final Class<?> declaringClass;
     private final Signature signature;
     private final Signature transformedSignature;
     private final Calculable calculable;
@@ -59,15 +59,15 @@ public class CacheDescriptor<T> {
 
     private final PropertyOverrides overrides;
 
-    public CacheDescriptor(Class<T> declaringClass, int id, Class keyType, Class valueType, Calculable calculable, String methodName, String methodDesc, String cacheName, String group, String[] tags, ProxyFactory proxyFactory) {
+    public CacheDescriptor(Class<?> declaringClass, int id, Class keyType, Class valueType, Calculable calculable, String methodName, String methodDesc, String cacheName, String group, String[] tags, ProxyFactory proxyFactory) {
         this(declaringClass, id, keyType, valueType, calculable, methodName, methodDesc, cacheName, group, tags, CacheFactory.getConfiguration().getRule(declaringClass, group, tags), proxyFactory);
     }
 
-    public CacheDescriptor(Class<T> declaringClass, int id, Class keyType, Class valueType, Calculable calculable, String methodName, String methodDesc, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory) {
+    public CacheDescriptor(Class<?> declaringClass, int id, Class keyType, Class valueType, Calculable calculable, String methodName, String methodDesc, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory) {
         this(declaringClass, id, keyType, valueType, calculable, CodegenHelper.getMethod(declaringClass, methodName, methodDesc), cacheName, group, tags, rule, proxyFactory);
     }
 
-    private CacheDescriptor(Class<T> declaringClass, int id, Class keyType, Class valueType, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory) {
+    private CacheDescriptor(Class<?> declaringClass, int id, Class keyType, Class valueType, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory) {
         this(declaringClass, id, signature(keyType, valueType, method), calculable, method, cacheName, group, tags, rule, proxyFactory, null);
     }
 
@@ -79,11 +79,11 @@ public class CacheDescriptor<T> {
         return new Signature(method.getParameterTypes(), keyType, valueType);
     }
 
-    private CacheDescriptor(Class<T> declaringClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, @Nullable PropertyOverrides overrides) {
+    private CacheDescriptor(Class<?> declaringClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, @Nullable PropertyOverrides overrides) {
         this(declaringClass, id, signature, calculable, method, cacheName, group, tags, rule, proxyFactory, TransformGeneratorFactoryImpl.getInstance().forMethod(method), new EmptyTransformGenerator(signature.erased().getValue()), overrides);
     }
 
-    private CacheDescriptor(Class<T> declaringClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, PropertyOverrides overrides) {
+    private CacheDescriptor(Class<?> declaringClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, PropertyOverrides overrides) {
         this(declaringClass, id, signature, calculable, method, cacheName, group, tags, rule, proxyFactory, keyTransform, valueTransform, getTransformedSignature(signature, keyTransform, valueTransform), overrides);
     }
 
@@ -91,7 +91,7 @@ public class CacheDescriptor<T> {
         return valueTransform.transformValue(keyTransform.transformKey(signature));
     }
 
-    private CacheDescriptor(Class<T> declaringClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, Signature transformedSignature, PropertyOverrides overrides) {
+    private CacheDescriptor(Class<?> declaringClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, Signature transformedSignature, PropertyOverrides overrides) {
         this.method = method;
         this.group = group;
         this.declaringClass = declaringClass;
@@ -111,25 +111,25 @@ public class CacheDescriptor<T> {
     }
 
     @PublicAPI
-    public CacheDescriptor<T> overrideCalculable(Calculable calculatable) {
+    public CacheDescriptor overrideCalculable(Calculable calculatable) {
         Class<?> calculatableInterface = getCalculatableInterface();
         if (!calculatableInterface.isInstance(calculatable)) {
             throw new IllegalArgumentException("Calculatable for " + this + " should implement " + calculatableInterface.getName());
         }
         // cache name is already set in rule, so we pass null
-        return new CacheDescriptor<T>(declaringClass, id, signature, calculatable, method, null, group, tags, rule, proxyFactory, keyTransform, valueTransform, transformedSignature, overrides);
+        return new CacheDescriptor(declaringClass, id, signature, calculatable, method, null, group, tags, rule, proxyFactory, keyTransform, valueTransform, transformedSignature, overrides);
     }
 
     @PublicAPI
-    public CacheDescriptor<T> overrideProxyFactory(ProxyFactory factory) {
+    public CacheDescriptor overrideProxyFactory(ProxyFactory factory) {
         // cache name is already set in rule, so we pass null
-        return new CacheDescriptor<T>(declaringClass, id, signature, calculable, method, null, group, tags, rule, factory, keyTransform, valueTransform, transformedSignature, overrides);
+        return new CacheDescriptor(declaringClass, id, signature, calculable, method, null, group, tags, rule, factory, keyTransform, valueTransform, transformedSignature, overrides);
     }
 
     @PublicAPI
-    public CacheDescriptor<T> overrideProxyFactory(Class<? extends ProxyFactory> factory) {
+    public CacheDescriptor overrideProxyFactory(Class<? extends ProxyFactory> factory) {
         // cache name is already set in rule, so we pass null
-        return new CacheDescriptor<T>(declaringClass, id, signature, calculable, method, null, group, tags, rule, proxyFactory, keyTransform, valueTransform, transformedSignature, new PropertyOverrides(overrides).override(USE_PROXY, factory));
+        return new CacheDescriptor(declaringClass, id, signature, calculable, method, null, group, tags, rule, proxyFactory, keyTransform, valueTransform, transformedSignature, new PropertyOverrides(overrides).override(USE_PROXY, factory));
     }
 
     /**
@@ -199,7 +199,7 @@ public class CacheDescriptor<T> {
     /**
      * @return cache that defines cache method.
      */
-    public Class<T> getDeclaringClass() {
+    public Class<?> getDeclaringClass() {
         return declaringClass;
     }
 

@@ -48,7 +48,7 @@ public class ProxyingCacheGeneratorUTest {
     public void testObject2Object() {
         ProxyFactory<String> factory = spy(new TestProxyFactory());
         TestCalculatable1 calculatable = spy(new TestCalculatable1());
-        ObjectObjectCache<String, String> cache = ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, String.class, String.class, ObjectObjectCache.class, new EmptyTransformGenerator(Object.class));
+        ObjectObjectCache<String, String> cache = (ObjectObjectCache)ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, String.class, String.class, ObjectObjectCache.class, new EmptyTransformGenerator(Object.class));
         verifyZeroInteractions(factory);
         verifyZeroInteractions(calculatable);
         assertEquals(cache.getOrCreate("123"), "__123");
@@ -72,7 +72,7 @@ public class ProxyingCacheGeneratorUTest {
         ProxyFactory<String> factory = spy(new TestProxyFactory());
         TestCalculatable1 calculatable = spy(new TestCalculatable1());
         TransformGenerator transform = TransformGeneratorFactoryImpl.getInstance().forMethod(ProxyingCacheGeneratorUTest.class.getDeclaredMethod("ttt", String.class));
-        ObjectObjectCache<String, String> cache = ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, String.class, String.class, ObjectObjectCache.class, transform);
+        ObjectObjectCache<String, String> cache = (ObjectObjectCache)ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, String.class, String.class, ObjectObjectCache.class, transform);
         verifyZeroInteractions(factory);
         verifyZeroInteractions(calculatable);
         assertEquals(cache.getOrCreate("123"), "__123");
@@ -99,7 +99,7 @@ public class ProxyingCacheGeneratorUTest {
     public void testPrimitive2Object() {
         ProxyFactory<String> factory = spy(new TestProxyFactory());
         TestCalculatable2 calculatable = spy(new TestCalculatable2());
-        LongObjectCache<String> cache = ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, long.class, String.class, LongObjectCache.class, null);
+        LongObjectCache<String> cache = (LongObjectCache)ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, long.class, String.class, LongObjectCache.class, null);
         verifyZeroInteractions(factory);
         verifyZeroInteractions(calculatable);
         assertEquals(cache.getOrCreate(123), "__123");
@@ -120,7 +120,7 @@ public class ProxyingCacheGeneratorUTest {
     public void testNone2Object() {
         ProxyFactory<String> factory = spy(new TestProxyFactory());
         TestCalculatable3 calculatable = spy(new TestCalculatable3());
-        ObjectCache<String> cache = ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, null, String.class, ObjectCache.class, null);
+        ObjectCache<String> cache = (ObjectCache)ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, null, String.class, ObjectCache.class, null);
         verifyZeroInteractions(factory);
         verifyZeroInteractions(calculatable);
         assertEquals(cache.getOrCreate(), "__");

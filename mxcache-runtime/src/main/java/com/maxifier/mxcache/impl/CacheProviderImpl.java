@@ -67,13 +67,13 @@ public class CacheProviderImpl implements CacheProvider {
     }
 
     @Override
-    public synchronized <T> void registerCache(Class<T> declaringClass, int cacheId, Class key, Class value, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, String cacheName) {
+    public synchronized void registerCache(Class declaringClass, int cacheId, Class key, Class value, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, String cacheName) {
         if (logger.isTraceEnabled()) {
             logger.trace("Register: owner = {}, method = {}, name = {}, id = {}, type = {} -> {}, group = {}, tags = {}", new Object[] {declaringClass, methodName + methodDesc, cacheName, cacheId, key, value, group, Arrays.toString(tags)});
         }
-        CacheDescriptor<T> descriptor = new CacheDescriptor<T>(declaringClass, cacheId, key, value, calculable, methodName, methodDesc, cacheName, group, tags, null);
+        CacheDescriptor descriptor = new CacheDescriptor(declaringClass, cacheId, key, value, calculable, methodName, methodDesc, cacheName, group, tags, null);
         descriptor = interceptorChain.registerCache(descriptor);
-        RegistryCatalogue<T> entry = new RegistryCatalogue<T>(descriptor);
+        RegistryCatalogue entry = new RegistryCatalogue(descriptor);
         registry.put(new CacheId(declaringClass, cacheId), entry);
     }
 
@@ -109,7 +109,7 @@ public class CacheProviderImpl implements CacheProvider {
     @Override
     public synchronized List<CacheManager> getCaches() {
         List<CacheManager> res = new ArrayList<CacheManager>(registry.size());
-        for (RegistryCatalogue<?> catalogue : registry.values()) {
+        for (RegistryCatalogue catalogue : registry.values()) {
             catalogue.addManagers(res);
         }
         return res;

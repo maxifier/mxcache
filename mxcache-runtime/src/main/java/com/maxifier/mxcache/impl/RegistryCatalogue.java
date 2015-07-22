@@ -18,31 +18,31 @@ import java.util.Map;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com) (2015-07-21 19:18)
  */
 @NotThreadSafe
-class RegistryCatalogue<T> {
-    private final CacheDescriptor<T> descriptor;
-    private final Map<Class<?>, RegistryEntry<T>> byOwnerClass = new THashMap<Class<?>, RegistryEntry<T>>();
+class RegistryCatalogue {
+    private final CacheDescriptor descriptor;
+    private final Map<Class<?>, RegistryEntry> byOwnerClass = new THashMap<Class<?>, RegistryEntry>();
 
-    RegistryCatalogue(CacheDescriptor<T> descriptor) {
+    RegistryCatalogue(CacheDescriptor descriptor) {
         this.descriptor = descriptor;
     }
 
     @Nonnull
-    CacheDescriptor<T> getDescriptor() {
+    CacheDescriptor getDescriptor() {
         return descriptor;
     }
 
     @Nonnull
-    RegistryEntry<T> forClass(Class<?> ownerClass) {
-        RegistryEntry<T> entry = byOwnerClass.get(ownerClass);
+    RegistryEntry forClass(Class<?> ownerClass) {
+        RegistryEntry entry = byOwnerClass.get(ownerClass);
         if (entry == null) {
-            entry = new RegistryEntry<T>(ownerClass, descriptor);
+            entry = new RegistryEntry(ownerClass, descriptor);
             byOwnerClass.put(ownerClass, entry);
         }
         return entry;
     }
 
     void addManagers(List<CacheManager> res) {
-        for (RegistryEntry<T> registryEntry : byOwnerClass.values()) {
+        for (RegistryEntry registryEntry : byOwnerClass.values()) {
             res.addAll(registryEntry.getManagers());
         }
     }

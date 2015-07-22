@@ -39,7 +39,7 @@ public interface CacheProvider {
      * @param methodDesc method descriptor
      * @param cacheName name of cache, may be null (used by some strategies)
      */
-    <T> void registerCache(Class<T> cacheOwner, int cacheId, Class keyType, Class valueType, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, @Nullable String cacheName);
+    void registerCache(Class<?> cacheOwner, int cacheId, Class keyType, Class valueType, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, @Nullable String cacheName);
 
     /**
      * This method is invoked from MxCache-generated code.

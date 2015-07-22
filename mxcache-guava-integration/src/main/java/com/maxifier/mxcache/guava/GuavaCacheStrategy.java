@@ -50,24 +50,24 @@ public class GuavaCacheStrategy implements CachingStrategy {
 
     @Nonnull
     @Override
-    public <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
-        return new GuavaCacheManager<T>(context, ownerClass, descriptor);
+    public CacheManager getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor) {
+        return new GuavaCacheManager(context, ownerClass, descriptor);
     }
 
-    private static class GuavaCacheManager<T> extends AbstractCacheManager<T> {
-        public GuavaCacheManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+    private static class GuavaCacheManager extends AbstractCacheManager {
+        public GuavaCacheManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor) {
             super(context, ownerClass, descriptor);
         }
 
         @Nonnull
         @Override
-        protected com.maxifier.mxcache.caches.Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws InstantiationException, IllegalAccessException, InvocationTargetException {
+        protected com.maxifier.mxcache.caches.Cache createCache(Object owner, DependencyNode dependencyNode, MutableStatistics statistics) throws InstantiationException, IllegalAccessException, InvocationTargetException {
             return createCache0(owner, dependencyNode);
         }
 
         @SuppressWarnings("unchecked")
-        private <K, V> com.maxifier.mxcache.caches.Cache createCache0(T owner, DependencyNode dependencyNode) {
-            CacheDescriptor<T> descriptor = getDescriptor();
+        private <K, V> com.maxifier.mxcache.caches.Cache createCache0(Object owner, DependencyNode dependencyNode) {
+            CacheDescriptor descriptor = getDescriptor();
             ObjectObjectCalculatable<K, V> calculableWrapper = Wrapping.getCalculableWrapper(descriptor.getSignature().erased(), descriptor.getCalculable());
 
             CacheLoader loader = new GuavaCacheLoader(owner, calculableWrapper);

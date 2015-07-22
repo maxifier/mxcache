@@ -36,11 +36,10 @@ public interface CacheProviderInterceptor {
      * There's effectively no difference between returning null and original descriptor.
      *
      * @param descriptor cache descriptor
-     * @param <T> cache owner type
      * @return original or overriding descriptor; null to override nothing
      */
     @Nullable
-    <T> CacheDescriptor<T> registerCache(CacheDescriptor<T> descriptor);
+    CacheDescriptor registerCache(CacheDescriptor descriptor);
 
     /**
      * This method allows to replace original cache created by MxCache.
@@ -57,5 +56,5 @@ public interface CacheProviderInterceptor {
      * @return original or overriding cache; null to override nothing
      */
     @Nullable
-    <T> Cache createCache(RegistryEntry<T> registryEntry, @Nullable T instance, CacheContext context, Cache cache);
+    Cache createCache(RegistryEntry registryEntry, @Nullable Object instance, CacheContext context, Cache cache);
 }

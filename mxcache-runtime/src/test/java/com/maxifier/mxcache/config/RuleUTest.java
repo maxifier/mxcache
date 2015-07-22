@@ -26,7 +26,7 @@ public class RuleUTest {
     public static class SomeStrategy implements CachingStrategy {
         @Nonnull
         @Override
-        public <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+        public CacheManager getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor) {
             throw new UnsupportedOperationException();
         }
     }
@@ -34,7 +34,7 @@ public class RuleUTest {
     public static class OtherStrategy implements CachingStrategy {
         @Nonnull
         @Override
-        public <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+        public CacheManager getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor) {
             throw new UnsupportedOperationException();
         }
     }
@@ -42,7 +42,7 @@ public class RuleUTest {
     public static class ImportantStrategy implements CachingStrategy {
         @Nonnull
         @Override
-        public <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+        public  CacheManager getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor) {
             throw new UnsupportedOperationException();
         }
     }

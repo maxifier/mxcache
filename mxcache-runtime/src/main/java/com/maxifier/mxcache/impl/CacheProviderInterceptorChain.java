@@ -49,11 +49,11 @@ public class CacheProviderInterceptorChain implements CacheProviderInterceptor {
      */
     @Override
     @Nonnull
-    public synchronized <T> CacheDescriptor<T> registerCache(CacheDescriptor<T> descriptor) {
-        CacheDescriptor<T> res = descriptor;
+    public synchronized CacheDescriptor registerCache(CacheDescriptor descriptor) {
+        CacheDescriptor res = descriptor;
         for (CacheProviderInterceptor interceptor : interceptors) {
             try {
-                CacheDescriptor<T> override = interceptor.registerCache(res);
+                CacheDescriptor override = interceptor.registerCache(res);
                 if (override != null) {
                     res = override;
                 }
@@ -69,8 +69,8 @@ public class CacheProviderInterceptorChain implements CacheProviderInterceptor {
      */
     @Override
     @Nonnull
-    public synchronized <T> Cache createCache(RegistryEntry<T> registryEntry,
-                                          @Nullable T instance,
+    public synchronized  Cache createCache(RegistryEntry registryEntry,
+                                          @Nullable Object instance,
                                           CacheContext context,
                                           Cache cache) {
         Cache res = cache;

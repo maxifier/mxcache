@@ -15,13 +15,13 @@ import com.maxifier.mxcache.provider.CacheDescriptor;
  *
  * @author Elena Saymanina (elena.saymanina@maxifier.com) (06.06.13)
  */
-public class TestCache<T> implements LongCache {
+public class TestCache implements LongCache {
     private final Object owner;
     private final MutableStatistics statistics;
-    private final CacheDescriptor<T> descriptor;
+    private final CacheDescriptor descriptor;
     private final LongCalculatable calculatable;
 
-    public TestCache(Object owner, MutableStatistics statistics, CacheDescriptor<T> descriptor) {
+    public TestCache(Object owner, MutableStatistics statistics, CacheDescriptor descriptor) {
         this.owner = owner;
         this.statistics = statistics;
         this.descriptor = descriptor;

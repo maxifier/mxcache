@@ -28,7 +28,7 @@ import java.util.*;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 @ThreadSafe
-public class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheManager<T>> {
+public class RegistryEntry implements CacheContext.ContextRelatedItem<CacheManager> {
     private static final Logger logger = LoggerFactory.getLogger(RegistryEntry.class);
 
     private static final StrategyProperty<Class> STORAGE_FACTORY_PROPERTY = new AnnotationProperty<UseStorageFactory, Class>("storage.factory", Class.class, UseStorageFactory.class) {
@@ -47,17 +47,17 @@ public class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheMa
 
     private final Class<?> ownerClass;
 
-    private final CacheDescriptor<T> descriptor;
+    private final CacheDescriptor descriptor;
 
-    private final CacheManager<T> nullCacheManager;
+    private final CacheManager nullCacheManager;
 
     private final WeakHashMap<CacheContext, Void> relatedContexts;
 
-    public RegistryEntry(Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+    public RegistryEntry(Class<?> ownerClass, CacheDescriptor descriptor) {
         this.ownerClass = ownerClass;
         this.descriptor = descriptor;
         if (descriptor.isDisabled()) {
-            nullCacheManager = new NullCacheManager<T>(ownerClass, descriptor);
+            nullCacheManager = new NullCacheManager(ownerClass, descriptor);
             relatedContexts = null;
         } else {
             nullCacheManager = null;
@@ -81,13 +81,13 @@ public class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheMa
      * @return all cache managers that were created in all context by this entry.
      */
     @PublicAPI
-    public synchronized Collection<CacheManager<T>> getManagers() {
+    public synchronized Collection<CacheManager> getManagers() {
         if (relatedContexts == null) {
             return Collections.emptySet();
         }
-        List<CacheManager<T>> managers = new ArrayList<CacheManager<T>>();
+        List<CacheManager> managers = new ArrayList<CacheManager>();
         for (CacheContext context : relatedContexts.keySet()) {
-            CacheManager<T> manager = context.getRelated(this);
+            CacheManager manager = context.getRelated(this);
             if (manager != null) {
                 managers.add(manager);
             }
@@ -101,12 +101,12 @@ public class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheMa
      * @return cache manager.
      */
     @PublicAPI
-    public synchronized CacheManager<T> getManager(CacheContext context) {
+    public synchronized CacheManager getManager(CacheContext context) {
         if (nullCacheManager != null) {
             return nullCacheManager;
         }
         relatedContexts.put(context, null);
-        CacheManager<T> manager = context.getRelated(this);
+        CacheManager manager = context.getRelated(this);
         if (manager == null) {
             try {
                 manager = createManager(context);
@@ -126,7 +126,7 @@ public class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheMa
      * @return create cache instance.
      */
     @PublicAPI
-    public Cache createCache(CacheContext context, @Nullable T instance) {
+    public Cache createCache(CacheContext context, @Nullable Object instance) {
         try {
             return getManager(context).createCache(instance);
         } catch (RuntimeException e) {
@@ -135,7 +135,7 @@ public class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheMa
         }
     }
 
-    private void checkTooManyStrategies(Class<StorageFactory<T>> storageFactoryClass, Class<Storage> storageClass, Class<? extends CachingStrategy> strategyClass) {
+    private void checkTooManyStrategies(Class<StorageFactory> storageFactoryClass, Class<Storage> storageClass, Class<? extends CachingStrategy> strategyClass) {
         int n = 0;
         StringBuilder message = new StringBuilder();
         if (storageFactoryClass != null) {
@@ -162,24 +162,24 @@ public class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheMa
     }
 
     @SuppressWarnings({ "unchecked" })
-    private CacheManager<T> createManager(CacheContext context) {
-        Class<StorageFactory<T>> storageFactoryClass = descriptor.getProperty(STORAGE_FACTORY_PROPERTY);
+    private CacheManager createManager(CacheContext context) {
+        Class<StorageFactory> storageFactoryClass = descriptor.getProperty(STORAGE_FACTORY_PROPERTY);
         Class<Storage> storageClass = descriptor.getProperty(STORAGE_PROPERTY);
         Class<? extends CachingStrategy> strategyClass = descriptor.getStrategyClass();
 
         checkTooManyStrategies(storageFactoryClass, storageClass, strategyClass);
 
         if (storageFactoryClass != null) {
-            return new StorageBasedCacheManager<T>(context, ownerClass, descriptor, DefaultStrategy.getInstance().getStorageFactory(context, descriptor, storageFactoryClass));
+            return new StorageBasedCacheManager(context, ownerClass, descriptor, DefaultStrategy.getInstance().getStorageFactory(context, descriptor, storageFactoryClass));
         }
         if (storageClass != null) {
-            return new StorageBasedCacheManager<T>(context, ownerClass, descriptor, new CustomStorageFactory<T>(context, descriptor, storageClass));
+            return new StorageBasedCacheManager(context, ownerClass, descriptor, new CustomStorageFactory(context, descriptor, storageClass));
         }
         if (strategyClass == null) {
             strategyClass = DefaultStrategy.class;
         }
         CachingStrategy strategy = getStrategyInstance(context, strategyClass);
-        CacheManager<T> manager;
+        CacheManager manager;
         try {
             manager = strategy.getManager(context, ownerClass, descriptor);
         } catch (RuntimeException e) {
@@ -197,7 +197,7 @@ public class RegistryEntry<T> implements CacheContext.ContextRelatedItem<CacheMa
      * @return descriptor related to this entry
      */
     @PublicAPI
-    public CacheDescriptor<T> getDescriptor() {
+    public CacheDescriptor getDescriptor() {
         return descriptor;
     }
 

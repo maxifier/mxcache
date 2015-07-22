@@ -25,13 +25,13 @@ import java.util.Set;
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractCacheManager<T> implements CacheManager<T> {
+public abstract class AbstractCacheManager implements CacheManager {
     private static final DependencyTracking DEFAULT_DEPENDENCY_TRACKING_VALUE = DependencyTracking.INSTANCE;
     private static final StatisticsModeEnum DEFAULT_STATISTICS_MODE = StatisticsModeEnum.STATIC_OR_STORAGE;
 
     private final CacheContext context;
     private final Class<?> ownerClass;
-    private final CacheDescriptor<T> descriptor;
+    private final CacheDescriptor descriptor;
 
     private final DependencyNode staticNode;
 
@@ -42,7 +42,7 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
 
     private final MutableStatistics staticStatistics;
 
-    public AbstractCacheManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+    public AbstractCacheManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor) {
         this.context = context;
         this.ownerClass = ownerClass;
         this.descriptor = descriptor;
@@ -85,7 +85,7 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     }
 
     @Nullable
-    private static DependencyNode[] getExplicitDependencies(CacheDescriptor<?> descriptor, Class<?> ownerClass) {
+    private static DependencyNode[] getExplicitDependencies(CacheDescriptor descriptor, Class<?> ownerClass) {
         List<DependencyNode> res = new ArrayList<DependencyNode>();
         Set<String> resourceNames = descriptor.getResourceDependencies();
         if (resourceNames != null) {
@@ -184,7 +184,7 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     }
 
     @Override
-    public Cache createCache(@Nullable T owner) {
+    public Cache createCache(@Nullable Object owner) {
         if (descriptor.isStatic()) {
             if (owner != null) {
                 throw new IllegalArgumentException("Static cache " + this + " requires no instance");
@@ -231,7 +231,7 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     }
 
     @Nonnull
-    protected abstract Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws Exception;
+    protected abstract Cache createCache(Object owner, DependencyNode dependencyNode, MutableStatistics statistics) throws Exception;
 
     @Override
     public Class<?> getOwnerClass() {
@@ -239,7 +239,7 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     }
 
     @Override
-    public CacheDescriptor<T> getDescriptor() {
+    public CacheDescriptor getDescriptor() {
         return descriptor;
     }
 

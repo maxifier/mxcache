@@ -22,7 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
-public class DefaultStorageFactory<T> implements StorageFactory<T> {
+public class DefaultStorageFactory implements StorageFactory {
     private static final String CACHES_PACKAGE = "com.maxifier.mxcache.impl.caches.def.";
 
     private final Class implementation;
@@ -78,7 +78,7 @@ public class DefaultStorageFactory<T> implements StorageFactory<T> {
 
     @Nonnull
     @Override
-    public Storage createStorage(T owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
+    public Storage createStorage(Object owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
         if (tupleIndices == null) {
             if (hashingStrategy != null) {
                 return storageConstructor.newInstance(hashingStrategy);

@@ -29,10 +29,10 @@ import java.lang.ref.Reference;
  *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
+public class StorageBasedCacheManager extends AbstractCacheManager {
     public static final DependencyNode MARKER_NODE = new MarkerDependencyNode();
 
-    private final StorageFactory<T> storageFactory;
+    private final StorageFactory storageFactory;
 
     private final Signature cacheSignature;
 
@@ -41,14 +41,14 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
     private Signature storageSignatureCache;
     private boolean inlineCache;
 
-    public StorageBasedCacheManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor, StorageFactory<T> storageFactory) {
+    public StorageBasedCacheManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor, StorageFactory storageFactory) {
         super(context, ownerClass, descriptor);
         this.storageFactory = storageFactory;
         cacheSignature = descriptor.getSignature();
         inlineCache = canInlineCache(descriptor, storageFactory);
     }
 
-    private boolean canInlineCache(CacheDescriptor<T> descriptor, StorageFactory<T> storageFactory) {
+    private boolean canInlineCache(CacheDescriptor descriptor, StorageFactory storageFactory) {
         // check class, not instanceof as child classes can override the behavior
         return storageFactory.getClass() == DefaultStorageFactory.class &&
                 descriptor.getSignature().getContainer() == null &&
@@ -57,7 +57,7 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
 
     @Nonnull
     @Override
-    protected Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws Exception {
+    protected Cache createCache(Object owner, DependencyNode dependencyNode, MutableStatistics statistics) throws Exception {
         if (inlineCache) {
             if (dependencyNode == MARKER_NODE) {
                 Cache result = createInlineCacheWithDependencyNode(owner, statistics);
@@ -102,9 +102,9 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
         return super.createInstanceNode();
     }
 
-    private Cache createInlineCache(T owner, MutableStatistics statistics) {
+    private Cache createInlineCache(Object owner, MutableStatistics statistics) {
         assert inlineCache;
-        CacheDescriptor<T> descriptor = getDescriptor();
+        CacheDescriptor descriptor = getDescriptor();
         Class valueType = descriptor.getSignature().getValue();
         Calculable calculable = descriptor.getCalculable();
         if (valueType == boolean.class) {
@@ -135,9 +135,9 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
         return new ObjectInlineCacheImpl(owner, (ObjectCalculatable) calculable, statistics);
     }
 
-    private Cache createInlineCacheWithDependencyNode(T owner, MutableStatistics statistics) {
+    private Cache createInlineCacheWithDependencyNode(Object owner, MutableStatistics statistics) {
         assert inlineCache;
-        CacheDescriptor<T> descriptor = getDescriptor();
+        CacheDescriptor descriptor = getDescriptor();
         Class valueType = descriptor.getSignature().getValue();
         Calculable calculable = descriptor.getCalculable();
         if (valueType == boolean.class) {

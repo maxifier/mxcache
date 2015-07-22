@@ -62,13 +62,13 @@ public class CacheProviderInterceptorUTest {
     static class TestInterceptor implements CacheProviderInterceptor {
         @Nullable
         @Override
-        public <T> CacheDescriptor<T> registerCache(CacheDescriptor<T> descriptor) {
+        public CacheDescriptor registerCache(CacheDescriptor descriptor) {
             return null;
         }
 
         @Nullable
         @Override
-        public <T> Cache createCache(RegistryEntry<T> registryEntry, final @Nullable T instance, CacheContext context, Cache cache) {
+        public Cache createCache(RegistryEntry registryEntry, final @Nullable Object instance, CacheContext context, Cache cache) {
             if (registryEntry.getDescriptor().getMethod().getName().equals("intercepted")) {
                 return new IntIntCache() {
                     @Override

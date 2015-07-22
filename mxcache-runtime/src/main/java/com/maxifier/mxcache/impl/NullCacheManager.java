@@ -32,7 +32,7 @@ import static com.maxifier.mxcache.util.CodegenHelper.*;
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class NullCacheManager<T> implements CacheManager<T> {
+public class NullCacheManager implements CacheManager {
     public static final Type LOCK_TYPE = Type.getType(Lock.class);
     public static final Type STATISTICS_TYPE = Type.getType(Statistics.class);
     public static final Type DEPENDENCY_NODE_TYPE = Type.getType(DependencyNode.class);
@@ -42,13 +42,13 @@ public class NullCacheManager<T> implements CacheManager<T> {
     private static int id = 0;
 
     private final Class<?> ownerClass;
-    private final CacheDescriptor<T> descriptor;
+    private final CacheDescriptor descriptor;
 
     private final Cache staticInstance;
 
     private final Constructor<? extends Cache> constructor;
 
-    public NullCacheManager(Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+    public NullCacheManager(Class<?> ownerClass, CacheDescriptor descriptor) {
         this.ownerClass = ownerClass;
         this.descriptor = descriptor;
         constructor = getImplementation(descriptor.getSignature());
@@ -143,7 +143,7 @@ public class NullCacheManager<T> implements CacheManager<T> {
         }
     }
 
-    private Cache createCacheInstance(@Nullable T t) {
+    private Cache createCacheInstance(@Nullable Object t) {
         try {
             return constructor.newInstance(t, descriptor.getCalculable());
         } catch (InstantiationException e) {
@@ -156,12 +156,12 @@ public class NullCacheManager<T> implements CacheManager<T> {
     }
 
     @Override
-    public CacheDescriptor<T> getDescriptor() {
+    public CacheDescriptor getDescriptor() {
         return descriptor;
     }
 
     @Override
-    public Cache createCache(@Nullable T owner) {
+    public Cache createCache(@Nullable Object owner) {
         return staticInstance == null ? createCacheInstance(owner) : staticInstance;
     }
 

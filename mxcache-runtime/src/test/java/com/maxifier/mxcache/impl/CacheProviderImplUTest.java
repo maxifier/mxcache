@@ -40,13 +40,13 @@ public class CacheProviderImplUTest {
     static final CacheProviderInterceptor NOP_INTERCEPTOR = new CacheProviderInterceptor() {
         @Nullable
         @Override
-        public <T> CacheDescriptor<T> registerCache(CacheDescriptor<T> descriptor) {
+        public CacheDescriptor registerCache(CacheDescriptor descriptor) {
             return null;
         }
 
         @Nullable
         @Override
-        public <T> Cache createCache(RegistryEntry<T> registryEntry, @Nullable T instance, CacheContext context, Cache cache) {
+        public Cache createCache(RegistryEntry registryEntry, @Nullable Object instance, CacheContext context, Cache cache) {
             return null;
         }
     };
@@ -54,13 +54,13 @@ public class CacheProviderImplUTest {
     static final CacheProviderInterceptor NOP_INTERCEPTOR_2 = new CacheProviderInterceptor() {
         @Nullable
         @Override
-        public <T> CacheDescriptor<T> registerCache(CacheDescriptor<T> descriptor) {
+        public  CacheDescriptor registerCache(CacheDescriptor descriptor) {
             return descriptor;
         }
 
         @Nullable
         @Override
-        public <T> Cache createCache(RegistryEntry<T> registryEntry, @Nullable T instance, CacheContext context, Cache cache) {
+        public  Cache createCache(RegistryEntry registryEntry, @Nullable Object instance, CacheContext context, Cache cache) {
             return cache;
         }
     };
@@ -68,13 +68,13 @@ public class CacheProviderImplUTest {
     static final CacheProviderInterceptor THROWING_INTERCEPTOR = new CacheProviderInterceptor() {
         @Nullable
         @Override
-        public <T> CacheDescriptor<T> registerCache(CacheDescriptor<T> descriptor) {
+        public  CacheDescriptor registerCache(CacheDescriptor descriptor) {
             throw new IllegalStateException("Test exception");
         }
 
         @Nullable
         @Override
-        public <T> Cache createCache(RegistryEntry<T> registryEntry, @Nullable T instance, CacheContext context, Cache cache) {
+        public  Cache createCache(RegistryEntry registryEntry, @Nullable Object instance, CacheContext context, Cache cache) {
             return null;
         }
     };
@@ -82,13 +82,13 @@ public class CacheProviderImplUTest {
     static final CacheProviderInterceptor THROWING_INTERCEPTOR_2 = new CacheProviderInterceptor() {
         @Nullable
         @Override
-        public <T> CacheDescriptor<T> registerCache(CacheDescriptor<T> descriptor) {
+        public  CacheDescriptor registerCache(CacheDescriptor descriptor) {
             return null;
         }
 
         @Nullable
         @Override
-        public <T> Cache createCache(RegistryEntry<T> registryEntry, @Nullable T instance, CacheContext context, Cache cache) {
+        public  Cache createCache(RegistryEntry registryEntry, @Nullable Object instance, CacheContext context, Cache cache) {
             throw new IllegalStateException("Test exception");
         }
     };
@@ -96,7 +96,7 @@ public class CacheProviderImplUTest {
     static final CacheProviderInterceptor OVERRIDE_CALCULABLE = new CacheProviderInterceptor() {
         @Nullable
         @Override
-        public <T> CacheDescriptor<T> registerCache(CacheDescriptor<T> descriptor) {
+        public  CacheDescriptor registerCache(CacheDescriptor descriptor) {
             return descriptor.overrideCalculable(new IntCalculatable() {
                 @Override
                 public int calculate(Object owner) {
@@ -107,7 +107,7 @@ public class CacheProviderImplUTest {
 
         @Nullable
         @Override
-        public <T> Cache createCache(RegistryEntry<T> registryEntry, @Nullable T instance, CacheContext context, Cache cache) {
+        public  Cache createCache(RegistryEntry registryEntry, @Nullable Object instance, CacheContext context, Cache cache) {
             return null;
         }
     };
@@ -115,13 +115,13 @@ public class CacheProviderImplUTest {
     static final CacheProviderInterceptor OVERRIDE_CACHE = new CacheProviderInterceptor() {
         @Nullable
         @Override
-        public <T> CacheDescriptor<T> registerCache(CacheDescriptor<T> descriptor) {
+        public  CacheDescriptor registerCache(CacheDescriptor descriptor) {
             return null;
         }
 
         @Nullable
         @Override
-        public <T> Cache createCache(RegistryEntry<T> registryEntry, final @Nullable T instance, CacheContext context, Cache cache) {
+        public  Cache createCache(RegistryEntry registryEntry, final @Nullable Object instance, CacheContext context, Cache cache) {
             return new IntCache() {
                 @Override
                 public int getOrCreate() {
@@ -165,7 +165,7 @@ public class CacheProviderImplUTest {
     static class Y implements CachingStrategy {
         @Nonnull
         @Override
-        public <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
+        public CacheManager getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor) {
             throw new UnsupportedOperationException();
         }
     }
@@ -194,24 +194,24 @@ public class CacheProviderImplUTest {
 
         @Nonnull
         @Override
-        public synchronized <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass, final CacheDescriptor<T> descriptor) {
-            return new XManager<T>(descriptor);
+        public synchronized CacheManager getManager(CacheContext context, Class<?> ownerClass, final CacheDescriptor descriptor) {
+            return new XManager(descriptor);
         }
 
-        public class XManager<T> implements CacheManager<T> {
-            private final CacheDescriptor<T> descriptor;
+        public class XManager implements CacheManager {
+            private final CacheDescriptor descriptor;
 
-            public XManager(CacheDescriptor<T> descriptor) {
+            public XManager(CacheDescriptor descriptor) {
                 this.descriptor = descriptor;
             }
 
             @Override
-            public CacheDescriptor<T> getDescriptor() {
+            public CacheDescriptor getDescriptor() {
                 return descriptor;
             }
 
             @Override
-            public Cache createCache(final @Nullable T owner) {
+            public Cache createCache(final @Nullable Object owner) {
                 return new IntCache() {
                     @Override
                     public int getOrCreate() {
@@ -715,8 +715,8 @@ public class CacheProviderImplUTest {
         when(sp.forClass(X.class)).thenReturn(new X() {
             @Nonnull
             @Override
-            public synchronized <T> CacheManager<T> getManager(final CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
-                return new XManager<T>(descriptor) {
+            public synchronized CacheManager getManager(final CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor) {
+                return new XManager(descriptor) {
                     @Override
                     public String toString() {
                         return context.toString();

@@ -905,7 +905,7 @@ public class DynamicInstrumentationFTest {
     private static class DefaultTestStrategy extends TestStrategy {
         @Nonnull
         @Override
-        public <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass,  CacheDescriptor<T> descriptor) {
+        public CacheManager getManager(CacheContext context, Class<?> ownerClass,  CacheDescriptor descriptor) {
             return DefaultStrategy.getInstance().getManager(context, ownerClass, descriptor);
         }
     }
@@ -920,7 +920,7 @@ public class DynamicInstrumentationFTest {
         }
 
         @Override
-        public <T> void registerCache(Class<T> cacheOwner, int cacheId, Class keyType, Class valueType, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, @Nullable String cacheName) {
+        public void registerCache(Class<?> cacheOwner, int cacheId, Class keyType, Class valueType, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, @Nullable String cacheName) {
             queries.add(new Object[] {"registerCache", cacheOwner, cacheId, keyType, valueType, group, tags, calculable, methodName, methodDesc, cacheName});
             provider0.registerCache(cacheOwner, cacheId, keyType, valueType, group, tags, calculable, methodName, methodDesc, cacheName);
         }

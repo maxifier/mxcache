@@ -42,7 +42,7 @@ public class EhcacheStorage<E> implements ObjectObjectElementLockedStorage<E> {
     private final Lock readLock;
     private final Lock writeLock;
 
-    public EhcacheStorage(CacheDescriptor<?> descriptor) {
+    public EhcacheStorage(CacheDescriptor descriptor) {
         CacheManager cacheManager = getCacheManager(descriptor);
         this.underlyingCache = new ExplicitLockingCache(cacheManager.getCache(descriptor.getCacheName()));
 
@@ -51,7 +51,7 @@ public class EhcacheStorage<E> implements ObjectObjectElementLockedStorage<E> {
         writeLock = lock.writeLock();
     }
 
-    private static CacheManager getCacheManager(CacheDescriptor<?> descriptor) {
+    private static CacheManager getCacheManager(CacheDescriptor descriptor) {
         String configURL = descriptor.getProperty(CONFIG_URL_PROPERTY);
         if (configURL.isEmpty()) {
             return DEFAULT_CACHE_MANAGER;
@@ -75,7 +75,7 @@ public class EhcacheStorage<E> implements ObjectObjectElementLockedStorage<E> {
         }
     }
 
-    private static URL getConfigurationURL(CacheDescriptor<?> descriptor, String configURL) throws MalformedURLException {
+    private static URL getConfigurationURL(CacheDescriptor descriptor, String configURL) throws MalformedURLException {
         if (configURL.startsWith(CLASSPATH_PREFIX)) {
             String path = configURL.substring(CLASSPATH_PREFIX.length());
             return descriptor.getDeclaringClass().getClassLoader().getResource(path);

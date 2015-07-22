@@ -45,8 +45,8 @@ public class DefaultStrategy implements CachingStrategy {
 
     @Nonnull
     @Override
-    public <T> CacheManager<T> getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor<T> descriptor) {
-        return new StorageBasedCacheManager<T>(context, ownerClass, descriptor, new DefaultStorageFactory<T>(context, hashingStrategyFactory, descriptor));
+    public CacheManager getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor) {
+        return new StorageBasedCacheManager(context, ownerClass, descriptor, new DefaultStorageFactory(context, hashingStrategyFactory, descriptor));
     }
 
     /**
@@ -57,14 +57,13 @@ public class DefaultStrategy implements CachingStrategy {
      * @param context context of creation
      * @param descriptor descriptor of cache
      * @param storageFactory requires storage factory class
-     * @param <T> type of owner
      * @return storage factory instance.
      */
-    public <T> StorageFactory<T> getStorageFactory(CacheContext context, CacheDescriptor<T> descriptor, Class<? extends StorageFactory<T>> storageFactory) {
+    public StorageFactory getStorageFactory(CacheContext context, CacheDescriptor descriptor, Class<? extends StorageFactory> storageFactory) {
         //noinspection RedundantCast
         if (((Class)storageFactory) != DefaultStorageFactory.class) {
             if (StorageFactory.class.isAssignableFrom(storageFactory)) {
-                Constructor<? extends StorageFactory<T>> ctor = CustomStorageFactory.getCustomConstructor(storageFactory);
+                Constructor<? extends StorageFactory> ctor = CustomStorageFactory.getCustomConstructor(storageFactory);
                 Object[] arguments = CustomStorageFactory.createArguments(ctor, context, descriptor);
 
                 try {
@@ -76,6 +75,6 @@ public class DefaultStrategy implements CachingStrategy {
                 logger.error("Invalid cache manager for " + descriptor + " (" + storageFactory + " is not StorageFactory)");
             }
         }
-        return new DefaultStorageFactory<T>(context, hashingStrategyFactory, descriptor);
+        return new DefaultStorageFactory(context, hashingStrategyFactory, descriptor);
     }
 }
