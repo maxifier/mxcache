@@ -104,7 +104,7 @@ public class Signature {
     }
 
     @Nonnull
-    public static synchronized Signature ofStorage(@Nonnull Class<? extends Storage> c) {
+    public static synchronized Signature of(@Nonnull Class<?> c) {
         Signature s = CACHE.get(c);
         if (s == null) {
             s = extractSignature(c);
@@ -117,15 +117,17 @@ public class Signature {
     }
 
     @Nonnull
-    private static synchronized Signature extractSignature(Class c) {
+    private static synchronized Signature extractSignature(Class<?> c) {
         Signature res = null;
         Class p = c;
         do {
             for (Class intf : p.getInterfaces()) {
-                if (intf.getName().startsWith(STORAGE_PACKAGE_NAME) && intf.getName().endsWith("Storage")) {
+                // some cache classes implement storage interface
+                // to avoid conflict we don't check storage types for cache.
+                if (!Cache.class.isAssignableFrom(c) || !Storage.class.isAssignableFrom(intf)) {
                     Signature s = CACHE.get(intf);
                     if (s != null) {
-                        if (res != null && s.equals(res)) {
+                        if (res != null && !s.equals(res)) {
                             throw new IllegalArgumentException("Class " + c + " has too many signatures");
                         }
                         res = s;
@@ -273,7 +275,7 @@ public class Signature {
         return erased.getCacheInterface();
     }
 
-    public Class<?> getCalculableInterface() {
+    public Class<? extends Calculable> getCalculableInterface() {
         return erased.getCalculableInterface();
     }
 
@@ -362,7 +364,7 @@ public class Signature {
         }
 
         @Override
-        public Class<?> getCalculableInterface() {
+        public Class<? extends Calculable> getCalculableInterface() {
             return calculatableInterface;
         }
 

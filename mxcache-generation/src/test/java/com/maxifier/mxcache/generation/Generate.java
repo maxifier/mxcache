@@ -173,30 +173,6 @@ public final class Generate {
 
         generateP2P("StorageP2PCache.template", "Storage", "CacheImpl.java", inputPathAbstract, outputPathAbstract, WRAPPERS_OBJECT_AND_NONE, WRAPPERS_NO_OBJECT);
         generateP2P("StorageP2OCache.template", "Storage", "CacheImpl.java", inputPathAbstract, outputPathAbstract, WRAPPERS_OBJECT_AND_NONE, ONLY_OBJECT);
-
-        File outputPathTest = new File(MODULE + "/src/test/java/com/maxifier/mxcache/impl/caches/storage");
-        if (!outputPathTest.exists()) {
-            throw new FileNotFoundException("\"" + outputPathTest + "\" does not exist");
-        }
-        generateP2P("P2PCacheTest.template", "", "CacheTest.java", inputPathAbstract, outputPathTest, WRAPPERS_OBJECT_AND_NONE, WRAPPERS_NO_OBJECT);
-        generateP2P("P2OCacheTest.template", "", "CacheTest.java", inputPathAbstract, outputPathTest, WRAPPERS_OBJECT_AND_NONE, ONLY_OBJECT);
-
-
-        File inputPathGeneric = new File(TEMPLATE_PATH + "/storage/generic");
-        if (!inputPathGeneric.exists()) {
-            throw new FileNotFoundException("\"" + inputPathGeneric + "\" does not exist");
-        }
-
-        File outputPathGeneric = new File(MODULE + "/src/test/java/com/maxifier/mxcache/impl/caches/storage/generic");
-        if (!outputPathGeneric.exists()) {
-            throw new FileNotFoundException("\"" + outputPathGeneric + "\" does not exist");
-        }
-        generateP2P("P2PBoxKeyCacheTest.template", "", "CacheBoxKeyTest.java", inputPathGeneric, outputPathGeneric, WRAPPERS_NO_OBJECT, WRAPPERS_NO_OBJECT);
-        generateP2P("P2PBoxValueCacheTest.template", "", "CacheBoxValueTest.java", inputPathGeneric, outputPathGeneric, WRAPPERS_OBJECT, WRAPPERS_NO_OBJECT);
-        generateP2P("P2PBoxKeyValueCacheTest.template", "", "CacheBoxKeyValueTest.java", inputPathGeneric, outputPathGeneric, WRAPPERS_NO_OBJECT, WRAPPERS_NO_OBJECT);
-        generate("P2OBoxKeyCacheTest.template", "", "ObjectCacheBoxKeyTest.java", inputPathGeneric, outputPathGeneric, WRAPPERS_NO_OBJECT);
-        generate("PBoxValueCacheTest.template", "", "CacheBoxValueTest.java", inputPathGeneric, outputPathGeneric, WRAPPERS_NO_OBJECT);
-        generate("PUnboxValueCacheTest.template", "", "CacheUnboxValueTest.java", inputPathGeneric, outputPathGeneric, WRAPPERS_NO_OBJECT);
     }
 
     private static void generateElementLockedStorageCacheImpl() throws IOException {

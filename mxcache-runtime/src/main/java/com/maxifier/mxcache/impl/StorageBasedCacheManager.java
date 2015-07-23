@@ -87,7 +87,7 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
         if (storage instanceof CalculableInterceptor) {
             calculable = ((CalculableInterceptor)storage).createInterceptedCalculable(calculable);
         }
-        Cache cache = getWrapperFactory(storage instanceof ElementLockedStorage, Signature.ofStorage(storage.getClass()))
+        Cache cache = getWrapperFactory(storage instanceof ElementLockedStorage, Signature.of(storage.getClass()))
                 .wrap(owner, calculable, storage, statistics);
         cache.setDependencyNode(dependencyNode);
         return cache;

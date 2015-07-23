@@ -20,10 +20,10 @@ import static org.testng.Assert.*;
 public class SignatureUTest {
     @Test
     public void testTroveStorages() throws Exception {
-        Signature soo = Signature.ofStorage(ObjectObjectWeakTroveStorage.class);
+        Signature soo = Signature.of(ObjectObjectWeakTroveStorage.class);
         assertSame(soo, Signature.of(Object.class, Object.class));
 
-        Signature so = Signature.ofStorage(ObjectStorageImpl.class);
+        Signature so = Signature.of(ObjectStorageImpl.class);
         assertSame(so, Signature.of(null, Object.class));
     }
 
