@@ -32,9 +32,20 @@ public final class CleanableRegister implements CacheCleaner {
     private static final Logger logger = LoggerFactory.getLogger(CleanableRegister.class);
 
     private final Map<Class<?>, ClassCleanableInstanceList<?>> classCleanMap = new THashMap<Class<?>, ClassCleanableInstanceList<?>>();
-    private final Map<Class<?>, DependencyNode> classMapping = new THashMap<Class<?>, DependencyNode>();
-    private final Map<String, DependencyNode> groupMapping = new THashMap<String, DependencyNode>();
-    private final Map<String, DependencyNode> tagMapping = new THashMap<String, DependencyNode>();
+
+    /**
+     * For each class there are two DependencyNodes: one for static methods and one for its instance methods.
+     *
+     * Instance method node depends on static node and on instance nodes of parent classes and interfaces.
+     *
+     * So it's enough to invalidate static node to invalidate all static caches of cache, instance caches of this
+     * class and all instance caches of its child classes too. This is what {@link #clearCacheByClass(Class)} does.
+     */
+    private final Map<Class<?>, DependencyNode> classStaticNodes = new THashMap<Class<?>, DependencyNode>();
+    private final Map<Class<?>, DependencyNode> classInstanceNodes = new THashMap<Class<?>, DependencyNode>();
+
+    private final Map<String, DependencyNode> groupNodes = new THashMap<String, DependencyNode>();
+    private final Map<String, DependencyNode> tagNodes = new THashMap<String, DependencyNode>();
 
     private static final Cleanable<?> EMPTY_CLEANABLE = new EmptyCleanable();
 
@@ -191,7 +202,7 @@ public final class CleanableRegister implements CacheCleaner {
 
         DependencyNode node;
         synchronized (this) {
-            node = classMapping.get(clazz);
+            node = classStaticNodes.get(clazz);
         }
         if (node == null) {
             logger.warn("There is no subclasses of " + clazz + " with caches yet");
@@ -204,7 +215,7 @@ public final class CleanableRegister implements CacheCleaner {
     public void clearCacheByGroup(String group) {
         DependencyNode node;
         synchronized (this) {
-            node = groupMapping.get(group);
+            node = groupNodes.get(group);
         }
         if (node == null) {
             logger.warn("There is no caches of group <" + group + "> yet");
@@ -217,7 +228,7 @@ public final class CleanableRegister implements CacheCleaner {
     public void clearCacheByTag(String tag) {
         DependencyNode node;
         synchronized (this) {
-            node = tagMapping.get(tag);
+            node = tagNodes.get(tag);
         }
         if (node == null) {
             logger.warn("There is no caches with tag <" + tag + "> yet");
@@ -233,7 +244,7 @@ public final class CleanableRegister implements CacheCleaner {
     public void clearCacheByAnnotation(Class<? extends Annotation> annotationClass) {
         DependencyNode node;
         synchronized (this) {
-            node = tagMapping.get("@" + annotationClass.getName());
+            node = tagNodes.get("@" + annotationClass.getName());
         }
         if (node == null) {
             logger.warn("Can`t find cache for annotation " + annotationClass);
@@ -242,30 +253,55 @@ public final class CleanableRegister implements CacheCleaner {
         }
     }
 
-    @Nullable
+    @Nonnull
     public synchronized DependencyNode getClassDependencyNode(Class<?> clazz) {
-        DependencyNode tagNode = classMapping.get(clazz);
+        DependencyNode tagNode = classStaticNodes.get(clazz);
         if (tagNode == null) {
             tagNode = new EmptyDependencyNode("class:" + clazz.getName());
-            classMapping.put(clazz, tagNode);
+            classStaticNodes.put(clazz, tagNode);
         }
         return tagNode;
     }
 
+    @Nonnull
+    public synchronized DependencyNode getClassInstanceDependencyNode(Class<?> clazz) {
+        DependencyNode tagNode = classInstanceNodes.get(clazz);
+        if (tagNode == null) {
+            tagNode = new EmptyDependencyNode("instance:" + clazz.getName());
+            trackParentAndInterfaceDependencies(clazz, tagNode);
+
+            classInstanceNodes.put(clazz, tagNode);
+        }
+        return tagNode;
+    }
+
+    private void trackParentAndInterfaceDependencies(Class<?> clazz, DependencyNode tagNode) {
+        Class<?> superclass = clazz.getSuperclass();
+        if (superclass != null) {
+            getClassInstanceDependencyNode(superclass).trackDependency(tagNode);
+        }
+        for (Class<?> intf : clazz.getInterfaces()) {
+            getClassInstanceDependencyNode(intf).trackDependency(tagNode);
+        }
+        getClassDependencyNode(clazz).trackDependency(tagNode);
+    }
+
+    @Nonnull
     public synchronized DependencyNode getTagDependencyNode(String tag) {
-        DependencyNode tagNode = tagMapping.get(tag);
+        DependencyNode tagNode = tagNodes.get(tag);
         if (tagNode == null) {
             tagNode = new EmptyDependencyNode("tag:" + tag);
-            tagMapping.put(tag, tagNode);
+            tagNodes.put(tag, tagNode);
         }
         return tagNode;
     }
 
+    @Nonnull
     public synchronized DependencyNode getGroupDependencyNode(String group) {
-        DependencyNode groupNode = groupMapping.get(group);
+        DependencyNode groupNode = groupNodes.get(group);
         if (groupNode == null) {
             groupNode = new EmptyDependencyNode("group:" + group);
-            groupMapping.put(group, groupNode);
+            groupNodes.put(group, groupNode);
         }
         return groupNode;
     }

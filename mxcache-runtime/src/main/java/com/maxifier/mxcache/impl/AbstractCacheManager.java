@@ -12,7 +12,6 @@ import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.caches.Cache;
-import gnu.trove.set.hash.THashSet;
 
 import javax.annotation.Nullable;
 
@@ -104,25 +103,13 @@ public abstract class AbstractCacheManager implements CacheManager {
             res.add(CacheFactory.getGroupDependencyNode(group));
         }
         if (descriptor.isStatic()) {
-            // static cache is not invalidated when a superclass of declaring class is invalidated
+            // static cache is not invalidated when a superclass of declaring class is invalidated,
+            // so we put it to a separate node
             res.add(CacheFactory.getClassDependencyNode(ownerClass));
         } else {
-            Set<Class<?>> visitedClasses = new THashSet<Class<?>>();
-            addAllSuperClassesAndInterfaces(res, visitedClasses, ownerClass);
+            res.add(CacheFactory.getClassInstanceDependencyNode(ownerClass));
         }
         return res.isEmpty() ? null : res.toArray(new DependencyNode[res.size()]);
-    }
-
-    private static void addAllSuperClassesAndInterfaces(List<DependencyNode> res, Set<Class<?>> visitedClasses, Class<?> clazz) {
-        while (clazz != null && clazz != Object.class) {
-            if (visitedClasses.add(clazz)) {
-                res.add(CacheFactory.getClassDependencyNode(clazz));
-                for (Class<?> intf : clazz.getInterfaces()) {
-                    addAllSuperClassesAndInterfaces(res, visitedClasses, intf);
-                }
-            }
-            clazz = clazz.getSuperclass();
-        }
     }
 
     protected StatisticsModeEnum getStatisticsMode() {

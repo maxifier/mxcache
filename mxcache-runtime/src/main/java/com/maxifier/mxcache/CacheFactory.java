@@ -63,6 +63,10 @@ public final class CacheFactory {
         return REGISTRY.getClassDependencyNode(clazz);
     }
 
+    public static DependencyNode getClassInstanceDependencyNode(Class<?> clazz) {
+        return REGISTRY.getClassInstanceDependencyNode(clazz);
+    }
+
     public static DependencyNode getTagDependencyNode(String tag) {
         return REGISTRY.getTagDependencyNode(tag);
     }
