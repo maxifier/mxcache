@@ -28,6 +28,7 @@ import com.maxifier.mxcache.util.MxConstructorGenerator;
 import com.maxifier.mxcache.util.MxField;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
 import gnu.trove.map.hash.THashMap;
+import gnu.trove.strategy.HashingStrategy;
 
 import javax.annotation.Nonnull;
 
@@ -71,7 +72,7 @@ public final class Wrapping {
 
     private static final Method SET_STORAGE_TYPE = new Method("setStorage", VOID_TYPE, new Type[]{STORAGE_TYPE});
     private static final Type UNSUPPORTED_OPERATION_EXCEPTION_TYPE = Type.getType(UnsupportedOperationException.class);
-    private static final TupleFactory TUPLE_FACTORY = TupleGenerator.getTupleFactory(Signature.class, boolean.class);
+    private static final TupleFactory TUPLE_FACTORY = TupleGenerator.createTupleFactory(new HashingStrategy[]{null, null}, Signature.class, boolean.class);
     private static final String FULL_LOCKED_PACKAGE = "com.maxifier.mxcache.impl.caches.storage";
     private static final String ELEMENT_LOCKED_PACKAGE = "com.maxifier.mxcache.impl.caches.storage.elementlocked";
     private static final String NODES_PACKAGE = "com.maxifier.mxcache.impl.resource.nodes";

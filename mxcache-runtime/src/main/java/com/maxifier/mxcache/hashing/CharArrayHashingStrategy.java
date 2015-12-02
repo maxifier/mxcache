@@ -14,8 +14,6 @@ public final class CharArrayHashingStrategy implements gnu.trove.strategy.Hashin
 
     private static final CharArrayHashingStrategy INSTANCE = new CharArrayHashingStrategy();
 
-    private CharArrayHashingStrategy() {}
-
     public static CharArrayHashingStrategy getInstance() {
         return INSTANCE;
     }

@@ -8,22 +8,21 @@ import com.maxifier.mxcache.DependencyTracking;
 import com.maxifier.mxcache.Strategy;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.context.UseCacheContext;
-import com.maxifier.mxcache.impl.caches.batch.BatchCache;
+import com.maxifier.mxcache.hashing.CharArrayHashingStrategy;
+import com.maxifier.mxcache.hashing.HashingStrategy;
+import com.maxifier.mxcache.hashing.IdentityHashing;
 import com.maxifier.mxcache.resource.ResourceReader;
 import com.maxifier.mxcache.resource.ResourceWriter;
 import com.maxifier.mxcache.resource.TrackDependency;
 import com.maxifier.mxcache.transform.Ignore;
 import com.maxifier.mxcache.transform.Transform;
 import com.maxifier.mxcache.transform.WeakKey;
-import gnu.trove.map.hash.THashMap;
+import gnu.trove.strategy.IdentityHashingStrategy;
 
 import java.io.*;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Arrays;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
@@ -93,6 +92,82 @@ public class TestCachedImpl implements TestCached, Serializable {
         return a + b + x++;
     }
 
+    @Cached
+    public String getByArray(int[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArray(long[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArray(short[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArray(double[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArray(float[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArray(byte[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArray(boolean[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArray(char[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArray(Object[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArray(long a, int[] array) {
+        return a + Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArray(int a, long[] array) {
+        return a + Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArray(String a, short[] array) {
+        return a + Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArray(Object[] array1, double[] array2) {
+        return Arrays.toString(array1) + x++ + Arrays.toString(array2);
+    }
+    @Cached
+    public String getByArray(float[] array, int a) {
+        return a + Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArrayIdentityStr(byte[] array, @IdentityHashing String custom) {
+        return custom + Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArrayIdentity(@IdentityHashing boolean[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArraySameStrategy(@HashingStrategy(CharArrayHashingStrategy.class) char[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached
+    public String getByArrayIdentity2(Object[] array1, @IdentityHashing Object[] array2) {
+        return Arrays.toString(array1) + x++ + Arrays.toString(array2);
+    }
+    @Cached
+    public String getSingleByIdentity(@IdentityHashing String s) {
+        return s + x++;
+    }
 
     @Transform(owner = TestCachedImpl.class, method = "threeLetters")
     @Retention(RetentionPolicy.RUNTIME)
@@ -205,51 +280,6 @@ public class TestCachedImpl implements TestCached, Serializable {
     @ResourceWriter("123")
     public void writeStatic() {
         // nothing
-    }
-
-
-    @Cached
-    @BatchCache
-    @Override
-    public List<String> getBatch(List<String> in) {
-        List<String> res = new ArrayList<String>(in.size());
-        for (String v : in) {
-            res.add(v + s);
-        }
-        return res;
-    }
-
-    @Cached
-    @BatchCache
-    @Override
-    public String[] getBatch(String... in) {
-        String[] res = new String[in.length];
-        for (int i = 0; i < in.length; i++) {
-            res[i] = in[i] + s;
-        }
-        return res;
-    }
-
-    @Cached
-    @BatchCache
-    @Override
-    public Map<String, String> getBatch(Set<String> in) {
-        Map<String, String> res = new THashMap<String, String>(in.size());
-        for (String v : in) {
-            res.put(v, v + s);
-        }
-        return res;
-    }
-
-    @Cached
-    @BatchCache
-    @Override
-    public Map<String, String> getBatchArrayToMap(String... in) {
-        Map<String, String> res = new THashMap<String, String>(in.length);
-        for (String v : in) {
-            res.put(v, v + s);
-        }
-        return res;
     }
     
     public void setS(String s) {

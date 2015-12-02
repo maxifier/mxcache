@@ -14,8 +14,6 @@ public final class DoubleArrayHashingStrategy implements gnu.trove.strategy.Hash
 
     private static final DoubleArrayHashingStrategy INSTANCE = new DoubleArrayHashingStrategy();
 
-    private DoubleArrayHashingStrategy() {}
-
     public static DoubleArrayHashingStrategy getInstance() {
         return INSTANCE;
     }

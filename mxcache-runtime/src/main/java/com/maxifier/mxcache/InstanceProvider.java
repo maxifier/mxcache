@@ -8,7 +8,6 @@ import javax.annotation.Nonnull;
 /**
  * MxCache uses InstanceProvider in obtain following objects:
  * <ul>
- *     <li>hashing strategies;</li>
  *     <li>{@link com.maxifier.mxcache.provider.CachingStrategy};</li>
  *     <li>{@link com.maxifier.mxcache.proxy.ProxyFactory};</li>
  *     <li>{@link com.maxifier.mxcache.transform.TransformGenerator};</li>

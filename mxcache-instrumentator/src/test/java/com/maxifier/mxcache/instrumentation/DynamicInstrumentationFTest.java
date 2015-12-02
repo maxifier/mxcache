@@ -26,8 +26,6 @@ import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.util.ClassGenerator;
 import com.maxifier.mxcache.util.CodegenHelper;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
-import gnu.trove.map.hash.THashMap;
-import gnu.trove.set.hash.THashSet;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -432,75 +430,6 @@ public class DynamicInstrumentationFTest {
         assert t.get(2) == 7;
         assert t.get(2) == 7;
     }
-
-    @Test(dataProvider = "all")
-    public void testBatchList(Instrumentator instrumentator, ClassLoader cl) throws Exception {
-        final TestCached t = loadCached(instrumentator, cl);
-        t.setS("A");
-        assertEquals(t.getBatch(Arrays.asList("1", "2", "3")).toArray(), new Object[] {"1A", "2A", "3A"});
-
-        t.setS("B");
-        assertEquals(t.getBatch(Arrays.asList("X", "1", "Y", "2", "Z")).toArray(), new Object[] {"XB", "1A", "YB", "2A", "ZB"});
-
-        t.setS("C");
-        assertEquals(t.getBatch(Arrays.asList("1", "2", "X")).toArray(), new Object[] {"1A", "2A", "XB"});
-        assertEquals(t.getBatch(Arrays.asList("2", "X", "1")).toArray(), new Object[] {"2A", "XB", "1A"});
-    }
-
-    @Test(dataProvider = "all")
-    public void testBatchArray(Instrumentator instrumentator, ClassLoader cl) throws Exception {
-        final TestCached t = loadCached(instrumentator, cl);
-        t.setS("A");
-        assertEquals(t.getBatch("1", "2", "3"), new Object[] {"1A", "2A", "3A"});
-
-        t.setS("B");
-        assertEquals(t.getBatch("X", "1", "Y", "2", "Z"), new Object[] {"XB", "1A", "YB", "2A", "ZB"});
-
-        t.setS("C");
-        assertEquals(t.getBatch("1", "2", "X"), new Object[] {"1A", "2A", "XB"});
-        assertEquals(t.getBatch("2", "X", "1"), new Object[] {"2A", "XB", "1A"});
-    }
-
-    private static Set<String> set(String... s) {
-        Set<String> res = new THashSet<String>(s.length);
-        Collections.addAll(res, s);
-        return res;
-    }
-    
-    private static Map<String, String> map(String... s) {
-        Map<String, String> res = new THashMap<String, String>(s.length / 2);
-        for (int i = 0; i<s.length; i += 2) {
-            res.put(s[i], s[i+1]);
-        }
-        return res;
-    }
-
-    @Test(dataProvider = "all")
-    public void testBatchMap(Instrumentator instrumentator, ClassLoader cl) throws Exception {
-        final TestCached t = loadCached(instrumentator, cl);
-        t.setS("A");
-        assertEquals(t.getBatch(set("1", "2", "3")), map("1", "1A", "2", "2A", "3", "3A"));
-
-        t.setS("B");
-        assertEquals(t.getBatch(set("X", "1", "Y", "2", "Z")), map("X", "XB", "1", "1A", "Y", "YB", "2", "2A", "Z", "ZB"));
-
-        t.setS("C");
-        assertEquals(t.getBatch(set("1", "2", "X")), map("1", "1A", "2", "2A", "X", "XB"));
-    }
-
-    @Test(dataProvider = "all")
-    public void testBatchArrayToMap(Instrumentator instrumentator, ClassLoader cl) throws Exception {
-        final TestCached t = loadCached(instrumentator, cl);
-        t.setS("A");
-        assertEquals(t.getBatchArrayToMap("1", "2", "3"), map("1", "1A", "2", "2A", "3", "3A"));
-
-        t.setS("B");
-        assertEquals(t.getBatchArrayToMap("X", "1", "Y", "2", "Z"), map("X", "XB", "1", "1A", "Y", "YB", "2", "2A", "Z", "ZB"));
-
-        t.setS("C");
-        assertEquals(t.getBatchArrayToMap("1", "2", "X"), map("1", "1A", "2", "2A", "X", "XB"));
-    }
-
 
     @Test(dataProvider = "all")
     public void testProbe(Instrumentator instrumentator, ClassLoader cl) throws Exception {
@@ -1017,5 +946,30 @@ public class DynamicInstrumentationFTest {
 
         p.setX(0L);
         assertEquals(p.getRadius(), 3.0);
+    }
+
+    @Test(dataProvider = "all")
+    public void testArrays(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        TestCached t = loadCached(instrumentator, cl);
+
+        assertEquals(t.getByArray(new int[] {1}), t.getByArray(new int[] {1}));
+        assertEquals(t.getByArray(new long[] {1}), t.getByArray(new long[] {1}));
+        assertEquals(t.getByArray(new short[] {1}), t.getByArray(new short[] {1}));
+        assertEquals(t.getByArray(new double[] {1}), t.getByArray(new double[] {1}));
+        assertEquals(t.getByArray(new float[] {1}), t.getByArray(new float[] {1}));
+        assertEquals(t.getByArray(new byte[] {1}), t.getByArray(new byte[] {1}));
+        assertEquals(t.getByArray(new boolean[] {true}), t.getByArray(new boolean[] {true}));
+        assertEquals(t.getByArray(new char[] {'f'}), t.getByArray(new char[] {'f'}));
+        assertEquals(t.getByArray(new Object[] {new String("1")}), t.getByArray(new Object[] {new String("1")}));
+        assertEquals(t.getByArray(1, new int[]{2}), t.getByArray(1, new int[] {2}));
+        assertEquals(t.getByArray(2, new long[]{2}), t.getByArray(2, new long[] {2}));
+        assertEquals(t.getByArray(new String("ы"), new short[]{1}), t.getByArray(new String("ы"), new short[] {1}));
+        assertEquals(t.getByArray(new Object[] {new String("ы")}, new double[] {2}), t.getByArray(new Object[] {new String("ы")}, new double[] {2}));
+        assertEquals(t.getByArray(new float[]{2}, 3), t.getByArray(new float[]{2}, 3));
+        assertNotEquals(t.getByArrayIdentityStr(new byte[]{1}, new String("ы")), t.getByArrayIdentityStr(new byte[]{1}, new String("ы")));
+        assertNotEquals(t.getByArrayIdentity(new boolean[]{true}), t.getByArrayIdentity(new boolean[] {true}));
+        assertEquals(t.getByArraySameStrategy(new char[] {'f'}), t.getByArraySameStrategy(new char[] {'f'}));
+        assertNotEquals(t.getByArrayIdentity2(new Object[]{new String("1")}, new Object[] {new String("1")}), t.getByArrayIdentity2(new Object[] {new String("1")}, new Object[] {new String("1")}));
+        assertNotEquals(t.getSingleByIdentity(new String("ы")), t.getSingleByIdentity(new String("ы")));
     }
 }

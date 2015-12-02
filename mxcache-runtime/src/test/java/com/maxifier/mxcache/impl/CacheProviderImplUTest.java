@@ -552,19 +552,19 @@ public class CacheProviderImplUTest {
             }
         }, "y", "()I", null);
 
-        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, null);
+        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         assertEquals(cache.getOrCreate(), 14);
 
         p.intercept(NOP_INTERCEPTOR);
 
-        cache = (IntCache) p.createCache(getClass(), 0, this, null);
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         assertEquals(cache.getOrCreate(), 14);
 
         assertTrue(p.removeInterceptor(NOP_INTERCEPTOR));
         // try to remove interceptor twice
         assertFalse(p.removeInterceptor(NOP_INTERCEPTOR));
 
-        cache = (IntCache) p.createCache(getClass(), 0, this, null);
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         assertEquals(cache.getOrCreate(), 14);
     }
 
@@ -581,7 +581,7 @@ public class CacheProviderImplUTest {
             }
         }, "y", "()I", null);
 
-        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, null);
+        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         assertEquals(cache.getOrCreate(), 14);
 
         assertTrue(p.removeInterceptor(THROWING_INTERCEPTOR));
@@ -596,19 +596,19 @@ public class CacheProviderImplUTest {
             }
         }, "y", "()I", null);
 
-        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, null);
+        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         assertEquals(cache.getOrCreate(), 14);
 
         p.intercept(THROWING_INTERCEPTOR_2);
 
         // exception in interceptor must be ignored
 
-        cache = (IntCache) p.createCache(getClass(), 0, this, null);
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         assertEquals(cache.getOrCreate(), 14);
 
         assertTrue(p.removeInterceptor(THROWING_INTERCEPTOR_2));
 
-        cache = (IntCache) p.createCache(getClass(), 0, this, null);
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         assertEquals(cache.getOrCreate(), 14);
     }
 
@@ -621,17 +621,17 @@ public class CacheProviderImplUTest {
             }
         }, "y", "()I", null);
 
-        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, null);
+        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         assertEquals(cache.getOrCreate(), 14);
 
         p.intercept(NOP_INTERCEPTOR_2);
 
-        cache = (IntCache) p.createCache(getClass(), 0, this, null);
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         assertEquals(cache.getOrCreate(), 14);
 
         assertTrue(p.removeInterceptor(NOP_INTERCEPTOR_2));
 
-        cache = (IntCache) p.createCache(getClass(), 0, this, null);
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         assertEquals(cache.getOrCreate(), 14);
     }
 
@@ -647,13 +647,13 @@ public class CacheProviderImplUTest {
             }
         }, "y", "()I", null);
 
-        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, null);
+        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         assertEquals(cache.getOrCreate(), 999);
 
         assertTrue(p.removeInterceptor(OVERRIDE_CALCULABLE));
 
         // descriptor is already changed, removal of interceptor doesn't affect it
-        cache = (IntCache) p.createCache(getClass(), 0, this, null);
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         assertEquals(cache.getOrCreate(), 999);
     }
 
@@ -666,17 +666,17 @@ public class CacheProviderImplUTest {
             }
         }, "y", "()I", null);
 
-        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, null);
+        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         assertEquals(cache.getOrCreate(), 14);
 
         p.intercept(OVERRIDE_CACHE);
 
-        cache = (IntCache) p.createCache(getClass(), 0, this, null);
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         assertEquals(cache.getOrCreate(), 987);
 
         assertTrue(p.removeInterceptor(OVERRIDE_CACHE));
 
-        cache = (IntCache) p.createCache(getClass(), 0, this, null);
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
         assertEquals(cache.getOrCreate(), 14);
     }
 

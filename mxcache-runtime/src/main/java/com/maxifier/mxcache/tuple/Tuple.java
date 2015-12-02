@@ -3,7 +3,7 @@
  */
 package com.maxifier.mxcache.tuple;
 
-import javax.annotation.Nonnull;
+import gnu.trove.strategy.HashingStrategy;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -19,6 +19,17 @@ import java.util.Iterator;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public abstract class Tuple implements Serializable, Iterable<Object> {
+
+    /**
+     * Array of trove hash strategies for each element; null means default behaviour for element.
+     * hashingStrategies.length == size().
+     */
+    protected final HashingStrategy[] hashingStrategies;
+
+    protected Tuple(HashingStrategy[] hashingStrategies) {
+        this.hashingStrategies = hashingStrategies;
+    }
+
     /**
      * @param i element index
      * @return i-th element of tuple (wrapped if needed)
@@ -102,56 +113,27 @@ public abstract class Tuple implements Serializable, Iterable<Object> {
     public abstract int size();
 
     /**
-     * Hash code of tuple should be equal to <code>java.util.Arrays.hashCode(tuple.toArray())</code>.
-     * @return hash code of this tuple
+     * @return hash code of this tuple. Hash code computed using provided {@link #hashingStrategies}
+     * or default hashCode for the i-th element type, if hashingStrategies[i] == null.
      */
     @Override
     public abstract int hashCode();
 
     /**
-     * Hash code of tuple with given hashing strategies
-     * @param hashingStrategies array of trove hash strategies for each element; null means default behaveour
-     * @return hashcode of tuple if there were special strategies
-     */
-    public abstract int hashCode(Object... hashingStrategies);
-
-    /**
-     * Tuples are equal of they have same type and corresponding elements are equal.
-     *  (i.e. tuple with Wrapper differs from tuple with primitive even if their values are equal).
      * @param obj object
-     * @return true if obj is tuple and this tuple is equal to obj.
+     * @return true if obj is tuple and this tuple is equal to obj. Elements equality computed
+     * using provided {@link #hashingStrategies} or default equality for the i-th element type,
+     * if hashingStrategies[i] == null.
      */
     @Override
     public abstract boolean equals(Object obj);
 
-    /**
-     * Tuples are equal of they have same type and corresponding elements are equal using corresponging hashing strategy.
-     * (i.e. tuple with Wrapper differs from tuple with primitive even if their values are equal).
-     *
-     * <b>Custom strategies are available only for Object types! Primitive hashing strategies don't have equals!</b>
-     *
-     * @param obj object
-     *
-     * @param hashingStrategies hashing strategy; the size of array should match tuple size. null strategy means use
-     *                          default strategy.
-     * @return true if obj is tuple and this tuple is equal to obj.
-     */
-    public abstract boolean equals(Object obj, Object... hashingStrategies);
-
     @Override
     public abstract String toString();
 
-    /**
-     * @return array representation of this tuple.
-     */
-    @Nonnull
-    public Object[] toArray() {
-        int size = size();
-        Object[] array = new Object[size];
-        for (int i = 0; i < size; i++) {
-            array[i] = get(i);
-        }
-        return array;
+    @SuppressWarnings("unused")
+    public HashingStrategy[] getHashingStrategies() {
+        return hashingStrategies;
     }
 
     @Override

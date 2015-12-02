@@ -98,15 +98,11 @@ public class DefaultStorageFactoryUTest {
             return Long.toString(r.x) + x + s;
         }
 
-        String z(@HashingStrategy(IdentityHashingStrategy.class) String b) {
-            return b;
-        }
-
         int[] w(int[] b) {
             return b;
         }
 
-        String q(@IdentityHashing String b) {
+        String q(String b) {
             return b;
         }
     }
@@ -115,30 +111,6 @@ public class DefaultStorageFactoryUTest {
     public void before() {
         CacheFactory.registerClass(T.class, mock(Cleanable.class), null, null);
         CacheFactory.registerInstance(INSTANCE, T.class);
-    }
-
-    @SuppressWarnings ({ "unchecked", "RedundantStringConstructorCall" })
-    public void testHashedArray() {
-        ObjectObjectCalculatable<int[], int[]> calculatable = mock(ObjectObjectCalculatable.class);
-        CacheDescriptor desc = new CacheDescriptor(T.class, 0, int[].class, int[].class, calculatable, "w", "([I)[I", null, null, null, null);
-        assertEquals(desc.getKeyType(), int[].class);
-        assertEquals(desc.getValueType(), int[].class);
-        assertFalse(desc.isStatic());
-
-        CacheManager d = createDefaultManager(T.class, desc);
-        ObjectObjectCache<int[], int[]> c = (ObjectObjectCache) d.createCache(INSTANCE);
-        assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
-        // it should be empty
-        assertEquals(c.getSize(), 0);
-        // and also it should have lock assigned
-        int[] a1 = { 3, 4 };
-        int[] a2 = { 3, 4 };
-        assert a1 != a2;
-        assertNull(c.getOrCreate(a1));
-        assertNull(c.getOrCreate(a1));
-        assertNull(c.getOrCreate(a2));
-        assertNull(c.getOrCreate(a2));
-        verify(calculatable, times(1)).calculate(INSTANCE, a1);
     }
 
     public void testUseProxy() {
@@ -157,48 +129,6 @@ public class DefaultStorageFactoryUTest {
 
     private static  CacheManager createDefaultManager(Class<?> ownerClass, CacheDescriptor desc) {
         return DefaultStrategy.getInstance().getManager(CacheFactory.getDefaultContext(), ownerClass, desc);
-    }
-
-    @SuppressWarnings ({ "unchecked", "RedundantStringConstructorCall" })
-    public void testCustomStrategy() {
-        ObjectObjectCalculatable<String, String> calculatable = mock(ObjectObjectCalculatable.class);
-        CacheDescriptor desc = new CacheDescriptor(T.class, 0, String.class, String.class, calculatable, "z", "(Ljava/lang/String;)Ljava/lang/String;", null, null, null, null);
-        assert desc.getKeyType() == String.class;
-        assert desc.getValueType() == String.class;
-        assert !desc.isStatic();
-
-        CacheManager d = createDefaultManager(T.class, desc);
-        ObjectObjectCache<String, String> c = (ObjectObjectCache) d.createCache(INSTANCE);
-        assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
-        // it should be empty
-        assert c.getSize() == 0;
-        assert c.getOrCreate("123") == null;
-        assert c.getOrCreate("123") == null;
-        assert c.getOrCreate("123") == null;
-        verify(calculatable, times(1)).calculate(INSTANCE, "123");
-        assert c.getOrCreate(new String("123")) == null;
-        verify(calculatable, times(2)).calculate(INSTANCE, "123");
-    }
-
-    @SuppressWarnings ({ "unchecked", "RedundantStringConstructorCall" })
-    public void testIdentityHashing() {
-        ObjectObjectCalculatable<String, String> calculatable = mock(ObjectObjectCalculatable.class);
-        CacheDescriptor desc = new CacheDescriptor(T.class, 0, String.class, String.class, calculatable, "q", "(Ljava/lang/String;)Ljava/lang/String;", null, null, null, null);
-        assert desc.getKeyType() == String.class;
-        assert desc.getValueType() == String.class;
-        assert !desc.isStatic();
-
-        CacheManager d = createDefaultManager(T.class, desc);
-        ObjectObjectCache<String, String> c = (ObjectObjectCache) d.createCache(INSTANCE);
-        assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
-        // it should be empty
-        assert c.getSize() == 0;
-        assert c.getOrCreate("123") == null;
-        assert c.getOrCreate("123") == null;
-        assert c.getOrCreate("123") == null;
-        verify(calculatable, times(1)).calculate(INSTANCE, "123");
-        assert c.getOrCreate(new String("123")) == null;
-        verify(calculatable, times(2)).calculate(INSTANCE, "123");
     }
 
     public static class TestProxyFactory implements ProxyFactory<String> {
@@ -372,7 +302,7 @@ public class DefaultStorageFactoryUTest {
     }
 
     public void testTupleWeakCaches() throws InterruptedException {
-        TupleFactory factory = TupleGenerator.getTupleFactory(Key.class, String.class, String.class);
+        TupleFactory factory = TupleGenerator.createTupleFactory(new gnu.trove.strategy.HashingStrategy[3], Key.class, String.class, String.class);
 
         CacheDescriptor descriptor = new CacheDescriptor(T.class, 0, factory.getTupleClass(), String.class, new ObjectObjectCalculatable<Tuple, String>() {
             @Override

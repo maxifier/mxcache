@@ -5,7 +5,6 @@ package com.maxifier.mxcache.guice;
 
 import com.maxifier.mxcache.CacheFactory;
 import com.maxifier.mxcache.context.CacheContext;
-import com.maxifier.mxcache.hashing.DefaultHashingStrategyFactory;
 import com.maxifier.mxcache.transform.TransformGeneratorFactory;
 import com.maxifier.mxcache.transform.TransformGeneratorFactoryImpl;
 import com.maxifier.mxcache.clean.CacheCleaner;
@@ -36,6 +35,5 @@ public class MxCacheGuiceModule extends MxCacheGuiceChildModule {
         bind(CacheCleaner.class).toInstance(CacheFactory.getCleaner());
         bind(MxCacheConfigProvider.class).toInstance(CacheFactory.getConfiguration());
         bind(TransformGeneratorFactory.class).toInstance(TransformGeneratorFactoryImpl.getInstance());
-        bind(DefaultHashingStrategyFactory.class).toInstance(DefaultHashingStrategyFactory.getInstance());
     }
 }

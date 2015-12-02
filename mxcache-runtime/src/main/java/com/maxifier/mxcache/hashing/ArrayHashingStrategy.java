@@ -14,8 +14,6 @@ public final class ArrayHashingStrategy<T> implements gnu.trove.strategy.Hashing
 
     private static final ArrayHashingStrategy INSTANCE = new ArrayHashingStrategy();
 
-    private ArrayHashingStrategy() {}
-
     @SuppressWarnings({"unchecked"})
     public static <T> ArrayHashingStrategy<T> getInstance() {
         return INSTANCE;

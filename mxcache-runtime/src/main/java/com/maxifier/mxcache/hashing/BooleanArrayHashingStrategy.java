@@ -14,8 +14,6 @@ public final class BooleanArrayHashingStrategy implements gnu.trove.strategy.Has
 
     private static final BooleanArrayHashingStrategy INSTANCE = new BooleanArrayHashingStrategy();
 
-    private BooleanArrayHashingStrategy() {}
-
     public static BooleanArrayHashingStrategy getInstance() {
         return INSTANCE;
     }

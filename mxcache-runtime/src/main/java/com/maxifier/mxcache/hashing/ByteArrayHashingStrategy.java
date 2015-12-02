@@ -14,8 +14,6 @@ public final class ByteArrayHashingStrategy implements gnu.trove.strategy.Hashin
 
     private static final ByteArrayHashingStrategy INSTANCE = new ByteArrayHashingStrategy();
 
-    private ByteArrayHashingStrategy() {}
-
     public static ByteArrayHashingStrategy getInstance() {
         return INSTANCE;
     }

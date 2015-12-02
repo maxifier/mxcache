@@ -7,6 +7,9 @@ import com.maxifier.mxcache.*;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.context.UseCacheContext;
+import com.maxifier.mxcache.hashing.HashingStrategy;
+import com.maxifier.mxcache.hashing.HashingStrategyFactory;
+import com.maxifier.mxcache.hashing.IdentityHashing;
 import com.maxifier.mxcache.resource.ResourceReader;
 import com.maxifier.mxcache.resource.ResourceWriter;
 import com.maxifier.mxcache.clean.ClassCacheIds;
@@ -29,6 +32,9 @@ final class RuntimeTypes {
     static final Type USE_PROXY_TYPE = getType(UseProxy.class);
     static final Type RESOURCE_READER_TYPE = getType(ResourceReader.class);
     static final Type RESOURCE_WRITER_TYPE = getType(ResourceWriter.class);
+    static final Type HASHING_STRATEGY_TYPE = getType(HashingStrategy.class);
+    static final Type IDENTITY_HASHING_TYPE = getType(IdentityHashing.class);
+
     static final Type CACHE_TYPE = getType(Cache.class);
     static final Type CLEANABLE_TYPE = getType(Cleanable.class);
     static final Type CLASS_CACHE_IDS_TYPE = getType(ClassCacheIds.class);
@@ -44,6 +50,8 @@ final class RuntimeTypes {
     static final Type RESOURCE_INSTRUMENTED_ANNOTATION = getType(ResourceInstrumented.class);
     static final Type CACHE_CONTEXT_TYPE = getType(CacheContext.class);
     static final Type USE_CACHE_CONTEXT_TYPE = getType(UseCacheContext.class);
+    static final Type HASHING_STRATEGIES_ARRAY_TYPE = getType(gnu.trove.strategy.HashingStrategy[].class);
+    static final Type HASHING_STRATEGY_FACTORY_TYPE = getType(HashingStrategyFactory.class);
 
     static final Method GET_DEFAULT_CONTEXT = method("getDefaultContext", CACHE_CONTEXT_TYPE);
     static final Method GET_CONTEXT_FROM_STREAM = method("getContext", CACHE_CONTEXT_TYPE, OBJECT_TYPE);
@@ -73,6 +81,9 @@ final class RuntimeTypes {
 
     static final Method FACTORY_REGISTER_CLASS_METHOD = method("registerClass", VOID_TYPE, CLASS_TYPE, CLEANABLE_TYPE, MAP_TYPE, MAP_TYPE);
     static final Method FACTORY_REGISTER_INSTANCE_METHOD = Method.getMethod("void registerInstance(Object,Class)");
+
+    static final Method CREATE_HASHING_STRATEGIES_METHOD = Method.getMethod(
+            "gnu.trove.strategy.HashingStrategy[] createHashingStrategies(Class[], Class[])");
 
     static final Method APPEND_STATIC_CACHES_METHOD = Method.getMethod("void appendStaticCachesTo(java.util.List)");
     static final Method APPEND_INSTANCE_CACHES_METHOD = Method.getMethod("void appendInstanceCachesTo(java.util.List,Object)");

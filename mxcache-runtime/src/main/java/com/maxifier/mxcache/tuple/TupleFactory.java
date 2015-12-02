@@ -4,7 +4,7 @@
 package com.maxifier.mxcache.tuple;
 
 /**
- * TupleFactory - generates tuple instances with specific types.
+ * TupleFactory - generates tuple instances with specific types and hashing strategies.
  *
  * @see TupleGenerator
  *

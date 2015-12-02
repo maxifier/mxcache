@@ -3,13 +3,17 @@
  */
 package com.maxifier.mxcache.tuple;
 
+import com.maxifier.mxcache.hashing.*;
 import gnu.trove.strategy.HashingStrategy;
 import gnu.trove.strategy.IdentityHashingStrategy;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.testng.Assert.*;
@@ -31,71 +35,100 @@ public class TupleGeneratorUTest {
               true, (byte) 3, 'a', (short) 11, 441, 71L, 31f, Float.NaN, 44d, Double.NaN);
     }
 
+    @Test
     public void testObject() throws Exception {
         check(array(String.class, Comparable.class, Object.class), "Test", 4, null);
     }
 
+    @Test
+    public void testArray() throws Exception {
+        check(array(short[].class, int.class, Object[].class), new short[]{(short)14, (short)88}, 999, new String[]{"foo", "bar"});
+    }
+
+    @Test
     public void testMixed() throws Exception {
         check(array(String.class, int.class), "Test", 3);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testInvalidParam() throws Exception {
-        createTuple(array(String.class), "Test").get(2);
+        TupleFactory f1 = TupleGenerator.createTupleFactory(new HashingStrategy[]{null}, String.class);
+        Tuple tuple = f1.create("Test");
+        tuple.get(1);
     }
 
+    @Test
+    public void testFactory() throws ClassNotFoundException {
+        TupleFactory f1 = TupleGenerator.createTupleFactory(new HashingStrategy[]{new IdentityHashingStrategy<String>(), null}, String.class, int.class);
+        Class<? extends Tuple> type = f1.getTupleClass();
+        assertEquals(type.getClassLoader(), ClassLoader.getSystemClassLoader());
+        assertEquals(Class.forName(type.getName()), type);
+        f1.create("Test", 3);
+    }
+
+    @Test
     public void testCustomStrategy() throws Exception {
-        IdentityHashingStrategy<String> strategy = new IdentityHashingStrategy<String>();
-        Tuple tuple = createTuple(array(String.class, int.class), "Test", 3);
+        TupleFactory f1 = TupleGenerator.createTupleFactory(new HashingStrategy[]{new IdentityHashingStrategy<String>(), null}, String.class, int.class);
+        Tuple tuple1 = f1.create("Test", 3);
         // у int hashCode равен ему самому
         int sample = Arrays.hashCode(new int[] { System.identityHashCode("Test"), 3});
-        assert tuple.hashCode(strategy, null) == sample;
+        assertTrue(tuple1.hashCode() == sample);
 
-        Tuple tuple2 = createTuple(array(String.class, int.class), "tEST", 3);
-        assert tuple.equals(tuple2, new HashingStrategy<String>() {
+        HashingStrategy veryCustom = new HashingStrategy<String>() {
             @Override
             public int computeHashCode(String object) {
                 throw new UnsupportedOperationException();
             }
-
             @Override
             public boolean equals(String o1, String o2) {
                 return o1.equalsIgnoreCase(o2);
             }
-        }, null);
+        };
+        TupleFactory f2 = TupleGenerator.createTupleFactory(new HashingStrategy[]{veryCustom, null}, String.class, int.class);
+        Tuple tuple2 = f2.create("tEST", 3);
+
+        assertTrue(tuple2.equals(tuple1)); // tuple2 ignores case
+        assertFalse(tuple1.equals(tuple2)); // tuple1 uses identity hashing strategy
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testIncompatibleStrategy() throws Exception {
-        Tuple tuple = createTuple(array(int.class), 3);
-        Tuple tuple2 = createTuple(array(int.class), 4);
-        assert tuple.equals(tuple2, new IdentityHashingStrategy());
+        TupleFactory f1 = TupleGenerator.createTupleFactory(new HashingStrategy[]{new IdentityHashingStrategy()}, int.class);
+        Tuple tuple1 = f1.create(3);
+        Tuple tuple2 = f1.create(4);
+        assert tuple1.equals(tuple2);
     }
 
     @Test (expectedExceptions = IllegalArgumentException.class)
     public void testIncompatibleStrategyForBoolean() throws Exception {
-        Tuple tuple = createTuple(array(boolean.class), true);
-        Tuple tuple2 = createTuple(array(boolean.class), false);
-        assert tuple.equals(tuple2, new IdentityHashingStrategy());
+        TupleFactory f1 = TupleGenerator.createTupleFactory(new HashingStrategy[]{new IdentityHashingStrategy()}, boolean.class);
+        Tuple tuple1 = f1.create(true);
+        Tuple tuple2 = f1.create(false);
+        assert tuple1.equals(tuple2);
     }
 
     @Test (expectedExceptions = IllegalArgumentException.class)
     public void testInvalidTypeInt() throws Exception {
-        createTuple(array(String.class), "Test").getInt(0);
+        TupleFactory f1 = TupleGenerator.createTupleFactory(new HashingStrategy[]{null}, String.class);
+        f1.create("Test").getInt(0);
     }
 
     @Test (expectedExceptions = IllegalArgumentException.class)
     public void testInvalidTypeLong() throws Exception {
-        createTuple(array(String.class), "Test").getLong(0);
+        TupleFactory f1 = TupleGenerator.createTupleFactory(new HashingStrategy[]{null}, String.class);
+        f1.create("Test").getLong(0);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testInvalidConverts() throws Exception {
-        createTuple(array(long.class), 3L).getInt(0);
+        TupleFactory f1 = TupleGenerator.createTupleFactory(new HashingStrategy[]{null}, long.class);
+        f1.create(3L).getInt(0);
     }
 
+    @Test
     public void testConverts() throws Exception {
-        Tuple tuple = createTuple(array(byte.class, int.class, float.class, String.class), (byte)1, 3, 4f, "test");
+        TupleFactory f1 = TupleGenerator.createTupleFactory(new HashingStrategy[4], byte.class, int.class, float.class, String.class);
+        Tuple tuple = f1.create((byte)1, 3, 4f, "test");
         assertEquals(tuple.getByte(0), (byte)1);
         assertEquals(tuple.getChar(0), (char)1);
         assertEquals(tuple.getShort(0), (short)1);
@@ -115,18 +148,20 @@ public class TupleGeneratorUTest {
         assertEquals(tuple.get(3), "test");
     }
 
+    @Test
     public void testEquals() throws Exception {
         Class[] t = array(boolean.class, byte.class, char.class, short.class, int.class, long.class, float.class, float.class, double.class, double.class, String.class, String.class);
         Object[] v1 = { true, (byte) 3, 'a', (short) 11, 441, 71L, 31f, Float.NaN, 44d, Double.NaN, "123", null};
         Object[] v2 = { false, (byte) 4, '7', (short) 12, 421, 33L, 4.5f, 0f, 0d, 3.1d, "321", "124365"};
+        TupleFactory f1 = TupleGenerator.createTupleFactory(new HashingStrategy[12], t);
 
-        Tuple t0 = createTuple(t, v1);
-        Tuple t0c = createTuple(t, v1);
+        Tuple t1a = f1.create(v1);
+        Tuple t1b = f1.create(v1);
 
-        assertTrue(t0.equals(t0));
-        assertTrue(t0.equals(t0c));
-        assertTrue(t0c.equals(t0));
-        assertTrue(t0c.equals(t0c));
+        assertTrue(t1a.equals(t1a));
+        assertTrue(t1a.equals(t1b));
+        assertTrue(t1b.equals(t1a));
+        assertTrue(t1b.equals(t1b));
 
         int n = t.length;
         int N = 1 << n;
@@ -135,16 +170,19 @@ public class TupleGeneratorUTest {
             for (int b = 0, m = i; b < n; b++, m >>= 1) {
                 s[b] = (m & 1) == 0 ? v1[b] : v2[b];
             }
-            Tuple t1 = createTuple(t, s);
-            assertFalse(t0.equals(t1));
-            assertFalse(t1.equals(t0));
-            assertTrue(t1.equals(t1));
+            Tuple t2 = f1.create(s);
+            assertFalse(t1a.equals(t2));
+            assertFalse(t2.equals(t1a));
+            assertFalse(t1b.equals(t2));
+            assertFalse(t2.equals(t1b));
+            assertTrue(t2.equals(t2));
         }
     }
 
     private static Tuple check(Class[] types, Object... values) throws Exception {
         assert types.length == values.length;
-        Tuple tuple = createTuple(types, values);
+        TupleFactory f = TupleGenerator.createTupleFactory(new HashingStrategy[types.length], types);
+        Tuple tuple = f.create(values);
         assertEquals(tuple.size(), values.length);
         for (int i = 0; i < values.length; i++) {
             assertEquals(tuple.get(i), values[i]);
@@ -165,42 +203,79 @@ public class TupleGeneratorUTest {
                 assertEquals(tuple.getFloat(i), values[i]);
             } else if (type == double.class) {
                 assertEquals(tuple.getDouble(i), values[i]);
+            } else if (type.isArray()) {
+                //noinspection unchecked
+                assertTrue(getArrayHashingStrategy(type).equals(tuple.get(i), values[i])); // default hashing strategy for arrays
+            } else {
+                assertEquals(tuple.get(i), values[i]);
             }
         }
-        assertTrue(Arrays.equals(tuple.toArray(), values));
-        assertEquals(tuple.hashCode(), Arrays.hashCode(values));
         assertEquals(tuple, tuple);
         assertNotNull(tuple.toString());
         return tuple;
     }
 
-    private static Tuple createTuple(Class[] types, Object... values) throws Exception {
-        TupleFactory factory = TupleGenerator.getTupleFactory(types);
-        Class<? extends Tuple> type = factory.getTupleClass();
-        assertEquals(type.getClassLoader(), ClassLoader.getSystemClassLoader());
-        assertEquals(Class.forName(type.getName()), type);
-        return factory.create(values);
+    private static HashingStrategy getArrayHashingStrategy(Class paramType) {
+        if (paramType == boolean[].class) {
+            return BooleanArrayHashingStrategy.getInstance();
+        }
+        if (paramType == byte[].class) {
+            return ByteArrayHashingStrategy.getInstance();
+        }
+        if (paramType == char[].class) {
+            return CharArrayHashingStrategy.getInstance();
+        }
+        if (paramType == short[].class) {
+            return ShortArrayHashingStrategy.getInstance();
+        }
+        if (paramType == int[].class) {
+            return IntArrayHashingStrategy.getInstance();
+        }
+        if (paramType == long[].class) {
+            return LongArrayHashingStrategy.getInstance();
+        }
+        if (paramType == float[].class) {
+            return FloatArrayHashingStrategy.getInstance();
+        }
+        if (paramType == double[].class) {
+            return DoubleArrayHashingStrategy.getInstance();
+        }
+        if (paramType.isArray()) {
+            return ArrayHashingStrategy.getInstance();
+        }
+        throw new UnsupportedOperationException();
     }
 
+    @Test
     public void testIteration() throws Exception {
-        Tuple t = createTuple(new Class[]{int.class, String.class, Object.class, long.class}, 3, "123", 3L, 4L);
+        TupleFactory f = TupleGenerator.createTupleFactory(new HashingStrategy[4], int.class, String.class, Object.class, long.class);
+        Tuple t = f.create(3, "123", 3L, 4L);
         List<Object> l = new ArrayList<Object>();
         for (Object o : t) {
             l.add(o);
         }
         Assert.assertEquals(l, Arrays.asList(3, "123", 3L, 4L));
     }
-    
-    public void testSingletonFactoryMxcache30() {
-        TupleFactory f1 = TupleGenerator.getTupleFactory(int.class, int.class);
-        TupleFactory f2 = TupleGenerator.getTupleFactory(int.class, int.class);
-        Assert.assertSame(f1, f2);
 
-        TupleFactory f3 = TupleGenerator.getTupleFactory(int.class, String.class);
-        TupleFactory f4 = TupleGenerator.getTupleFactory(int.class, String.class);
-        Assert.assertSame(f3, f4);
+    @Test
+    public void test1Tuple() throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        Class[] classes = {String.class, int[].class, int.class, short.class, long.class, byte.class, float.class, double.class, boolean.class, char.class};
+        Object[] boxedVals = {"a", new int[]{34}, (int)1, (short)2, (long)3, (byte)4, (float)5.0, (double)6.0, false, '8'};
+        for (int i = 0; i < classes.length; i++) {
+            Class clazz = classes[i];
+            Object boxedValue = boxedVals[i];
+            Class<Tuple> tupleClass = TupleGenerator.getTupleClass(clazz);
+            Assert.assertEquals(1, tupleClass.getConstructors().length);
+            Constructor<?> ctor = tupleClass.getConstructors()[0];
+            Tuple t = (Tuple) ctor.newInstance(new HashingStrategy[]{null}, boxedValue);
+            Assert.assertEquals(t.size(), 1);
+            Assert.assertEquals(t.get(0), boxedValue);
+            Iterator<Object> it = t.iterator();
+            Assert.assertEquals(boxedValue, it.next());
+            Assert.assertFalse(it.hasNext());
 
-        TupleFactory f5 = TupleGenerator.getTupleFactory(int.class, Object.class);
-        Assert.assertSame(f3, f5);
+            java.lang.reflect.Method getter = t.getClass().getMethod("getElement0"); // generated method
+            Assert.assertEquals(boxedValue, getter.invoke(t));
+        }
     }
 }

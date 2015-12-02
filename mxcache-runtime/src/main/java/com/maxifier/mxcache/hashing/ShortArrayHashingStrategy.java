@@ -14,8 +14,6 @@ public final class ShortArrayHashingStrategy implements gnu.trove.strategy.Hashi
 
     private static final ShortArrayHashingStrategy INSTANCE = new ShortArrayHashingStrategy();
 
-    private ShortArrayHashingStrategy() {}
-
     public static ShortArrayHashingStrategy getInstance() {
         return INSTANCE;
     }
