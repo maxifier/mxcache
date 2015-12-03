@@ -3,6 +3,7 @@
  */
 package com.maxifier.mxcache.instrumentation.current;
 
+import static com.maxifier.mxcache.ArgsWrapping.TUPLE_HS;
 import static com.maxifier.mxcache.asm.Opcodes.*;
 import static com.maxifier.mxcache.asm.Type.*;
 
@@ -14,7 +15,7 @@ import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.tuple.TupleGenerator;
 
-import static com.maxifier.mxcache.ArgsWrapping.TUPLE;
+import static com.maxifier.mxcache.ArgsWrapping.*;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 import com.maxifier.mxcache.util.ClassGenerator;
@@ -59,7 +60,7 @@ final class StubMethodFactory {
 
     public static void generate(
             Type thisClass, int id, MxGeneratorAdapter methodVisitor, String methodName, String innerMethodName, String methodDescriptor,
-            boolean isStatic, Type[] argsHashingStrats, Context context, boolean customContext
+            boolean isStatic, Type[] argsHashingStrats, Context context, boolean customContext, boolean staticHashingStrategies
     ) {
         Type returnType = getReturnType(methodDescriptor);
         // assertion cause it should be detected earlier
@@ -68,9 +69,12 @@ final class StubMethodFactory {
         String hashingStratsFieldName = methodName + HASHING_STRAT_POSTFIX + id;
 
         Type[] args = getArgumentTypes(methodDescriptor);
-        ArgsWrapping argsWrapping = ArgsWrapping.of(args, argsHashingStrats);
+        ArgsWrapping argsWrapping = ArgsWrapping.of(args, argsHashingStrats, staticHashingStrategies);
 
         if (argsWrapping == TUPLE) {
+            // our class should initialize tuple classes that it uses as they don't exist already
+            context.addStaticInitializer(new TupleInitializerGenerator(args));
+        } else if (argsWrapping == TUPLE_HS) {
             // our class should initialize tuple classes that it uses as they don't exist already
             context.addStaticInitializer(new TupleInitializerGenerator(args));
             // initialize static hashingStrategies field:
@@ -124,6 +128,9 @@ final class StubMethodFactory {
                 methodVisitor.loadArg(0);
                 return new Type[] { eraseType(keyType) };
             case TUPLE:
+                generateWrapOld(methodVisitor, args, keyType);
+                return new Type[] { eraseType(keyType) };
+            case TUPLE_HS:
                 generateWrap(thisClass, methodVisitor, hashingStratsFieldName, args, keyType);
                 return new Type[] { eraseType(keyType) };
             default:
@@ -139,6 +146,7 @@ final class StubMethodFactory {
             case RAW:
                 return args[0];
             case TUPLE:
+            case TUPLE_HS:
                 return getObjectType(TupleGenerator.getTupleClassName(args));
             default:
                 throw new AssertionError();
@@ -170,7 +178,7 @@ final class StubMethodFactory {
         if (keyType != null) {
             Type[] types = Type.getArgumentTypes(methodDescriptor);
             mv.loadArg(1);
-            if (argsWrapping == TUPLE) {
+            if (argsWrapping == TUPLE || argsWrapping == TUPLE_HS) {
                 generateUnwrap(keyType, mv, types);
             } else {
                 assert types.length == 1;
@@ -248,6 +256,18 @@ final class StubMethodFactory {
         for (int i = 1; i < tupleConstructorTypes.length; i++) {
             tupleConstructorTypes[i] = eraseType(args[i-1]);
             mv.loadArg(i-1);
+        }
+        mv.invokeConstructor(tupleType, new Method(CONSTRUCTOR_NAME, VOID_TYPE, tupleConstructorTypes));
+    }
+
+    /** Before 2.6.2 only */
+    private static void generateWrapOld(MxGeneratorAdapter mv, Type[] args, Type tupleType) {
+        mv.newInstance(tupleType);
+        mv.dup();
+        Type[] tupleConstructorTypes = new Type[args.length];
+        for (int i = 0; i < args.length; i++) {
+            tupleConstructorTypes[i] = eraseType(args[i]);
+            mv.loadArg(i);
         }
         mv.invokeConstructor(tupleType, new Method(CONSTRUCTOR_NAME, VOID_TYPE, tupleConstructorTypes));
     }
@@ -335,6 +355,7 @@ final class StubMethodFactory {
         }
     }
 
+    /** Since 2.6.2: get hashing strategies for tuple and store into static field */
     private static class InitHashingStratGenerator extends Generator {
         private final Type[] tupleValTypes;
         private final Type[] hashingStrategies;

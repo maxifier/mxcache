@@ -11,7 +11,7 @@ import com.maxifier.mxcache.asm.MethodVisitor;
 import com.maxifier.mxcache.asm.AnnotationVisitor;
 import com.maxifier.mxcache.asm.Type;
 
-import static com.maxifier.mxcache.ArgsWrapping.TUPLE;
+import static com.maxifier.mxcache.ArgsWrapping.*;
 import static com.maxifier.mxcache.asm.Opcodes.*;
 
 import java.lang.reflect.Modifier;
@@ -41,13 +41,15 @@ class CachedMethodVisitor extends MxGeneratorAdapter {
     private final String[] exceptions;
     private final CachedInstrumentationStage classVisitor;
     private final boolean features229;
-    /** for each argument a type of trove HashingStrategy or null for default strategy for argument type. */
+    /** since 2.6.2: Hashing strategies are determined on instrumentation and passed into tuple constructor */
+    private final boolean features262;
+    /** since 2.6.2: For each argument a type of trove HashingStrategy or null for default strategy for argument type */
     private final Type[] hashingStrategies;
     private final Type[] argumentTypes;
 
     public CachedMethodVisitor(
             CachedInstrumentationStage classVisitor, MethodVisitor oldVisitor, int access, String name, String desc, String sign, String[] exceptions,
-            Type thisClass, CachedMethodContext context, boolean features229
+            Type thisClass, CachedMethodContext context, boolean features229, boolean features262
     ) {
         super(oldVisitor, access, name, desc, thisClass);
         this.classVisitor = classVisitor;
@@ -60,6 +62,7 @@ class CachedMethodVisitor extends MxGeneratorAdapter {
         this.context = context;
         this.features229 = features229;
         this.argumentTypes = Type.getArgumentTypes(desc);
+        this.features262 = features262;
         this.hashingStrategies = new Type[argumentTypes.length];
     }
 
@@ -73,26 +76,28 @@ class CachedMethodVisitor extends MxGeneratorAdapter {
 
     @Override
     public AnnotationVisitor visitParameterAnnotation(final int parameter, String annotationClassInnerName, boolean visible) {
-        int paramTypeSort = argumentTypes[parameter].getSort();
-        if (InstrumentatorImpl.HASHING_STRATEGY_DESCRIPTOR.equals(annotationClassInnerName)) {
-            if (paramTypeSort != Type.OBJECT && paramTypeSort != Type.ARRAY) {
-                throw new IllegalCachedClass("Primitive types can't have custom hashing strategy", classVisitor.getSourceFileName());
-            }
-            return new AnnotationVisitor(Opcodes.ASM5, super.visitParameterAnnotation(parameter, annotationClassInnerName, visible)) {
-                @Override
-                public void visit(String name, Object value) {
-                    if ("value".equals(name)) {
-                        hashingStrategies[parameter] = (Type)value;
-                    }
-                    super.visit(name, value);
+        if (features262) {
+            int paramTypeSort = argumentTypes[parameter].getSort();
+            if (InstrumentatorImpl.HASHING_STRATEGY_DESCRIPTOR.equals(annotationClassInnerName)) {
+                if (paramTypeSort != Type.OBJECT && paramTypeSort != Type.ARRAY) {
+                    throw new IllegalCachedClass("Primitive types can't have custom hashing strategy", classVisitor.getSourceFileName());
                 }
-            };
-        }
-        if (InstrumentatorImpl.IDENTITY_HASHING_DESCRIPTOR.equals(annotationClassInnerName)) {
-            if (paramTypeSort != Type.OBJECT && paramTypeSort != Type.ARRAY) {
-                throw new IllegalCachedClass("Primitive types can't have custom hashing strategy", classVisitor.getSourceFileName());
+                return new AnnotationVisitor(Opcodes.ASM5, super.visitParameterAnnotation(parameter, annotationClassInnerName, visible)) {
+                    @Override
+                    public void visit(String name, Object value) {
+                        if ("value".equals(name)) {
+                            hashingStrategies[parameter] = (Type) value;
+                        }
+                        super.visit(name, value);
+                    }
+                };
             }
-            hashingStrategies[parameter] = Type.getType(IdentityHashingStrategy.class);
+            if (InstrumentatorImpl.IDENTITY_HASHING_DESCRIPTOR.equals(annotationClassInnerName)) {
+                if (paramTypeSort != Type.OBJECT && paramTypeSort != Type.ARRAY) {
+                    throw new IllegalCachedClass("Primitive types can't have custom hashing strategy", classVisitor.getSourceFileName());
+                }
+                hashingStrategies[parameter] = Type.getType(IdentityHashingStrategy.class);
+            }
         }
         return super.visitParameterAnnotation(parameter, annotationClassInnerName, visible);
     }
@@ -113,8 +118,8 @@ class CachedMethodVisitor extends MxGeneratorAdapter {
         }
 
         String innerMethodName = name + "$create";
-        Context context = new ContextImpl(id, isStatic);
-        StubMethodFactory.generate(thisClass, id, this, name, innerMethodName, desc, isStatic, hashingStrategies, context, features229);
+        Context context = new ContextImpl(id, isStatic, features262);
+        StubMethodFactory.generate(thisClass, id, this, name, innerMethodName, desc, isStatic, hashingStrategies, context, features229, features262);
         endMethod();
         mv = classVisitor.visitTransparentMethod(isStatic ? ACC_STATIC : 0, innerMethodName, desc, sign, exceptions);
         mv.visitCode();
@@ -123,10 +128,13 @@ class CachedMethodVisitor extends MxGeneratorAdapter {
     private class ContextImpl implements Context {
         private final int id;
         private final boolean isStatic;
+        /** true since 2.6.2 */
+        private final boolean staticHashingStrategies;
 
-        public ContextImpl(int id, boolean isStatic) {
+        public ContextImpl(int id, boolean isStatic, boolean staticHashingStrategies) {
             this.id = id;
             this.isStatic = isStatic;
+            this.staticHashingStrategies = staticHashingStrategies;
         }
 
         @Override
@@ -162,8 +170,8 @@ class CachedMethodVisitor extends MxGeneratorAdapter {
                     isStatic ? ACC_STATIC | CACHE_FIELD_ACCESSOR : CACHE_FIELD_ACCESSOR,
                     cFieldName, cacheType.getDescriptor(), null, null);
 
-            if (ArgsWrapping.of(argumentTypes, hashingStrategies) == TUPLE) {
-                // static field for hashing strategies to be passed to each Tuple instance:
+            if (ArgsWrapping.of(argumentTypes, hashingStrategies, staticHashingStrategies) == TUPLE_HS) {
+                // static field for hashing strategies to be passed to Tuple constructor:
                 classVisitor.visitTransparentField(
                         ACC_PRIVATE | ACC_STATIC | CACHE_FIELD_ACCESSOR,
                         hsFieldName, Type.getDescriptor(HashingStrategy[].class), null, null);

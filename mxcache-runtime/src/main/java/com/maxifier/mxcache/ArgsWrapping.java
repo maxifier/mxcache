@@ -5,8 +5,6 @@ package com.maxifier.mxcache;
 
 import com.maxifier.mxcache.asm.Type;
 
-import java.lang.reflect.Method;
-
 import static com.maxifier.mxcache.asm.Type.ARRAY;
 
 /**
@@ -15,32 +13,28 @@ import static com.maxifier.mxcache.asm.Type.ARRAY;
  * @author Azat Abdulvaliev (azat.abdulvaliev@maxifier.com) (2015-11-24 15:19)
  */
 public enum ArgsWrapping {
-    EMPTY, // no arguments
-    RAW,   // one argument, no need to wrap into tuple
-    TUPLE; // tuple of one or more elements
+    /** no arguments */
+    EMPTY,
+    /** tuple with hashing strategies array as first param in constructor */
+    RAW,
+    /** Since 2.6.2: tuple with hashing strategies array as first param in constructor */
+    TUPLE_HS,
+    /** Before 2.6.2 only: tuple of one or more elements, to hashing strategies in constructor */
+    TUPLE;
 
-    public static ArgsWrapping of(Type[] types, Type[] argsHashingStrats) {
+    public static ArgsWrapping of(Type[] types, Type[] argsHashingStrats, boolean features262) {
         switch (types.length) {
             case 0:
                 return EMPTY;
             case 1:
-                // wrap single parameter array to override hashCode and equals
-                return (types[0].getSort() == ARRAY || argsHashingStrats[0] != null) ? TUPLE : RAW;
+                if (features262 && (types[0].getSort() == ARRAY || argsHashingStrats[0] != null)) {
+                    // wrap single parameter array to override hashCode and equals
+                    return TUPLE_HS;
+                } else {
+                    return RAW;
+                }
             default:
-                return TUPLE;
-        }
-    }
-
-    public static ArgsWrapping of(Method method, Type[] argsHashingStrats) {
-        Class[] args = method.getParameterTypes();
-        switch (args.length) {
-            case 0:
-                return EMPTY;
-            case 1:
-                // wrap single parameter array to override hashCode and equals
-                return (Type.getType(args[0]).getSort() == ARRAY || argsHashingStrats[0] != null) ? TUPLE : RAW;
-            default:
-                return TUPLE;
+                return features262 ? TUPLE_HS : TUPLE;
         }
     }
 }

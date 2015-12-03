@@ -69,7 +69,20 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
         protected ResourceInstrumentationStage createResourceStage(ClassVisitor visitor, ClassVisitor detector) {
             return new ResourceInstrumentationStage2228(this, visitor, detector);
         }
-    } };
+    }, new InstrumentatorImpl(true, "2.6.2") {
+        @Override
+        protected CachedInstrumentationStage createCachedStage(ClassVisitor visitor, ClassVisitor detector) {
+            return new CachedInstrumentationStage262(this, visitor, detector);
+        }
+        @Override
+        protected UseProxyInstrumentationStage createProxyStage(ClassVisitor visitor, ClassVisitor detector) {
+            return new UseProxyInstrumentationStage229(this, visitor, detector);
+        }
+        @Override
+        protected ResourceInstrumentationStage createResourceStage(ClassVisitor visitor, ClassVisitor detector) {
+            return new ResourceInstrumentationStage219(this, visitor, detector);
+        }
+    }};
 
     private final String version;
 

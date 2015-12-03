@@ -57,6 +57,7 @@ public class DynamicInstrumentationFTest {
     private static final Object[] V219  = { InstrumentatorProvider.getAvailableVersions().get("2.1.9"), null};
     private static final Object[] V229  = { InstrumentatorProvider.getAvailableVersions().get("2.2.9"), null };
     private static final Object[] V2228 = { InstrumentatorProvider.getAvailableVersions().get("2.2.28"), null };
+    private static final Object[] V262  = { InstrumentatorProvider.getAvailableVersions().get("2.6.2"), null };
 
     @DataProvider(name = "v229")
     public Object[][] v229() {
@@ -73,9 +74,14 @@ public class DynamicInstrumentationFTest {
         return new Object[][] { V2228 };
     }
 
+    @DataProvider(name = "v262")
+    public Object[][] v262() {
+        return new Object[][] { V262 };
+    }
+
     @DataProvider(name = "all")
     public Object[][] all() {
-        return new Object[][] { V219, V229, V2228 };
+        return new Object[][] { V219, V229, V2228, V262 };
     }
 
     /**
@@ -497,7 +503,7 @@ public class DynamicInstrumentationFTest {
         assert t.get(2) == 7;
     }
 
-    @Test(dataProvider = "all")
+    @Test(dataProvider = "v262")
     public void testTupleArgMultitag(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         TestCached t = loadCached(instrumentator, cl);
 
@@ -677,7 +683,7 @@ public class DynamicInstrumentationFTest {
         Assert.assertTrue(r.run);
     }
 
-    @Test(dataProvider = "all")
+    @Test(dataProvider = "v262")
     public void testStringTupleCache(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         TestCached t = loadCached(instrumentator, cl);
 
@@ -799,7 +805,7 @@ public class DynamicInstrumentationFTest {
         assertEquals(t.test("456"), "1234564");
     }
 
-    @Test(dataProvider = "all")
+    @Test(dataProvider = "v262")
     public void testIgnore(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         TestCached t = loadCached(instrumentator, cl);
         assertEquals(t.ignore("123", "456"), "123456");
@@ -948,7 +954,7 @@ public class DynamicInstrumentationFTest {
         assertEquals(p.getRadius(), 3.0);
     }
 
-    @Test(dataProvider = "all")
+    @Test(dataProvider = "v262")
     public void testArrays(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         TestCached t = loadCached(instrumentator, cl);
 

@@ -13,9 +13,6 @@ import gnu.trove.map.hash.THashMap;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ObjectObjectTroveStorage<K> extends THashMap<K, Object> implements ObjectObjectStorage<K> {
-    public ObjectObjectTroveStorage() {
-        super();
-    }
 
     @Override
     public Object load(K key) {
