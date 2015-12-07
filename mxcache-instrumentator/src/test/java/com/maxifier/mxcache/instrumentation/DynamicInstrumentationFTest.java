@@ -54,20 +54,8 @@ import static org.testng.Assert.*;
  */
 @Test
 public class DynamicInstrumentationFTest {
-    private static final Object[] V219  = { InstrumentatorProvider.getAvailableVersions().get("2.1.9"), null};
-    private static final Object[] V229  = { InstrumentatorProvider.getAvailableVersions().get("2.2.9"), null };
     private static final Object[] V2228 = { InstrumentatorProvider.getAvailableVersions().get("2.2.28"), null };
     private static final Object[] V262  = { InstrumentatorProvider.getAvailableVersions().get("2.6.2"), null };
-
-    @DataProvider(name = "v229")
-    public Object[][] v229() {
-        return new Object[][] { V229 };
-    }
-
-    @DataProvider(name = "v219")
-    public Object[][] v219() {
-        return new Object[][] { V219 };
-    }
 
     @DataProvider(name = "v2228")
     public Object[][] v2228() {
@@ -81,7 +69,7 @@ public class DynamicInstrumentationFTest {
 
     @DataProvider(name = "all")
     public Object[][] all() {
-        return new Object[][] { V219, V229, V2228, V262 };
+        return new Object[][] { V2228, V262 };
     }
 
     /**
@@ -229,7 +217,7 @@ public class DynamicInstrumentationFTest {
         Assert.assertEquals(cachesCreated, cachedMethods);
     }
 
-    @Test(dataProvider = "v229")
+    @Test(dataProvider = "v2228")
     public void testCustomContext(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         Class<?> c = instrumentClass(TestCachedImpl.class, instrumentator, cl);
         TestCached defInstance = (TestCached) c.newInstance();
@@ -377,20 +365,13 @@ public class DynamicInstrumentationFTest {
         verify(n1, times(3)).invalidate();
     }
 
-    @Test(dataProvider = "v229")
+    @Test(dataProvider = "v2228")
     public void testMarkerAnnotations(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         Class<?> c = instrumentClass(TestProxiedImpl.class, instrumentator, cl);
         Assert.assertEquals(new Version(c.getAnnotation(CachedInstrumented.class).version()), MxCache.getVersionObject());
         Assert.assertEquals(c.getAnnotation(CachedInstrumented.class).compatibleVersion(), MxCache.getCompatibleVersion());
         Assert.assertEquals(new Version(c.getAnnotation(UseProxyInstrumented.class).version()), MxCache.getVersionObject());
         Assert.assertEquals(c.getAnnotation(UseProxyInstrumented.class).compatibleVersion(), MxCache.getCompatibleVersion());
-    }
-
-    @Test(dataProvider = "v219")
-    public void testNoMarkerAnnotationsIn219(Instrumentator instrumentator, ClassLoader cl) throws Exception {
-        Class<?> c = instrumentClass(TestProxiedImpl.class, instrumentator, cl);
-        Assert.assertNull(c.getAnnotation(CachedInstrumented.class));
-        Assert.assertNull(c.getAnnotation(UseProxyInstrumented.class));
     }
 
     @Test(dataProvider = "all")
