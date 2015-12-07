@@ -27,35 +27,7 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
     private static final BytecodeMatcher RESOURCE_WRITER_DESCRIPTOR_MATCHER = new BytecodeMatcher(RESOURCE_WRITER_DESCRIPTOR);
     private static final BytecodeMatcher USE_PROXY_DESCRIPTOR_MATCHER = new BytecodeMatcher(USE_PROXY_DESCRIPTOR);
 
-    public static final Instrumentator[] VERSIONS = new Instrumentator[] {new InstrumentatorImpl(false, "2.1.9") {
-        @Override
-        protected CachedInstrumentationStage createCachedStage(ClassVisitor visitor, ClassVisitor detector) {
-            return new CachedInstrumentationStage219(this, visitor, detector);
-        }
-
-        @Override
-        protected UseProxyInstrumentationStage createProxyStage(ClassVisitor visitor, ClassVisitor detector) {
-            return new UseProxyInstrumentationStage219(this, visitor, detector);
-        }
-
-        protected ResourceInstrumentationStage createResourceStage(ClassVisitor visitor, ClassVisitor detector) {
-            return new ResourceInstrumentationStage219(this, visitor, detector);
-        }
-    }, new InstrumentatorImpl(true, "2.2.9") {
-        @Override
-        protected CachedInstrumentationStage createCachedStage(ClassVisitor visitor, ClassVisitor detector) {
-            return new CachedInstrumentationStage229(this, visitor, detector);
-        }
-
-        @Override
-        protected UseProxyInstrumentationStage createProxyStage(ClassVisitor visitor, ClassVisitor detector) {
-            return new UseProxyInstrumentationStage229(this, visitor, detector);
-        }
-
-        protected ResourceInstrumentationStage createResourceStage(ClassVisitor visitor, ClassVisitor detector) {
-            return new ResourceInstrumentationStage219(this, visitor, detector);
-        }
-    }, new InstrumentatorImpl(true, "2.2.28") {
+    public static final Instrumentator[] VERSIONS = new Instrumentator[] {new InstrumentatorImpl(true, "2.2.28") {
         @Override
         protected CachedInstrumentationStage createCachedStage(ClassVisitor visitor, ClassVisitor detector) {
             return new CachedInstrumentationStage229(this, visitor, detector);

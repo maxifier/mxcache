@@ -33,4 +33,8 @@ public final class InstrumentatorProvider {
     public static Instrumentator getPreferredVersion() {
         return getAvailableVersions().get(MxCache.getCompatibleVersion());
     }
+
+    public static Instrumentator getExactVersion(String version) {
+        return getAvailableVersions().get(version);
+    }
 }
