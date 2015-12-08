@@ -10,10 +10,12 @@ import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.impl.instanceprovider.DefaultInstanceProvider;
 import com.maxifier.mxcache.tuple.Tuple;
+import com.maxifier.mxcache.tuple.TupleFactory;
 import com.maxifier.mxcache.tuple.TupleGenerator;
 import com.maxifier.mxcache.util.ClassGenerator;
 import com.maxifier.mxcache.util.MxConstructorGenerator;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
+import gnu.trove.strategy.HashingStrategy;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -346,7 +348,10 @@ public class TransformGeneratorManagerUTest {
         Class[] keys = { String.class, String.class };
         Class<Tuple> tupleClass = TupleGenerator.getTupleClass(keys);
         TransformTest<Tuple, Tuple> t = generateTestTransform(instance.createMultiParam(new Annotation[][] {TEST_PARAMS[0], TEST_PARAMS[1]}, keys), tupleClass);
-        Assert.assertEquals(t.forward(TupleGenerator.getTupleFactory(keys).create("AAA", "Abs")), TupleGenerator.getTupleFactory(keys).create("AAAAAA", "abs"));
+        TupleFactory f = TupleGenerator.createTupleFactory(new HashingStrategy[2], String.class, String.class);
+        Tuple before = f.create("AAA", "Abs");
+        Tuple after = f.create("AAAAAA", "abs");
+        Assert.assertEquals(t.forward(before), after);
     }
 
     @Test
@@ -354,7 +359,10 @@ public class TransformGeneratorManagerUTest {
         Class[] keys = { String.class, String.class, String.class };
         Class<Tuple> tupleClass = TupleGenerator.getTupleClass(keys);
         TransformTest<Tuple, Tuple> t = generateTestTransform(instance.createMultiParam(new Annotation[][] { TEST_PARAMS[0], EMPTY_ANNOTATIONS, TEST_PARAMS[1] }, keys), tupleClass);
-        Assert.assertEquals(t.forward(TupleGenerator.getTupleFactory(keys).create("AAA", "1223", "Abs")), TupleGenerator.getTupleFactory(keys).create("AAAAAA", "1223", "abs"));
+        TupleFactory f = TupleGenerator.createTupleFactory(new HashingStrategy[3], String.class, String.class, String.class);
+        Tuple before = f.create("AAA", "1223", "Abs");
+        Tuple after = f.create("AAAAAA", "1223", "abs");
+        Assert.assertEquals(t.forward(before), after);
     }
 
     @Test
@@ -364,7 +372,11 @@ public class TransformGeneratorManagerUTest {
         Class<Tuple> tupleFrom = TupleGenerator.getTupleClass(keysFrom);
         Class<Tuple> tupleTo = TupleGenerator.getTupleClass(keysFrom);
         TransformTest<Tuple, Tuple> t = generateTestTransform(instance.createMultiParam(new Annotation[][] { TEST_PARAMS[2], TEST_PARAMS[6] }, keysFrom), tupleFrom);
-        Assert.assertEquals(t.forward(TupleGenerator.getTupleFactory(keysFrom).create("AAA", 777)), TupleGenerator.getTupleFactory(keysTo).create(3, "777"));
+        TupleFactory f1 = TupleGenerator.createTupleFactory(new HashingStrategy[2], keysFrom);
+        Tuple before = f1.create("AAA", 777);
+        TupleFactory f2 = TupleGenerator.createTupleFactory(new HashingStrategy[2], keysTo);
+        Tuple after = f2.create(3, "777");
+        Assert.assertEquals(t.forward(before), after);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -414,14 +426,13 @@ public class TransformGeneratorManagerUTest {
 
     @Test
     public void testTupleReversible() throws InstantiationException, IllegalAccessException {
-        Class[] keys = { String.class, String.class, String.class };
-        Class[] res = { long.class, String.class, long.class };
-        Class<Tuple> tupleClass = TupleGenerator.getTupleClass(keys);
-        TransformTest<Tuple, Tuple> t = generateTestTransform(instance.createMultiParam(new Annotation[][] { TEST_PARAMS[13], EMPTY_ANNOTATIONS, TEST_PARAMS[14] }, keys), tupleClass);
-        Assert.assertEquals(t.forward(TupleGenerator.getTupleFactory(keys).create("444", "1223", "112")),
-                            TupleGenerator.getTupleFactory(res).create(444L, "1223", 112L));
-
-        Assert.assertEquals(t.backward(TupleGenerator.getTupleFactory(res).create(444L, "1223", 112L)),
-                            TupleGenerator.getTupleFactory(keys).create("444", "1223", "112"));
+        Class[] keysFrom = { String.class, String.class, String.class };
+        Class[] keysTo = { long.class, String.class, long.class };
+        Class<Tuple> tupleClass = TupleGenerator.getTupleClass(keysFrom);
+        TransformTest<Tuple, Tuple> t = generateTestTransform(instance.createMultiParam(new Annotation[][] { TEST_PARAMS[13], EMPTY_ANNOTATIONS, TEST_PARAMS[14] }, keysFrom), tupleClass);
+        TupleFactory fFrom = TupleGenerator.createTupleFactory(new HashingStrategy[3], keysFrom);
+        TupleFactory fTo = TupleGenerator.createTupleFactory(new HashingStrategy[3], keysTo);
+        Assert.assertEquals(t.forward(fFrom.create("444", "1223", "112")), fTo.create(444L, "1223", 112L));
+        Assert.assertEquals(t.backward(fTo.create(444L, "1223", 112L)), fFrom.create("444", "1223", "112"));
     }
 }

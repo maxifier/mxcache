@@ -18,9 +18,6 @@ import java.util.List;
 public class ObjectObjectWeakTroveStorage<K extends SmartReference> extends ObjectObjectTroveStorage<K> {
     private final List<K> removed = Collections.synchronizedList(new ArrayList<K>());
 
-    public ObjectObjectWeakTroveStorage() {
-    }
-
     private void cleanup() {
         for(K k : removed) {
             remove(k);

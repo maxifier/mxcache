@@ -3,8 +3,6 @@
  */
 package com.maxifier.mxcache.storage;
 
-import gnu.trove.strategy.HashingStrategy;
-
 import java.io.Serializable;
 
 /**
@@ -14,17 +12,6 @@ import java.io.Serializable;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public interface Storage {
-    HashingStrategy DEFAULT_HASHING_STRATEGY = new HashingStrategy() {
-        @Override
-        public int computeHashCode(Object object) {
-            return object == null ? 0 : object.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object o1, Object o2) {
-            return o1 == null ? o2 == null : o1.equals(o2);
-        }
-    };
 
     /** This object is returned by reference-value storages if no value is set for given key */
     Object UNDEFINED = new Undefined();

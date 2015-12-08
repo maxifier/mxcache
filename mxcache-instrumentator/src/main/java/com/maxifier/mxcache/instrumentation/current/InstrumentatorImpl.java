@@ -19,41 +19,15 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
     static final String RESOURCE_READER_DESCRIPTOR = RuntimeTypes.RESOURCE_READER_TYPE.getDescriptor();
     static final String RESOURCE_WRITER_DESCRIPTOR = RuntimeTypes.RESOURCE_WRITER_TYPE.getDescriptor();
     static final String USE_PROXY_DESCRIPTOR = RuntimeTypes.USE_PROXY_TYPE.getDescriptor();
+    static final String HASHING_STRATEGY_DESCRIPTOR = RuntimeTypes.HASHING_STRATEGY_TYPE.getDescriptor();
+    static final String IDENTITY_HASHING_DESCRIPTOR = RuntimeTypes.IDENTITY_HASHING_TYPE.getDescriptor();
     
     private static final BytecodeMatcher CACHED_DESCRIPTOR_MATCHER = new BytecodeMatcher(CACHED_DESCRIPTOR);
     private static final BytecodeMatcher RESOURCE_READER_DESCRIPTOR_MATCHER = new BytecodeMatcher(RESOURCE_READER_DESCRIPTOR);
     private static final BytecodeMatcher RESOURCE_WRITER_DESCRIPTOR_MATCHER = new BytecodeMatcher(RESOURCE_WRITER_DESCRIPTOR);
     private static final BytecodeMatcher USE_PROXY_DESCRIPTOR_MATCHER = new BytecodeMatcher(USE_PROXY_DESCRIPTOR);
 
-    public static final Instrumentator[] VERSIONS = new Instrumentator[] {new InstrumentatorImpl(false, "2.1.9") {
-        @Override
-        protected CachedInstrumentationStage createCachedStage(ClassVisitor visitor, ClassVisitor detector) {
-            return new CachedInstrumentationStage219(this, visitor, detector);
-        }
-
-        @Override
-        protected UseProxyInstrumentationStage createProxyStage(ClassVisitor visitor, ClassVisitor detector) {
-            return new UseProxyInstrumentationStage219(this, visitor, detector);
-        }
-
-        protected ResourceInstrumentationStage createResourceStage(ClassVisitor visitor, ClassVisitor detector) {
-            return new ResourceInstrumentationStage219(this, visitor, detector);
-        }
-    }, new InstrumentatorImpl(true, "2.2.9") {
-        @Override
-        protected CachedInstrumentationStage createCachedStage(ClassVisitor visitor, ClassVisitor detector) {
-            return new CachedInstrumentationStage229(this, visitor, detector);
-        }
-
-        @Override
-        protected UseProxyInstrumentationStage createProxyStage(ClassVisitor visitor, ClassVisitor detector) {
-            return new UseProxyInstrumentationStage229(this, visitor, detector);
-        }
-
-        protected ResourceInstrumentationStage createResourceStage(ClassVisitor visitor, ClassVisitor detector) {
-            return new ResourceInstrumentationStage219(this, visitor, detector);
-        }
-    }, new InstrumentatorImpl(true, "2.2.28") {
+    public static final Instrumentator[] VERSIONS = new Instrumentator[] {new InstrumentatorImpl(true, "2.2.28") {
         @Override
         protected CachedInstrumentationStage createCachedStage(ClassVisitor visitor, ClassVisitor detector) {
             return new CachedInstrumentationStage229(this, visitor, detector);
@@ -67,7 +41,20 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
         protected ResourceInstrumentationStage createResourceStage(ClassVisitor visitor, ClassVisitor detector) {
             return new ResourceInstrumentationStage2228(this, visitor, detector);
         }
-    } };
+    }, new InstrumentatorImpl(true, "2.6.2") {
+        @Override
+        protected CachedInstrumentationStage createCachedStage(ClassVisitor visitor, ClassVisitor detector) {
+            return new CachedInstrumentationStage262(this, visitor, detector);
+        }
+        @Override
+        protected UseProxyInstrumentationStage createProxyStage(ClassVisitor visitor, ClassVisitor detector) {
+            return new UseProxyInstrumentationStage229(this, visitor, detector);
+        }
+        @Override
+        protected ResourceInstrumentationStage createResourceStage(ClassVisitor visitor, ClassVisitor detector) {
+            return new ResourceInstrumentationStage219(this, visitor, detector);
+        }
+    }};
 
     private final String version;
 

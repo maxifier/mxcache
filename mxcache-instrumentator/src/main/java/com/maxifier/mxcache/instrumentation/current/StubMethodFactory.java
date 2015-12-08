@@ -3,20 +3,28 @@
  */
 package com.maxifier.mxcache.instrumentation.current;
 
+import static com.maxifier.mxcache.ArgsWrapping.TUPLE_HS;
 import static com.maxifier.mxcache.asm.Opcodes.*;
 import static com.maxifier.mxcache.asm.Type.*;
 
 import com.maxifier.mxcache.asm.Label;
 import com.maxifier.mxcache.impl.CalculatableHelper;
+import com.maxifier.mxcache.ArgsWrapping;
 import com.maxifier.mxcache.instrumentation.Context;
 import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.tuple.TupleGenerator;
+
+import static com.maxifier.mxcache.ArgsWrapping.*;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
 
 import com.maxifier.mxcache.util.ClassGenerator;
+import com.maxifier.mxcache.util.CodegenHelper;
 import com.maxifier.mxcache.util.Generator;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
+import gnu.trove.strategy.HashingStrategy;
+
+import javax.annotation.Nullable;
 
 /**
  * StubMethodFactory
@@ -27,6 +35,7 @@ import com.maxifier.mxcache.util.MxGeneratorAdapter;
 final class StubMethodFactory {
 
     private static final String CACHE_FIELD_POSTFIX = "$cache$";
+    private static final String HASHING_STRAT_POSTFIX = "$hashingStrategies$";
 
     private static final String[] TYPE_NAME_BY_SORT = createNamesArray();
 
@@ -49,24 +58,36 @@ final class StubMethodFactory {
     private StubMethodFactory() {
     }
 
-    public static void generate(Type thisClass, int id, MxGeneratorAdapter methodVisitor, String methodName, String innerMethodName, String methodDescriptor, boolean isStatic, Context context, boolean customContext) {
+    public static void generate(
+            Type thisClass, int id, MxGeneratorAdapter methodVisitor, String methodName, String innerMethodName, String methodDescriptor,
+            boolean isStatic, Type[] argsHashingStrats, Context context, boolean customContext, boolean staticHashingStrategies
+    ) {
         Type returnType = getReturnType(methodDescriptor);
         // assertion cause it should be detected earlier
         assert returnType != VOID_TYPE: "Void method cannot be cached!";
         String cacheFieldName = methodName + CACHE_FIELD_POSTFIX + id;
-        Type[] args = getArgumentTypes(methodDescriptor);
+        String hashingStratsFieldName = methodName + HASHING_STRAT_POSTFIX + id;
 
-        if (args.length > 1) {
+        Type[] args = getArgumentTypes(methodDescriptor);
+        ArgsWrapping argsWrapping = ArgsWrapping.of(args, argsHashingStrats, staticHashingStrategies);
+
+        if (argsWrapping == TUPLE) {
             // our class should initialize tuple classes that it uses as they don't exist already
             context.addStaticInitializer(new TupleInitializerGenerator(args));
+        } else if (argsWrapping == TUPLE_HS) {
+            // our class should initialize tuple classes that it uses as they don't exist already
+            context.addStaticInitializer(new TupleInitializerGenerator(args));
+            // initialize static hashingStrategies field:
+            context.addStaticInitializer(new InitHashingStratGenerator(args, argsHashingStrats, thisClass, hashingStratsFieldName));
         }
 
-        Type keyType = getKeyType(args);
+        Type keyType = getKeyType(args, argsWrapping);
         Type cacheType = getCacheType(keyType, returnType);
 
-        Type calculatableType = generateCalculable(id, methodName, innerMethodName, methodDescriptor, returnType, context, thisClass, keyType, isStatic);
+        Type calculatableType = generateCalculable(
+                id, methodName, innerMethodName, methodDescriptor, argsWrapping, returnType, context, thisClass, keyType, isStatic);
 
-        context.registerCache(cacheFieldName, cacheType, returnType, keyType, calculatableType,
+        context.registerCache(cacheFieldName, hashingStratsFieldName, cacheType, returnType, keyType, calculatableType,
                               new GetCacheGenerator(isStatic, thisClass, cacheFieldName, cacheType));
 
         InitializerGenerator initializer = new InitializerGenerator(id, thisClass, cacheFieldName, cacheType, isStatic, customContext);
@@ -88,7 +109,7 @@ final class StubMethodFactory {
 
         methodVisitor.mark(cacheInitialized);
 
-        Type[] getOrCreateArgTypes = generatePrepareGetOrCreateArgs(methodVisitor, args, keyType);
+        Type[] getOrCreateArgTypes = generatePrepareGetOrCreateArgs(thisClass, methodVisitor, hashingStratsFieldName, argsWrapping, args, keyType);
         methodVisitor.invokeInterface(cacheType, new Method("getOrCreate", eraseType(returnType), getOrCreateArgTypes));
         if (isReferenceType(returnType)) {
             methodVisitor.checkCast(returnType);
@@ -96,31 +117,46 @@ final class StubMethodFactory {
         methodVisitor.returnValue();
     }
 
-    private static Type[] generatePrepareGetOrCreateArgs(MxGeneratorAdapter methodVisitor, Type[] args, Type keyType) {
-        switch (args.length) {
-            case 0:
+    private static Type[] generatePrepareGetOrCreateArgs(
+            Type thisClass, MxGeneratorAdapter methodVisitor,
+            String hashingStratsFieldName, ArgsWrapping argsWrapping, Type[] args, Type keyType
+    ) {
+        switch (argsWrapping) {
+            case EMPTY:
                 return EMPTY_TYPES;
-            case 1:
+            case RAW:
                 methodVisitor.loadArg(0);
                 return new Type[] { eraseType(keyType) };
-            default:
-                generateWrap(methodVisitor, args, keyType);
+            case TUPLE:
+                generateWrapOld(methodVisitor, args, keyType);
                 return new Type[] { eraseType(keyType) };
-        }
-    }
-
-    private static Type getKeyType(Type[] args) {
-        switch (args.length) {
-            case 0:
-                return null;
-            case 1:
-                return args[0];
+            case TUPLE_HS:
+                generateWrap(thisClass, methodVisitor, hashingStratsFieldName, args, keyType);
+                return new Type[] { eraseType(keyType) };
             default:
-                return getObjectType(TupleGenerator.getTupleClassName(args));
+                throw new AssertionError();
         }
     }
 
-    private static Type generateCalculable(int id, String methodName, String innerMethodName, String methodDescriptor, Type returnType, Context context, Type thisClass, Type keyType, boolean isStatic) {
+    @Nullable
+    private static Type getKeyType(Type[] args, ArgsWrapping argsWrapping) {
+        switch (argsWrapping) {
+            case EMPTY:
+                return null;
+            case RAW:
+                return args[0];
+            case TUPLE:
+            case TUPLE_HS:
+                return getObjectType(TupleGenerator.getTupleClassName(args));
+            default:
+                throw new AssertionError();
+        }
+    }
+
+    private static Type generateCalculable(
+            int id, String methodName, String innerMethodName, String methodDescriptor, ArgsWrapping argsWrapping, Type returnType,
+            Context context, Type thisClass, Type keyType, boolean isStatic
+    ) {
         String calculable = CalculatableHelper.getCalculatableName(thisClass, methodName, id);
 
         Type superType = getCalculatableType(keyType, returnType);
@@ -142,7 +178,7 @@ final class StubMethodFactory {
         if (keyType != null) {
             Type[] types = Type.getArgumentTypes(methodDescriptor);
             mv.loadArg(1);
-            if (types.length > 1) {
+            if (argsWrapping == TUPLE || argsWrapping == TUPLE_HS) {
                 generateUnwrap(keyType, mv, types);
             } else {
                 assert types.length == 1;
@@ -210,7 +246,22 @@ final class StubMethodFactory {
         }
     }
 
-    private static void generateWrap(MxGeneratorAdapter mv, Type[] args, Type tupleType) {
+    private static void generateWrap(Type thisClass, MxGeneratorAdapter mv, String hashingStratsFieldName, Type[] args, Type tupleType) {
+        mv.newInstance(tupleType);
+        mv.dup();
+        Type hashingStrategiesType = Type.getType(HashingStrategy[].class);
+        mv.getStatic(thisClass, hashingStratsFieldName, hashingStrategiesType);
+        Type[] tupleConstructorTypes = new Type[args.length + 1];
+        tupleConstructorTypes[0] = hashingStrategiesType;
+        for (int i = 1; i < tupleConstructorTypes.length; i++) {
+            tupleConstructorTypes[i] = eraseType(args[i-1]);
+            mv.loadArg(i-1);
+        }
+        mv.invokeConstructor(tupleType, new Method(CONSTRUCTOR_NAME, VOID_TYPE, tupleConstructorTypes));
+    }
+
+    /** Before 2.6.2 only */
+    private static void generateWrapOld(MxGeneratorAdapter mv, Type[] args, Type tupleType) {
         mv.newInstance(tupleType);
         mv.dup();
         Type[] tupleConstructorTypes = new Type[args.length];
@@ -301,6 +352,43 @@ final class StubMethodFactory {
             } else {
                 m.getField(thisClass, cacheFieldName, cacheType);
             }
+        }
+    }
+
+    /** Since 2.6.2: get hashing strategies for tuple and store into static field */
+    private static class InitHashingStratGenerator extends Generator {
+        private final Type[] tupleValTypes;
+        private final Type[] hashingStrategies;
+        private final Type thisClass;
+        private final String hsFieldName;
+
+        InitHashingStratGenerator(Type[] tupleValTypes, Type[] hashingStrategies, Type thisClass, String hsFieldName) {
+            this.tupleValTypes = tupleValTypes;
+            this.hashingStrategies = hashingStrategies;
+            this.thisClass = thisClass;
+            this.hsFieldName = hsFieldName;
+        }
+
+        @Override
+        public void generate(MxGeneratorAdapter sim) {
+            sim.push(tupleValTypes.length);
+            sim.newArray(CodegenHelper.CLASS_TYPE);
+            for (int i = 0; i < tupleValTypes.length; i++) {
+                sim.dup();
+                sim.push(i);
+                sim.push(tupleValTypes[i]);
+                sim.arrayStore(CodegenHelper.CLASS_TYPE);
+            }
+            sim.push(hashingStrategies.length);
+            sim.newArray(CodegenHelper.CLASS_TYPE);
+            for (int i = 0; i < hashingStrategies.length; i++) {
+                sim.dup();
+                sim.push(i);
+                sim.push(hashingStrategies[i]);
+                sim.arrayStore(CodegenHelper.CLASS_TYPE);
+            }
+            sim.invokeStatic(RuntimeTypes.HASHING_STRATEGY_FACTORY_TYPE, RuntimeTypes.CREATE_HASHING_STRATEGIES_METHOD);
+            sim.putStatic(thisClass, hsFieldName, RuntimeTypes.HASHING_STRATEGIES_ARRAY_TYPE);
         }
     }
 }

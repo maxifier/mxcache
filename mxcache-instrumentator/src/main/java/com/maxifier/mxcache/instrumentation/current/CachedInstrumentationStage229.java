@@ -56,7 +56,7 @@ class CachedInstrumentationStage229 extends CachedInstrumentationStage {
 
     @Override
     protected CachedMethodVisitor createMethodVisitor(int access, String name, String desc, String sign, String[] exceptions, MethodVisitor oldVisitor, CachedMethodContext context) {
-        return new CachedMethodVisitor(this, oldVisitor, access, name, desc, sign, exceptions, getThisType(), context, !Modifier.isStatic(access));
+        return new CachedMethodVisitor(this, oldVisitor, access, name, desc, sign, exceptions, getThisType(), context, !Modifier.isStatic(access), false);
     }
 
     private class CacheRegistrator extends AdviceAdapter {

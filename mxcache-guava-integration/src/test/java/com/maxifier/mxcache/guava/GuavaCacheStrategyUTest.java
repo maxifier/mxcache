@@ -6,6 +6,9 @@ package com.maxifier.mxcache.guava;
 import com.maxifier.mxcache.CacheFactory;
 import com.maxifier.mxcache.Cached;
 import com.maxifier.mxcache.MxCache;
+import com.maxifier.mxcache.hashing.CharArrayHashingStrategy;
+import com.maxifier.mxcache.hashing.HashingStrategy;
+import com.maxifier.mxcache.hashing.IdentityHashing;
 import com.maxifier.mxcache.impl.resource.MxResourceFactory;
 import com.maxifier.mxcache.resource.MxResource;
 import javax.annotation.Nullable;
@@ -13,6 +16,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 
 import static org.testng.Assert.*;
@@ -313,5 +317,149 @@ public class GuavaCacheStrategyUTest {
                 assertEquals(testMethodWhichTestsNulls(""), BigInteger.ONE);
             }
         });
+    }
+
+    public static class EverythingEqualHS implements gnu.trove.strategy.HashingStrategy {
+        @Override
+        public int computeHashCode(Object object) {
+            return 0;
+        }
+        @Override
+        public boolean equals(Object o1, Object o2) {
+            return true;
+        }
+    }
+
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArray(int[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArray(long[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArray(short[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArray(double[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArray(float[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArray(byte[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArray(boolean[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArray(char[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArray(Object[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArray(long a, int[] array) {
+        return a + Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArray(int a, long[] array) {
+        return a + Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArray(String a, short[] array) {
+        return a + Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArray(Object[] array1, double[] array2) {
+        return Arrays.toString(array1) + x++ + Arrays.toString(array2);
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArray(float[] array, int a) {
+        return a + Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArrayIdentityStr(byte[] array, @IdentityHashing String custom) {
+        return custom + Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArrayIdentity(@IdentityHashing boolean[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArraySameStrategy(@HashingStrategy(CharArrayHashingStrategy.class) char[] array) {
+        return Arrays.toString(array) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getByArrayIdentity2(Object[] array1, @IdentityHashing Object[] array2) {
+        return Arrays.toString(array1) + x++ + Arrays.toString(array2);
+    }
+    @Cached @UseGuava
+    public String getByArrayEqual(@HashingStrategy(EverythingEqualHS.class) Object[] array1) {
+        return Arrays.toString(array1) + x++;
+    }
+    @Cached(tags = "GUAVA_TAG") @UseGuava
+    public String getSingleElemIdentity(@IdentityHashing String value) {
+        return value + x++;
+    }
+
+    @SuppressWarnings("RedundantStringConstructorCall")
+    @Test
+    public void testArrays() throws Exception {
+        String x0 = assertEqualsAndReturn(this.getByArray(new int[]{1}), this.getByArray(new int[]{1}));
+        String x1 = assertEqualsAndReturn(this.getByArray(new long[]{1}), this.getByArray(new long[]{1}));
+        String x2 = assertEqualsAndReturn(this.getByArray(new short[]{1}), this.getByArray(new short[]{1}));
+        String x3 = assertEqualsAndReturn(this.getByArray(new double[]{1}), this.getByArray(new double[]{1}));
+        String x4 = assertEqualsAndReturn(this.getByArray(new float[]{1}), this.getByArray(new float[]{1}));
+        String x5 = assertEqualsAndReturn(this.getByArray(new byte[]{1}), this.getByArray(new byte[]{1}));
+        String x6 = assertEqualsAndReturn(this.getByArray(new boolean[]{true}), this.getByArray(new boolean[]{true}));
+        String x7 = assertEqualsAndReturn(this.getByArray(new char[]{'f'}), this.getByArray(new char[]{'f'}));
+        String x8 = assertEqualsAndReturn(this.getByArray(new Object[]{new String("1")}), this.getByArray(new Object[]{new String("1")}));
+        String x9 = assertEqualsAndReturn(this.getByArray(1, new int[]{2}), this.getByArray(1, new int[]{2}));
+        String xA = assertEqualsAndReturn(this.getByArray(2, new long[]{2}), this.getByArray(2, new long[]{2}));
+        String xB = assertEqualsAndReturn(this.getByArray(new String("ы"), new short[]{1}), this.getByArray(new String("ы"), new short[]{1}));
+        String xC = assertEqualsAndReturn(this.getByArray(new Object[]{new String("ы")}, new double[]{2}), this.getByArray(new Object[]{new String("ы")}, new double[]{2}));
+        String xD = assertEqualsAndReturn(this.getByArray(new float[]{2}, 3), this.getByArray(new float[]{2}, 3));
+        String xE = assertNotEqualsAndReturn(this.getByArrayIdentityStr(new byte[]{1}, new String("ы")), this.getByArrayIdentityStr(new byte[]{1}, new String("ы")));
+        String xF = assertNotEqualsAndReturn(this.getByArrayIdentity(new boolean[]{true}), this.getByArrayIdentity(new boolean[]{true}));
+        String xG = assertEqualsAndReturn(this.getByArraySameStrategy(new char[]{'f'}), this.getByArraySameStrategy(new char[]{'f'}));
+        String xH = assertNotEqualsAndReturn(this.getByArrayIdentity2(new Object[]{new String("1")}, new Object[]{new String("1")}), this.getByArrayIdentity2(new Object[]{new String("1")}, new Object[]{new String("1")}));
+        String xI = assertEqualsAndReturn(this.getByArrayEqual(new Character[]{'f'}), this.getByArrayEqual(new Character[]{'f'}));
+        String xJ = assertNotEqualsAndReturn(this.getSingleElemIdentity(new String("123")), this.getSingleElemIdentity(new String("123")));
+
+        CacheFactory.getCleaner().clearCacheByTag("GUAVA_TAG");
+
+        assertNotEquals(x0, this.getByArray(new int[]{1}));
+        assertNotEquals(x1, this.getByArray(new long[]{1}));
+        assertNotEquals(x2, this.getByArray(new short[]{1}));
+        assertNotEquals(x3, this.getByArray(new double[]{1}));
+        assertNotEquals(x4, this.getByArray(new float[]{1}));
+        assertNotEquals(x5, this.getByArray(new byte[]{1}));
+        assertNotEquals(x6, this.getByArray(new boolean[]{true}));
+        assertNotEquals(x7, this.getByArray(new char[]{'f'}));
+        assertNotEquals(x8, this.getByArray(new Object[]{new String("1")}));
+        assertNotEquals(x9, this.getByArray(1, new int[]{2}));
+        assertNotEquals(xA, this.getByArray(2, new long[]{2}));
+        assertNotEquals(xB, this.getByArray(new String("ы"), new short[]{1}));
+        assertNotEquals(xC, this.getByArray(new Object[]{new String("ы")}, new double[]{2}));
+        assertNotEquals(xD, this.getByArray(new float[]{2}, 3));
+        assertNotEquals(xG, this.getByArraySameStrategy(new char[]{'f'}));
+    }
+
+    private static String assertEqualsAndReturn(String a, String b) {
+        assertEquals(a, b);
+        return a;
+    }
+    private static String assertNotEqualsAndReturn(String a, String b) {
+        assertNotEquals(a, b);
+        return a;
     }
 }

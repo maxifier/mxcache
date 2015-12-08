@@ -21,7 +21,7 @@ import java.util.concurrent.Callable;
 public final class MxCache {
     private MxCache() {}
 
-    private static final String VERSION = "2.2.9";
+    private static final String VERSION = "2.6.2";
 
     private static final Version PROJECT_VERSION = loadVersion();
 

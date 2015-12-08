@@ -3,8 +3,6 @@
  */
 package com.maxifier.mxcache.impl;
 
-import com.maxifier.mxcache.context.CacheContext;
-import com.maxifier.mxcache.hashing.HashingStrategyFactory;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.provider.StorageFactory;
@@ -26,12 +24,11 @@ public class DefaultStorageFactory implements StorageFactory {
     private static final String CACHES_PACKAGE = "com.maxifier.mxcache.impl.caches.def.";
 
     private final Class implementation;
-    private final Object hashingStrategy;
 
     private final Constructor<? extends Storage> storageConstructor;
     private final int[] tupleIndices;
 
-    DefaultStorageFactory(CacheContext context, HashingStrategyFactory hashingStrategyFactory, CacheDescriptor descriptor) {
+    DefaultStorageFactory(CacheDescriptor descriptor) {
         Signature transformedSignature = descriptor.getTransformedSignature().overrideValue(Object.class);
         if (!transformedSignature.hasKeys()) {
             implementation = transformedSignature.getImplementationClass(CACHES_PACKAGE, "StorageImpl");
@@ -49,8 +46,6 @@ public class DefaultStorageFactory implements StorageFactory {
                 tupleIndices = p.toArray();
             }
         }
-        hashingStrategy = hashingStrategyFactory.createHashingStrategy(context, descriptor.getMethod());
-
         storageConstructor = getStorageConstructor();
     }
 
@@ -64,10 +59,7 @@ public class DefaultStorageFactory implements StorageFactory {
 
     @SuppressWarnings({ "unchecked" })
     private Constructor<? extends Storage> getStorageConstructor() {
-        int desiredCount = hashingStrategy == null ? 0 : 1;
-        if (tupleIndices != null) {
-            desiredCount++;
-        }
+        int desiredCount = (tupleIndices == null) ? 0 : 1;
         for (Constructor<?> constructor : implementation.getConstructors()) {
             if (constructor.getParameterTypes().length == desiredCount) {
                 return (Constructor<? extends Storage>) constructor;
@@ -80,17 +72,9 @@ public class DefaultStorageFactory implements StorageFactory {
     @Override
     public Storage createStorage(Object owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
         if (tupleIndices == null) {
-            if (hashingStrategy != null) {
-                return storageConstructor.newInstance(hashingStrategy);
-            } else {
-                return storageConstructor.newInstance();
-            }
+            return storageConstructor.newInstance();
         } else {
-            if (hashingStrategy != null) {
-                return storageConstructor.newInstance(hashingStrategy, tupleIndices);
-            } else {
-                return storageConstructor.newInstance((Object) tupleIndices);
-            }
+            return storageConstructor.newInstance((Object) tupleIndices);
         }
     }
 

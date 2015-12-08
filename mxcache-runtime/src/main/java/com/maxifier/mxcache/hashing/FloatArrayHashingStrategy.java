@@ -14,8 +14,6 @@ public final class FloatArrayHashingStrategy implements gnu.trove.strategy.Hashi
 
     private static final FloatArrayHashingStrategy INSTANCE = new FloatArrayHashingStrategy();
 
-    private FloatArrayHashingStrategy() {}
-
     public static FloatArrayHashingStrategy getInstance() {
         return INSTANCE;
     }

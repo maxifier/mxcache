@@ -14,8 +14,6 @@ public final class IntArrayHashingStrategy implements gnu.trove.strategy.Hashing
 
     private static final IntArrayHashingStrategy INSTANCE = new IntArrayHashingStrategy();
 
-    private IntArrayHashingStrategy() {}
-
     public static IntArrayHashingStrategy getInstance() {
         return INSTANCE;
     }

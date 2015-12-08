@@ -18,5 +18,5 @@ public interface Context {
 
     void addStaticInitializer(Generator g);
 
-    void registerCache(String fieldName, Type cacheType, Type returnType, Type keyType, Type calculable, Generator lockGetter);
+    void registerCache(String cacheFieldName, String hashingStratsFieldName, Type cacheType, Type returnType, Type keyType, Type calculable, Generator lockGetter);
 }

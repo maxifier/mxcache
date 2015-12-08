@@ -34,9 +34,7 @@ public final class TupleGenerator {
     private static final Type ILLEGAL_ARGUMENT_EXCEPTION_TYPE = getType(IllegalArgumentException.class);
 
     private static final Method EQUALS_METHOD = getMethod("boolean equals(Object)");
-    private static final Method EQUALS_WITH_STRATEGY_METHOD = getMethod("boolean equals(Object,Object[])");
     private static final Method HASH_CODE_METHOD = getMethod("int hashCode()");
-    private static final Method HASH_CODE_WITH_STRATEGY_METHOD = getMethod("int hashCode(Object[])");
     private static final Method GET_METHOD = getMethod("java.lang.Object get(int)");
 
     private static final Method GET_BOOLEAN_METHOD = getMethod("boolean getBoolean(int)");
@@ -56,16 +54,20 @@ public final class TupleGenerator {
     private static final Method APPEND_OBJECT_METHOD = getMethod("java.lang.StringBuilder append(java.lang.Object)");
     private static final Method APPEND_INT_METHOD = getMethod("java.lang.StringBuilder append(int)");
     private static final Method INIT_EXCEPTION_METHOD = getMethod("void <init>(String)");
+    public static final Method TUPLE_GET_HASHING_STRATEGIES = Method.getMethod("gnu.trove.strategy.HashingStrategy[] getHashingStrategies()");
 
     private static final THashMap<String, TupleClass> CACHE = new THashMap<String, TupleClass>();
 
     private static final Type HASHING_STRATEGY_TYPE = Type.getType(HashingStrategy.class);
+    private static final Type HASHING_STRATEGY_ARRAY_TYPE = Type.getType(HashingStrategy[].class);
 
     private static final int INT_BITS = 32;
 
     private static final int TRUE_HASHCODE = Boolean.TRUE.hashCode();
     private static final int FALSE_HASHCODE = Boolean.FALSE.hashCode();
     private static final Method EQUALS_OBJECT_OBJECT_METHOD = Method.getMethod("boolean equals(Object, Object)");
+    private static final Method COMPUTE_HASH_CODE_METHOD = Method.getMethod("int computeHashCode(Object)");
+    private static final String HASHING_STRATEGIES_FIELD = "hashingStrategies";
 
     private TupleGenerator() {
     }
@@ -83,13 +85,12 @@ public final class TupleGenerator {
         return generateTupleClassName(erase(values));
     }
 
-    public static TupleFactory getTupleFactory(Class... types) {
-        return getTupleClass0(toErasedTypes(types)).getOrCreateFactory();
+    public static TupleFactory createTupleFactory(HashingStrategy[] hashingStrategies, Class... types) {
+        return getTupleClass0(toErasedTypes(types)).createFactory(hashingStrategies);
     }
     
     private static class TupleClass {
         private final Class<Tuple> realClass;
-        private TupleFactory factory;
 
         public TupleClass(Class<Tuple> realClass) {
             this.realClass = realClass;
@@ -99,16 +100,13 @@ public final class TupleGenerator {
             return realClass;
         }
 
-        public synchronized TupleFactory getOrCreateFactory() {
-            if (factory == null) {
-                Constructor<?>[] ctors = realClass.getDeclaredConstructors();
-                if (ctors.length != 1) {
-                    throw new IllegalStateException("No constructor for " + realClass);
-                }
-                //noinspection unchecked
-                factory = new TupleFactoryImpl((Constructor<? extends Tuple>) ctors[0]);
+        public synchronized TupleFactory createFactory(HashingStrategy[] hashingStrategies) {
+            Constructor<?>[] ctors = realClass.getDeclaredConstructors();
+            if (ctors.length != 1) {
+                throw new IllegalStateException("No constructor for " + realClass);
             }
-            return factory;
+            //noinspection unchecked
+            return new TupleFactoryImpl(hashingStrategies, (Constructor<? extends Tuple>) ctors[0]);
         }
     }
 
@@ -128,7 +126,7 @@ public final class TupleGenerator {
         return loadClass(Tuple.class.getClassLoader(), generateTupleClassBytecode(tupleClassName, types));
     }
 
-    public static byte[] generateTupleClassBytecode(String tupleClassName, Type[] types) {
+    private static byte[] generateTupleClassBytecode(String tupleClassName, Type[] types) {
         ClassGenerator classWriter = new ClassGenerator(ACC_PUBLIC | ACC_SUPER | ACC_SYNTHETIC, tupleClassName, TUPLE_TYPE);
         Type tupleType = classWriter.getThisType();
         MxField[] fields = new MxField[types.length];
@@ -150,11 +148,8 @@ public final class TupleGenerator {
         generateGetPrimitive(types, tupleType, Type.DOUBLE_TYPE, classWriter.defineMethod(ACC_PUBLIC, GET_DOUBLE_METHOD));
 
         generateSize(types, classWriter.defineMethod(ACC_PUBLIC, SIZE_METHOD));
-        generateEquals(types, tupleType, classWriter.defineMethod(ACC_PUBLIC, EQUALS_METHOD));
         generateHashCode(types, tupleType, classWriter.defineMethod(ACC_PUBLIC, HASH_CODE_METHOD));
-
-        generateEqualsWithStrategy(types, tupleType, classWriter.defineMethod(ACC_PUBLIC, EQUALS_WITH_STRATEGY_METHOD));
-        generateHashCodeWithStrategies(types, tupleType, classWriter.defineMethod(ACC_PUBLIC, HASH_CODE_WITH_STRATEGY_METHOD));
+        generateEquals(types, tupleType, classWriter.defineMethod(ACC_PUBLIC, EQUALS_METHOD));
 
         generateToString(types, tupleType, classWriter.defineMethod(ACC_PUBLIC, MxGeneratorAdapter.TO_STRING_METHOD));
         classWriter.visitEnd();
@@ -163,8 +158,12 @@ public final class TupleGenerator {
     }
 
     private static void generateConstructor(Type[] types, ClassGenerator classWriter, MxField[] fields) {
-        MxConstructorGenerator ctor = classWriter.defineConstructor(ACC_PUBLIC, types);
-        ctor.callSuper();
+        Type[] ctorArgTypes = new Type[types.length + 1];
+        System.arraycopy(types, 0, ctorArgTypes, 1, types.length);
+        Type hashingStrategiesType = Type.getType(HashingStrategy[].class);
+        ctorArgTypes[0] = hashingStrategiesType;
+        MxConstructorGenerator ctor = classWriter.defineConstructor(ACC_PUBLIC, ctorArgTypes);
+        ctor.callSuper(hashingStrategiesType);
         ctor.initFields(fields);
         ctor.returnValue();
         ctor.endMethod();
@@ -180,44 +179,7 @@ public final class TupleGenerator {
     private static void generateEquals(Type[] types, Type tupleType, MxGeneratorAdapter visitor) {
         Label equal = new Label();
         Label notEqual = new Label();
-
-        visitor.start();
-        visitor.loadThis();
-        visitor.loadArg(0);
-        visitor.ifCmp(OBJECT_TYPE, EQ, equal);
-        
-        visitor.loadArg(0);
-        visitor.instanceOf(tupleType);
-        visitor.ifZCmp(EQ, notEqual);
-
-        visitor.loadArg(0);
-        visitor.checkCast(tupleType);
-        int other = visitor.newLocal(tupleType);
-        visitor.storeLocal(other);
-
-        for (int i = 0; i < types.length; i++) {
-            Type type = types[i];
-            visitor.loadThis();
-            visitor.getField(tupleType, "$" + i, type);
-            visitor.loadLocal(other);
-            visitor.getField(tupleType, "$" + i, type);
-            generateEquals(visitor, type, notEqual);
-        }
-
-        visitor.mark(equal);
-        visitor.push(true);
-        visitor.returnValue();
-
-        visitor.mark(notEqual);
-        visitor.push(false);
-        visitor.returnValue();
-
-        visitor.endMethod();
-    }
-
-    private static void generateEqualsWithStrategy(Type[] types, Type tupleType, MxGeneratorAdapter visitor) {
-        Label equal = new Label();
-        Label notEqual = new Label();
+        Label end = new Label();
 
         visitor.start();
         visitor.loadThis();
@@ -240,7 +202,8 @@ public final class TupleGenerator {
             if (isReferenceType(type)) {
                 Label defaultEquals = new Label();
 
-                visitor.loadArg(1);
+                visitor.loadThis();
+                visitor.getField(tupleType, HASHING_STRATEGIES_FIELD, HASHING_STRATEGY_ARRAY_TYPE);
                 visitor.push(i);
                 visitor.arrayLoad(HASHING_STRATEGY_TYPE);
                 visitor.dup();
@@ -257,9 +220,10 @@ public final class TupleGenerator {
                 visitor.mark(defaultEquals);
                 visitor.pop();
             } else {
-                visitor.loadArg(1);
+                visitor.loadThis();
+                visitor.getField(tupleType, HASHING_STRATEGIES_FIELD, HASHING_STRATEGY_ARRAY_TYPE);
                 visitor.push(i);
-                visitor.arrayLoad(OBJECT_TYPE);
+                visitor.arrayLoad(HASHING_STRATEGY_TYPE);
 
                 Label ok = new Label();
                 visitor.ifNull(ok);
@@ -279,12 +243,13 @@ public final class TupleGenerator {
 
         visitor.mark(equal);
         visitor.push(true);
-        visitor.returnValue();
+        visitor.goTo(end);
 
         visitor.mark(notEqual);
         visitor.push(false);
-        visitor.returnValue();
 
+        visitor.mark(end);
+        visitor.returnValue();
         visitor.endMethod();
     }
 
@@ -357,53 +322,35 @@ public final class TupleGenerator {
         visitor.start();
         visitor.push(31);
         for (int i = 0; i < types.length; i++) {
-            Type type = types[i];                               
-            if (i != 0) {
-                visitor.push(31);
-                visitor.visitInsn(IMUL);
-            }
-            visitor.loadThis();
-            visitor.getField(tupleType, "$" + i, type);
-            generateHashCode(visitor, type);
-            visitor.visitInsn(IADD);
-        }
-        visitor.returnValue();
-        visitor.endMethod();
-    }
-
-    private static void generateHashCodeWithStrategies(Type[] types, Type tupleType, MxGeneratorAdapter visitor) {
-        visitor.start();
-        visitor.push(31);
-        for (int i = 0; i < types.length; i++) {
             Type type = types[i];
             if (i != 0) {
                 visitor.push(31);
                 visitor.visitInsn(IMUL);
             }
-
-
             Label next = new Label();
 
             if (isReferenceType(type)) {
                 Label defaultHashCode = new Label();
 
-                visitor.loadArg(0);
+                visitor.loadThis();
+                visitor.getField(tupleType, HASHING_STRATEGIES_FIELD, HASHING_STRATEGY_ARRAY_TYPE);
                 visitor.push(i);
                 visitor.arrayLoad(HASHING_STRATEGY_TYPE);
                 visitor.dup();
                 visitor.ifNull(defaultHashCode);
-                
+
                 visitor.loadThis();
                 visitor.getField(tupleType, "$" + i, type);
-                visitor.visitMethodInsn(INVOKEINTERFACE, HASHING_STRATEGY_TYPE.getInternalName(), "computeHashCode", "(" + erase(type).getDescriptor() + ")I");
+                visitor.invokeInterface(HASHING_STRATEGY_TYPE, COMPUTE_HASH_CODE_METHOD);
                 visitor.goTo(next);
 
                 visitor.mark(defaultHashCode);
                 visitor.pop();
             } else {
-                visitor.loadArg(0);
+                visitor.loadThis();
+                visitor.getField(tupleType, HASHING_STRATEGIES_FIELD, HASHING_STRATEGY_ARRAY_TYPE);
                 visitor.push(i);
-                visitor.arrayLoad(OBJECT_TYPE);
+                visitor.arrayLoad(HASHING_STRATEGY_TYPE);
 
                 Label ok = new Label();
                 visitor.ifNull(ok);
@@ -683,15 +630,20 @@ public final class TupleGenerator {
 
     private static class TupleFactoryImpl implements TupleFactory {
         private final Constructor<? extends Tuple> ctor;
+        private final HashingStrategy[] hs;
 
-        public TupleFactoryImpl(Constructor<? extends Tuple> ctor) {
+        TupleFactoryImpl(HashingStrategy[] hs, Constructor<? extends Tuple> ctor) {
+            this.hs = hs;
             this.ctor = ctor;
         }
 
         @Override
         public Tuple create(Object... values) {
             try {
-                return ctor.newInstance(values);
+                Object[] args = new Object[values.length + 1];
+                System.arraycopy(values, 0, args, 1, values.length);
+                args[0] = hs;
+                return ctor.newInstance(args);
             } catch (InstantiationException e) {
                 throw new IllegalStateException(e);
             } catch (IllegalAccessException e) {

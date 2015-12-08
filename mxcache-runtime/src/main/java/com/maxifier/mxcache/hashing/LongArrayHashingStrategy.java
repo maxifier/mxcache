@@ -14,8 +14,6 @@ public final class LongArrayHashingStrategy implements gnu.trove.strategy.Hashin
 
     private static final LongArrayHashingStrategy INSTANCE = new LongArrayHashingStrategy();
 
-    private LongArrayHashingStrategy() {}
-
     public static LongArrayHashingStrategy getInstance() {
         return INSTANCE;
     }
