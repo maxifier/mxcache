@@ -52,6 +52,7 @@ import static org.testng.Assert.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
+@SuppressWarnings("ParameterCanBeLocal")
 @Test
 public class DynamicInstrumentationFTest {
     private static final Object[] V2228 = { InstrumentatorProvider.getAvailableVersions().get("2.2.28"), null };
@@ -97,6 +98,7 @@ public class DynamicInstrumentationFTest {
         return (Point) instrumentClass(PointImpl.class, instrumentator, cl).newInstance();
     }
 
+    @SuppressWarnings("AssertEqualsBetweenInconvertibleTypesTestNG")
     @Test(dataProvider = "all")
     public void testAnotherClassLoader(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         cl = new ClassLoader() {};
@@ -135,6 +137,7 @@ public class DynamicInstrumentationFTest {
 
         Object o = g2c.newInstance();
 
+        //noinspection unchecked
         Method r = g2c.getDeclaredMethod("x", g1c);
 
         Object v1 = g1c.newInstance();
@@ -935,6 +938,7 @@ public class DynamicInstrumentationFTest {
         assertEquals(p.getRadius(), 3.0);
     }
 
+    @SuppressWarnings("RedundantStringConstructorCall")
     @Test(dataProvider = "v262")
     public void testArrays(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         TestCached t = loadCached(instrumentator, cl);
