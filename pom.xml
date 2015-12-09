@@ -212,7 +212,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.2.1</version>
                 <configuration>
-                    <tagNameFormat>mxcache-@{project.version}</tagNameFormat>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
                     <preparationGoals>clean install</preparationGoals>
                     <goals>deploy -Prelease</goals>
                 </configuration>
