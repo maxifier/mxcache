@@ -55,6 +55,7 @@
         <checkstyle.config.file>checkstyle.xml</checkstyle.config.file>
         <checkstyle.header.file>maxifier-copyright.txt</checkstyle.header.file>
         <idea.sdk.version>13.696</idea.sdk.version>
+        <jgit.version>4.0.0.201505260635-rc2</jgit.version>
     </properties>
 
     <dependencyManagement>
@@ -209,13 +210,26 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.2.1</version>
+                <version>2.5</version>
                 <configuration>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                     <preparationGoals>clean install</preparationGoals>
-                    <goals>deploy -Prelease</goals>
+                    <goals>deploy</goals>
+                    <releaseProfiles>release</releaseProfiles>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <providerImplementations>
+                        <git>jgit</git>
+                    </providerImplementations>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-provider-jgit</artifactId>
+                        <version>1.9.4</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>
