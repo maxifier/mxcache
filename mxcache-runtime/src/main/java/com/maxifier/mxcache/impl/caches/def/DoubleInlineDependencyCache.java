@@ -32,6 +32,14 @@ public class DoubleInlineDependencyCache extends DoubleInlineCacheImpl implement
      */
     private Set<Reference<DependencyNode>> dependentNodes;
 
+    /**
+     * Number of elements in dependentNodes after which all the set should be checked for the presence of
+     * references to GC'ed objects.
+     *
+     * This threshold is required in order to evict such references as they pollute memory and never GC'ed otherwise.
+     */
+    private int cleanupThreshold = 10;
+
     private Reference<DependencyNode> selfReference;
 
     public DoubleInlineDependencyCache(Object owner, DoubleCalculatable calculable, MutableStatistics statistics) {
@@ -68,6 +76,26 @@ public class DoubleInlineDependencyCache extends DoubleInlineCacheImpl implement
             dependentNodes = new THashSet<Reference<DependencyNode>>();
         }
         dependentNodes.add(node.getSelfReference());
+        cleanupIfNeeded();
+    }
+
+    private void cleanupIfNeeded() {
+        if (dependentNodes.size() >= cleanupThreshold) {
+            for (Iterator<Reference<DependencyNode>> it = dependentNodes.iterator(); it.hasNext(); ) {
+                if (it.next().get() == null) {
+                    it.remove();
+                }
+            }
+            // It's important to increase cleanup threshold according to the number of elements in a set
+            // in order to maintain the balance between CPU-overhead and memory-overhead
+
+            // The cleanup has O(N) complexity, so doing this on addition of N new elements would lead to constant
+            // small overhead and thus would not affect the asymptotic behaviour of operations.
+
+            // The memory overhead could be significant but it's guaranteed that memory usage would not be more than
+            // 2 * peak memory usage for alive elements.
+            cleanupThreshold = dependentNodes.size() * 2;
+        }
     }
 
     @Override
