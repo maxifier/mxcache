@@ -331,6 +331,10 @@ public class CacheDescriptor {
         return rule.getTrackDependency();
     }
 
+    public AnnotatedDependencyTracking getTrackAnnotatedDependency() {
+        return rule.getTrackAnnotatedDependency();
+    }
+
     public Class<? extends CachingStrategy> getStrategyClass() {
         return rule.getStrategy();
     }
