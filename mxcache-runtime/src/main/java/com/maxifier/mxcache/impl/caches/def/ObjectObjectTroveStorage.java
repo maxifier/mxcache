@@ -17,7 +17,6 @@ import gnu.trove.map.hash.THashMap;
 public class ObjectObjectTroveStorage<K> extends THashMap<K, Object> implements ObjectObjectStorage<K> {
 
     public ObjectObjectTroveStorage() {
-        super();
         SmartReferenceManager.switchOn();
     }
 
