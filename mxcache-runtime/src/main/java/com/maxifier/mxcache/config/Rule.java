@@ -4,6 +4,7 @@
 package com.maxifier.mxcache.config;
 
 import com.maxifier.mxcache.DependencyTracking;
+import com.maxifier.mxcache.AnnotatedDependencyTracking;
 import com.maxifier.mxcache.provider.CachingStrategy;
 
 import java.lang.reflect.Method;
@@ -20,6 +21,8 @@ public interface Rule {
     boolean isImportantProperty(String name);
 
     DependencyTracking getTrackDependency();
+
+    AnnotatedDependencyTracking getTrackAnnotatedDependency();
 
     Set<String> getResourceDependencies();
 

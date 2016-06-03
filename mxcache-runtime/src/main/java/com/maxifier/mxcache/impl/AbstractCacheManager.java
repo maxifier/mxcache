@@ -26,6 +26,7 @@ import java.util.Set;
  */
 public abstract class AbstractCacheManager implements CacheManager {
     private static final DependencyTracking DEFAULT_DEPENDENCY_TRACKING_VALUE = DependencyTracking.INSTANCE;
+    private static final AnnotatedDependencyTracking DEFAULT_TRACK_ANNOTATED_DEPENDENCY_VALUE = AnnotatedDependencyTracking.ALL;
     private static final StatisticsModeEnum DEFAULT_STATISTICS_MODE = StatisticsModeEnum.STATIC_OR_STORAGE;
 
     private final CacheContext context;
@@ -62,7 +63,7 @@ public abstract class AbstractCacheManager implements CacheManager {
         }
 
         trackDependency = convertStatic(convertDefault(descriptor.getTrackDependency()));
-        explicitDependencies = getExplicitDependencies(descriptor, ownerClass);
+        explicitDependencies = getExplicitDependencies(descriptor, ownerClass, convertDefault(descriptor.getTrackAnnotatedDependency()));
 
         switch (trackDependency) {
             case NONE:
@@ -84,7 +85,8 @@ public abstract class AbstractCacheManager implements CacheManager {
     }
 
     @Nullable
-    private static DependencyNode[] getExplicitDependencies(CacheDescriptor descriptor, Class<?> ownerClass) {
+    private static DependencyNode[] getExplicitDependencies(CacheDescriptor descriptor, Class<?> ownerClass,
+                                                            AnnotatedDependencyTracking trackAnnotatedDependency) {
         List<DependencyNode> res = new ArrayList<DependencyNode>();
         Set<String> resourceNames = descriptor.getResourceDependencies();
         if (resourceNames != null) {
@@ -95,7 +97,9 @@ public abstract class AbstractCacheManager implements CacheManager {
         String[] tags = descriptor.getTags();
         if (tags != null) {
             for (String tag : tags) {
-                res.add(CacheFactory.getTagDependencyNode(tag));
+                if (trackAnnotatedDependency == AnnotatedDependencyTracking.ALL || !tag.startsWith("@")) {
+                    res.add(CacheFactory.getTagDependencyNode(tag));
+                }
             }
         }
         String group = descriptor.getGroup();
@@ -155,6 +159,10 @@ public abstract class AbstractCacheManager implements CacheManager {
 
     private static DependencyTracking convertDefault(DependencyTracking tracking) {
         return tracking == DependencyTracking.DEFAULT ? DEFAULT_DEPENDENCY_TRACKING_VALUE : tracking;
+    }
+
+    private static AnnotatedDependencyTracking convertDefault(AnnotatedDependencyTracking trackAnnotatedDependency) {
+        return trackAnnotatedDependency == AnnotatedDependencyTracking.DEFAULT ? DEFAULT_TRACK_ANNOTATED_DEPENDENCY_VALUE : trackAnnotatedDependency;
     }
 
     /**

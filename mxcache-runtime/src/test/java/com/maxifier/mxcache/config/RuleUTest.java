@@ -3,6 +3,7 @@
  */
 package com.maxifier.mxcache.config;
 
+import com.maxifier.mxcache.AnnotatedDependencyTracking;
 import com.maxifier.mxcache.DependencyTracking;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.resource.TrackDependency;
@@ -49,6 +50,7 @@ public class RuleUTest {
 
     private static final String RULE_1 = "<rule>" +
             "   <trackDependency>STATIC</trackDependency>" +
+            "   <trackAnnotatedDependency>ALL</trackAnnotatedDependency>" +
             "   <property name=\"p0\" value=\"v0\" />" +
             "   <property name=\"p1\" value=\"v1\" />" +
             "   <property name=\"array\">" +
@@ -71,6 +73,7 @@ public class RuleUTest {
 
     private static final String RULE_2 = "<rule>" +
             "   <trackDependency>NONE</trackDependency>" +
+            "   <trackAnnotatedDependency>NONE</trackAnnotatedDependency>" +
             "   <property name=\"p1\" value=\"v2\" />" +
             "   <property name=\"array\" value=\"not_array\" />" +
             "   <property name=\"p2\" value=\"v3\" />" +
@@ -103,6 +106,7 @@ public class RuleUTest {
     public void testOverrideProperty() throws Exception {
         Rule r = MxCacheConfigProviderImpl.loadRule(RULE_1, RULE_2);
         assert r.getTrackDependency() == DependencyTracking.NONE;
+        assert r.getTrackAnnotatedDependency() == AnnotatedDependencyTracking.NONE;
         assert r.getProperty("p0").equals("v0");
         assert r.getProperty("p1").equals("v2");
         assert r.getProperty("array").equals("not_array");
@@ -115,6 +119,7 @@ public class RuleUTest {
     public void testLoad() throws Exception {
         Rule r = MxCacheConfigProviderImpl.loadRule(RULE_1);
         assert r.getTrackDependency() == DependencyTracking.STATIC;
+        assert r.getTrackAnnotatedDependency() == AnnotatedDependencyTracking.ALL;
         assert r.getProperty("p0").equals("v0");
         assert r.getProperty("p1").equals("v1");
         assert r.getProperty("array").equals(Arrays.asList("e1", "e2", "e3"));
@@ -125,6 +130,7 @@ public class RuleUTest {
     public void testOverrideImportantProperty() throws Exception {
         Rule r = MxCacheConfigProviderImpl.loadRule(RULE_1, RULE_IMPORTANT, RULE_2);
         assert r.getTrackDependency() == DependencyTracking.INSTANCE;
+        assert r.getTrackAnnotatedDependency() == AnnotatedDependencyTracking.NONE;
         assert r.getProperty("p0").equals("v0");
         assert r.getProperty("p1").equals("v2");
         assert r.getProperty("array").equals("not_array");

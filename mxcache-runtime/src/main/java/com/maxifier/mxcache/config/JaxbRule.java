@@ -4,6 +4,7 @@
 package com.maxifier.mxcache.config;
 
 import com.maxifier.mxcache.DependencyTracking;
+import com.maxifier.mxcache.AnnotatedDependencyTracking;
 import com.maxifier.mxcache.Strategy;
 import com.maxifier.mxcache.provider.CachingStrategy;
 import com.maxifier.mxcache.resource.ResourceDependency;
@@ -48,6 +49,12 @@ class JaxbRule implements Rule {
 
     @XmlTransient
     private boolean trackImportant;
+
+    @XmlElement
+    private AnnotatedDependencyTracking trackAnnotatedDependency = AnnotatedDependencyTracking.DEFAULT;
+
+    @XmlTransient
+    private boolean trackAnnotatedImportant;
 
     @XmlElement(name = "resourceDependency")
     private Set<String> resourceDependencies;
@@ -105,6 +112,7 @@ class JaxbRule implements Rule {
 
     void override(JaxbRule rule) {
         overrideTrackDependency(rule);
+        overrideTrackAnnotatedDependency(rule);
         overrideDisableCache(rule);
         overrideStrategyClassName(rule);
         overrideCacheName(rule);
@@ -126,6 +134,13 @@ class JaxbRule implements Rule {
         if (rule.trackDependency != DependencyTracking.DEFAULT && (!trackImportant || rule.important)) {
             trackDependency = rule.trackDependency;
             trackImportant = rule.important;
+        }
+    }
+
+    private void overrideTrackAnnotatedDependency(JaxbRule rule) {
+        if (rule.trackAnnotatedDependency != AnnotatedDependencyTracking.DEFAULT && (!trackAnnotatedImportant || rule.important)) {
+            trackAnnotatedDependency = rule.trackAnnotatedDependency;
+            trackAnnotatedImportant = rule.trackAnnotatedImportant;
         }
     }
 
@@ -206,6 +221,10 @@ class JaxbRule implements Rule {
     @Override
     public DependencyTracking getTrackDependency() {
         return trackDependency;
+    }
+
+    public AnnotatedDependencyTracking getTrackAnnotatedDependency() {
+        return trackAnnotatedDependency;
     }
 
     @Override

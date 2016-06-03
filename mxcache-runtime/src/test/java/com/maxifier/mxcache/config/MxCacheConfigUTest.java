@@ -3,6 +3,7 @@
  */
 package com.maxifier.mxcache.config;
 
+import com.maxifier.mxcache.AnnotatedDependencyTracking;
 import com.maxifier.mxcache.DependencyTracking;
 import com.maxifier.mxcache.util.CodegenHelper;
 import gnu.trove.set.hash.THashSet;
@@ -35,6 +36,7 @@ public class MxCacheConfigUTest {
             "            <class>com.maxifier.mxcache.config.TestClass</class>\n" +
             "        </selector>\n" +
             "        <trackDependency>NONE</trackDependency>\n" +
+            "        <trackAnnotatedDependency>ALL</trackAnnotatedDependency>\n" +
             "    </rule>\n" +
 
             "    <rule name=\"r2\">\n" +
@@ -44,6 +46,7 @@ public class MxCacheConfigUTest {
             // DEFAULT не влияет на наследование 
             "        <trackDependency>DEFAULT</trackDependency>\n" +
             "        <resourceDependency>testResource</resourceDependency>\n" +
+            "        <trackAnnotatedDependency>DEFAULT</trackAnnotatedDependency>\n" +
             "    </rule>\n" +
 
             "    <rule name=\"r3\">\n" +
@@ -52,6 +55,7 @@ public class MxCacheConfigUTest {
             "        </selector>\n" +
             // определенные позднее значения перекрывают более ранние
             "        <trackDependency>STATIC</trackDependency>\n" +
+            "        <trackAnnotatedDependency>NONE</trackAnnotatedDependency>\n" +
             "    </rule>\n" +
 
             "</mxcache>";
@@ -113,7 +117,8 @@ public class MxCacheConfigUTest {
         assert rule0.getSource().equals("testSource");
         List<Selector> sel0 = rule0.getSelectors();
         assert sel0.size() == 1;
-        Assert.assertEquals(sel0.get(0).toString(), "class:com.maxifier.mxcache.config.TestClass, group:Test*, tag:SomeTag");
+        String actual = sel0.get(0).toString();
+        Assert.assertEquals(actual, "class:com.maxifier.mxcache.config.TestClass, group:Test*, tag:SomeTag");
     }
 
     public void testMergeDependency() throws Exception {
@@ -124,6 +129,7 @@ public class MxCacheConfigUTest {
         Rule r = new TestMxCacheConfigProvider(config).getRule(TestClass.class, "JustAnotherGroup", new String[] { "@SomeAnnotation1" });
         assert r.getRuleNames().equals(set("r2", "r6", "r7"));
         assert r.getTrackDependency() == DependencyTracking.STATIC;
+        assert r.getTrackAnnotatedDependency() == AnnotatedDependencyTracking.DEFAULT;
         assert r.getResourceDependencies().equals(set("testResource", "testResource2"));
     }
 
@@ -132,10 +138,12 @@ public class MxCacheConfigUTest {
         MxCacheConfig config = (MxCacheConfig) context.createUnmarshaller().unmarshal(new StringReader(CONFIG_1));
         Rule r1 = new TestMxCacheConfigProvider(config).getRule(TestClass.class, "Test1", new String[] { "SomeTag", "@SomeAnnotation1" });
         assert r1.getTrackDependency() == DependencyTracking.NONE;
+        assert r1.getTrackAnnotatedDependency() == AnnotatedDependencyTracking.ALL;
         assert r1.getRuleNames().equals(set("r1", "r2"));
 
         Rule r2 = new TestMxCacheConfigProvider(config).getRule(TestClass.class, "Test1", new String[] { "SomeTag", "@SomeAnnotation2" });
         assert r2.getTrackDependency() == DependencyTracking.STATIC;
+        assert r2.getTrackAnnotatedDependency() == AnnotatedDependencyTracking.NONE;
         assert r2.getRuleNames().equals(set("r1", "r3"));
     }
 
@@ -147,10 +155,12 @@ public class MxCacheConfigUTest {
         TestMxCacheConfigProvider provider = new TestMxCacheConfigProvider(config);
         Rule r1 = provider.getRule(TestClass.class, "Test1", new String[] { "SomeTag", "@SomeAnnotation1" });
         assert r1.getTrackDependency() == DependencyTracking.NONE;
+        assert r1.getTrackAnnotatedDependency() == AnnotatedDependencyTracking.ALL;
         assert r1.getRuleNames().equals(set("r1", "r2", "r6"));
 
         Rule r2 = provider.getRule(TestClass.class, "Test1", new String[] { "SomeTag", "@SomeAnnotation2" });
         assert r2.getTrackDependency() == DependencyTracking.INSTANCE;
+        assert r2.getTrackAnnotatedDependency() == AnnotatedDependencyTracking.NONE;
         assert r2.getRuleNames().equals(set("r1", "r3", "r4", "r6"));
     }
 
@@ -171,10 +181,12 @@ public class MxCacheConfigUTest {
 
         Rule r1 = provider.getRule(testClass2, "g0", new String[] { "@SomeAnnotation1", "@SomeAnnotation2" });
         assert r1.getTrackDependency() == DependencyTracking.INSTANCE;
+        assert r1.getTrackAnnotatedDependency() == AnnotatedDependencyTracking.NONE;
         assert r1.getRuleNames().equals(set("r2", "r3", "r4", "r6"));
 
         Rule r2 = provider.getRule(TestClass.class, "g0", new String[] { "@SomeAnnotation1", "@SomeAnnotation2" });
         assert r2.getTrackDependency() == DependencyTracking.STATIC;
+        assert r2.getTrackAnnotatedDependency() == AnnotatedDependencyTracking.NONE;
         assert r2.getRuleNames().equals(set("r2", "r3"));
     }
 
