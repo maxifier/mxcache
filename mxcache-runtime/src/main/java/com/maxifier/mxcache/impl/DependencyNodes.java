@@ -16,7 +16,7 @@ import java.util.Set;
  */
 public class DependencyNodes extends THashSet<Reference<DependencyNode>> {
     /**
-     * After delete (1-COMPACT_THRESHOLD)*100% elemetns from
+     * After delete (1-COMPACT_THRESHOLD)*100% elements from set
      */
     private static final double COMPACT_THRESHOLD = 0.7;
 
@@ -28,7 +28,7 @@ public class DependencyNodes extends THashSet<Reference<DependencyNode>> {
      */
     private int cleanupThreshold = 10;
 
-    public synchronized void visitDependantNodes(DependencyNode.Visitor visitor) {
+    public void visitDependantNodes(DependencyNode.Visitor visitor) {
         for (Iterator<Reference<DependencyNode>> it = iterator(); it.hasNext();) {
             Reference<DependencyNode> ref = it.next();
             DependencyNode instance = ref.get();
