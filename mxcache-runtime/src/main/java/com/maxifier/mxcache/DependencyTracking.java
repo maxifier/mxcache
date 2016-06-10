@@ -27,5 +27,9 @@ public enum DependencyTracking {
      * Each instance has it's own dependency tracking, if a single cache is marked as dirty only this cache
      * will be cleaned.
      */
-    INSTANCE
+    INSTANCE,
+    /**
+     * Cache NOT depending from any other caches. Only manual MxResource.writeEnd() clean.
+     */
+    RESOURCE
 }

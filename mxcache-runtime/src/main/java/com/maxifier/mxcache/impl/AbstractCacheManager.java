@@ -63,8 +63,11 @@ public abstract class AbstractCacheManager implements CacheManager {
         }
 
         trackDependency = convertStatic(convertDefault(descriptor.getTrackDependency()));
-        explicitDependencies = getExplicitDependencies(descriptor, ownerClass, convertDefault(descriptor.getTrackAnnotatedDependency()));
-
+        if (trackDependency == DependencyTracking.RESOURCE) {
+            explicitDependencies = null;
+        } else {
+            explicitDependencies = getExplicitDependencies(descriptor, ownerClass, convertDefault(descriptor.getTrackAnnotatedDependency()));
+        }
         switch (trackDependency) {
             case NONE:
                 if (explicitDependencies == null) {
@@ -76,6 +79,7 @@ public abstract class AbstractCacheManager implements CacheManager {
             case STATIC:
                 staticNode = createStaticNode();
                 break;
+            case RESOURCE:
             case INSTANCE:
                 staticNode = null;
                 break;
@@ -149,6 +153,9 @@ public abstract class AbstractCacheManager implements CacheManager {
 
     private DependencyTracking convertStatic(DependencyTracking tracking) {
         if (descriptor.isResourceView()) {
+            if (tracking == DependencyTracking.RESOURCE) {
+                return DependencyTracking.RESOURCE;
+            }
             return DependencyTracking.INSTANCE;
         }
         if (descriptor.isStatic() && tracking == DependencyTracking.INSTANCE) {
@@ -219,6 +226,7 @@ public abstract class AbstractCacheManager implements CacheManager {
             case STATIC:
                 return staticNode;
             case INSTANCE:
+            case RESOURCE:
                 return createInstanceNode();
             default:
                 throw new UnsupportedOperationException("Unknown value: " + trackDependency);
