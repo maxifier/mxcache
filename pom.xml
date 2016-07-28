@@ -24,6 +24,7 @@
         <module>mxcache-runtime</module>
         <module>mxcache-idea-plugin</module>
         <module>mxcache-maven-plugin</module>
+        <module>mxcache-gradle-plugin</module>
         <module>mxcache-tests</module>
         <module>mxcache-jmx</module>
         <module>mxcache-guice-integration</module>
