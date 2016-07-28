@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.maxifier.mxcache</groupId>
     <artifactId>mxcache</artifactId>
@@ -24,6 +25,7 @@
         <module>mxcache-runtime</module>
         <module>mxcache-idea-plugin</module>
         <module>mxcache-maven-plugin</module>
+        <module>mxcache-gradle-plugin</module>
         <module>mxcache-tests</module>
         <module>mxcache-jmx</module>
         <module>mxcache-guice-integration</module>
@@ -46,8 +48,16 @@
         <url>https://github.com/maxifier/mxcache.git</url>
         <connection>scm:git:git://github.com/maxifier/mxcache.git</connection>
         <developerConnection>scm:git:git@github.com:maxifier/mxcache.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
+
+    <repositories>
+        <repository>
+            <id>maven-central</id>
+            <name>maven-central</name>
+            <url>http://repo1.maven.org/maven</url>
+        </repository>
+    </repositories>
 
     <properties>
         <sonar.skippedModules>mxcache-asm,jconsole-stub,mxcache-idea-api-stubs</sonar.skippedModules>
