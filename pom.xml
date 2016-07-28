@@ -51,14 +51,6 @@
         <tag>HEAD</tag>
     </scm>
 
-    <repositories>
-        <repository>
-            <id>maven-central</id>
-            <name>maven-central</name>
-            <url>http://repo1.maven.org/maven</url>
-        </repository>
-    </repositories>
-
     <properties>
         <sonar.skippedModules>mxcache-asm,jconsole-stub,mxcache-idea-api-stubs</sonar.skippedModules>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
