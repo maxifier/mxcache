@@ -34,6 +34,7 @@
         <module>jconsole-stub</module>
         <module>mxcache-idea-api-stubs</module>
         <module>stubgen</module>
+        <module>jdk8-test</module>
     </modules>
 
     <url>http://github.com/maxifier/mxcache</url>
