@@ -369,10 +369,7 @@ public class MxCacheJConsolePlugin extends JConsolePlugin {
         private void fillRow(CompositeData cache, Object[] row) {
             for (com.maxifier.mxcache.jconsoleplugin.Attribute attr : com.maxifier.mxcache.jconsoleplugin.Attribute.values()) {
                 try {
-                    Object v = cache.get(attr.getKey());
-                    Object s = v == null ? "" : attr.transform(v);
-                    // todo add posibility to switch shortcutting off
-                    row[attr.ordinal()] = attr.isShortcutable() ? com.maxifier.mxcache.jconsoleplugin.Attribute.shortcutClassNames(s) : s;
+                    row[attr.ordinal()] = attr.getValueFromCache(cache);
                 } catch (InvalidKeyException e) {
                     // some attributes were added lately, so they may be missing
                     row[attr.ordinal()] = "";

@@ -48,4 +48,8 @@ final class Time implements Comparable<Time> {
         }
         return (int)(value/1000000) + "ms";
     }
+
+    public double getValue() {
+        return value;
+    }
 }
