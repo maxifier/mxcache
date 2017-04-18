@@ -4,6 +4,8 @@
 package com.maxifier.mxcache.impl.caches.def;
 
 import com.maxifier.mxcache.storage.ObjectObjectStorage;
+import com.maxifier.mxcache.transform.SmartReferenceManager;
+
 import gnu.trove.map.hash.THashMap;
 
 /**
@@ -13,6 +15,10 @@ import gnu.trove.map.hash.THashMap;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class ObjectObjectTroveStorage<K> extends THashMap<K, Object> implements ObjectObjectStorage<K> {
+
+    public ObjectObjectTroveStorage() {
+        SmartReferenceManager.switchOn();
+    }
 
     @Override
     public Object load(K key) {

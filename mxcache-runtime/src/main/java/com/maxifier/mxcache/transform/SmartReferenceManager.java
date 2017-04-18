@@ -3,6 +3,7 @@
  */
 package com.maxifier.mxcache.transform;
 
+import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,20 +11,36 @@ import java.lang.ref.ReferenceQueue;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
+ * @author Aleksey Tomin (aleksey.tomin@cxense.com)
  */
 public final class SmartReferenceManager {
-    private static final ReferenceQueue QUEUE = new ReferenceQueue();
-
-    static {
-        Thread t = new ReferenceThread();
-        t.setDaemon(true);
-        t.start();
-    }
+    private static volatile ReferenceQueue QUEUE;
 
     private SmartReferenceManager() {}
 
+    /**
+     * Reference queue for correct remove objects from ObjectObjectTroveStorage.
+     * Result is null before the first call {@link #switchOn()}
+     */
+    @Nullable
     public static <T> ReferenceQueue<T> getReferenceQueue() {
         return QUEUE;
+    }
+
+    /**
+     * Create queue and run thread
+     */
+    public static void switchOn() {
+        if (QUEUE == null) {
+            synchronized (SmartReferenceManager.class) {
+                if (QUEUE == null) {
+                    QUEUE =  new ReferenceQueue();
+                    Thread t = new ReferenceThread();
+                    t.setDaemon(true);
+                    t.start();
+                }
+            }
+        }
     }
 
     private static class ReferenceThread extends Thread {
