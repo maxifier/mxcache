@@ -4,7 +4,7 @@
     <description>instruments compiled classes to support @Cached methods,
         contains inspections for check common @Cached problems</description>
     <version>${project.version}</version>
-    <vendor url="http://maxifier.com/" email="alexander.kochurov@maxifier.com">Maxifier Ltd.</vendor>
+    <vendor url="http://maxifier.com/" email="aleksey.tomin@cxense.com">Maxifier Ltd. (A Cxense Company)</vendor>
 
     <application-components>
         <!--this code may be used only in idea 8-->
