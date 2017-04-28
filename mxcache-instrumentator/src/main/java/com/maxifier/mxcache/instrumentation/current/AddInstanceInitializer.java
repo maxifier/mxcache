@@ -22,7 +22,7 @@ public class AddInstanceInitializer extends ClassVisitor {
     private Type thisType;
 
     public AddInstanceInitializer(ClassVisitor cv, Method method) {
-        super(Opcodes.ASM4, cv);
+        super(Opcodes.ASM5, cv);
         this.method = method;
     }
 
@@ -35,7 +35,7 @@ public class AddInstanceInitializer extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(final int access, final String name, final String desc, String sign, String[] exceptions) {
         if (!Modifier.isStatic(access) && name.equals(CodegenHelper.CONSTRUCTOR_NAME)) {
-            return new AdviceAdapter(Opcodes.ASM4, super.visitMethod(access, name, desc, sign, exceptions), access, name, desc) {
+            return new AdviceAdapter(Opcodes.ASM5, super.visitMethod(access, name, desc, sign, exceptions), access, name, desc) {
                 @Override
                 protected void onMethodEnter() {
                     loadThis();

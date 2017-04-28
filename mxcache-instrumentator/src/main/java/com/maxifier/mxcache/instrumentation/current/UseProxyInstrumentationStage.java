@@ -42,7 +42,7 @@ abstract class UseProxyInstrumentationStage extends ClassVisitor implements Inst
     private String sourceFileName;
 
     public UseProxyInstrumentationStage(InstrumentatorImpl instrumentator, ClassVisitor cv, ClassVisitor nextDetector) {
-        super(Opcodes.ASM4, cv);
+        super(Opcodes.ASM5, cv);
         this.instrumentator = instrumentator;
         detector = new UseProxyDetector(nextDetector);
     }
@@ -156,7 +156,7 @@ abstract class UseProxyInstrumentationStage extends ClassVisitor implements Inst
 
     private class ProxyFactoryStaticInitializer extends AdviceAdapter {
         public ProxyFactoryStaticInitializer(MethodVisitor oldVisitor, int access, String name, String desc) {
-            super(Opcodes.ASM4, oldVisitor, access, name, desc);
+            super(Opcodes.ASM5, oldVisitor, access, name, desc);
         }
 
         @Override
