@@ -3,20 +3,16 @@
  */
 package com.maxifier.mxcache.hashing;
 
-import gnu.trove.TObjectHashingStrategy;
-
 import java.io.ObjectStreamException;
 import java.util.Arrays;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public final class IntArrayHashingStrategy implements TObjectHashingStrategy<int[]> {
+public final class IntArrayHashingStrategy implements gnu.trove.strategy.HashingStrategy<int[]> {
     private static final long serialVersionUID = 100L;
 
     private static final IntArrayHashingStrategy INSTANCE = new IntArrayHashingStrategy();
-
-    private IntArrayHashingStrategy() {}
 
     public static IntArrayHashingStrategy getInstance() {
         return INSTANCE;

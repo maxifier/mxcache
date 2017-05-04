@@ -3,17 +3,16 @@
  */
 package com.maxifier.mxcache.impl;
 
-import com.maxifier.mxcache.context.CacheContext;
-import com.maxifier.mxcache.hashing.HashingStrategyFactory;
-import com.maxifier.mxcache.provider.*;
+import com.maxifier.mxcache.provider.CacheDescriptor;
+import com.maxifier.mxcache.provider.Signature;
+import com.maxifier.mxcache.provider.StorageFactory;
 import com.maxifier.mxcache.storage.Storage;
 import com.maxifier.mxcache.transform.Ignore;
 import com.maxifier.mxcache.transform.SoftKey;
 import com.maxifier.mxcache.transform.WeakKey;
-import gnu.trove.TIntArrayList;
+import gnu.trove.list.array.TIntArrayList;
 
 import javax.annotation.Nonnull;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -21,17 +20,16 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
-public class DefaultStorageFactory<T> implements StorageFactory<T> {
+public class DefaultStorageFactory implements StorageFactory {
     private static final String CACHES_PACKAGE = "com.maxifier.mxcache.impl.caches.def.";
 
     private final Class implementation;
-    private final Object hashingStrategy;
 
     private final Constructor<? extends Storage> storageConstructor;
     private final int[] tupleIndices;
 
-    DefaultStorageFactory(CacheContext context, HashingStrategyFactory hashingStrategyFactory, CacheDescriptor descriptor) {
-        Signature transformedSignature = descriptor.getTransformedSignature();
+    DefaultStorageFactory(CacheDescriptor descriptor) {
+        Signature transformedSignature = descriptor.getTransformedSignature().overrideValue(Object.class);
         if (!transformedSignature.hasKeys()) {
             implementation = transformedSignature.getImplementationClass(CACHES_PACKAGE, "StorageImpl");
             tupleIndices = null;
@@ -45,11 +43,9 @@ public class DefaultStorageFactory<T> implements StorageFactory<T> {
                 tupleIndices = null;
             } else {
                 implementation = findClass(CACHES_PACKAGE + "Tuple" + Signature.toString(descriptor.getValueType()) + "WeakTroveStorage");
-                tupleIndices = p.toNativeArray();
+                tupleIndices = p.toArray();
             }
         }
-        hashingStrategy = hashingStrategyFactory.createHashingStrategy(context, descriptor.getMethod());
-
         storageConstructor = getStorageConstructor();
     }
 
@@ -63,10 +59,7 @@ public class DefaultStorageFactory<T> implements StorageFactory<T> {
 
     @SuppressWarnings({ "unchecked" })
     private Constructor<? extends Storage> getStorageConstructor() {
-        int desiredCount = hashingStrategy == null ? 0 : 1;
-        if (tupleIndices != null) {
-            desiredCount++;
-        }
+        int desiredCount = (tupleIndices == null) ? 0 : 1;
         for (Constructor<?> constructor : implementation.getConstructors()) {
             if (constructor.getParameterTypes().length == desiredCount) {
                 return (Constructor<? extends Storage>) constructor;
@@ -77,19 +70,11 @@ public class DefaultStorageFactory<T> implements StorageFactory<T> {
 
     @Nonnull
     @Override
-    public Storage createStorage(T owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
+    public Storage createStorage(Object owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
         if (tupleIndices == null) {
-            if (hashingStrategy != null) {
-                return storageConstructor.newInstance(hashingStrategy);
-            } else {
-                return storageConstructor.newInstance();
-            }
+            return storageConstructor.newInstance();
         } else {
-            if (hashingStrategy != null) {
-                return storageConstructor.newInstance(hashingStrategy, tupleIndices);
-            } else {
-                return storageConstructor.newInstance((Object) tupleIndices);
-            }
+            return storageConstructor.newInstance((Object) tupleIndices);
         }
     }
 

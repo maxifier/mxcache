@@ -3,29 +3,18 @@
  */
 package com.maxifier.mxcache.impl.caches.def;
 
-import gnu.trove.*;
-
 import com.maxifier.mxcache.storage.*;
 import static com.maxifier.mxcache.impl.caches.def.TroveHelper.*;
 
 /**
- * IntObjectTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
- * GENERATED FROM #SOURCE#
+ * GENERATED FROM P2OTroveStorage.template
  *
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class IntObjectTroveStorage<T> extends TIntObjectHashMap<Object> implements IntObjectStorage<T> {
-    public IntObjectTroveStorage() {
-    }
-
-    public IntObjectTroveStorage(TIntHashingStrategy strategy) {
-        super(strategy);        
-    }
-
+public class IntObjectTroveStorage extends gnu.trove.map.hash.TIntObjectHashMap<Object> implements IntObjectStorage {
     @Override
     public Object load(int key) {
         Object v = get(key);
@@ -39,7 +28,7 @@ public class IntObjectTroveStorage<T> extends TIntObjectHashMap<Object> implemen
     }
 
     @Override
-    public void save(int key, T value) {
+    public void save(int key, Object value) {
         put(key, value == null ? NULL_REPLACEMENT : value);
     }
 }

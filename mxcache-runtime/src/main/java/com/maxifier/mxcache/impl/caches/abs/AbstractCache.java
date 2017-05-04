@@ -11,8 +11,6 @@ import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.storage.Storage;
 import javax.annotation.Nullable;
 
-import java.util.concurrent.locks.Lock;
-
 /**
  * AbstractCache - parent for all caches.
  *
@@ -23,11 +21,12 @@ import java.util.concurrent.locks.Lock;
  *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-abstract class AbstractCache extends LightweightLock implements Cache, Storage {
+public abstract class AbstractCache extends LightweightLock implements Cache, Storage {
     private final MutableStatistics statistics;
+    protected final Object owner;
 
     private DependencyNode node;
-    protected final Object owner;
+    private volatile boolean dirty;
 
     protected AbstractCache(Object owner, @Nullable MutableStatistics statistics) {
         this.owner = owner;
@@ -40,13 +39,57 @@ abstract class AbstractCache extends LightweightLock implements Cache, Storage {
     }
 
     @Override
-    public Lock getLock() {
-        return this;
+    public DependencyNode getDependencyNode() {
+        return node;
     }
 
     @Override
     public Statistics getStatistics() {
         return statistics;
+    }
+
+    @Override
+    public void invalidate() {
+        dirty = true;
+        if (tryLock()) {
+            try {
+                if (dirty) {
+                    clear();
+                    dirty = false;
+                }
+            } finally {
+                unlock();
+            }
+        }
+    }
+
+    protected void postCheckDirty() {
+        if (dirty) {
+            if (tryLock()) {
+                try {
+                    if (dirty) {
+                        clear();
+                        dirty = false;
+                    }
+                } finally {
+                    unlock();
+                }
+            }
+        }
+    }
+
+    protected void preCheckDirty() {
+        if (dirty) {
+            lock();
+            try {
+                if (dirty) {
+                    clear();
+                    dirty = false;
+                }
+            } finally {
+                unlock();
+            }
+        }
     }
 
     protected final void miss(long dt) {
@@ -69,15 +112,5 @@ abstract class AbstractCache extends LightweightLock implements Cache, Storage {
         } finally {
             unlock();
         }
-    }
-
-    @Override
-    public DependencyNode getDependencyNode() {
-        return node;
-    }
-
-    @Override
-    public Object getCacheOwner() {
-        return owner;
     }
 }

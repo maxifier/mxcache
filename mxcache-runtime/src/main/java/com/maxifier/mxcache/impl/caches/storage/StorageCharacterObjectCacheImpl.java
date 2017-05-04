@@ -16,8 +16,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * StorageCharacterObjectCacheImpl<F>
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2OCache.template
@@ -25,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageCharacterObjectCacheImpl<F> extends AbstractCharacterObjectCache<F> implements StorageHolder<CharacterObjectStorage<F>> {
+public class StorageCharacterObjectCacheImpl<F> extends AbstractCharacterObjectCache<F> implements StorageHolder<CharacterObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private CharacterObjectStorage<F> storage;
+    private CharacterObjectStorage storage;
 
     public StorageCharacterObjectCacheImpl(Object owner, CharacterObjectCalculatable<F> calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull CharacterObjectStorage<F> storage) {
+    public void setStorage(@Nonnull CharacterObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -48,7 +46,7 @@ public class StorageCharacterObjectCacheImpl<F> extends AbstractCharacterObjectC
     }
 
     @Override
-    public void save(char key, F value) {
+    public void save(char key, Object value) {
         storage.save(key, value);
     }
 

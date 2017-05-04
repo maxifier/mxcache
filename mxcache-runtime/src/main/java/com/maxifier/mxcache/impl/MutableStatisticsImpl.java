@@ -14,16 +14,18 @@ import java.util.concurrent.atomic.AtomicLongFieldUpdater;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class MutableStatisticsImpl implements MutableStatistics {
-    private static final boolean USE_ATOMIC_UPDATERS = true;
-
-    private static final AtomicIntegerFieldUpdater<MutableStatisticsImpl> HITS_UPDATER = USE_ATOMIC_UPDATERS ? AtomicIntegerFieldUpdater.newUpdater(MutableStatisticsImpl.class, "hits") : null;
-    private static final AtomicIntegerFieldUpdater<MutableStatisticsImpl> MISSES_UPDATER = USE_ATOMIC_UPDATERS ? AtomicIntegerFieldUpdater.newUpdater(MutableStatisticsImpl.class, "misses") : null;
-    private static final AtomicLongFieldUpdater<MutableStatisticsImpl> TIME_UPDATER = USE_ATOMIC_UPDATERS ? AtomicLongFieldUpdater.newUpdater(MutableStatisticsImpl.class, "time") : null;
+    private static final AtomicIntegerFieldUpdater<MutableStatisticsImpl> HITS_UPDATER = AtomicIntegerFieldUpdater.newUpdater(MutableStatisticsImpl.class, "hits");
+    private static final AtomicIntegerFieldUpdater<MutableStatisticsImpl> MISSES_UPDATER = AtomicIntegerFieldUpdater.newUpdater(MutableStatisticsImpl.class, "misses");
+    private static final AtomicLongFieldUpdater<MutableStatisticsImpl> TIME_UPDATER = AtomicLongFieldUpdater.newUpdater(MutableStatisticsImpl.class, "time");
 
     @SuppressWarnings({"UnusedDeclaration"})
     // these fields are updated through atomic updaters
     private volatile long time;
+    @SuppressWarnings({"UnusedDeclaration"})
+    // these fields are updated through atomic updaters
     private volatile int hits;
+    @SuppressWarnings({"UnusedDeclaration"})
+    // these fields are updated through atomic updaters
     private volatile int misses;
 
     @Override
@@ -48,42 +50,20 @@ public class MutableStatisticsImpl implements MutableStatistics {
 
     @Override
     public void reset() {
-        if (USE_ATOMIC_UPDATERS) {
-            // int assignment is guaranteed to be atomic
-            hits = 0;
-            misses = 0;
-            TIME_UPDATER.set(this, 0L);
-        } else {
-            synchronized (this) {
-                hits = 0;
-                misses = 0;
-                time = 0;
-            }
-        }
+        HITS_UPDATER.set(this, 0);
+        MISSES_UPDATER.set(this, 0);
+        TIME_UPDATER.set(this, 0L);
     }
 
     @Override
     public void hit() {
-        if (USE_ATOMIC_UPDATERS) {
-            HITS_UPDATER.incrementAndGet(this);
-        } else {
-            synchronized (this) {
-                hits++;
-            }
-        }
+        HITS_UPDATER.incrementAndGet(this);
     }
 
     @Override
     public synchronized void miss(long time) {
-        if (USE_ATOMIC_UPDATERS) {
-            MISSES_UPDATER.incrementAndGet(this);
-            TIME_UPDATER.addAndGet(this, time);
-        } else {
-            synchronized (this) {
-                misses++;
-                this.time += time;
-            }
-        }
+        MISSES_UPDATER.incrementAndGet(this);
+        TIME_UPDATER.addAndGet(this, time);
     }
 
     @Override

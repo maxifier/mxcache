@@ -5,24 +5,18 @@ package com.maxifier.mxcache.impl.caches.def;
 
 import com.maxifier.mxcache.transform.SmartReference;
 
-import gnu.trove.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * ObjectObjectWeakTroveStorage
  *
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
- */
-public class ObjectObjectWeakTroveStorage<K extends SmartReference, V> extends ObjectObjectTroveStorage<K, V> {
+- */
+public class ObjectObjectWeakTroveStorage<K extends SmartReference> extends ObjectObjectTroveStorage<K> {
     private final List<K> removed = Collections.synchronizedList(new ArrayList<K>());
-
-    public ObjectObjectWeakTroveStorage() {
-    }
-
-    public ObjectObjectWeakTroveStorage(TObjectHashingStrategy<K> strategy) {
-        super(strategy);
-    }
 
     private void cleanup() {
         for(K k : removed) {
@@ -38,7 +32,7 @@ public class ObjectObjectWeakTroveStorage<K extends SmartReference, V> extends O
     }
 
     @Override
-    public void save(final K o, V t) {
+    public void save(final K o, Object t) {
         cleanup();
         o.setCallback(new Callback(o));
         super.save(o, t);

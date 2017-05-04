@@ -87,14 +87,14 @@ public class CacheDescriptorUTest {
             "</rule>";
 
     public void testCacheInterface() throws Exception {
-        CacheDescriptor<CacheDescriptorUTest> descriptor = new CacheDescriptor<CacheDescriptorUTest>(
+        CacheDescriptor descriptor = new CacheDescriptor(
                 CacheDescriptorUTest.class, 0, null,
                 Void.class, new Calculable() {}, "testProperties",
                 "()V", null, null, null, MxCacheConfigProviderImpl.loadRule(RULE_3), null);
         assert descriptor.getCacheInterface() == ObjectCache.class;
         assert descriptor.getCalculatableInterface() == ObjectCalculatable.class;
 
-        CacheDescriptor<CacheDescriptorUTest> descriptor2 = new CacheDescriptor<CacheDescriptorUTest>(
+        CacheDescriptor descriptor2 = new CacheDescriptor(
                 CacheDescriptorUTest.class, 0, String.class,
                 Void.class, new Calculable() {}, "testProperties",
                 "()V", null, null, null, MxCacheConfigProviderImpl.loadRule(RULE_3), null);
@@ -103,7 +103,7 @@ public class CacheDescriptorUTest {
     }
 
     public void testProperties() throws Exception {
-        CacheDescriptor<CacheDescriptorUTest> descriptor = new CacheDescriptor<CacheDescriptorUTest>(
+        CacheDescriptor descriptor = new CacheDescriptor(
                 CacheDescriptorUTest.class, 0, null,
                 Void.class, new Calculable() {}, "testProperties",
                 "()V", null, null, null, MxCacheConfigProviderImpl.loadRule(RULE_1), null);
@@ -120,7 +120,7 @@ public class CacheDescriptorUTest {
 
     @Test(expectedExceptions = PropertyConvertationException.class)
     public void testInvalidClassProperty() throws Exception {
-        CacheDescriptor<CacheDescriptorUTest> descriptor = new CacheDescriptor<CacheDescriptorUTest>(
+        CacheDescriptor descriptor = new CacheDescriptor(
                 CacheDescriptorUTest.class, 0, null,
                 Void.class, new Calculable() {}, "testProperties",
                 "()V", null, null, null, MxCacheConfigProviderImpl.loadRule(RULE_2), null);
@@ -129,7 +129,7 @@ public class CacheDescriptorUTest {
 
     @Test (expectedExceptions = PropertyConvertationException.class)
     public void testInvalidIntProperty() throws Exception {
-        CacheDescriptor<CacheDescriptorUTest> descriptor = new CacheDescriptor<CacheDescriptorUTest>(
+        CacheDescriptor descriptor = new CacheDescriptor(
                 CacheDescriptorUTest.class, 0, null,
                 Void.class, new Calculable() {}, "testProperties",
                 "()V", null, null, null, MxCacheConfigProviderImpl.loadRule(RULE_2), null);
@@ -138,7 +138,7 @@ public class CacheDescriptorUTest {
 
     @Test (expectedExceptions = PropertyConvertationException.class)
     public void testInvalidPropertyVectorForScalar() throws Exception {
-        CacheDescriptor<CacheDescriptorUTest> descriptor = new CacheDescriptor<CacheDescriptorUTest>(
+        CacheDescriptor descriptor = new CacheDescriptor(
                 CacheDescriptorUTest.class, 0, null,
                 Void.class, new Calculable() {}, "testProperties",
                 "()V", null, null, null, MxCacheConfigProviderImpl.loadRule(RULE_2), null);
@@ -147,7 +147,7 @@ public class CacheDescriptorUTest {
 
     @Test (expectedExceptions = PropertyConvertationException.class)
     public void testInvalidEnumProperty() throws Exception {
-        CacheDescriptor<CacheDescriptorUTest> descriptor = new CacheDescriptor<CacheDescriptorUTest>(
+        CacheDescriptor descriptor = new CacheDescriptor(
                 CacheDescriptorUTest.class, 0, null,
                 Void.class, new Calculable() {}, "testProperties",
                 "()V", null, null, null, MxCacheConfigProviderImpl.loadRule(RULE_3), null);
@@ -155,7 +155,7 @@ public class CacheDescriptorUTest {
     }
 
     public void testOverride() throws Exception {
-        CacheDescriptor<CacheDescriptorUTest> descriptor = new CacheDescriptor<CacheDescriptorUTest>(
+        CacheDescriptor descriptor = new CacheDescriptor(
                 CacheDescriptorUTest.class, 0, null,
                 Void.class, new Calculable() {}, "testOverride",
                 "()V", null, null, null, MxCacheConfigProviderImpl.loadRule(RULE_1, RULE_2), null);
@@ -167,7 +167,7 @@ public class CacheDescriptorUTest {
 
     @TestAnnotation(p1 = "a", p2 = 3, p3 = {"e1", "e5"})
     public void testAnnotation() throws Exception {
-        CacheDescriptor<CacheDescriptorUTest> descriptor = new CacheDescriptor<CacheDescriptorUTest>(
+        CacheDescriptor descriptor = new CacheDescriptor(
                 CacheDescriptorUTest.class, 0, null,
                 Void.class, new Calculable() {}, "testAnnotation",
                 "()V", null, null, null, MxCacheConfigProviderImpl.loadRule(RULE_1, RULE_2), null);
@@ -179,7 +179,7 @@ public class CacheDescriptorUTest {
     @TestAnnotation(p1 = "a", p2 = 3, p3 = { "e1", "e5" })
     @Strategy(RuleUTest.SomeStrategy.class)
     public void testImportantAnnotation() throws Exception {
-        CacheDescriptor<CacheDescriptorUTest> descriptor = new CacheDescriptor<CacheDescriptorUTest>(
+        CacheDescriptor descriptor = new CacheDescriptor(
                 CacheDescriptorUTest.class, 0, null,
                 Void.class, new Calculable() {}, "testImportantAnnotation",
                 "()V", null, null, null, MxCacheConfigProviderImpl.loadRule(RULE_IMPORTANT, RULE_2), null);
@@ -190,7 +190,7 @@ public class CacheDescriptorUTest {
     }
 
     public void testDefault() throws Exception {
-        CacheDescriptor<CacheDescriptorUTest> descriptor = new CacheDescriptor<CacheDescriptorUTest>(
+        CacheDescriptor descriptor = new CacheDescriptor(
                 CacheDescriptorUTest.class, 0, null,
                 Void.class, new Calculable() {}, "testDefault",
                 "()V", null, null, null, MxCacheConfigProviderImpl.loadRule(EMPTY_RULE), null);

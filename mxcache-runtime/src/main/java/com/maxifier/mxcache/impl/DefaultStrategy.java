@@ -4,8 +4,6 @@
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.context.CacheContext;
-import com.maxifier.mxcache.hashing.DefaultHashingStrategyFactory;
-import com.maxifier.mxcache.hashing.HashingStrategyFactory;
 import com.maxifier.mxcache.provider.*;
 import com.maxifier.mxcache.provider.CacheManager;
 
@@ -33,20 +31,12 @@ public class DefaultStrategy implements CachingStrategy {
         return INSTANCE;
     }
 
-    private final HashingStrategyFactory hashingStrategyFactory;
-
-    private DefaultStrategy() {
-        hashingStrategyFactory = DefaultHashingStrategyFactory.getInstance();
-    }
-
-    public DefaultStrategy(HashingStrategyFactory hashingStrategyFactory) {
-        this.hashingStrategyFactory = hashingStrategyFactory;
-    }
+    private DefaultStrategy() {}
 
     @Nonnull
     @Override
-    public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
-        return new StorageBasedCacheManager<T>(context, descriptor, new DefaultStorageFactory<T>(context, hashingStrategyFactory, descriptor));
+    public CacheManager getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor) {
+        return new StorageBasedCacheManager(context, ownerClass, descriptor, new DefaultStorageFactory(descriptor));
     }
 
     /**
@@ -57,25 +47,26 @@ public class DefaultStrategy implements CachingStrategy {
      * @param context context of creation
      * @param descriptor descriptor of cache
      * @param storageFactory requires storage factory class
-     * @param <T> type of owner
      * @return storage factory instance.
      */
-    public <T> StorageFactory<T> getStorageFactory(CacheContext context, CacheDescriptor<T> descriptor, Class<? extends StorageFactory<T>> storageFactory) {
-        //noinspection RedundantCast
+    public StorageFactory getStorageFactory(CacheContext context, CacheDescriptor descriptor, Class<? extends StorageFactory> storageFactory) {
         if (((Class)storageFactory) != DefaultStorageFactory.class) {
             if (StorageFactory.class.isAssignableFrom(storageFactory)) {
-                Constructor<? extends StorageFactory<T>> ctor = CustomStorageFactory.getCustomConstructor(storageFactory);
-                Object[] arguments = CustomStorageFactory.createArguments(ctor, context, descriptor);
-
-                try {
-                    return ctor.newInstance(arguments);
-                } catch (Exception e) {
-                    logger.error(String.format(CANNOT_INSTANTIATE_MESSAGE, descriptor, storageFactory), e);
+                Constructor<? extends StorageFactory> ctor = CustomStorageFactory.getCustomConstructor(storageFactory);
+                if (ctor != null) {
+                    Object[] arguments = CustomStorageFactory.createArguments(ctor, context, descriptor);
+                    try {
+                        return ctor.newInstance(arguments);
+                    } catch (Exception e) {
+                        logger.error(String.format(CANNOT_INSTANTIATE_MESSAGE, descriptor, storageFactory), e);
+                    }
+                } else {
+                    logger.error(String.format(CANNOT_INSTANTIATE_MESSAGE, descriptor, storageFactory));
                 }
             } else {
                 logger.error("Invalid cache manager for " + descriptor + " (" + storageFactory + " is not StorageFactory)");
             }
         }
-        return new DefaultStorageFactory<T>(context, hashingStrategyFactory, descriptor);
+        return new DefaultStorageFactory(descriptor);
     }
 }

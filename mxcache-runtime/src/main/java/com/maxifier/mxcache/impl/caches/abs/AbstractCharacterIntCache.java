@@ -5,6 +5,7 @@ package com.maxifier.mxcache.impl.caches.abs;
 
 import com.maxifier.mxcache.CacheFactory;
 import com.maxifier.mxcache.caches.*;
+import com.maxifier.mxcache.exceptions.*;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.CacheId;
 import com.maxifier.mxcache.impl.CalculatableHelper;
@@ -13,8 +14,6 @@ import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.storage.*;
 
 /**
- * AbstractCharacterIntCache
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PCache.template
@@ -22,7 +21,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractCharacterIntCache extends AbstractCache implements CharacterIntCache, CharacterIntStorage {
+public abstract class AbstractCharacterIntCache extends AbstractCache implements CharacterIntCache, CharacterObjectStorage {
     private final CharacterIntCalculatable calculatable;
 
     public AbstractCharacterIntCache(Object owner, CharacterIntCalculatable calculatable, MutableStatistics statistics) {
@@ -31,16 +30,20 @@ public abstract class AbstractCharacterIntCache extends AbstractCache implements
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public int getOrCreate(char o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
+            preCheckDirty();
             lock();
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    ExceptionHelper.throwIfExceptionRecordNotExpired(v);
+                    return (Integer)v;
                 }
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
@@ -57,9 +60,11 @@ public abstract class AbstractCharacterIntCache extends AbstractCache implements
                                 } finally {
                                     lock();
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    ExceptionHelper.throwIfExceptionRecordNotExpired(v);
+                                    return (Integer)v;
                                 }
                             }
                         }
@@ -69,17 +74,50 @@ public abstract class AbstractCharacterIntCache extends AbstractCache implements
                 }
             } finally {
                 unlock();
+                postCheckDirty();
             }
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected int create(char o) {
         long start = System.nanoTime();
-        int t = calculatable.calculate(owner, o);
-        long end = System.nanoTime();
-        miss(end - start);
-        save(o, t);
-        return t;
+        try {
+            int retry = 0;
+            // retry on exception loop
+            while (true) {
+                try {
+                    int t = calculatable.calculate(owner, o);
+                    // successful invocation => just store the value and return
+                    save(o, t);
+                    return t;
+                } catch (Exception e) {
+                    // We catch Exception here, but not Error and not Throwable.
+                    // this is because in case of Error we are likely have no chance even to save
+                    // an ExceptionRecord to a storage, so don't even try to do so.
+                    // For example in case of OOM (out of memory) it may be impossible to create
+                    // even a single new object.
+                    CacheExceptionHandler exceptionHandler = getDescriptor().getExceptionHandler();
+                    switch (exceptionHandler.getAction(retry, e)) {
+                        case RETRY:
+                            retry++;
+                            continue;
+                        case REMEMBER_AND_RETHROW:
+                            save(o, new ExceptionRecord(e, exceptionHandler.getRememberExceptionExpirationTimestamp(e)));
+                            // fall through
+                        case RETHROW:
+                        default:
+                            // this method always throws an exception
+                            ExceptionHelper.throwCheckedExceptionHack(e);
+                            break;
+                    }
+                }
+            }
+        } finally {
+            // record calculation time even if calculation fails
+            long end = System.nanoTime();
+            miss(end - start);
+        }
     }
 
     @Override

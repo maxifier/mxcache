@@ -10,15 +10,11 @@ import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.context.CacheContextImpl;
 import com.maxifier.mxcache.impl.instanceprovider.DefaultInstanceProvider;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
-import com.maxifier.mxcache.impl.resource.DependencyTracker;
-import com.maxifier.mxcache.provider.StorageFactory;
-import com.maxifier.mxcache.storage.IntStorage;
+import com.maxifier.mxcache.provider.*;
 import com.maxifier.mxcache.storage.ObjectObjectStorage;
+import com.maxifier.mxcache.storage.ObjectStorage;
 import com.maxifier.mxcache.storage.Storage;
 import com.maxifier.mxcache.interfaces.Statistics;
-import com.maxifier.mxcache.provider.CacheDescriptor;
-import com.maxifier.mxcache.provider.CacheManager;
-import com.maxifier.mxcache.provider.CachingStrategy;
 
 import javax.annotation.Nonnull;
 
@@ -28,7 +24,6 @@ import org.testng.annotations.Test;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
@@ -42,10 +37,135 @@ public class CacheProviderImplUTest {
     private static final int TEST_CALCULATABLE_FINGERPRINT = 0xBABE;
     private static final int TEST_CACHE_FINGERPRINT = 0xCAFE;
 
+    static final CacheProviderInterceptor NOP_INTERCEPTOR = new CacheProviderInterceptor() {
+        @Nullable
+        @Override
+        public CacheDescriptor registerCache(CacheDescriptor descriptor) {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public Cache createCache(RegistryEntry registryEntry, @Nullable Object instance, CacheContext context, Cache cache) {
+            return null;
+        }
+    };
+
+    static final CacheProviderInterceptor NOP_INTERCEPTOR_2 = new CacheProviderInterceptor() {
+        @Nullable
+        @Override
+        public  CacheDescriptor registerCache(CacheDescriptor descriptor) {
+            return descriptor;
+        }
+
+        @Nullable
+        @Override
+        public  Cache createCache(RegistryEntry registryEntry, @Nullable Object instance, CacheContext context, Cache cache) {
+            return cache;
+        }
+    };
+
+    static final CacheProviderInterceptor THROWING_INTERCEPTOR = new CacheProviderInterceptor() {
+        @Nullable
+        @Override
+        public  CacheDescriptor registerCache(CacheDescriptor descriptor) {
+            throw new IllegalStateException("Test exception");
+        }
+
+        @Nullable
+        @Override
+        public  Cache createCache(RegistryEntry registryEntry, @Nullable Object instance, CacheContext context, Cache cache) {
+            return null;
+        }
+    };
+
+    static final CacheProviderInterceptor THROWING_INTERCEPTOR_2 = new CacheProviderInterceptor() {
+        @Nullable
+        @Override
+        public  CacheDescriptor registerCache(CacheDescriptor descriptor) {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public  Cache createCache(RegistryEntry registryEntry, @Nullable Object instance, CacheContext context, Cache cache) {
+            throw new IllegalStateException("Test exception");
+        }
+    };
+
+    static final CacheProviderInterceptor OVERRIDE_CALCULABLE = new CacheProviderInterceptor() {
+        @Nullable
+        @Override
+        public  CacheDescriptor registerCache(CacheDescriptor descriptor) {
+            return descriptor.overrideCalculable(new IntCalculatable() {
+                @Override
+                public int calculate(Object owner) {
+                    return 999;
+                }
+            });
+        }
+
+        @Nullable
+        @Override
+        public  Cache createCache(RegistryEntry registryEntry, @Nullable Object instance, CacheContext context, Cache cache) {
+            return null;
+        }
+    };
+
+    static final CacheProviderInterceptor OVERRIDE_CACHE = new CacheProviderInterceptor() {
+        @Nullable
+        @Override
+        public  CacheDescriptor registerCache(CacheDescriptor descriptor) {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public  Cache createCache(RegistryEntry registryEntry, final @Nullable Object instance, CacheContext context, Cache cache) {
+            return new IntCache() {
+                @Override
+                public int getOrCreate() {
+                    return 987;
+                }
+
+                @Override
+                public int getSize() {
+                    return 0;
+                }
+
+                @Override
+                public CacheDescriptor getDescriptor() {
+                    return null;
+                }
+
+                @Override
+                public void setDependencyNode(DependencyNode node) {
+
+                }
+
+                @Override
+                public DependencyNode getDependencyNode() {
+                    throw new UnsupportedOperationException();
+                }
+
+                @Override
+                public void invalidate() {
+
+                }
+
+                @Nullable
+                @Override
+                public Statistics getStatistics() {
+                    return null;
+                }
+            };
+        }
+    };
+
     static class Y implements CachingStrategy {
         @Nonnull
         @Override
-        public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
+        public CacheManager getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor) {
             throw new UnsupportedOperationException();
         }
     }
@@ -74,24 +194,24 @@ public class CacheProviderImplUTest {
 
         @Nonnull
         @Override
-        public synchronized <T> CacheManager<T> getManager(CacheContext context, final CacheDescriptor<T> descriptor) {
-            return new XManager<T>(descriptor);
+        public synchronized CacheManager getManager(CacheContext context, Class<?> ownerClass, final CacheDescriptor descriptor) {
+            return new XManager(descriptor);
         }
 
-        public class XManager<T> implements CacheManager<T> {
-            private final CacheDescriptor<T> descriptor;
+        public class XManager implements CacheManager {
+            private final CacheDescriptor descriptor;
 
-            public XManager(CacheDescriptor<T> descriptor) {
+            public XManager(CacheDescriptor descriptor) {
                 this.descriptor = descriptor;
             }
 
             @Override
-            public CacheDescriptor<T> getDescriptor() {
+            public CacheDescriptor getDescriptor() {
                 return descriptor;
             }
 
             @Override
-            public Cache createCache(final @Nullable T owner) {
+            public Cache createCache(final @Nullable Object owner) {
                 return new IntCache() {
                     @Override
                     public int getOrCreate() {
@@ -103,12 +223,12 @@ public class CacheProviderImplUTest {
                     }
 
                     @Override
-                    public Lock getLock() {
+                    public DependencyNode getDependencyNode() {
                         throw new UnsupportedOperationException();
                     }
 
                     @Override
-                    public void clear() {
+                    public void invalidate() {
                         throw new UnsupportedOperationException();
                     }
 
@@ -126,16 +246,6 @@ public class CacheProviderImplUTest {
                     public CacheDescriptor getDescriptor() {
                         return null;
                     }
-
-                    @Override
-                    public DependencyNode getDependencyNode() {
-                        return DependencyTracker.DUMMY_NODE;
-                    }
-
-                    @Override
-                    public Object getCacheOwner() {
-                        return owner;
-                    }
                 };
             }
 
@@ -146,6 +256,11 @@ public class CacheProviderImplUTest {
 
             @Override
             public CacheContext getContext() {
+                return null;
+            }
+
+            @Override
+            public Class<?> getOwnerClass() {
                 return null;
             }
         }
@@ -408,7 +523,7 @@ public class CacheProviderImplUTest {
         List<CacheManager> caches = p.getCaches();
         assert caches.size() == 1;
         CacheDescriptor descriptor = caches.get(0).getDescriptor();
-        assert descriptor.getOwnerClass() == this.getClass();
+        assert descriptor.getDeclaringClass() == this.getClass();
         assert descriptor.getId() == 0;
 
         assert c != null;
@@ -428,19 +543,151 @@ public class CacheProviderImplUTest {
         assert с.getOrCreate() == 132;
     }
 
-    private static class TestStorage implements IntStorage {
-        @Override
-        public boolean isCalculated() {
-            return true;
-        }
+    public void testInterceptorNoOverride() {
+        CacheProviderImpl p = new CacheProviderImpl(false);
+        p.registerCache(getClass(), 0, null, int.class, null, null, new IntCalculatable() {
+            @Override
+            public int calculate(Object owner) {
+                return 14;
+            }
+        }, "y", "()I", null);
 
+        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
+        assertEquals(cache.getOrCreate(), 14);
+
+        p.intercept(NOP_INTERCEPTOR);
+
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
+        assertEquals(cache.getOrCreate(), 14);
+
+        assertTrue(p.removeInterceptor(NOP_INTERCEPTOR));
+        // try to remove interceptor twice
+        assertFalse(p.removeInterceptor(NOP_INTERCEPTOR));
+
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
+        assertEquals(cache.getOrCreate(), 14);
+    }
+
+    public void testInterceptorThrowsException() {
+        CacheProviderImpl p = new CacheProviderImpl(false);
+
+        p.intercept(THROWING_INTERCEPTOR);
+
+        // exception in interceptor must be ignored
+        p.registerCache(getClass(), 0, null, int.class, null, null, new IntCalculatable() {
+            @Override
+            public int calculate(Object owner) {
+                return 14;
+            }
+        }, "y", "()I", null);
+
+        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
+        assertEquals(cache.getOrCreate(), 14);
+
+        assertTrue(p.removeInterceptor(THROWING_INTERCEPTOR));
+    }
+
+    public void testInterceptorThrowsException2() {
+        CacheProviderImpl p = new CacheProviderImpl(false);
+        p.registerCache(getClass(), 0, null, int.class, null, null, new IntCalculatable() {
+            @Override
+            public int calculate(Object owner) {
+                return 14;
+            }
+        }, "y", "()I", null);
+
+        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
+        assertEquals(cache.getOrCreate(), 14);
+
+        p.intercept(THROWING_INTERCEPTOR_2);
+
+        // exception in interceptor must be ignored
+
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
+        assertEquals(cache.getOrCreate(), 14);
+
+        assertTrue(p.removeInterceptor(THROWING_INTERCEPTOR_2));
+
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
+        assertEquals(cache.getOrCreate(), 14);
+    }
+
+    public void testInterceptorNoOverride2() {
+        CacheProviderImpl p = new CacheProviderImpl(false);
+        p.registerCache(getClass(), 0, null, int.class, null, null, new IntCalculatable() {
+            @Override
+            public int calculate(Object owner) {
+                return 14;
+            }
+        }, "y", "()I", null);
+
+        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
+        assertEquals(cache.getOrCreate(), 14);
+
+        p.intercept(NOP_INTERCEPTOR_2);
+
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
+        assertEquals(cache.getOrCreate(), 14);
+
+        assertTrue(p.removeInterceptor(NOP_INTERCEPTOR_2));
+
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
+        assertEquals(cache.getOrCreate(), 14);
+    }
+
+    public void testInterceptorOverrideCalculable() {
+        CacheProviderImpl p = new CacheProviderImpl(false);
+
+        p.intercept(OVERRIDE_CALCULABLE);
+
+        p.registerCache(getClass(), 0, null, int.class, null, null, new IntCalculatable() {
+            @Override
+            public int calculate(Object owner) {
+                return 14;
+            }
+        }, "y", "()I", null);
+
+        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
+        assertEquals(cache.getOrCreate(), 999);
+
+        assertTrue(p.removeInterceptor(OVERRIDE_CALCULABLE));
+
+        // descriptor is already changed, removal of interceptor doesn't affect it
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
+        assertEquals(cache.getOrCreate(), 999);
+    }
+
+    public void testInterceptorOverrideCache() {
+        CacheProviderImpl p = new CacheProviderImpl(false);
+        p.registerCache(getClass(), 0, null, int.class, null, null, new IntCalculatable() {
+            @Override
+            public int calculate(Object owner) {
+                return 14;
+            }
+        }, "y", "()I", null);
+
+        IntCache cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
+        assertEquals(cache.getOrCreate(), 14);
+
+        p.intercept(OVERRIDE_CACHE);
+
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
+        assertEquals(cache.getOrCreate(), 987);
+
+        assertTrue(p.removeInterceptor(OVERRIDE_CACHE));
+
+        cache = (IntCache) p.createCache(getClass(), 0, this, CacheFactory.getDefaultContext());
+        assertEquals(cache.getOrCreate(), 14);
+    }
+
+    private static class TestStorage implements ObjectStorage {
         @Override
-        public int load() {
+        public Object load() {
             return TEST_CACHE_FINGERPRINT;
         }
 
         @Override
-        public void save(int v) {
+        public void save(Object v) {
             throw new UnsupportedOperationException();
         }
 
@@ -468,8 +715,8 @@ public class CacheProviderImplUTest {
         when(sp.forClass(X.class)).thenReturn(new X() {
             @Nonnull
             @Override
-            public synchronized <T> CacheManager<T> getManager(final CacheContext context, CacheDescriptor<T> descriptor) {
-                return new XManager<T>(descriptor) {
+            public synchronized CacheManager getManager(final CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor) {
+                return new XManager(descriptor) {
                     @Override
                     public String toString() {
                         return context.toString();

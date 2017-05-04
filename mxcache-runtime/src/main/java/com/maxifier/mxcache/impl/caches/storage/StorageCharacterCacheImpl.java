@@ -16,8 +16,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * StorageCharacterCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -25,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageCharacterCacheImpl extends AbstractCharacterCache implements StorageHolder<CharacterStorage> {
+public class StorageCharacterCacheImpl extends AbstractCharacterCache implements StorageHolder<ObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private CharacterStorage storage;
+    private ObjectStorage storage;
 
     public StorageCharacterCacheImpl(Object owner, CharacterCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull CharacterStorage storage) {
+    public void setStorage(@Nonnull ObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -43,17 +41,12 @@ public class StorageCharacterCacheImpl extends AbstractCharacterCache implements
     }
 
     @Override
-    public boolean isCalculated() {
-        return storage.isCalculated();
-    }
-
-    @Override
-    public char load() {
+    public Object load() {
         return storage.load();
     }
 
     @Override
-    public void save(char value) {
+    public void save(Object value) {
         storage.save(value);
     }
 

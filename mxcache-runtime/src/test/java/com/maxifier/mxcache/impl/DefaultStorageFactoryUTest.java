@@ -4,6 +4,7 @@
 package com.maxifier.mxcache.impl;
 
 import com.maxifier.mxcache.CacheFactory;
+import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.clean.Cleanable;
 import com.maxifier.mxcache.hashing.HashingStrategy;
 import com.maxifier.mxcache.hashing.IdentityHashing;
@@ -11,16 +12,15 @@ import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.proxy.ProxyFactory;
 import com.maxifier.mxcache.proxy.Resolvable;
+import com.maxifier.mxcache.transform.Transform;
 import com.maxifier.mxcache.transform.WeakKey;
 import com.maxifier.mxcache.tuple.Tuple;
 import com.maxifier.mxcache.tuple.TupleFactory;
 import com.maxifier.mxcache.tuple.TupleGenerator;
-import com.maxifier.mxcache.transform.Transform;
-import gnu.trove.TObjectIdentityHashingStrategy;
+import gnu.trove.strategy.IdentityHashingStrategy;
 import junit.framework.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import com.maxifier.mxcache.caches.*;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
@@ -98,15 +98,11 @@ public class DefaultStorageFactoryUTest {
             return Long.toString(r.x) + x + s;
         }
 
-        String z(@HashingStrategy(TObjectIdentityHashingStrategy.class) String b) {
-            return b;
-        }
-
         int[] w(int[] b) {
             return b;
         }
 
-        String q(@IdentityHashing String b) {
+        String q(String b) {
             return b;
         }
     }
@@ -117,94 +113,22 @@ public class DefaultStorageFactoryUTest {
         CacheFactory.registerInstance(INSTANCE, T.class);
     }
 
-    @SuppressWarnings ({ "unchecked", "RedundantStringConstructorCall" })
-    public void testHashedArray() {
-        ObjectObjectCalculatable<int[], int[]> calculatable = mock(ObjectObjectCalculatable.class);
-        CacheDescriptor<T> desc = new CacheDescriptor<T>(T.class, 0, int[].class, int[].class, calculatable, "w", "([I)[I", null, null, null, null);
-        assertEquals(desc.getKeyType(), int[].class);
-        assertEquals(desc.getValueType(), int[].class);
-        assertFalse(desc.isStatic());
-
-        CacheManager<T> d = createDefaultManager(desc);
-        ObjectObjectCache<int[], int[]> c = (ObjectObjectCache) d.createCache(INSTANCE);
-        assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
-        // it should be empty
-        assertEquals(c.getSize(), 0);
-        // and also it should have lock assigned
-        assertNotNull(c.getLock());
-        int[] a1 = { 3, 4 };
-        int[] a2 = { 3, 4 };
-        assert a1 != a2;
-        assertNull(c.getOrCreate(a1));
-        assertNull(c.getOrCreate(a1));
-        assertNull(c.getOrCreate(a2));
-        assertNull(c.getOrCreate(a2));
-        verify(calculatable, times(1)).calculate(INSTANCE, a1);
-    }
-
     public void testUseProxy() {
         ObjectObjectCalculatable<int[], int[]> calculatable = mock(ObjectObjectCalculatable.class);
-        CacheDescriptor<T> desc = new CacheDescriptor<T>(T.class, 0, int[].class, int[].class, calculatable, "w", "([I)[I", null, null, null, new ProxyFactory<int[]>() {
+        CacheDescriptor desc = new CacheDescriptor(T.class, 0, int[].class, int[].class, calculatable, "w", "([I)[I", null, null, null, new ProxyFactory<int[]>() {
             @Override
             public int[] proxy(Class<int[]> expected, Resolvable<int[]> value) {
                 Assert.assertNull(value.getValue());
                 return TEST_ARRAY;
             }
         });
-        CacheManager<T> d = createDefaultManager(desc);
+        CacheManager d = createDefaultManager(T.class, desc);
         ObjectObjectCache<int[], int[]> c = (ObjectObjectCache) d.createCache(INSTANCE);
         Assert.assertEquals(c.getOrCreate(null), TEST_ARRAY);
-        Assert.assertNotNull(c.getDependencyNode());
     }
 
-    private static <T> CacheManager<T> createDefaultManager(CacheDescriptor<T> desc) {
-        return DefaultStrategy.getInstance().getManager(CacheFactory.getDefaultContext(), desc);
-    }
-
-    @SuppressWarnings ({ "unchecked", "RedundantStringConstructorCall" })
-    public void testCustomStrategy() {
-        ObjectObjectCalculatable<String, String> calculatable = mock(ObjectObjectCalculatable.class);
-        CacheDescriptor<T> desc = new CacheDescriptor<T>(T.class, 0, String.class, String.class, calculatable, "z", "(Ljava/lang/String;)Ljava/lang/String;", null, null, null, null);
-        assert desc.getKeyType() == String.class;
-        assert desc.getValueType() == String.class;
-        assert !desc.isStatic();
-
-        CacheManager<T> d = createDefaultManager(desc);
-        ObjectObjectCache<String, String> c = (ObjectObjectCache) d.createCache(INSTANCE);
-        assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
-        // it should be empty
-        assert c.getSize() == 0;
-        // and also it should have lock assigned
-        assert c.getLock() != null;
-        assert c.getOrCreate("123") == null;
-        assert c.getOrCreate("123") == null;
-        assert c.getOrCreate("123") == null;
-        verify(calculatable, times(1)).calculate(INSTANCE, "123");
-        assert c.getOrCreate(new String("123")) == null;
-        verify(calculatable, times(2)).calculate(INSTANCE, "123");
-    }
-
-    @SuppressWarnings ({ "unchecked", "RedundantStringConstructorCall" })
-    public void testIdentityHashing() {
-        ObjectObjectCalculatable<String, String> calculatable = mock(ObjectObjectCalculatable.class);
-        CacheDescriptor<T> desc = new CacheDescriptor<T>(T.class, 0, String.class, String.class, calculatable, "q", "(Ljava/lang/String;)Ljava/lang/String;", null, null, null, null);
-        assert desc.getKeyType() == String.class;
-        assert desc.getValueType() == String.class;
-        assert !desc.isStatic();
-
-        CacheManager<T> d = createDefaultManager(desc);
-        ObjectObjectCache<String, String> c = (ObjectObjectCache) d.createCache(INSTANCE);
-        assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
-        // it should be empty
-        assert c.getSize() == 0;
-        // and also it should have lock assigned
-        assert c.getLock() != null;
-        assert c.getOrCreate("123") == null;
-        assert c.getOrCreate("123") == null;
-        assert c.getOrCreate("123") == null;
-        verify(calculatable, times(1)).calculate(INSTANCE, "123");
-        assert c.getOrCreate(new String("123")) == null;
-        verify(calculatable, times(2)).calculate(INSTANCE, "123");
+    private static  CacheManager createDefaultManager(Class<?> ownerClass, CacheDescriptor desc) {
+        return DefaultStrategy.getInstance().getManager(CacheFactory.getDefaultContext(), ownerClass, desc);
     }
 
     public static class TestProxyFactory implements ProxyFactory<String> {
@@ -219,8 +143,8 @@ public class DefaultStorageFactoryUTest {
     public void testWithProxy() {
         ObjectObjectCalculatable<String, String> calculatable = mock(ObjectObjectCalculatable.class);
         when(calculatable.calculate(INSTANCE, "?")).thenReturn("!");
-        CacheDescriptor<T> desc = new CacheDescriptor<T>(T.class, 0, String.class, String.class, calculatable, "q", "(Ljava/lang/String;)Ljava/lang/String;", null, null, null, new TestProxyFactory());
-        CacheManager<T> d = createDefaultManager(desc);
+        CacheDescriptor desc = new CacheDescriptor(T.class, 0, String.class, String.class, calculatable, "q", "(Ljava/lang/String;)Ljava/lang/String;", null, null, null, new TestProxyFactory());
+        CacheManager d = createDefaultManager(T.class, desc);
         ObjectObjectCache cache = (ObjectObjectCache) d.createCache(INSTANCE);
         assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
         assertEquals(cache.getOrCreate("?"), "!proxied");
@@ -228,18 +152,16 @@ public class DefaultStorageFactoryUTest {
 
     private static <K, V> void test(Class<K> key, Class<V> value, Class<? extends Cache> cache) {
         // yes, this test is hacky! the methods isn't correct
-        CacheDescriptor<T> desc = new CacheDescriptor<T>(T.class, 0, key, value, null, "x", "()V", null, null, null, null);
+        CacheDescriptor desc = new CacheDescriptor(T.class, 0, key, value, null, "x", "()V", null, null, null, null);
         assertEquals(desc.getKeyType(), key);
         assertEquals(desc.getValueType(), value);
         assert !desc.isStatic();
         
-        CacheManager<T> d = createDefaultManager(desc);
+        CacheManager d = createDefaultManager(T.class, desc);
         Cache c = d.createCache(INSTANCE);
         assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
         // it should be empty
         assertEquals(c.getSize(), 0);
-        // and also it should have lock assigned
-        assertNotNull(c.getLock());
         assertTrue(cache.isInstance(c), "Cache for " + key + " -> " + value + " should be instance of " + cache + " but is " + c.getClass());
     }
 
@@ -287,22 +209,22 @@ public class DefaultStorageFactoryUTest {
     }
 
     public void testStaticCache() {
-        CacheDescriptor<T> descriptor = new CacheDescriptor<T>(T.class, 0, int.class, int.class, null, "y", "()V", null, null, null, null);
+        CacheDescriptor descriptor = new CacheDescriptor(T.class, 0, int.class, int.class, null, "y", "()V", null, null, null, null);
         assertTrue(descriptor.isStatic());
-        CacheManager<T> d = createDefaultManager(descriptor);
+        CacheManager d = createDefaultManager(T.class, descriptor);
         @SuppressWarnings({"UnusedDeclaration"})
         Cache cache = d.createCache(null);
         assertEquals(CacheFactory.getCaches(d.getDescriptor()).size(), 1);
     }
 
     public void testTransformToPrimitive() throws InterruptedException {
-        CacheDescriptor<T> descriptor = new CacheDescriptor<T>(T.class, 0, Key.class, long.class, new ObjectLongCalculatable<Key>() {
+        CacheDescriptor descriptor = new CacheDescriptor(T.class, 0, Key.class, long.class, new ObjectLongCalculatable<Key>() {
             @Override
             public long calculate(Object owner, Key o) {
                 return o.x;
             }
         }, "r", "(Lcom.maxifier.mxcache.impl.DefaultStorageFactoryUTest$Key;)J", null, null, null, null);
-        CacheManager<T> d = createDefaultManager(descriptor);
+        CacheManager d = createDefaultManager(T.class, descriptor);
         // noinspection unchecked
         ObjectLongCache<Key> c = (ObjectLongCache<Key>) d.createCache(INSTANCE);
 
@@ -325,13 +247,13 @@ public class DefaultStorageFactoryUTest {
     }
 
     public void testTransformToObject() throws InterruptedException {
-        CacheDescriptor<T> desc = new CacheDescriptor<T>(T.class, 0, long.class, String.class, new LongObjectCalculatable<String>() {
+        CacheDescriptor desc = new CacheDescriptor(T.class, 0, long.class, String.class, new LongObjectCalculatable<String>() {
             @Override
             public String calculate(Object owner, long o) {
                 return Long.toString(o);
             }
         }, "b", "(J)Ljava/lang/String;", null, null, null, null);
-        CacheManager<T> d = createDefaultManager(desc);
+        CacheManager d = createDefaultManager(T.class, desc);
         // noinspection unchecked
         LongObjectCache<String> c = (LongObjectCache<String>) d.createCache(INSTANCE);
 
@@ -347,13 +269,13 @@ public class DefaultStorageFactoryUTest {
     }
 
     public void testWeakCaches() throws InterruptedException {
-        CacheDescriptor<T> descriptor = new CacheDescriptor<T>(T.class, 0, Key.class, String.class, new ObjectObjectCalculatable<Key, String>() {
+        CacheDescriptor descriptor = new CacheDescriptor(T.class, 0, Key.class, String.class, new ObjectObjectCalculatable<Key, String>() {
             @Override
             public String calculate(Object owner, Key o) {
                 return Long.toString(o.x);
             }
         }, "w", "(Lcom.maxifier.mxcache.impl.DefaultStorageFactoryUTest$Key;)Ljava/lang/String;", null, null, null, null);
-        CacheManager<T> d = createDefaultManager(descriptor);
+        CacheManager d = createDefaultManager(T.class, descriptor);
         // noinspection unchecked
         ObjectObjectCache<Key, String> c = (ObjectObjectCache<Key, String>) d.createCache(INSTANCE);
 
@@ -380,15 +302,15 @@ public class DefaultStorageFactoryUTest {
     }
 
     public void testTupleWeakCaches() throws InterruptedException {
-        TupleFactory factory = TupleGenerator.getTupleFactory(Key.class, String.class, String.class);
+        TupleFactory factory = TupleGenerator.createTupleFactory(new gnu.trove.strategy.HashingStrategy[3], Key.class, String.class, String.class);
 
-        CacheDescriptor<T> descriptor = new CacheDescriptor<T>(T.class, 0, factory.getTupleClass(), String.class, new ObjectObjectCalculatable<Tuple, String>() {
+        CacheDescriptor descriptor = new CacheDescriptor(T.class, 0, factory.getTupleClass(), String.class, new ObjectObjectCalculatable<Tuple, String>() {
             @Override
             public String calculate(Object owner, Tuple o) {
                 return Long.toString(o.<Key>get(0).x) + o.<String>get(1) + o.<String>get(2);
             }
         }, "w2", "(Lcom.maxifier.mxcache.impl.DefaultStorageFactoryUTest$Key;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", null, null, null, null);
-        CacheManager<T> d = createDefaultManager(descriptor);
+        CacheManager d = createDefaultManager(T.class, descriptor);
         // noinspection unchecked
         ObjectObjectCache<Tuple, String> c = (ObjectObjectCache<Tuple, String>) d.createCache(INSTANCE);
 

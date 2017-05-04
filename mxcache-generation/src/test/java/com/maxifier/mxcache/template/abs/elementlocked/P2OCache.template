@@ -5,6 +5,7 @@ package com.maxifier.mxcache.impl.caches.abs.elementlocked;
 
 import com.maxifier.mxcache.CacheFactory;
 import com.maxifier.mxcache.caches.*;
+import com.maxifier.mxcache.exceptions.*;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.CacheId;
 import com.maxifier.mxcache.impl.CalculatableHelper;
@@ -16,8 +17,6 @@ import java.util.concurrent.locks.Lock;
 #ENDIF#
 
 /**
- * Abstract#EG##FG#Cache
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM #SOURCE#
@@ -25,7 +24,7 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache implements #EG##FG#Cache, #EG##FG#ElementLockedStorage {
+public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache implements #EG##FG#Cache, #EG#ObjectElementLockedStorage {
     private final #EG##FG#Calculatable calculatable;
 
     public Abstract#E##F#Cache(Object owner, #EG##FG#Calculatable calculatable, MutableStatistics statistics) {
@@ -39,12 +38,14 @@ public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache i
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner#IF_E#, o#ENDIF#);
         } else {
+            preCheckDirty();
             #IF_E#lock(o);#ELSE#Lock lock = getLock();
             if (lock != null) {
                 lock.lock();
             }#ENDIF#
             try {
                 Object v = load(#IF_E#o#ENDIF#);
+                ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                 if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
@@ -70,6 +71,7 @@ public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache i
                                     }#ENDIF#
                                 }
                                 v = load(#IF_E#o#ENDIF#);
+                                ExceptionHelper.throwIfExceptionRecordNotExpired(v);
                                 if (v != UNDEFINED) {
                                     hit();
                                     return (#fg#)v;
@@ -84,18 +86,50 @@ public abstract class Abstract#EG##FG#Cache extends AbstractElementLockedCache i
                 #IF_E#unlock(o);#ELSE#if (lock != null) {
                     lock.unlock();
                 }#ENDIF#
+                postCheckDirty();
             }
         }
     }
 
     @SuppressWarnings({ "unchecked" })
-    protected #fg# create(#IF_E##eg# key#ENDIF#) {
+    protected #fg# create(#IF_E##eg# o#ENDIF#) {
         long start = System.nanoTime();
-        #fg# t = calculatable.calculate(owner#IF_E#, key#ENDIF#);
-        long end = System.nanoTime();
-        miss(end - start);
-        save(#IF_E#key, #ENDIF#t);
-        return t;
+        try {
+            int retry = 0;
+            // retry on exception loop
+            while (true) {
+                try {
+                    #fg# t = calculatable.calculate(owner#IF_E#, o#ENDIF#);
+                    // successful invocation => just store the value and return
+                    save(#IF_E#o, #ENDIF#t);
+                    return t;
+                } catch (Exception e) {
+                    // We catch Exception here, but not Error and not Throwable.
+                    // this is because in case of Error we are likely have no chance even to save
+                    // an ExceptionRecord to a storage, so don't even try to do so.
+                    // For example in case of OOM (out of memory) it may be impossible to create
+                    // even a single new object.
+                    CacheExceptionHandler exceptionHandler = getDescriptor().getExceptionHandler();
+                    switch (exceptionHandler.getAction(retry, e)) {
+                        case RETRY:
+                            retry++;
+                            continue;
+                        case REMEMBER_AND_RETHROW:
+                            save(#IF_E#o, #ENDIF#new ExceptionRecord(e, exceptionHandler.getRememberExceptionExpirationTimestamp(e)));
+                            // fall through
+                        case RETHROW:
+                        default:
+                            // this method always throws an exception
+                            ExceptionHelper.throwCheckedExceptionHack(e);
+                            break;
+                    }
+                }
+            }
+        } finally {
+            // record calculation time even if calculation fails
+            long end = System.nanoTime();
+            miss(end - start);
+        }
     }
 
     @Override

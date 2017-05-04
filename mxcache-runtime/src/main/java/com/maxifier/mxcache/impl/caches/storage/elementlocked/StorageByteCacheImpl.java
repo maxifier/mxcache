@@ -19,8 +19,6 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * StorageByteCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -28,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageByteCacheImpl extends AbstractByteCache implements StorageHolder<ByteElementLockedStorage> {
-    private ByteElementLockedStorage storage;
+public class StorageByteCacheImpl extends AbstractByteCache implements StorageHolder<ObjectElementLockedStorage> {
+    private ObjectElementLockedStorage storage;
 
     public StorageByteCacheImpl(Object owner, ByteCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull ByteElementLockedStorage storage) {
+    public void setStorage(@Nonnull ObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -44,17 +42,12 @@ public class StorageByteCacheImpl extends AbstractByteCache implements StorageHo
     }
 
     @Override
-    public boolean isCalculated() {
-        return storage.isCalculated();
-    }
-
-    @Override
-    public byte load() {
+    public Object load() {
         return storage.load();
     }
 
     @Override
-    public void save(byte value) {
+    public void save(Object value) {
         storage.save(value);
     }
 

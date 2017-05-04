@@ -46,7 +46,7 @@ class CachedInstrumentationStage219 extends CachedInstrumentationStage {
 
     @Override
     protected CachedMethodVisitor createMethodVisitor(int access, String name, String desc, String sign, String[] exceptions, MethodVisitor oldVisitor, CachedMethodContext context) {
-        return new CachedMethodVisitor(this, oldVisitor, access, name, desc, sign, exceptions, getThisType(), context, false);
+        return new CachedMethodVisitor(this, oldVisitor, access, name, desc, sign, exceptions, getThisType(), context, false, false);
     }
 
     @Override
@@ -56,7 +56,7 @@ class CachedInstrumentationStage219 extends CachedInstrumentationStage {
 
     private class CacheRegistrator extends AdviceAdapter {
         public CacheRegistrator(MethodVisitor oldVisitor, int access, String name, String desc) {
-            super(oldVisitor, access, name, desc);
+            super(Opcodes.ASM4, oldVisitor, access, name, desc);
         }
 
         @Override

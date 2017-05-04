@@ -16,8 +16,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * StorageBooleanCharacterCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -25,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageBooleanCharacterCacheImpl extends AbstractBooleanCharacterCache implements StorageHolder<BooleanCharacterStorage> {
+public class StorageBooleanCharacterCacheImpl extends AbstractBooleanCharacterCache implements StorageHolder<BooleanObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private BooleanCharacterStorage storage;
+    private BooleanObjectStorage storage;
 
     public StorageBooleanCharacterCacheImpl(Object owner, BooleanCharacterCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull BooleanCharacterStorage storage) {
+    public void setStorage(@Nonnull BooleanObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -43,17 +41,12 @@ public class StorageBooleanCharacterCacheImpl extends AbstractBooleanCharacterCa
     }
 
     @Override
-    public boolean isCalculated(boolean key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public char load(boolean key) {
+    public Object load(boolean key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(boolean key, char value) {
+    public void save(boolean key, Object value) {
         storage.save(key, value);
     }
 

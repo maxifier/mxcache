@@ -6,20 +6,13 @@ package com.maxifier.mxcache.impl;
 import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.impl.instanceprovider.DefaultInstanceProvider;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
-import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.proxy.ProxyFactory;
 import com.maxifier.mxcache.proxy.Resolvable;
-import com.maxifier.mxcache.transform.TransformGeneratorFactoryImpl;
-import com.maxifier.mxcache.transform.ReversibleTransform;
-import com.maxifier.mxcache.transform.Transform;
-import com.maxifier.mxcache.transform.TransformGenerator;
+import com.maxifier.mxcache.transform.*;
 import org.mockito.Matchers;
 import org.testng.annotations.Test;
-
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
@@ -33,11 +26,6 @@ import static org.testng.Assert.assertEquals;
 public class ProxyingCacheGeneratorUTest {
     private static final int SIZE = 62780;
     private static final Statistics STATISTICS = mock(Statistics.class);
-    private static final String OWNER1 = "owner1";
-    private static final String OWNER2 = "owner2";
-    private static final String OWNER3 = "owner3";
-
-    private static final Lock TEST_LOCK = new ReentrantLock();
 
     @SuppressWarnings( { "UnusedDeclaration" })
     private static void ttt(@ReversibleTransform(
@@ -60,25 +48,20 @@ public class ProxyingCacheGeneratorUTest {
     public void testObject2Object() {
         ProxyFactory<String> factory = spy(new TestProxyFactory());
         TestCalculatable1 calculatable = spy(new TestCalculatable1());
-        ObjectObjectCache<String, String> cache = ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, String.class, String.class, ObjectObjectCache.class, TransformGenerator.NO_TRANSFORM);
+        ObjectObjectCache<String, String> cache = (ObjectObjectCache)ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, String.class, String.class, ObjectObjectCache.class, new EmptyTransformGenerator(Object.class));
         verifyZeroInteractions(factory);
         verifyZeroInteractions(calculatable);
         assertEquals(cache.getOrCreate("123"), "__123");
         verify(factory).proxy(eq(String.class), Matchers.<Resolvable<String>>any());
         verify(calculatable).getOrCreate("123");
 
-        assertSame(cache.getLock(), TEST_LOCK);
-        verify(calculatable).getLock();
-
         assertEquals(cache.getSize(), SIZE);
         assertSame(cache.getStatistics(), STATISTICS);
-        assertEquals(cache.getCacheOwner(), OWNER1);
 
-        cache.clear();
-        verify(calculatable).clear();
+        cache.invalidate();
+        verify(calculatable).invalidate();
         verify(calculatable).getSize();
         verify(calculatable).getStatistics();
-        verify(calculatable).getCacheOwner();
         verifyNoMoreInteractions(calculatable);
     }
 
@@ -89,15 +72,12 @@ public class ProxyingCacheGeneratorUTest {
         ProxyFactory<String> factory = spy(new TestProxyFactory());
         TestCalculatable1 calculatable = spy(new TestCalculatable1());
         TransformGenerator transform = TransformGeneratorFactoryImpl.getInstance().forMethod(ProxyingCacheGeneratorUTest.class.getDeclaredMethod("ttt", String.class));
-        ObjectObjectCache<String, String> cache = ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, String.class, String.class, ObjectObjectCache.class, transform);
+        ObjectObjectCache<String, String> cache = (ObjectObjectCache)ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, String.class, String.class, ObjectObjectCache.class, transform);
         verifyZeroInteractions(factory);
         verifyZeroInteractions(calculatable);
         assertEquals(cache.getOrCreate("123"), "__123");
         verify(factory).proxy(eq(String.class), Matchers.<Resolvable<String>>any());
         verify(calculatable).getOrCreate("123");
-
-        assertSame(cache.getLock(), TEST_LOCK);
-        verify(calculatable).getLock();
 
         verify(t, atLeast(1)).f("123");
         verify(t, atLeast(1)).b(123L);
@@ -105,13 +85,11 @@ public class ProxyingCacheGeneratorUTest {
 
         assertEquals(cache.getSize(), SIZE);
         assertSame(cache.getStatistics(), STATISTICS);
-        assertEquals(cache.getCacheOwner(), OWNER1);
 
-        cache.clear();
-        verify(calculatable).clear();
+        cache.invalidate();
+        verify(calculatable).invalidate();
         verify(calculatable).getSize();
         verify(calculatable).getStatistics();
-        verify(calculatable).getCacheOwner();
         verifyNoMoreInteractions(calculatable);
 
         DefaultInstanceProvider.getInstance().clearBinding(Transformator.class);
@@ -121,7 +99,7 @@ public class ProxyingCacheGeneratorUTest {
     public void testPrimitive2Object() {
         ProxyFactory<String> factory = spy(new TestProxyFactory());
         TestCalculatable2 calculatable = spy(new TestCalculatable2());
-        LongObjectCache<String> cache = ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, long.class, String.class, LongObjectCache.class, null);
+        LongObjectCache<String> cache = (LongObjectCache)ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, long.class, String.class, LongObjectCache.class, null);
         verifyZeroInteractions(factory);
         verifyZeroInteractions(calculatable);
         assertEquals(cache.getOrCreate(123), "__123");
@@ -130,15 +108,11 @@ public class ProxyingCacheGeneratorUTest {
 
         assertEquals(cache.getSize(), SIZE);
         assertSame(cache.getStatistics(), STATISTICS);
-        assertSame(cache.getLock(), TEST_LOCK);
-        assertEquals(cache.getCacheOwner(), OWNER2);
 
-        verify(calculatable).getLock();
         verify(calculatable).getSize();
         verify(calculatable).getStatistics();
-        verify(calculatable).getCacheOwner();
-        cache.clear();
-        verify(calculatable).clear();
+        cache.invalidate();
+        verify(calculatable).invalidate();
         verifyNoMoreInteractions(calculatable);
     }
 
@@ -146,7 +120,7 @@ public class ProxyingCacheGeneratorUTest {
     public void testNone2Object() {
         ProxyFactory<String> factory = spy(new TestProxyFactory());
         TestCalculatable3 calculatable = spy(new TestCalculatable3());
-        ObjectCache<String> cache = ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, null, String.class, ObjectCache.class, null);
+        ObjectCache<String> cache = (ObjectCache)ProxyingCacheGenerator.wrapCacheWithProxy(ClassLoader.getSystemClassLoader(), calculatable, factory, null, String.class, ObjectCache.class, null);
         verifyZeroInteractions(factory);
         verifyZeroInteractions(calculatable);
         assertEquals(cache.getOrCreate(), "__");
@@ -155,15 +129,11 @@ public class ProxyingCacheGeneratorUTest {
 
         assertEquals(cache.getSize(), SIZE);
         assertSame(cache.getStatistics(), STATISTICS);
-        assertSame(cache.getLock(), TEST_LOCK);
-        assertEquals(cache.getCacheOwner(), OWNER3);
 
-        verify(calculatable).getLock();
         verify(calculatable).getSize();
         verify(calculatable).getStatistics();
-        verify(calculatable).getCacheOwner();
-        cache.clear();
-        verify(calculatable).clear();
+        cache.invalidate();
+        verify(calculatable).invalidate();
         verifyNoMoreInteractions(calculatable);
     }
 
@@ -181,12 +151,7 @@ public class ProxyingCacheGeneratorUTest {
         }
 
         @Override
-        public Lock getLock() {
-            return TEST_LOCK;
-        }
-
-        @Override
-        public void clear() {
+        public void invalidate() {
         }
 
         @Override
@@ -205,18 +170,13 @@ public class ProxyingCacheGeneratorUTest {
         }
 
         @Override
-        public void setDependencyNode(DependencyNode node) {
+        public DependencyNode getDependencyNode() {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public DependencyNode getDependencyNode() {
-            return DependencyTracker.DUMMY_NODE;
-        }
-
-        @Override
-        public Object getCacheOwner() {
-            return OWNER1;
+        public void setDependencyNode(DependencyNode node) {
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -227,12 +187,7 @@ public class ProxyingCacheGeneratorUTest {
         }
 
         @Override
-        public Lock getLock() {
-            return TEST_LOCK;
-        }
-
-        @Override
-        public void clear() {
+        public void invalidate() {
         }
 
         @Override
@@ -251,18 +206,13 @@ public class ProxyingCacheGeneratorUTest {
         }
 
         @Override
-        public void setDependencyNode(DependencyNode node) {
+        public DependencyNode getDependencyNode() {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public DependencyNode getDependencyNode() {
-            return DependencyTracker.DUMMY_NODE;
-        }
-
-        @Override
-        public Object getCacheOwner() {
-            return OWNER2;
+        public void setDependencyNode(DependencyNode node) {
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -273,12 +223,7 @@ public class ProxyingCacheGeneratorUTest {
         }
 
         @Override
-        public Lock getLock() {
-            return TEST_LOCK;
-        }
-
-        @Override
-        public void clear() {
+        public void invalidate() {
         }
 
         @Override
@@ -297,18 +242,13 @@ public class ProxyingCacheGeneratorUTest {
         }
 
         @Override
-        public void setDependencyNode(DependencyNode node) {
+        public DependencyNode getDependencyNode() {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public DependencyNode getDependencyNode() {
-            return DependencyTracker.DUMMY_NODE;
-        }
-
-        @Override
-        public Object getCacheOwner() {
-            return OWNER3;
+        public void setDependencyNode(DependencyNode node) {
+            throw new UnsupportedOperationException();
         }
     }
 }

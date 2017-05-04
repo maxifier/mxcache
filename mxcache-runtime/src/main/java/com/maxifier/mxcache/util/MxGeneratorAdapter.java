@@ -4,16 +4,15 @@
 package com.maxifier.mxcache.util;
 
 import com.maxifier.mxcache.asm.ClassVisitor;
-import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
-import com.maxifier.mxcache.asm.commons.Method;
-
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-
 import com.maxifier.mxcache.asm.MethodVisitor;
 import com.maxifier.mxcache.asm.Opcodes;
 import com.maxifier.mxcache.asm.Type;
-import gnu.trove.TIntArrayList;
+import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
+import com.maxifier.mxcache.asm.commons.Method;
+import gnu.trove.list.array.TIntArrayList;
+
+import java.lang.reflect.Modifier;
+import java.util.Collection;
 
 import static com.maxifier.mxcache.asm.Opcodes.*;
 import static com.maxifier.mxcache.asm.commons.Method.getMethod;
@@ -51,25 +50,25 @@ public class MxGeneratorAdapter extends GeneratorAdapter {
     }
 
     public MxGeneratorAdapter(int access, Method method, Type thisClass, ClassVisitor cv) {
-        super(access, method, cv.visitMethod(access, method.getName(), method.getDescriptor(), null, null));
+        super(Opcodes.ASM4, cv.visitMethod(access, method.getName(), method.getDescriptor(), null, null), access, method.getName(), method.getDescriptor());
         this.thisClass = thisClass;
         isStatic = Modifier.isStatic(access);
     }
 
     public MxGeneratorAdapter(int access, Method method, MethodVisitor mv, Type thisClass) {
-        super(access, method, mv);
+        super(Opcodes.ASM4, mv, access, method.getName(), method.getDescriptor());
         this.thisClass = thisClass;
         isStatic = Modifier.isStatic(access);
     }
 
     public MxGeneratorAdapter(MethodVisitor mv, int access, Method method, Type thisClass) {
-        super(access, method, mv);
+        super(Opcodes.ASM4, mv, access, method.getName(), method.getDescriptor());
         this.thisClass = thisClass;
         isStatic = Modifier.isStatic(access);
     }
 
     public MxGeneratorAdapter(MethodVisitor mv, int access, String name, String desc, Type thisClass) {
-        super(mv, access, name, desc);
+        super(Opcodes.ASM4, mv, access, name, desc);
         this.thisClass = thisClass;
         isStatic = Modifier.isStatic(access);
     }

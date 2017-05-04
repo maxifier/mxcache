@@ -6,7 +6,7 @@ package com.maxifier.mxcache.instrumentation.current;
 import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.instrumentation.IllegalCachedClass;
 import com.maxifier.mxcache.asm.*;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 
 import java.lang.reflect.Modifier;
 import java.util.Map;
@@ -17,7 +17,7 @@ import static com.maxifier.mxcache.util.CodegenHelper.*;
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
-class UseProxyDetector extends ClassAdapter {
+class UseProxyDetector extends ClassVisitor {
     private final Map<Method, ProxiedMethodContext> proxiedMethods = new THashMap<Method, ProxiedMethodContext>();
 
     private int classAccess;
@@ -38,7 +38,7 @@ class UseProxyDetector extends ClassAdapter {
     }
 
     public UseProxyDetector(ClassVisitor nextDetector) {
-        super(nextDetector);
+        super(Opcodes.ASM4, nextDetector);
     }
 
     @Override
@@ -64,7 +64,7 @@ class UseProxyDetector extends ClassAdapter {
         sourceFileName = source;
     }
 
-    private class ProxyMethodDetector extends MethodAdapter {
+    private class ProxyMethodDetector extends MethodVisitor {
         private final Method method;
 
         private final ProxiedMethodContext context;
@@ -76,7 +76,7 @@ class UseProxyDetector extends ClassAdapter {
         private boolean cached;
 
         public ProxyMethodDetector(MethodVisitor oldVisitor, Method method, int methodAccess) {
-            super(oldVisitor);
+            super(Opcodes.ASM4, oldVisitor);
             this.method = method;
             this.methodAccess = methodAccess;
             context = new ProxiedMethodContext(id++, Modifier.isStatic(this.methodAccess), method);

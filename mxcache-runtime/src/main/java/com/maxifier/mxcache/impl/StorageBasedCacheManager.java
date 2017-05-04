@@ -8,7 +8,6 @@ import com.maxifier.mxcache.caches.*;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.impl.caches.def.*;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
-import com.maxifier.mxcache.impl.resource.DependencyNodeVisitor;
 import com.maxifier.mxcache.interfaces.Statistics;
 import com.maxifier.mxcache.interfaces.StatisticsHolder;
 import com.maxifier.mxcache.provider.CacheDescriptor;
@@ -20,7 +19,6 @@ import com.maxifier.mxcache.provider.StorageFactory;
 import com.maxifier.mxcache.storage.CalculableInterceptor;
 import com.maxifier.mxcache.storage.Storage;
 import com.maxifier.mxcache.storage.elementlocked.ElementLockedStorage;
-import com.maxifier.mxcache.util.TIdentityHashSet;
 
 import javax.annotation.Nonnull;
 
@@ -31,10 +29,10 @@ import java.lang.ref.Reference;
  *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
+public class StorageBasedCacheManager extends AbstractCacheManager {
     public static final DependencyNode MARKER_NODE = new MarkerDependencyNode();
 
-    private final StorageFactory<T> storageFactory;
+    private final StorageFactory storageFactory;
 
     private final Signature cacheSignature;
 
@@ -43,14 +41,14 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
     private Signature storageSignatureCache;
     private boolean inlineCache;
 
-    public StorageBasedCacheManager(CacheContext context, CacheDescriptor<T> descriptor, StorageFactory<T> storageFactory) {
-        super(context, descriptor);
+    public StorageBasedCacheManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor, StorageFactory storageFactory) {
+        super(context, ownerClass, descriptor);
         this.storageFactory = storageFactory;
         cacheSignature = descriptor.getSignature();
         inlineCache = canInlineCache(descriptor, storageFactory);
     }
 
-    private boolean canInlineCache(CacheDescriptor<T> descriptor, StorageFactory<T> storageFactory) {
+    private boolean canInlineCache(CacheDescriptor descriptor, StorageFactory storageFactory) {
         // check class, not instanceof as child classes can override the behavior
         return storageFactory.getClass() == DefaultStorageFactory.class &&
                 descriptor.getSignature().getContainer() == null &&
@@ -59,10 +57,13 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
 
     @Nonnull
     @Override
-    protected Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws Exception {
+    protected Cache createCache(Object owner, DependencyNode dependencyNode, MutableStatistics statistics) throws Exception {
         if (inlineCache) {
             if (dependencyNode == MARKER_NODE) {
-                return createInlineCacheWithDependencyNode(owner, statistics);
+                Cache result = createInlineCacheWithDependencyNode(owner, statistics);
+                // for inline caches the cache itself is a dependency node.
+                registerExplicitDependencies((DependencyNode)result);
+                return result;
             }
             Cache cache = createInlineCache(owner, statistics);
             cache.setDependencyNode(dependencyNode);
@@ -87,7 +88,7 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
         if (storage instanceof CalculableInterceptor) {
             calculable = ((CalculableInterceptor)storage).createInterceptedCalculable(calculable);
         }
-        Cache cache = getWrapperFactory(storage instanceof ElementLockedStorage, Signature.ofStorage(storage.getClass()))
+        Cache cache = getWrapperFactory(storage instanceof ElementLockedStorage, Signature.of(storage.getClass()))
                 .wrap(owner, calculable, storage, statistics);
         cache.setDependencyNode(dependencyNode);
         return cache;
@@ -101,9 +102,9 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
         return super.createInstanceNode();
     }
 
-    private Cache createInlineCache(T owner, MutableStatistics statistics) {
+    private Cache createInlineCache(Object owner, MutableStatistics statistics) {
         assert inlineCache;
-        CacheDescriptor<T> descriptor = getDescriptor();
+        CacheDescriptor descriptor = getDescriptor();
         Class valueType = descriptor.getSignature().getValue();
         Calculable calculable = descriptor.getCalculable();
         if (valueType == boolean.class) {
@@ -134,9 +135,9 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
         return new ObjectInlineCacheImpl(owner, (ObjectCalculatable) calculable, statistics);
     }
 
-    private Cache createInlineCacheWithDependencyNode(T owner, MutableStatistics statistics) {
+    private Cache createInlineCacheWithDependencyNode(Object owner, MutableStatistics statistics) {
         assert inlineCache;
-        CacheDescriptor<T> descriptor = getDescriptor();
+        CacheDescriptor descriptor = getDescriptor();
         Class valueType = descriptor.getSignature().getValue();
         Calculable calculable = descriptor.getCalculable();
         if (valueType == boolean.class) {
@@ -189,12 +190,12 @@ public class StorageBasedCacheManager<T> extends AbstractCacheManager<T> {
         }
 
         @Override
-        public void visitDependantNodes(DependencyNodeVisitor visitor) {
+        public void visitDependantNodes(Visitor visitor) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void appendNodes(TIdentityHashSet<CleaningNode> elements) {
+        public void invalidate() {
             throw new UnsupportedOperationException();
         }
 

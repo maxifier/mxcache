@@ -18,14 +18,14 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
-public class CustomStorageFactory<T> implements StorageFactory<T> {
+public class CustomStorageFactory implements StorageFactory {
     private static final Object[] EMPTY_ARRAY = {};
 
     private final Constructor<? extends Storage> constructor;
 
     private final Object[] arguments;
 
-    public CustomStorageFactory(CacheContext context, CacheDescriptor<T> descriptor, Class<? extends Storage> storageClass) {
+    public CustomStorageFactory(CacheContext context, CacheDescriptor descriptor, Class<? extends Storage> storageClass) {
         if (!Storage.class.isAssignableFrom(storageClass)) {
             throw new IllegalStateException("Storage implementation should extend Storage interface " + storageClass);
         }
@@ -51,7 +51,7 @@ public class CustomStorageFactory<T> implements StorageFactory<T> {
 
     @Nonnull
     @Override
-    public Storage createStorage(T owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
+    public Storage createStorage(Object owner) throws InvocationTargetException, IllegalAccessException, InstantiationException {
         return constructor.newInstance(arguments);
     }
 
@@ -77,7 +77,7 @@ public class CustomStorageFactory<T> implements StorageFactory<T> {
         return res;
     }
 
-    static <T> Object[] createArguments(Constructor<? extends T> constructor, CacheContext context, CacheDescriptor<?> descriptor) {
+    static <T> Object[] createArguments(Constructor<? extends T> constructor, CacheContext context, CacheDescriptor descriptor) {
         Class<?>[] types = constructor.getParameterTypes();
         if (types.length == 0) {
             return EMPTY_ARRAY;

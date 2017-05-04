@@ -49,7 +49,7 @@ public final class ResolvableGenerator {
     public static void generateResolvable(ClassLoader classLoader, String resolvableName, Class ownerClass, Method nonProxiedMethod, Type[] genericArguments, boolean isStatic, TransformGenerator[] tg) {
         Type ownerType = Type.getType(ownerClass);
 
-        ClassGenerator w = new ClassGenerator(ACC_SUPER, resolvableName,  OBJECT_TYPE, RESOLVABLE_TYPE);
+        ClassGenerator w = new ClassGenerator(ACC_PUBLIC | ACC_SUPER | ACC_SYNTHETIC, resolvableName,  OBJECT_TYPE, RESOLVABLE_TYPE);
 
         Type resolvableType = w.getThisType();
 
@@ -69,7 +69,7 @@ public final class ResolvableGenerator {
         for (int i = 0; i < arguments.length; i++) {
             Type arg = genericArguments[i];
             if (tg != null) {
-                stored[i] = Type.getType(tg[i].getTransformedType(toClass(classLoader, arg)));
+                stored[i] = Type.getType(tg[i].getOutType());
             } else {
                 stored[i] = arg;
             }

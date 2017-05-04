@@ -3,13 +3,8 @@
  */
 package com.maxifier.mxcache.instrumentation;
 
-import com.maxifier.mxcache.context.CacheContextImpl;
-
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
@@ -57,13 +52,27 @@ public interface TestCached extends Serializable {
 
     void writeStatic();
 
-    List<String> getBatch(List<String> in);
-
-    String[] getBatch(String... in);
-
-    Map<String, String> getBatch(Set<String> in);
-
-    Map<String, String> getBatchArrayToMap(String... in);
+    void readResourceWithException(Runnable r);
 
     void setS(String s);
+
+    String getByArray(int[] array);
+    String getByArray(long[] array);
+    String getByArray(short[] array);
+    String getByArray(double[] array);
+    String getByArray(float[] array);
+    String getByArray(byte[] array);
+    String getByArray(boolean[] array);
+    String getByArray(char[] array);
+    String getByArray(Object[] array);
+    String getByArray(long a, int[] array);
+    String getByArray(int a, long[] array);
+    String getByArray(String a, short[] array);
+    String getByArray(Object[] array1, double[] array2);
+    String getByArray(float[] array, int a);
+    String getByArrayIdentityStr(byte[] array, String custom);
+    String getByArrayIdentity(boolean[] array);
+    String getByArraySameStrategy(char[] array);
+    String getByArrayIdentity2(Object[] array1, Object[] array2);
+    String getSingleByIdentity(String x);
 }

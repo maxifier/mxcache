@@ -19,8 +19,6 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * StorageByteCharacterCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -28,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageByteCharacterCacheImpl extends AbstractByteCharacterCache implements StorageHolder<ByteCharacterElementLockedStorage> {
-    private ByteCharacterElementLockedStorage storage;
+public class StorageByteCharacterCacheImpl extends AbstractByteCharacterCache implements StorageHolder<ByteObjectElementLockedStorage> {
+    private ByteObjectElementLockedStorage storage;
 
     public StorageByteCharacterCacheImpl(Object owner, ByteCharacterCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull ByteCharacterElementLockedStorage storage) {
+    public void setStorage(@Nonnull ByteObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -44,17 +42,12 @@ public class StorageByteCharacterCacheImpl extends AbstractByteCharacterCache im
     }
 
     @Override
-    public boolean isCalculated(byte key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public char load(byte key) {
+    public Object load(byte key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(byte key, char value) {
+    public void save(byte key, Object value) {
         storage.save(key, value);
     }
 

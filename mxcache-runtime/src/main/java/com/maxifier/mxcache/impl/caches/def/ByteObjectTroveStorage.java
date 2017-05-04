@@ -3,29 +3,18 @@
  */
 package com.maxifier.mxcache.impl.caches.def;
 
-import gnu.trove.*;
-
 import com.maxifier.mxcache.storage.*;
 import static com.maxifier.mxcache.impl.caches.def.TroveHelper.*;
 
 /**
- * ByteObjectTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
- * GENERATED FROM #SOURCE#
+ * GENERATED FROM P2OTroveStorage.template
  *
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class ByteObjectTroveStorage<T> extends TByteObjectHashMap<Object> implements ByteObjectStorage<T> {
-    public ByteObjectTroveStorage() {
-    }
-
-    public ByteObjectTroveStorage(TByteHashingStrategy strategy) {
-        super(strategy);        
-    }
-
+public class ByteObjectTroveStorage extends gnu.trove.map.hash.TByteObjectHashMap<Object> implements ByteObjectStorage {
     @Override
     public Object load(byte key) {
         Object v = get(key);
@@ -39,7 +28,7 @@ public class ByteObjectTroveStorage<T> extends TByteObjectHashMap<Object> implem
     }
 
     @Override
-    public void save(byte key, T value) {
+    public void save(byte key, Object value) {
         put(key, value == null ? NULL_REPLACEMENT : value);
     }
 }

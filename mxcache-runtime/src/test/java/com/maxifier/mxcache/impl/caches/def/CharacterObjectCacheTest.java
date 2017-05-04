@@ -9,11 +9,9 @@ import org.testng.annotations.Test;
 import org.testng.Assert;
 
 /**
- * CharacterObjectCacheTest - test for CharacterObjectTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
- * GENERATED FROM #SOURCE#
+ * GENERATED FROM P2OCacheTest.template
  *
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)

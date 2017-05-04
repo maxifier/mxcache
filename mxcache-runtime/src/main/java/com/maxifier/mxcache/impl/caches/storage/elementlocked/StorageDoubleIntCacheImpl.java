@@ -19,8 +19,6 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * StorageDoubleIntCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -28,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageDoubleIntCacheImpl extends AbstractDoubleIntCache implements StorageHolder<DoubleIntElementLockedStorage> {
-    private DoubleIntElementLockedStorage storage;
+public class StorageDoubleIntCacheImpl extends AbstractDoubleIntCache implements StorageHolder<DoubleObjectElementLockedStorage> {
+    private DoubleObjectElementLockedStorage storage;
 
     public StorageDoubleIntCacheImpl(Object owner, DoubleIntCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull DoubleIntElementLockedStorage storage) {
+    public void setStorage(@Nonnull DoubleObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -44,17 +42,12 @@ public class StorageDoubleIntCacheImpl extends AbstractDoubleIntCache implements
     }
 
     @Override
-    public boolean isCalculated(double key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public int load(double key) {
+    public Object load(double key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(double key, int value) {
+    public void save(double key, Object value) {
         storage.save(key, value);
     }
 

@@ -19,8 +19,6 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * StorageBooleanIntCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -28,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageBooleanIntCacheImpl extends AbstractBooleanIntCache implements StorageHolder<BooleanIntElementLockedStorage> {
-    private BooleanIntElementLockedStorage storage;
+public class StorageBooleanIntCacheImpl extends AbstractBooleanIntCache implements StorageHolder<BooleanObjectElementLockedStorage> {
+    private BooleanObjectElementLockedStorage storage;
 
     public StorageBooleanIntCacheImpl(Object owner, BooleanIntCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull BooleanIntElementLockedStorage storage) {
+    public void setStorage(@Nonnull BooleanObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -44,17 +42,12 @@ public class StorageBooleanIntCacheImpl extends AbstractBooleanIntCache implemen
     }
 
     @Override
-    public boolean isCalculated(boolean key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public int load(boolean key) {
+    public Object load(boolean key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(boolean key, int value) {
+    public void save(boolean key, Object value) {
         storage.save(key, value);
     }
 

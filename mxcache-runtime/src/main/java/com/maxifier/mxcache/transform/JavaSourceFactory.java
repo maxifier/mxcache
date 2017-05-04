@@ -7,7 +7,8 @@ import com.maxifier.mxcache.MxCacheException;
 import com.maxifier.mxcache.tuple.Tuple;
 import com.maxifier.mxcache.tuple.TupleFactory;
 import com.maxifier.mxcache.tuple.TupleGenerator;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.strategy.HashingStrategy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -19,7 +20,7 @@ import java.util.Map;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public class JavaSourceFactory implements TransformFactory {
-    private static final TupleFactory KEY_FACTORY = TupleGenerator.getTupleFactory(Object.class, Object.class);
+    private static final TupleFactory KEY_FACTORY = TupleGenerator.createTupleFactory(new HashingStrategy[]{null, null}, Object.class, Object.class);
     private static final String CLASS_NAME = "$$$TransformHolder$$$";
     private static final Map<Tuple, Class> METHOD_HOLDERS = new THashMap<Tuple, Class>();
 

@@ -19,8 +19,6 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * StorageIntCharacterCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -28,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageIntCharacterCacheImpl extends AbstractIntCharacterCache implements StorageHolder<IntCharacterElementLockedStorage> {
-    private IntCharacterElementLockedStorage storage;
+public class StorageIntCharacterCacheImpl extends AbstractIntCharacterCache implements StorageHolder<IntObjectElementLockedStorage> {
+    private IntObjectElementLockedStorage storage;
 
     public StorageIntCharacterCacheImpl(Object owner, IntCharacterCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull IntCharacterElementLockedStorage storage) {
+    public void setStorage(@Nonnull IntObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -44,17 +42,12 @@ public class StorageIntCharacterCacheImpl extends AbstractIntCharacterCache impl
     }
 
     @Override
-    public boolean isCalculated(int key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public char load(int key) {
+    public Object load(int key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(int key, char value) {
+    public void save(int key, Object value) {
         storage.save(key, value);
     }
 

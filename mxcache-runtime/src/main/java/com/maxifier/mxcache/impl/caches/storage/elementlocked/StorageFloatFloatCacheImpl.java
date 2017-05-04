@@ -19,8 +19,6 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * StorageFloatFloatCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -28,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageFloatFloatCacheImpl extends AbstractFloatFloatCache implements StorageHolder<FloatFloatElementLockedStorage> {
-    private FloatFloatElementLockedStorage storage;
+public class StorageFloatFloatCacheImpl extends AbstractFloatFloatCache implements StorageHolder<FloatObjectElementLockedStorage> {
+    private FloatObjectElementLockedStorage storage;
 
     public StorageFloatFloatCacheImpl(Object owner, FloatFloatCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull FloatFloatElementLockedStorage storage) {
+    public void setStorage(@Nonnull FloatObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -44,17 +42,12 @@ public class StorageFloatFloatCacheImpl extends AbstractFloatFloatCache implemen
     }
 
     @Override
-    public boolean isCalculated(float key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public float load(float key) {
+    public Object load(float key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(float key, float value) {
+    public void save(float key, Object value) {
         storage.save(key, value);
     }
 

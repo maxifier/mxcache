@@ -4,7 +4,7 @@
 package com.maxifier.mxcache.instrumentation.current;
 
 import com.maxifier.mxcache.util.MxField;
-import gnu.trove.THashSet;
+import gnu.trove.set.hash.THashSet;
 
 import java.util.ArrayList;
 import java.util.List;

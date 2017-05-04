@@ -19,8 +19,6 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * StorageShortFloatCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -28,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageShortFloatCacheImpl extends AbstractShortFloatCache implements StorageHolder<ShortFloatElementLockedStorage> {
-    private ShortFloatElementLockedStorage storage;
+public class StorageShortFloatCacheImpl extends AbstractShortFloatCache implements StorageHolder<ShortObjectElementLockedStorage> {
+    private ShortObjectElementLockedStorage storage;
 
     public StorageShortFloatCacheImpl(Object owner, ShortFloatCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull ShortFloatElementLockedStorage storage) {
+    public void setStorage(@Nonnull ShortObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -44,17 +42,12 @@ public class StorageShortFloatCacheImpl extends AbstractShortFloatCache implemen
     }
 
     @Override
-    public boolean isCalculated(short key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public float load(short key) {
+    public Object load(short key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(short key, float value) {
+    public void save(short key, Object value) {
         storage.save(key, value);
     }
 

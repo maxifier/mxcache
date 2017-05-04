@@ -4,23 +4,21 @@
 package com.maxifier.mxcache.impl.resource;
 
 import com.maxifier.mxcache.CacheFactory;
+import com.maxifier.mxcache.config.ResourceConfig;
 import com.maxifier.mxcache.resource.MxResource;
-import gnu.trove.THashMap;
+import gnu.trove.set.hash.THashSet;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
-import com.maxifier.mxcache.config.ResourceConfig;
-import gnu.trove.THashSet;
-
-import javax.annotation.Nonnull;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class MxResourceFactory {
-    private static final Map<String, MxResource> RESOURCES = new THashMap<String, MxResource>();
+    private static final ConcurrentHashMap<String, MxResource> RESOURCES = new ConcurrentHashMap<String, MxResource>();
 
     static {
         for (ResourceConfig resourceConfig : CacheFactory.getConfiguration().getResources()) {
@@ -41,11 +39,14 @@ public final class MxResourceFactory {
      *
      * @return resource with given name
      */
-    public static synchronized MxResource getResource(@Nonnull String id) {
+    public static MxResource getResource(@Nonnull String id) {
         MxResource resource = RESOURCES.get(id);
         if (resource == null) {
             resource = new MxStaticResource(id);
-            RESOURCES.put(id, resource);
+            MxResource oldResource = RESOURCES.putIfAbsent(id, resource);
+            if (oldResource != null) {
+                resource = oldResource;
+            }
         }
         return resource;
     }

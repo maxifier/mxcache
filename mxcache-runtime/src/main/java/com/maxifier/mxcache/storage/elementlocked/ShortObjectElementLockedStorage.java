@@ -6,8 +6,6 @@ package com.maxifier.mxcache.storage.elementlocked;
 import com.maxifier.mxcache.storage.*;
 
 /**
- * ShortObjectElementLockedStorage<F>
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2OStorage.template
@@ -20,20 +18,20 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public interface ShortObjectElementLockedStorage<F> extends ShortObjectStorage<F>, ElementLockedStorage {
+public interface ShortObjectElementLockedStorage extends ShortObjectStorage, ElementLockedStorage {
     /**
-     * <p>This method should extract value for given key from internal representation.</p>
-     * <p>It is guaranteed that it would be called with corresponding lock held.</p>
+     * <p>This method should lock given cache key.</p>
+     * <p>If this key is already locked the method should wait for corresponding unlock call.</p>
+     * <p>This lock should be consistent with overall lock of this cache used for cleaning.</p>
+     * <p>It is not necessary to have per-key granularity of locks. It is allowed for this method to lock a
+     * group of keys at once, e.g. all with certain hash code of key or whatever else.</p>
      * @param key key
-     * @return {@link Storage#UNDEFINED} if no value for key exists, value itself if it's set for given key.
      */
     void lock(short key);
 
     /**
-     * <p>Saves a value to cache.</p>
-     * <p>It is guaranteed that it would be called with corresponding lock held.</p>
+     * <p>Unlocks the cache key</p>
      * @param key cache key
-     * @param value cache value
      */
     void unlock(short key);
 }

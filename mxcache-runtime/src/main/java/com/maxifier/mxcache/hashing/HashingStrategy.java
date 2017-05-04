@@ -11,6 +11,7 @@ import java.lang.annotation.*;
 @Documented
 @Target (ElementType.PARAMETER)
 @Retention (RetentionPolicy.RUNTIME)
+// todo rename this class, its name clashes with Trove name
 public @interface HashingStrategy {
-    Class value();
+    Class<? extends gnu.trove.strategy.HashingStrategy> value();
 }

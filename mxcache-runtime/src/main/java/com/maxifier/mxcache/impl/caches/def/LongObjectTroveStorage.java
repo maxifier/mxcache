@@ -3,29 +3,18 @@
  */
 package com.maxifier.mxcache.impl.caches.def;
 
-import gnu.trove.*;
-
 import com.maxifier.mxcache.storage.*;
 import static com.maxifier.mxcache.impl.caches.def.TroveHelper.*;
 
 /**
- * LongObjectTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
- * GENERATED FROM #SOURCE#
+ * GENERATED FROM P2OTroveStorage.template
  *
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class LongObjectTroveStorage<T> extends TLongObjectHashMap<Object> implements LongObjectStorage<T> {
-    public LongObjectTroveStorage() {
-    }
-
-    public LongObjectTroveStorage(TLongHashingStrategy strategy) {
-        super(strategy);        
-    }
-
+public class LongObjectTroveStorage extends gnu.trove.map.hash.TLongObjectHashMap<Object> implements LongObjectStorage {
     @Override
     public Object load(long key) {
         Object v = get(key);
@@ -39,7 +28,7 @@ public class LongObjectTroveStorage<T> extends TLongObjectHashMap<Object> implem
     }
 
     @Override
-    public void save(long key, T value) {
+    public void save(long key, Object value) {
         put(key, value == null ? NULL_REPLACEMENT : value);
     }
 }

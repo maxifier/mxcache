@@ -17,10 +17,11 @@ import javax.annotation.Nonnull;
 public interface CachingStrategy {
     /**
      * @param context cache context
+     * @param ownerClass actual class that holds a cache (if cached method is inherited in a subclass, this parameter
+     *                   will contain actual subclass). For static caches it is always exact declaring class.
      * @param descriptor descriptor of the cache
-     * @param <T> cache owner type
      * @return cache manager for given cache
      */
     @Nonnull
-    <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor);
+    CacheManager getManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor);
 }

@@ -10,7 +10,7 @@ import com.maxifier.mxcache.PublicAPI;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.util.ClassGenerator;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 import javax.annotation.Nullable;
 
 import java.util.Map;

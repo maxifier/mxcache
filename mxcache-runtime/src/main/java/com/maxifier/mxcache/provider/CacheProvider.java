@@ -39,7 +39,7 @@ public interface CacheProvider {
      * @param methodDesc method descriptor
      * @param cacheName name of cache, may be null (used by some strategies)
      */
-    <T> void registerCache(Class<T> cacheOwner, int cacheId, Class keyType, Class valueType, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, @Nullable String cacheName);
+    void registerCache(Class<?> cacheOwner, int cacheId, Class keyType, Class valueType, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, @Nullable String cacheName);
 
     /**
      * This method is invoked from MxCache-generated code.
@@ -60,4 +60,19 @@ public interface CacheProvider {
      * @return return all cache managers that create caches.
      */
     List<CacheManager> getCaches();
+
+    /**
+     * Adds cache interceptor to interceptor chain.
+     * @param interceptor the interceptor to add.
+     */
+    void intercept(CacheProviderInterceptor interceptor);
+
+    /**
+     * Removes given interceptor from the chain. Note: this doesn't undo the modifications
+     * that this interceptor made during its life.
+     *
+     * @param interceptor the interceptor to remove
+     * @return true if the interceptor was registered
+     */
+    boolean removeInterceptor(CacheProviderInterceptor interceptor);
 }

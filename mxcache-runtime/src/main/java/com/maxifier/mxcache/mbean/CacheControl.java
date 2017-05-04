@@ -3,25 +3,23 @@
  */
 package com.maxifier.mxcache.mbean;
 
-import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.CacheFactory;
+import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.impl.resource.MxResourceFactory;
 import com.maxifier.mxcache.interfaces.Statistics;
-import com.maxifier.mxcache.provider.CacheProvider;
-import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.provider.CacheDescriptor;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
-
+import com.maxifier.mxcache.provider.CacheManager;
+import com.maxifier.mxcache.provider.CacheProvider;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.util.TIdentityHashSet;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
@@ -52,7 +50,7 @@ public class CacheControl implements CacheControlMXBean {
     public List<CacheInfo> getCaches() {
         List<CacheManager> caches = provider.getCaches();
         List<CacheInfo> res = new ArrayList<CacheInfo>(caches.size());
-        for (CacheManager<?> cacheManager : caches) {
+        for (CacheManager cacheManager : caches) {
             String impl;
             try {
                 impl = cacheManager.getImplementationDetails();
@@ -82,8 +80,8 @@ public class CacheControl implements CacheControlMXBean {
                 totalMisses += statistics.getMisses();
                 averageCalculation  += statistics.getTotalCalculationTime();
             }
-            CacheDescriptor<?> descriptor = cacheManager.getDescriptor();
-            Class<?> ownerClass = descriptor.getOwnerClass();
+            CacheDescriptor descriptor = cacheManager.getDescriptor();
+            Class<?> ownerClass = cacheManager.getOwnerClass();
             CacheContext context = cacheManager.getContext();
             res.add(new CacheInfo(context == null ? "<no context>" : context.toString(), descriptor.getKeyType() == null ? null : getDisplayName(descriptor.getKeyType()),
                                   getDisplayName(descriptor.getValueType()),
@@ -93,7 +91,8 @@ public class CacheControl implements CacheControlMXBean {
                                   descriptor.getTags(),
                                   impl,
                                   getDisplayName(ownerClass),
-                                  totalHits, totalMisses, totalMisses == 0 ? 0.0 : averageCalculation / totalMisses));
+                    getDisplayName(descriptor.getDeclaringClass()),
+                    totalHits, totalMisses, totalMisses == 0 ? 0.0 : averageCalculation / totalMisses));
         }
         return res;
     }

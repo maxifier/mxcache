@@ -3,33 +3,33 @@
  */
 package com.maxifier.mxcache.instrumentation.current;
 
-import static com.maxifier.mxcache.instrumentation.CommonRuntimeTypes.*;
-import static com.maxifier.mxcache.asm.Opcodes.*;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.lang.reflect.Modifier;
-
-import static com.maxifier.mxcache.instrumentation.current.RuntimeTypes.*;
-import static com.maxifier.mxcache.util.CodegenHelper.*;
-
-import com.maxifier.mxcache.instrumentation.ClassDefinition;
-import com.maxifier.mxcache.instrumentation.CommonRuntimeTypes;
-import com.maxifier.mxcache.instrumentation.IllegalCachedClass;
-import com.maxifier.mxcache.instrumentation.InstrumentationStage;
 import com.maxifier.mxcache.asm.*;
 import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.asm.commons.SerialVersionUIDAdder;
 import com.maxifier.mxcache.asm.commons.TableSwitchGenerator;
+import com.maxifier.mxcache.instrumentation.ClassDefinition;
+import com.maxifier.mxcache.instrumentation.CommonRuntimeTypes;
+import com.maxifier.mxcache.instrumentation.IllegalCachedClass;
+import com.maxifier.mxcache.instrumentation.InstrumentationStage;
 import com.maxifier.mxcache.util.ClassGenerator;
 import com.maxifier.mxcache.util.CodegenHelper;
 import com.maxifier.mxcache.util.Generator;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
-import gnu.trove.THashMap;
-import gnu.trove.TIntObjectIterator;
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.iterator.TIntObjectIterator;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static com.maxifier.mxcache.asm.Opcodes.*;
+import static com.maxifier.mxcache.instrumentation.CommonRuntimeTypes.*;
+import static com.maxifier.mxcache.instrumentation.current.RuntimeTypes.*;
+import static com.maxifier.mxcache.util.CodegenHelper.NO_ARG_CONSTRUCTOR;
+import static com.maxifier.mxcache.util.CodegenHelper.OBJECT_TYPE;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
@@ -68,7 +68,7 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
     private final TIntObjectHashMap<Generator> instanceCleanMethods = new TIntObjectHashMap<Generator>();
 
     public CachedInstrumentationStage(InstrumentatorImpl instrumentator, ClassVisitor classWriter, ClassVisitor nextDetector) {
-        super(classWriter);
+        super(Opcodes.ASM4, classWriter);
         this.instrumentator = instrumentator;
         this.detector = new CachedDetector(nextDetector);
     }
@@ -85,10 +85,10 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
             super.visit(version, access, className, signature, superName, interfaces);
             thisType = Type.getObjectType(className);
 
-            cleanableWriter = new ClassGenerator(0, className + "$" + CLEANABLE_INNER_NAME, OBJECT_TYPE, CLEANABLE_TYPE);
+            cleanableWriter = new ClassGenerator(ACC_PUBLIC | ACC_SUPER | ACC_SYNTHETIC | ACC_FINAL, className + "$" + CLEANABLE_INNER_NAME, OBJECT_TYPE, CLEANABLE_TYPE);
             cleanableClass = cleanableWriter.getThisType();
 
-            visitInnerClass(cleanableClass.getInternalName(), thisType.getInternalName(), CLEANABLE_INNER_NAME, ACC_PRIVATE | ACC_STATIC);
+            visitInnerClass(cleanableClass.getInternalName(), thisType.getInternalName(), CLEANABLE_INNER_NAME, ACC_PRIVATE | ACC_STATIC | ACC_SYNTHETIC);
             cleanableWriter.visitOuterClass(thisType.getInternalName(), null, null);
 
             addMarkerAnnotation();
@@ -165,10 +165,10 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
         if (map.isEmpty()) {
             sim.pushNull();
         } else {
-            sim.newInstance(CommonRuntimeTypes.THASHMAP_TYPE);
+            sim.newInstance(CommonRuntimeTypes.HASH_MAP_TYPE);
             sim.dup();
             sim.push(map.size());
-            sim.invokeConstructor(CommonRuntimeTypes.THASHMAP_TYPE, Method.getMethod("void <init>(int)"));
+            sim.invokeConstructor(CommonRuntimeTypes.HASH_MAP_TYPE, Method.getMethod("void <init>(int)"));
             for (Map.Entry<String, CacheIdList> e : map.entrySet()) {
                 sim.dup();
                 sim.push(e.getKey());
@@ -180,7 +180,7 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
                 sim.push(value.getStaticCaches());
                 sim.invokeConstructor(CLASS_CACHE_IDS_TYPE, Method.getMethod("void <init>(int[], int[])"));
 
-                sim.invokeVirtual(CommonRuntimeTypes.THASHMAP_TYPE, Method.getMethod("Object put(Object,Object)"));
+                sim.invokeVirtual(CommonRuntimeTypes.HASH_MAP_TYPE, Method.getMethod("Object put(Object,Object)"));
                 sim.pop();
             }
         }

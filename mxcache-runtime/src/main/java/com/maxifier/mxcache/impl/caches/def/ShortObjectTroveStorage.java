@@ -3,29 +3,18 @@
  */
 package com.maxifier.mxcache.impl.caches.def;
 
-import gnu.trove.*;
-
 import com.maxifier.mxcache.storage.*;
 import static com.maxifier.mxcache.impl.caches.def.TroveHelper.*;
 
 /**
- * ShortObjectTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
- * GENERATED FROM #SOURCE#
+ * GENERATED FROM P2OTroveStorage.template
  *
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class ShortObjectTroveStorage<T> extends TShortObjectHashMap<Object> implements ShortObjectStorage<T> {
-    public ShortObjectTroveStorage() {
-    }
-
-    public ShortObjectTroveStorage(TShortHashingStrategy strategy) {
-        super(strategy);        
-    }
-
+public class ShortObjectTroveStorage extends gnu.trove.map.hash.TShortObjectHashMap<Object> implements ShortObjectStorage {
     @Override
     public Object load(short key) {
         Object v = get(key);
@@ -39,7 +28,7 @@ public class ShortObjectTroveStorage<T> extends TShortObjectHashMap<Object> impl
     }
 
     @Override
-    public void save(short key, T value) {
+    public void save(short key, Object value) {
         put(key, value == null ? NULL_REPLACEMENT : value);
     }
 }

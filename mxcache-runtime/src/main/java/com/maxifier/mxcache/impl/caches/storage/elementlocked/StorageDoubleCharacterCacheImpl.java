@@ -19,8 +19,6 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * StorageDoubleCharacterCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -28,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageDoubleCharacterCacheImpl extends AbstractDoubleCharacterCache implements StorageHolder<DoubleCharacterElementLockedStorage> {
-    private DoubleCharacterElementLockedStorage storage;
+public class StorageDoubleCharacterCacheImpl extends AbstractDoubleCharacterCache implements StorageHolder<DoubleObjectElementLockedStorage> {
+    private DoubleObjectElementLockedStorage storage;
 
     public StorageDoubleCharacterCacheImpl(Object owner, DoubleCharacterCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull DoubleCharacterElementLockedStorage storage) {
+    public void setStorage(@Nonnull DoubleObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -44,17 +42,12 @@ public class StorageDoubleCharacterCacheImpl extends AbstractDoubleCharacterCach
     }
 
     @Override
-    public boolean isCalculated(double key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public char load(double key) {
+    public Object load(double key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(double key, char value) {
+    public void save(double key, Object value) {
         storage.save(key, value);
     }
 

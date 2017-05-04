@@ -11,7 +11,7 @@ import com.maxifier.mxcache.storage.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class ObjectStorageImpl<T> implements ObjectStorage<T> {
+public class ObjectStorageImpl implements ObjectStorage {
     private volatile Object value = UNDEFINED;
 
     @Override
@@ -20,7 +20,7 @@ public class ObjectStorageImpl<T> implements ObjectStorage<T> {
     }
 
     @Override
-    public void save(T v) {
+    public void save(Object v) {
         value = v;
     }
 
@@ -32,5 +32,10 @@ public class ObjectStorageImpl<T> implements ObjectStorage<T> {
     @Override
     public int size() {
         return value == UNDEFINED ? 0 : 1;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
     }
 }

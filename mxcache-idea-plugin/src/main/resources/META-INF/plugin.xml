@@ -1,9 +1,9 @@
 <!DOCTYPE idea-plugin PUBLIC "Plugin/DTD"  "http://plugins.intellij.net/plugin.dtd">
 <idea-plugin version="2">
-    <name>MxCache Idea plugin 2.2</name>
+    <name>MxCache Idea plugin ${project.version}</name>
     <description>instruments compiled classes to support @Cached methods,
         contains inspections for check common @Cached problems</description>
-    <version>2.2</version>
+    <version>${project.version}</version>
     <vendor url="http://maxifier.com/" email="alexander.kochurov@maxifier.com">Maxifier Ltd.</vendor>
 
     <application-components>
@@ -44,6 +44,6 @@
           IDEA 12 and newer has new out-of-process compile server.
           It requires a separate plugin, but we combine both IDE & compile server plugin in a single jar
         -->
-        <compileServer.plugin classpath="mxcache-idea-plugin.jar"/>
+        <compileServer.plugin classpath="mxcache-idea-plugin-${project.version}.jar"/>
     </extensions>
 </idea-plugin>

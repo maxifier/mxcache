@@ -16,8 +16,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * StorageShortCharacterCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -25,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageShortCharacterCacheImpl extends AbstractShortCharacterCache implements StorageHolder<ShortCharacterStorage> {
+public class StorageShortCharacterCacheImpl extends AbstractShortCharacterCache implements StorageHolder<ShortObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private ShortCharacterStorage storage;
+    private ShortObjectStorage storage;
 
     public StorageShortCharacterCacheImpl(Object owner, ShortCharacterCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull ShortCharacterStorage storage) {
+    public void setStorage(@Nonnull ShortObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -43,17 +41,12 @@ public class StorageShortCharacterCacheImpl extends AbstractShortCharacterCache 
     }
 
     @Override
-    public boolean isCalculated(short key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public char load(short key) {
+    public Object load(short key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(short key, char value) {
+    public void save(short key, Object value) {
         storage.save(key, value);
     }
 

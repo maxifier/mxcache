@@ -3,9 +3,9 @@
  */
 package com.maxifier.mxcache.instrumentation.current;
 
-import com.maxifier.mxcache.asm.ClassAdapter;
 import com.maxifier.mxcache.asm.ClassVisitor;
 import com.maxifier.mxcache.asm.MethodVisitor;
+import com.maxifier.mxcache.asm.Opcodes;
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.AdviceAdapter;
 import com.maxifier.mxcache.asm.commons.Method;
@@ -16,13 +16,13 @@ import java.lang.reflect.Modifier;
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class AddInstanceInitializer extends ClassAdapter {
+public class AddInstanceInitializer extends ClassVisitor {
     private final Method method;
 
     private Type thisType;
 
     public AddInstanceInitializer(ClassVisitor cv, Method method) {
-        super(cv);
+        super(Opcodes.ASM4, cv);
         this.method = method;
     }
 
@@ -35,7 +35,7 @@ public class AddInstanceInitializer extends ClassAdapter {
     @Override
     public MethodVisitor visitMethod(final int access, final String name, final String desc, String sign, String[] exceptions) {
         if (!Modifier.isStatic(access) && name.equals(CodegenHelper.CONSTRUCTOR_NAME)) {
-            return new AdviceAdapter(super.visitMethod(access, name, desc, sign, exceptions), access, name, desc) {
+            return new AdviceAdapter(Opcodes.ASM4, super.visitMethod(access, name, desc, sign, exceptions), access, name, desc) {
                 @Override
                 protected void onMethodEnter() {
                     loadThis();

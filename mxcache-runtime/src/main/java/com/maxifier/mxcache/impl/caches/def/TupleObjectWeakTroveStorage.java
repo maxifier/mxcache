@@ -5,7 +5,6 @@ package com.maxifier.mxcache.impl.caches.def;
 
 import com.maxifier.mxcache.tuple.Tuple;
 import com.maxifier.mxcache.transform.SmartReference;
-import gnu.trove.*;
 
 import java.util.*;
 
@@ -15,7 +14,7 @@ import java.util.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class TupleObjectWeakTroveStorage<V> extends ObjectObjectTroveStorage<Tuple, V> {
+public class TupleObjectWeakTroveStorage extends ObjectObjectTroveStorage<Tuple> {
     private final List<Tuple> removed = Collections.synchronizedList(new ArrayList<Tuple>());
 
     private final int[] tupleIndices;
@@ -25,11 +24,6 @@ public class TupleObjectWeakTroveStorage<V> extends ObjectObjectTroveStorage<Tup
     }
 
     public TupleObjectWeakTroveStorage(int[] tupleIndices) {
-        this.tupleIndices = tupleIndices;
-    }
-
-    public TupleObjectWeakTroveStorage(TObjectHashingStrategy<Tuple> strategy, int[] tupleIndices) {
-        super(strategy);
         this.tupleIndices = tupleIndices;
     }
 
@@ -47,7 +41,7 @@ public class TupleObjectWeakTroveStorage<V> extends ObjectObjectTroveStorage<Tup
     }
 
     @Override
-    public void save(Tuple o, V t) {
+    public void save(Tuple o, Object t) {
         cleanup();
         Callback callback = new Callback(o);
         for (int index : tupleIndices) {

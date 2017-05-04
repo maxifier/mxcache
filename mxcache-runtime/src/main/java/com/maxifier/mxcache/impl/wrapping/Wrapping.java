@@ -3,16 +3,13 @@
  */
 package com.maxifier.mxcache.impl.wrapping;
 
-import com.maxifier.mxcache.asm.ClassWriter;
-import com.maxifier.mxcache.asm.Label;
-import com.maxifier.mxcache.asm.MethodVisitor;
-import com.maxifier.mxcache.asm.Opcodes;
+import com.maxifier.mxcache.asm.*;
 import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
 import com.maxifier.mxcache.asm.commons.Method;
-import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.ObjectObjectCache;
 import com.maxifier.mxcache.caches.ObjectObjectCalculatable;
+import com.maxifier.mxcache.exceptions.ExceptionRecord;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.caches.storage.StorageHolder;
 import com.maxifier.mxcache.impl.resource.AbstractDependencyNode;
@@ -30,7 +27,8 @@ import com.maxifier.mxcache.util.CodegenHelper;
 import com.maxifier.mxcache.util.MxConstructorGenerator;
 import com.maxifier.mxcache.util.MxField;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.strategy.HashingStrategy;
 
 import javax.annotation.Nonnull;
 
@@ -43,10 +41,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 
 import static com.maxifier.mxcache.asm.Opcodes.*;
-import static com.maxifier.mxcache.asm.Type.BOOLEAN_TYPE;
 import static com.maxifier.mxcache.asm.Type.VOID_TYPE;
+import static com.maxifier.mxcache.transform.ChainedTransformGenerator.*;
 import static com.maxifier.mxcache.util.CodegenHelper.*;
-import static com.maxifier.mxcache.transform.TransformGenerator.NO_TRANSFORM;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
@@ -61,12 +58,9 @@ public final class Wrapping {
     private static final String STORAGE_FIELD = "storage";
 
     private static final String LOAD_METHOD = "load";
-    private static final String IS_CALCULATED_METHOD = "isCalculated";
     private static final String SAVE_METHOD = "save";
     private static final String LOCK_METHOD = "lock";
     private static final String UNLOCK_METHOD = "unlock";
-
-    private static final String UNDEFINED_CONST_NAME = "UNDEFINED";
 
     private static final Type STATISTICS_TYPE = Type.getType(Statistics.class);
     private static final Method GET_STATISTICS_METHOD = new Method("getStatistics", STATISTICS_TYPE, EMPTY_TYPES);
@@ -78,7 +72,7 @@ public final class Wrapping {
 
     private static final Method SET_STORAGE_TYPE = new Method("setStorage", VOID_TYPE, new Type[]{STORAGE_TYPE});
     private static final Type UNSUPPORTED_OPERATION_EXCEPTION_TYPE = Type.getType(UnsupportedOperationException.class);
-    private static final TupleFactory TUPLE_FACTORY = TupleGenerator.getTupleFactory(Signature.class, boolean.class);
+    private static final TupleFactory TUPLE_FACTORY = TupleGenerator.createTupleFactory(new HashingStrategy[]{null, null}, Signature.class, boolean.class);
     private static final String FULL_LOCKED_PACKAGE = "com.maxifier.mxcache.impl.caches.storage";
     private static final String ELEMENT_LOCKED_PACKAGE = "com.maxifier.mxcache.impl.caches.storage.elementlocked";
     private static final String NODES_PACKAGE = "com.maxifier.mxcache.impl.resource.nodes";
@@ -102,11 +96,11 @@ public final class Wrapping {
         if (isNoTransform(userKeyTransformer) && isNoTransform(userValueTransformer) && storageSignature.isWider(cacheSignature)) {
             return getPlainFactory(storageSignature, perElementLocking);
         }
-        return getConvertingFactory(storageSignature, cacheSignature, wrapNullTransform(userKeyTransformer), wrapNullTransform(userValueTransformer), perElementLocking);
+        return getConvertingFactory(storageSignature, cacheSignature, wrapNullTransform(cacheSignature.getContainer(), userKeyTransformer), wrapNullTransform(cacheSignature.getValue(), userValueTransformer), perElementLocking);
     }
 
     private static boolean isNoTransform(TransformGenerator userKeyTransformer) {
-        return (userKeyTransformer == null || userKeyTransformer == NO_TRANSFORM);
+        return (userKeyTransformer == null || userKeyTransformer instanceof EmptyTransformGenerator);
     }
 
     private static synchronized WrapperFactory getPlainFactory(Signature signature, boolean perElementLocking) {
@@ -135,8 +129,8 @@ public final class Wrapping {
         return factory;
     }
 
-    private static TransformGenerator wrapNullTransform(TransformGenerator transform) {
-        return transform == null ? NO_TRANSFORM : transform;
+    private static TransformGenerator wrapNullTransform(Class<?> expectedType, TransformGenerator transform) {
+        return transform == null ? new EmptyTransformGenerator(expectedType) : transform;
     }
 
     private static WrapperFactory createPlainFactory(Signature signature, boolean perElementLocking) {
@@ -153,8 +147,8 @@ public final class Wrapping {
 
     public static AbstractDependencyNode getMultipleNode(CacheDescriptor descriptor) {
         Constructor<? extends MultipleDependencyNode> onlyConstructor = null;
-        if (descriptor.isResourceView() && descriptor.getKeyType() == null) {
-            onlyConstructor = getOnlyConstructor(getMultipleDependencyNodeClass(descriptor.getSignature()));
+        if (descriptor.isResourceView()) {
+            throw new IllegalArgumentException("@ResourceView should have instance cache " + descriptor);
         }
         return onlyConstructor == null ? new MultipleDependencyNode() : new NodeWrapperFactoryImpl(onlyConstructor).wrap();
     }
@@ -163,7 +157,7 @@ public final class Wrapping {
         @Nonnull
         TransformGenerator keyTransformer = boxTransformer(userKeyTransformer, cacheSignature.getContainer(), storageSignature.getContainer());
         @Nonnull
-        TransformGenerator valueTransformer = boxTransformer(userValueTransformer, cacheSignature.getValue(), storageSignature.getValue());
+        TransformGenerator valueTransformer = wrapUndefined(boxTransformer(userValueTransformer, Object.class, Object.class));
 
         byte[] bytecode = generateWrapperBytecode(storageSignature, cacheSignature, keyTransformer, valueTransformer, signature, perElementLocking);
 
@@ -172,16 +166,87 @@ public final class Wrapping {
         return new WrapperFactoryImpl(getOnlyConstructor(wrapperClass));
     }
 
+    private static TransformGenerator wrapUndefined(final TransformGenerator transformGenerator) {
+        if (transformGenerator instanceof EmptyTransformGenerator) {
+            return transformGenerator;
+        }
+        return new TransformGenerator() {
+            @Override
+            public void generateForward(Type thisType, int fieldIndex, GeneratorAdapter method) {
+                method.dup();
+                method.getStatic(STORAGE_TYPE, "UNDEFINED", OBJECT_TYPE);
+                Label end = new Label();
+                method.ifCmp(OBJECT_TYPE, GeneratorAdapter.EQ, end);
+                method.dup();
+                method.instanceOf(Type.getType(ExceptionRecord.class));
+                method.ifZCmp(GeneratorAdapter.NE, end);
+                transformGenerator.generateForward(thisType, fieldIndex, method);
+                method.mark(end);
+            }
+
+            @Override
+            public void generateBackward(Type thisType, int fieldIndex, GeneratorAdapter method) {
+                method.dup();
+                method.getStatic(STORAGE_TYPE, "UNDEFINED", OBJECT_TYPE);
+                Label end = new Label();
+                method.ifCmp(OBJECT_TYPE, GeneratorAdapter.EQ, end);
+                method.dup();
+                method.instanceOf(Type.getType(ExceptionRecord.class));
+                method.ifZCmp(GeneratorAdapter.NE, end);
+                transformGenerator.generateBackward(thisType, fieldIndex, method);
+                method.mark(end);
+            }
+
+            @Override
+            public void generateFields(Type thisType, int fieldIndex, ClassGenerator writer) {
+                transformGenerator.generateFields(thisType, fieldIndex, writer);
+            }
+
+            @Override
+            public void generateAcquire(Type thisType, int fieldIndex, GeneratorAdapter ctor, int contextLocal) {
+                transformGenerator.generateAcquire(thisType, fieldIndex, ctor, contextLocal);
+            }
+
+            @Override
+            public int getFieldCount() {
+                return transformGenerator.getFieldCount();
+            }
+
+            @Override
+            public Signature transformKey(Signature in) {
+                return transformGenerator.transformKey(in);
+            }
+
+            @Override
+            public Signature transformValue(Signature in) {
+                return transformGenerator.transformValue(in);
+            }
+
+            @Override
+            public Class<?> getInType() {
+                return Object.class;
+            }
+
+            @Override
+            public Class<?> getOutType() {
+                return Object.class;
+            }
+        };
+    }
+
     @Nonnull
     private static TransformGenerator boxTransformer(TransformGenerator transformer, Class from, Class to) {
-        return ChainedTransformGenerator.chain(transformer, getBoxingTransformGenerator(transformer.getTransformedType(from), to));
+        if (transformer instanceof EmptyTransformGenerator) {
+            return getBoxingTransformGenerator(from, to);
+        }
+        return chain(chain(getBoxingTransformGenerator(from, transformer.getInType()), transformer), getBoxingTransformGenerator(transformer.getOutType(), to));
     }
 
     private static byte[] generateWrapperBytecode(Signature storageSignature, Signature cacheSignature, @Nonnull TransformGenerator keyTransformer, @Nonnull TransformGenerator valueTransformer, CacheImplementationSignature signature, boolean perElementLocking) {
         String superName = cacheSignature.getImplementationClassName(getAbstractCachePackage(perElementLocking) + "/Abstract", "Cache");
         String className = getCacheImplClassName(storageSignature, cacheSignature);
 
-        ClassGenerator w = new ClassGenerator(ACC_PUBLIC | ACC_SUPER, className, Type.getObjectType(superName), STORAGE_HOLDER_TYPE);
+        ClassGenerator w = new ClassGenerator(ACC_PUBLIC | ACC_SUPER | ACC_SYNTHETIC, className, Type.getObjectType(superName), STORAGE_HOLDER_TYPE);
 
         Type wrapperType = Type.getObjectType(className);
 
@@ -202,18 +267,11 @@ public final class Wrapping {
         generateGetStatistics(w, superName, wrapperType, storageType);
 
         Type erasedCacheKeyType = erase(cacheSignature.getContainerType());
-        Type erasedCacheValueType = erase(Type.getType(cacheSignature.getValue()));
-
         Type storageKeyType = storageSignature.getContainerType();
-        Type storageValueType = Type.getType(storageSignature.getValue());
 
-        if (needsIsCalculated(erasedCacheValueType)) {
-            generateIsCalculated(keyTransformer, w, wrapperType, storageType, erasedCacheKeyType, storageKeyType, storageValueType);
-        }
+        generateLoad(keyTransformer, valueTransformer, w, wrapperType, storageType, erasedCacheKeyType, storageKeyType);
 
-        generateLoad(keyTransformer, valueTransformer, w, wrapperType, storageType, erasedCacheKeyType, erasedCacheValueType, storageKeyType, storageValueType);
-
-        generateSave(keyTransformer, valueTransformer, w, wrapperType, storageType, erasedCacheKeyType, erasedCacheValueType, storageKeyType, storageValueType);
+        generateSave(keyTransformer, valueTransformer, w, wrapperType, storageType, erasedCacheKeyType, storageKeyType);
 
         if (perElementLocking) {
             generateDelegatingLockingMethod(LOCK_METHOD, keyTransformer, w, wrapperType, storageType, erasedCacheKeyType, storageKeyType);
@@ -230,7 +288,7 @@ public final class Wrapping {
         return perElementLocking ? "com/maxifier/mxcache/impl/caches/abs/elementlocked" : "com/maxifier/mxcache/impl/caches/abs";
     }
 
-    private static void generateSetStorage(ClassWriter w, Type wrapperType, Type storageType) {
+    private static void generateSetStorage(ClassVisitor w, Type wrapperType, Type storageType) {
         WrapperMethodGenerator setStorage = defineMethod(w, SET_STORAGE_TYPE);
         setStorage.visitCode();
 
@@ -252,7 +310,7 @@ public final class Wrapping {
         setStorage.endMethod();
     }
 
-    private static void generateGetStatistics(ClassWriter w, String superName, Type wrapperType, Type storageType) {
+    private static void generateGetStatistics(ClassVisitor w, String superName, Type wrapperType, Type storageType) {
         WrapperMethodGenerator getStatistics = defineMethod(w, GET_STATISTICS_METHOD);
         getStatistics.loadStorage(wrapperType, storageType);
         getStatistics.instanceOf(STATISTICS_HOLDER_TYPE);
@@ -266,21 +324,22 @@ public final class Wrapping {
         getStatistics.mark(delegating);
 
         getStatistics.loadThis();
-        getStatistics.invokeSuper(Type.getObjectType(superName), GET_STATISTICS_METHOD);
+        getStatistics.invokeConstructor(Type.getObjectType(superName), GET_STATISTICS_METHOD);
         getStatistics.returnValue();
         getStatistics.endMethod();
     }
 
-    private static void generateSave(@Nonnull TransformGenerator keyTransformer, @Nonnull TransformGenerator valueTransformer, ClassWriter w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type erasedCacheValueType, Type storageKeyType, Type storageValueType) {
-        Method cacheSaveMethod = new Method(SAVE_METHOD, VOID_TYPE, erasedCacheKeyType == null ? new Type[]{erasedCacheValueType} : new Type[]{erasedCacheKeyType, erasedCacheValueType});
-        Method storageSaveMethod = new Method(SAVE_METHOD, VOID_TYPE, storageKeyType == null ? new Type[]{erase(storageValueType)} : new Type[]{erase(storageKeyType), erase(storageValueType)});
+    private static void generateSave(@Nonnull TransformGenerator keyTransformer, @Nonnull TransformGenerator valueTransformer, ClassVisitor w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type storageKeyType) {
+        Method cacheSaveMethod = new Method(SAVE_METHOD, VOID_TYPE, erasedCacheKeyType == null ? new Type[]{CodegenHelper.OBJECT_TYPE} : new Type[]{erasedCacheKeyType, CodegenHelper.OBJECT_TYPE});
+        Method storageSaveMethod = new Method(SAVE_METHOD, VOID_TYPE, storageKeyType == null ? new Type[]{CodegenHelper.OBJECT_TYPE} : new Type[]{erase(storageKeyType), CodegenHelper.OBJECT_TYPE});
         WrapperMethodGenerator save = defineMethod(w, cacheSaveMethod);
         save.visitCode();
 
         save.loadStorage(wrapperType, storageType);
 
         if (erasedCacheKeyType != null) {
-            generateArgumentForwardTransform(keyTransformer, wrapperType, save);
+            save.loadArg(0);
+            keyTransformer.generateForward(wrapperType, 0, save);
         }
         save.loadArg(erasedCacheKeyType == null ? 0 : 1);
         valueTransformer.generateForward(wrapperType, keyTransformer.getFieldCount(), save);
@@ -290,7 +349,7 @@ public final class Wrapping {
         save.endMethod();
     }
 
-    private static void generateDelegatingLockingMethod(String name, @Nonnull TransformGenerator keyTransformer, ClassWriter w, Type wrapperType, Type storageType, @Nonnull Type erasedCacheKeyType, @Nonnull Type storageKeyType) {
+    private static void generateDelegatingLockingMethod(String name, @Nonnull TransformGenerator keyTransformer, ClassVisitor w, Type wrapperType, Type storageType, @Nonnull Type erasedCacheKeyType, @Nonnull Type storageKeyType) {
         Method cacheLockMethod = new Method(name, VOID_TYPE, new Type[]{erasedCacheKeyType});
         Method storageLockMethod = new Method(name, VOID_TYPE, new Type[]{erase(storageKeyType)});
         WrapperMethodGenerator save = defineMethod(w, cacheLockMethod);
@@ -298,14 +357,15 @@ public final class Wrapping {
         save.visitCode();
         save.loadStorage(wrapperType, storageType);
 
-        generateArgumentForwardTransform(keyTransformer, wrapperType, save);
+        save.loadArg(0);
+        keyTransformer.generateForward(wrapperType, 0, save);
         save.invokeInterface(storageType, storageLockMethod);
         save.returnValue();
 
         save.endMethod();
     }
 
-    private static void generateGetLock(ClassWriter w, Type wrapperType, Type storageType) {
+    private static void generateGetLock(ClassVisitor w, Type wrapperType, Type storageType) {
         WrapperMethodGenerator save = defineMethod(w, GET_LOCK_METHOD);
 
         save.visitCode();
@@ -316,7 +376,7 @@ public final class Wrapping {
         save.endMethod();
     }
 
-    private static void generateDelegatingMethod(ClassWriter w, Type wrapperType, Type storageType, Method method) {
+    private static void generateDelegatingMethod(ClassVisitor w, Type wrapperType, Type storageType, Method method) {
         WrapperMethodGenerator size = defineMethod(w, method);
         size.loadStorage(wrapperType, storageType);
         size.invokeInterface(storageType, method);
@@ -328,90 +388,15 @@ public final class Wrapping {
         return type == null ? EMPTY_TYPES : new Type[]{erase(type)};
     }
 
-    private static void generateIsCalculated(@Nonnull TransformGenerator keyTransformer, ClassWriter w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type storageKeyType, Type storageValueType) {
-        Method cacheIsCalculatedMethod = new Method(IS_CALCULATED_METHOD, BOOLEAN_TYPE, getArgumentTypes(erasedCacheKeyType));
-
-        WrapperMethodGenerator isCalculated = defineMethod(w, cacheIsCalculatedMethod);
-
-        isCalculated.loadStorage(wrapperType, storageType);
-        if (needsIsCalculated(storageValueType)) {
-            generateDelegatingIsCalculated(keyTransformer, wrapperType, storageType, erasedCacheKeyType, storageKeyType, isCalculated);
-        } else {
-            generateIsCalculatedViaLoad(keyTransformer, wrapperType, storageType, erasedCacheKeyType, storageKeyType, storageValueType, isCalculated);
-        }
-        isCalculated.endMethod();
-    }
-
-    private static void generateDelegatingIsCalculated(TransformGenerator keyTransformer, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type storageKeyType, WrapperMethodGenerator isCalculated) {
-        Method storageIsCalculatedMethod = new Method(IS_CALCULATED_METHOD, BOOLEAN_TYPE, getArgumentTypes(storageKeyType));
-
-        if (erasedCacheKeyType != null) {
-            generateArgumentForwardTransform(keyTransformer, wrapperType, isCalculated);
-        }
-
-        isCalculated.invokeInterface(storageType, storageIsCalculatedMethod);
-        isCalculated.returnValue();
-    }
-
-    private static void generateIsCalculatedViaLoad(TransformGenerator keyTransformer, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type storageKeyType, Type storageValueType, WrapperMethodGenerator isCalculated) {
-        Method storageLoadMethod = new Method(LOAD_METHOD, erase(storageValueType), getArgumentTypes(storageKeyType));
-
-        if (erasedCacheKeyType != null) {
-            generateArgumentForwardTransform(keyTransformer, wrapperType, isCalculated);
-        }
-
-        isCalculated.invokeInterface(storageType, storageLoadMethod);
-        isCalculated.loadUndefined();
-        Label calculated = new Label();
-        isCalculated.ifCmp(OBJECT_TYPE, GeneratorAdapter.NE, calculated);
-
-        isCalculated.push(false);
-        isCalculated.returnValue();
-
-        isCalculated.mark(calculated);
-        isCalculated.push(true);
-        isCalculated.returnValue();
-    }
-
-    private static void generateArgumentForwardTransform(TransformGenerator keyTransformer, Type wrapperType, WrapperMethodGenerator methodGenerator) {
-        methodGenerator.loadArg(0);
-        keyTransformer.generateForward(wrapperType, 0, methodGenerator);
-    }
-
-    private static void generateLoad(@Nonnull TransformGenerator keyTransformer, @Nonnull TransformGenerator valueTransformer, ClassWriter w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type erasedCacheValueType, Type storageKeyType, Type storageValueType) {
-        Method cacheLoadMethod = new Method(LOAD_METHOD, erasedCacheValueType, getArgumentTypes(erasedCacheKeyType));
-        Method storageLoadMethod = new Method(LOAD_METHOD, erase(storageValueType), getArgumentTypes(storageKeyType));
+    private static void generateLoad(@Nonnull TransformGenerator keyTransformer, @Nonnull TransformGenerator valueTransformer, ClassVisitor w, Type wrapperType, Type storageType, Type erasedCacheKeyType, Type storageKeyType) {
+        Method cacheLoadMethod = new Method(LOAD_METHOD, CodegenHelper.OBJECT_TYPE, getArgumentTypes(erasedCacheKeyType));
+        Method storageLoadMethod = new Method(LOAD_METHOD, CodegenHelper.OBJECT_TYPE, getArgumentTypes(storageKeyType));
 
         WrapperMethodGenerator load = defineMethod(w, cacheLoadMethod);
         load.loadStorage(wrapperType, storageType);
-        if (needsIsCalculated(storageValueType) && !needsIsCalculated(erasedCacheValueType)) {
-            int transformedKey = -1;
-
-            if (erasedCacheKeyType != null) {
-                generateArgumentForwardTransform(keyTransformer, wrapperType, load);
-                transformedKey = load.newLocal(storageKeyType);
-                load.dup();
-                load.storeLocal(transformedKey);
-            }
-
-            Method storageIsCalculatedMethod = new Method(IS_CALCULATED_METHOD, BOOLEAN_TYPE, getArgumentTypes(storageKeyType));
-            load.invokeInterface(storageType, storageIsCalculatedMethod);
-
-            Label calculated = new Label();
-
-            load.ifZCmp(GeneratorAdapter.NE, calculated);
-
-            load.loadUndefined();
-            load.returnValue();
-
-            load.mark(calculated);
-            load.loadStorage(wrapperType, storageType);
-
-            if (erasedCacheKeyType != null) {
-                load.loadLocal(transformedKey);
-            }
-        } else if (erasedCacheKeyType != null) {
-            generateArgumentForwardTransform(keyTransformer, wrapperType, load);
+        if (erasedCacheKeyType != null) {
+            load.loadArg(0);
+            keyTransformer.generateForward(wrapperType, 0, load);
         }
         load.invokeInterface(storageType, storageLoadMethod);
         valueTransformer.generateBackward(wrapperType, keyTransformer.getFieldCount(), load);
@@ -420,11 +405,7 @@ public final class Wrapping {
         load.endMethod();
     }
 
-    private static boolean needsIsCalculated(Type storageValueType) {
-        return !isReferenceType(storageValueType);
-    }
-
-    private static void generateConstructor(ClassWriter w, Type superType, Type calculatableType) {
+    private static void generateConstructor(ClassVisitor w, Type superType, Type calculatableType) {
         Method method = new Method(CONSTRUCTOR_NAME, VOID_TYPE, new Type[]{OBJECT_TYPE, calculatableType, MUTABLE_STATISTICS_TYPE});
 
         WrapperMethodGenerator ctor = defineMethod(w, method);
@@ -438,7 +419,7 @@ public final class Wrapping {
         ctor.endMethod();
     }
 
-    private static WrapperMethodGenerator defineMethod(ClassWriter w, Method ctorMethod) {
+    private static WrapperMethodGenerator defineMethod(ClassVisitor w, Method ctorMethod) {
         return new WrapperMethodGenerator(ACC_PUBLIC, ctorMethod, w.visitMethod(ACC_PUBLIC, ctorMethod.getName(), ctorMethod.getDescriptor(), null, null));
     }
 
@@ -448,19 +429,19 @@ public final class Wrapping {
     }
 
     @Nonnull
-    private static TransformGenerator getBoxingTransformGenerator(Class from, Class to) {
+    private static TransformGenerator getBoxingTransformGenerator(Class<?> from, Class<?> to) {
         if (from == to) {
-            return NO_TRANSFORM;
+            return new EmptyTransformGenerator(from);
         }
         if (from != null && to != null) {
             if (to.isAssignableFrom(from)) {
-                return NO_TRANSFORM;
+                return new EmptyTransformGenerator(from);
             }
             if (to.isPrimitive() && !from.isPrimitive() && from.isAssignableFrom(getBoxedType(to))) {
                 return new UnboxTransformGenerator(to);
             }
             if (from.isPrimitive() && !to.isPrimitive() && to.isAssignableFrom(getBoxedType(from))) {
-                return new BoxTransformGenerator(Type.getType(from));
+                return new BoxTransformGenerator(from, Type.getType(from));
             }
         }
         throw new UnsupportedOperationException("Cannot convert from " + from + " to " + to);
@@ -474,11 +455,6 @@ public final class Wrapping {
     @SuppressWarnings({"unchecked"})
     public static Class<? extends SingletonDependencyNode> getSingletonDependencyNodeClass(Signature nodeSignature) {
         return (Class<? extends SingletonDependencyNode>) nodeSignature.getImplementationClass(NODES_PACKAGE + ".ViewableSingleton", "DependencyNode");
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public static Class<? extends MultipleDependencyNode> getMultipleDependencyNodeClass(Signature nodeSignature) {
-        return (Class<? extends MultipleDependencyNode>) nodeSignature.getImplementationClass(NODES_PACKAGE + ".ViewableMultiple", "DependencyNode");
     }
 
     private static String getWrapperPackage(boolean perElementLocking) {
@@ -496,11 +472,7 @@ public final class Wrapping {
 
     private static final class WrapperMethodGenerator extends GeneratorAdapter {
         private WrapperMethodGenerator(int access, Method method, MethodVisitor mv) {
-            super(access, method, mv);
-        }
-
-        public void loadUndefined() {
-            getStatic(STORAGE_TYPE, UNDEFINED_CONST_NAME, OBJECT_TYPE);
+            super(Opcodes.ASM4, mv, access, method.getName(), method.getDescriptor());
         }
 
         public void loadStorage(Type wrapperType, Type storageType) {

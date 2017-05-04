@@ -19,8 +19,6 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * StorageObjectByteCacheImpl<E>
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -28,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageObjectByteCacheImpl<E> extends AbstractObjectByteCache<E> implements StorageHolder<ObjectByteElementLockedStorage<E>> {
-    private ObjectByteElementLockedStorage<E> storage;
+public class StorageObjectByteCacheImpl<E> extends AbstractObjectByteCache<E> implements StorageHolder<ObjectObjectElementLockedStorage<E>> {
+    private ObjectObjectElementLockedStorage<E> storage;
 
     public StorageObjectByteCacheImpl(Object owner, ObjectByteCalculatable<E> calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull ObjectByteElementLockedStorage<E> storage) {
+    public void setStorage(@Nonnull ObjectObjectElementLockedStorage<E> storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -44,17 +42,12 @@ public class StorageObjectByteCacheImpl<E> extends AbstractObjectByteCache<E> im
     }
 
     @Override
-    public boolean isCalculated(E key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public byte load(E key) {
+    public Object load(E key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(E key, byte value) {
+    public void save(E key, Object value) {
         storage.save(key, value);
     }
 

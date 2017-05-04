@@ -16,8 +16,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Storage#EG##FG#CacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM #SOURCE#
@@ -25,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class Storage#EG##FG#CacheImpl extends Abstract#EG##FG#Cache implements StorageHolder<#EG##FG#Storage> {
+public class Storage#EG##FG#CacheImpl extends Abstract#EG##FG#Cache implements StorageHolder<#EG#ObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private #EG##FG#Storage storage;
+    private #EG#ObjectStorage storage;
 
     public Storage#E##F#CacheImpl(Object owner, #EG##FG#Calculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull #EG##FG#Storage storage) {
+    public void setStorage(@Nonnull #EG#ObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -48,7 +46,7 @@ public class Storage#EG##FG#CacheImpl extends Abstract#EG##FG#Cache implements S
     }
 
     @Override
-    public void save(#IF_E##eg# key, #ENDIF##fg# value) {
+    public void save(#IF_E##eg# key, #ENDIF#Object value) {
         storage.save(#IF_E#key, #ENDIF#value);
     }
 

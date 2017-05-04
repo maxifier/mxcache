@@ -16,8 +16,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * StorageObjectLongCacheImpl<E>
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -25,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageObjectLongCacheImpl<E> extends AbstractObjectLongCache<E> implements StorageHolder<ObjectLongStorage<E>> {
+public class StorageObjectLongCacheImpl<E> extends AbstractObjectLongCache<E> implements StorageHolder<ObjectObjectStorage<E>> {
     private static final long serialVersionUID = 100L;
 
-    private ObjectLongStorage<E> storage;
+    private ObjectObjectStorage<E> storage;
 
     public StorageObjectLongCacheImpl(Object owner, ObjectLongCalculatable<E> calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull ObjectLongStorage<E> storage) {
+    public void setStorage(@Nonnull ObjectObjectStorage<E> storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -43,17 +41,12 @@ public class StorageObjectLongCacheImpl<E> extends AbstractObjectLongCache<E> im
     }
 
     @Override
-    public boolean isCalculated(E key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public long load(E key) {
+    public Object load(E key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(E key, long value) {
+    public void save(E key, Object value) {
         storage.save(key, value);
     }
 

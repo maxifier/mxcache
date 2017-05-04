@@ -8,6 +8,7 @@ import com.maxifier.mxcache.asm.AnnotationVisitor;
 import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.Calculable;
 import com.maxifier.mxcache.caches.CleaningNode;
+import com.maxifier.mxcache.clean.CacheCleaner;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.context.CacheContextImpl;
 import com.maxifier.mxcache.impl.CacheId;
@@ -17,35 +18,30 @@ import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.impl.resource.MxResourceFactory;
 import com.maxifier.mxcache.impl.resource.nodes.SingletonDependencyNode;
-import com.maxifier.mxcache.clean.CacheCleaner;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.CacheManager;
 import com.maxifier.mxcache.provider.CacheProvider;
+import com.maxifier.mxcache.provider.CacheProviderInterceptor;
 import com.maxifier.mxcache.resource.MxResource;
 import com.maxifier.mxcache.util.ClassGenerator;
 import com.maxifier.mxcache.util.CodegenHelper;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
-import gnu.trove.THashMap;
-import gnu.trove.THashSet;
-
-import javax.annotation.Nonnull;
-
-import javax.annotation.Nullable;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import static com.maxifier.mxcache.asm.Opcodes.ACC_PUBLIC;
 import static com.maxifier.mxcache.asm.Opcodes.IADD;
-import static com.maxifier.mxcache.asm.Type.*;
+import static com.maxifier.mxcache.asm.Type.INT_TYPE;
 import static com.maxifier.mxcache.instrumentation.InstrumentationTestHelper.*;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
@@ -56,30 +52,25 @@ import static org.testng.Assert.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
+@SuppressWarnings("ParameterCanBeLocal")
 @Test
 public class DynamicInstrumentationFTest {
-    private static final Object[] V219  = { InstrumentatorProvider.getAvailableVersions().get("2.1.9"), null};
-    private static final Object[] V229  = { InstrumentatorProvider.getAvailableVersions().get("2.2.9"), null };
     private static final Object[] V2228 = { InstrumentatorProvider.getAvailableVersions().get("2.2.28"), null };
-
-    @DataProvider(name = "v229")
-    public Object[][] v229() {
-        return new Object[][] { V229 };
-    }
-
-    @DataProvider(name = "v219")
-    public Object[][] v219() {
-        return new Object[][] { V219 };
-    }
+    private static final Object[] V262  = { InstrumentatorProvider.getAvailableVersions().get("2.6.2"), null };
 
     @DataProvider(name = "v2228")
     public Object[][] v2228() {
         return new Object[][] { V2228 };
     }
 
+    @DataProvider(name = "v262")
+    public Object[][] v262() {
+        return new Object[][] { V262 };
+    }
+
     @DataProvider(name = "all")
     public Object[][] all() {
-        return new Object[][] { V219, V229, V2228 };
+        return new Object[][] { V2228, V262 };
     }
 
     /**
@@ -107,6 +98,7 @@ public class DynamicInstrumentationFTest {
         return (Point) instrumentClass(PointImpl.class, instrumentator, cl).newInstance();
     }
 
+    @SuppressWarnings("AssertEqualsBetweenInconvertibleTypesTestNG")
     @Test(dataProvider = "all")
     public void testAnotherClassLoader(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         cl = new ClassLoader() {};
@@ -145,6 +137,7 @@ public class DynamicInstrumentationFTest {
 
         Object o = g2c.newInstance();
 
+        //noinspection unchecked
         Method r = g2c.getDeclaredMethod("x", g1c);
 
         Object v1 = g1c.newInstance();
@@ -227,7 +220,7 @@ public class DynamicInstrumentationFTest {
         Assert.assertEquals(cachesCreated, cachedMethods);
     }
 
-    @Test(dataProvider = "v229")
+    @Test(dataProvider = "v2228")
     public void testCustomContext(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         Class<?> c = instrumentClass(TestCachedImpl.class, instrumentator, cl);
         TestCached defInstance = (TestCached) c.newInstance();
@@ -255,6 +248,24 @@ public class DynamicInstrumentationFTest {
         instrumentClass(StaticMethodAccessedBoundResource.class, instrumentator, cl);
     }
 
+    @Test(dataProvider = "all")
+    public void testResourceWithException(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        Class<?> c = instrumentClass(TestCachedImpl.class, instrumentator, cl);
+        TestCached o = (TestCached) c.newInstance();
+        try {
+            o.readResourceWithException(new Runnable() {
+                @Override
+                public void run() {
+                    assertTrue(MxResourceFactory.getResource("test").isReading());
+                }
+            });
+            fail("Should throw an exception");
+        } catch (IllegalStateException e) {
+            // that's ok
+        }
+        assertFalse(MxResourceFactory.getResource("test").isReading());
+    }
+
     @Test(dataProvider = "v2228")
     public void testBoundResourceRead(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         Class<?> c = instrumentClass(TestCachedImpl.class, instrumentator, cl);
@@ -267,9 +278,6 @@ public class DynamicInstrumentationFTest {
 
         DependencyNode dn1 = new SingletonDependencyNode(n1);
         DependencyNode dn2 = new SingletonDependencyNode(n2);
-
-        when(n1.getDependencyNode()).thenReturn(dn1);
-        when(n2.getDependencyNode()).thenReturn(dn2);
 
         DependencyNode p = DependencyTracker.track(dn1);
         o1.readResource();
@@ -289,38 +297,24 @@ public class DynamicInstrumentationFTest {
 
         o1.writeResource();
 
-        verify(n1).clear();
-        verify(n1, atLeast(1)).getDependencyNode();
-        verify(n1, atLeast(1)).getLock();
+        verify(n1).invalidate();
 
         verifyZeroInteractions(n2);
 
         o2.writeResource();
         verifyZeroInteractions(n1);
 
-        verify(n2).clear();
-        verify(n2, atLeast(1)).getDependencyNode();
-        verify(n2, atLeast(1)).getLock();
+        verify(n2).invalidate();
 
         o1.writeStatic();
 
-        verify(n2, times(2)).clear();
-        verify(n2, atLeast(1)).getDependencyNode();
-        verify(n2, atLeast(1)).getLock();
-
-        verify(n1, times(2)).clear();
-        verify(n1, atLeast(1)).getDependencyNode();
-        verify(n1, atLeast(1)).getLock();
+        verify(n2, times(2)).invalidate();
+        verify(n1, times(2)).invalidate();
 
         o2.writeStatic();
 
-        verify(n2, times(3)).clear();
-        verify(n2, atLeast(1)).getDependencyNode();
-        verify(n2, atLeast(1)).getLock();
-
-        verify(n1, times(3)).clear();
-        verify(n1, atLeast(1)).getDependencyNode();
-        verify(n1, atLeast(1)).getLock();
+        verify(n2, times(3)).invalidate();
+        verify(n1, times(3)).invalidate();
     }
 
     @Test(dataProvider = "v2228")
@@ -336,9 +330,6 @@ public class DynamicInstrumentationFTest {
         DependencyNode dn1 = new SingletonDependencyNode(n1);
         DependencyNode dn2 = new SingletonDependencyNode(n2);
 
-        when(n1.getDependencyNode()).thenReturn(dn1);
-        when(n2.getDependencyNode()).thenReturn(dn2);
-
         DependencyNode p = DependencyTracker.track(dn1);
         o1.readResource();
 
@@ -357,54 +348,33 @@ public class DynamicInstrumentationFTest {
 
         o1.writeResource();
 
-        verify(n1).clear();
-        verify(n1, atLeast(1)).getDependencyNode();
-        verify(n1, atLeast(1)).getLock();
+        verify(n1).invalidate();
 
         verifyZeroInteractions(n2);
 
         o2.writeResource();
         verifyZeroInteractions(n1);
 
-        verify(n2).clear();
-        verify(n2, atLeast(1)).getDependencyNode();
-        verify(n2, atLeast(1)).getLock();
+        verify(n2).invalidate();
 
         o1.writeStatic();
 
-        verify(n2, times(2)).clear();
-        verify(n2, atLeast(1)).getDependencyNode();
-        verify(n2, atLeast(1)).getLock();
-
-        verify(n1, times(2)).clear();
-        verify(n1, atLeast(1)).getDependencyNode();
-        verify(n1, atLeast(1)).getLock();
+        verify(n2, times(2)).invalidate();
+        verify(n1, times(2)).invalidate();
 
         o2.writeStatic();
 
-        verify(n2, times(3)).clear();
-        verify(n2, atLeast(1)).getDependencyNode();
-        verify(n2, atLeast(1)).getLock();
-
-        verify(n1, times(3)).clear();
-        verify(n1, atLeast(1)).getDependencyNode();
-        verify(n1, atLeast(1)).getLock();
+        verify(n2, times(3)).invalidate();
+        verify(n1, times(3)).invalidate();
     }
 
-    @Test(dataProvider = "v229")
+    @Test(dataProvider = "v2228")
     public void testMarkerAnnotations(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         Class<?> c = instrumentClass(TestProxiedImpl.class, instrumentator, cl);
         Assert.assertEquals(new Version(c.getAnnotation(CachedInstrumented.class).version()), MxCache.getVersionObject());
         Assert.assertEquals(c.getAnnotation(CachedInstrumented.class).compatibleVersion(), MxCache.getCompatibleVersion());
         Assert.assertEquals(new Version(c.getAnnotation(UseProxyInstrumented.class).version()), MxCache.getVersionObject());
         Assert.assertEquals(c.getAnnotation(UseProxyInstrumented.class).compatibleVersion(), MxCache.getCompatibleVersion());
-    }
-
-    @Test(dataProvider = "v219")
-    public void testNoMarkerAnnotationsIn219(Instrumentator instrumentator, ClassLoader cl) throws Exception {
-        Class<?> c = instrumentClass(TestProxiedImpl.class, instrumentator, cl);
-        Assert.assertNull(c.getAnnotation(CachedInstrumented.class));
-        Assert.assertNull(c.getAnnotation(UseProxyInstrumented.class));
     }
 
     @Test(dataProvider = "all")
@@ -450,75 +420,6 @@ public class DynamicInstrumentationFTest {
         assert t.get(2) == 7;
         assert t.get(2) == 7;
     }
-
-    @Test(dataProvider = "all")
-    public void testBatchList(Instrumentator instrumentator, ClassLoader cl) throws Exception {
-        final TestCached t = loadCached(instrumentator, cl);
-        t.setS("A");
-        assertEquals(t.getBatch(Arrays.asList("1", "2", "3")).toArray(), new Object[] {"1A", "2A", "3A"});
-
-        t.setS("B");
-        assertEquals(t.getBatch(Arrays.asList("X", "1", "Y", "2", "Z")).toArray(), new Object[] {"XB", "1A", "YB", "2A", "ZB"});
-
-        t.setS("C");
-        assertEquals(t.getBatch(Arrays.asList("1", "2", "X")).toArray(), new Object[] {"1A", "2A", "XB"});
-        assertEquals(t.getBatch(Arrays.asList("2", "X", "1")).toArray(), new Object[] {"2A", "XB", "1A"});
-    }
-
-    @Test(dataProvider = "all")
-    public void testBatchArray(Instrumentator instrumentator, ClassLoader cl) throws Exception {
-        final TestCached t = loadCached(instrumentator, cl);
-        t.setS("A");
-        assertEquals(t.getBatch("1", "2", "3"), new Object[] {"1A", "2A", "3A"});
-
-        t.setS("B");
-        assertEquals(t.getBatch("X", "1", "Y", "2", "Z"), new Object[] {"XB", "1A", "YB", "2A", "ZB"});
-
-        t.setS("C");
-        assertEquals(t.getBatch("1", "2", "X"), new Object[] {"1A", "2A", "XB"});
-        assertEquals(t.getBatch("2", "X", "1"), new Object[] {"2A", "XB", "1A"});
-    }
-
-    private static Set<String> set(String... s) {
-        Set<String> res = new THashSet<String>(s.length);
-        Collections.addAll(res, s);
-        return res;
-    }
-    
-    private static Map<String, String> map(String... s) {
-        Map<String, String> res = new THashMap<String, String>(s.length / 2);
-        for (int i = 0; i<s.length; i += 2) {
-            res.put(s[i], s[i+1]);
-        }
-        return res;
-    }
-
-    @Test(dataProvider = "all")
-    public void testBatchMap(Instrumentator instrumentator, ClassLoader cl) throws Exception {
-        final TestCached t = loadCached(instrumentator, cl);
-        t.setS("A");
-        assertEquals(t.getBatch(set("1", "2", "3")), map("1", "1A", "2", "2A", "3", "3A"));
-
-        t.setS("B");
-        assertEquals(t.getBatch(set("X", "1", "Y", "2", "Z")), map("X", "XB", "1", "1A", "Y", "YB", "2", "2A", "Z", "ZB"));
-
-        t.setS("C");
-        assertEquals(t.getBatch(set("1", "2", "X")), map("1", "1A", "2", "2A", "X", "XB"));
-    }
-
-    @Test(dataProvider = "all")
-    public void testBatchArrayToMap(Instrumentator instrumentator, ClassLoader cl) throws Exception {
-        final TestCached t = loadCached(instrumentator, cl);
-        t.setS("A");
-        assertEquals(t.getBatchArrayToMap("1", "2", "3"), map("1", "1A", "2", "2A", "3", "3A"));
-
-        t.setS("B");
-        assertEquals(t.getBatchArrayToMap("X", "1", "Y", "2", "Z"), map("X", "XB", "1", "1A", "Y", "YB", "2", "2A", "Z", "ZB"));
-
-        t.setS("C");
-        assertEquals(t.getBatchArrayToMap("1", "2", "X"), map("1", "1A", "2", "2A", "X", "XB"));
-    }
-
 
     @Test(dataProvider = "all")
     public void testProbe(Instrumentator instrumentator, ClassLoader cl) throws Exception {
@@ -586,7 +487,7 @@ public class DynamicInstrumentationFTest {
         assert t.get(2) == 7;
     }
 
-    @Test(dataProvider = "all")
+    @Test(dataProvider = "v262")
     public void testTupleArgMultitag(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         TestCached t = loadCached(instrumentator, cl);
 
@@ -766,7 +667,7 @@ public class DynamicInstrumentationFTest {
         Assert.assertTrue(r.run);
     }
 
-    @Test(dataProvider = "all")
+    @Test(dataProvider = "v262")
     public void testStringTupleCache(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         TestCached t = loadCached(instrumentator, cl);
 
@@ -888,7 +789,7 @@ public class DynamicInstrumentationFTest {
         assertEquals(t.test("456"), "1234564");
     }
 
-    @Test(dataProvider = "all")
+    @Test(dataProvider = "v262")
     public void testIgnore(Instrumentator instrumentator, ClassLoader cl) throws Exception {
         TestCached t = loadCached(instrumentator, cl);
         assertEquals(t.ignore("123", "456"), "123456");
@@ -923,8 +824,8 @@ public class DynamicInstrumentationFTest {
     private static class DefaultTestStrategy extends TestStrategy {
         @Nonnull
         @Override
-        public <T> CacheManager<T> getManager(CacheContext context, CacheDescriptor<T> descriptor) {
-            return DefaultStrategy.getInstance().getManager(context, descriptor);
+        public CacheManager getManager(CacheContext context, Class<?> ownerClass,  CacheDescriptor descriptor) {
+            return DefaultStrategy.getInstance().getManager(context, ownerClass, descriptor);
         }
     }
 
@@ -938,7 +839,7 @@ public class DynamicInstrumentationFTest {
         }
 
         @Override
-        public <T> void registerCache(Class<T> cacheOwner, int cacheId, Class keyType, Class valueType, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, @Nullable String cacheName) {
+        public void registerCache(Class<?> cacheOwner, int cacheId, Class keyType, Class valueType, String group, String[] tags, Calculable calculable, String methodName, String methodDesc, @Nullable String cacheName) {
             queries.add(new Object[] {"registerCache", cacheOwner, cacheId, keyType, valueType, group, tags, calculable, methodName, methodDesc, cacheName});
             provider0.registerCache(cacheOwner, cacheId, keyType, valueType, group, tags, calculable, methodName, methodDesc, cacheName);
         }
@@ -957,6 +858,16 @@ public class DynamicInstrumentationFTest {
         @Override
         public List<CacheManager> getCaches() {
             return provider0.getCaches();
+        }
+
+        @Override
+        public void intercept(CacheProviderInterceptor interceptor) {
+            provider0.intercept(interceptor);
+        }
+
+        @Override
+        public boolean removeInterceptor(CacheProviderInterceptor interceptor) {
+            return provider0.removeInterceptor(interceptor);
         }
 
         public List<Object[]> getQueries() {
@@ -1025,5 +936,31 @@ public class DynamicInstrumentationFTest {
 
         p.setX(0L);
         assertEquals(p.getRadius(), 3.0);
+    }
+
+    @SuppressWarnings("RedundantStringConstructorCall")
+    @Test(dataProvider = "v262")
+    public void testArrays(Instrumentator instrumentator, ClassLoader cl) throws Exception {
+        TestCached t = loadCached(instrumentator, cl);
+
+        assertEquals(t.getByArray(new int[] {1}), t.getByArray(new int[] {1}));
+        assertEquals(t.getByArray(new long[] {1}), t.getByArray(new long[] {1}));
+        assertEquals(t.getByArray(new short[] {1}), t.getByArray(new short[] {1}));
+        assertEquals(t.getByArray(new double[] {1}), t.getByArray(new double[] {1}));
+        assertEquals(t.getByArray(new float[] {1}), t.getByArray(new float[] {1}));
+        assertEquals(t.getByArray(new byte[] {1}), t.getByArray(new byte[] {1}));
+        assertEquals(t.getByArray(new boolean[] {true}), t.getByArray(new boolean[] {true}));
+        assertEquals(t.getByArray(new char[] {'f'}), t.getByArray(new char[] {'f'}));
+        assertEquals(t.getByArray(new Object[] {new String("1")}), t.getByArray(new Object[] {new String("1")}));
+        assertEquals(t.getByArray(1, new int[]{2}), t.getByArray(1, new int[] {2}));
+        assertEquals(t.getByArray(2, new long[]{2}), t.getByArray(2, new long[] {2}));
+        assertEquals(t.getByArray(new String("ы"), new short[]{1}), t.getByArray(new String("ы"), new short[] {1}));
+        assertEquals(t.getByArray(new Object[] {new String("ы")}, new double[] {2}), t.getByArray(new Object[] {new String("ы")}, new double[] {2}));
+        assertEquals(t.getByArray(new float[]{2}, 3), t.getByArray(new float[]{2}, 3));
+        assertNotEquals(t.getByArrayIdentityStr(new byte[]{1}, new String("ы")), t.getByArrayIdentityStr(new byte[]{1}, new String("ы")));
+        assertNotEquals(t.getByArrayIdentity(new boolean[]{true}), t.getByArrayIdentity(new boolean[] {true}));
+        assertEquals(t.getByArraySameStrategy(new char[] {'f'}), t.getByArraySameStrategy(new char[] {'f'}));
+        assertNotEquals(t.getByArrayIdentity2(new Object[]{new String("1")}, new Object[] {new String("1")}), t.getByArrayIdentity2(new Object[] {new String("1")}, new Object[] {new String("1")}));
+        assertNotEquals(t.getSingleByIdentity(new String("ы")), t.getSingleByIdentity(new String("ы")));
     }
 }

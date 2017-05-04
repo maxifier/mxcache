@@ -18,7 +18,7 @@ import com.maxifier.mxcache.util.ClassGenerator;
 import com.maxifier.mxcache.util.MxConstructorGenerator;
 import com.maxifier.mxcache.util.MxField;
 import com.maxifier.mxcache.util.MxGeneratorAdapter;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 import javax.annotation.Nullable;
 
 import java.lang.reflect.Constructor;
@@ -32,20 +32,32 @@ import static com.maxifier.mxcache.util.CodegenHelper.*;
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class NullCacheManager<T> implements CacheManager<T> {
+public class NullCacheManager implements CacheManager {
     public static final Type LOCK_TYPE = Type.getType(Lock.class);
     public static final Type STATISTICS_TYPE = Type.getType(Statistics.class);
     public static final Type DEPENDENCY_NODE_TYPE = Type.getType(DependencyNode.class);
     public static final String DUMMY_NODE_FIELD_NAME = "DUMMY_NODE";
 
-    private final CacheDescriptor<T> descriptor;
+    private static final Map<Signature, Constructor> EMPTY_CACHE_IMPLEMENTATIONS = new THashMap<Signature, Constructor>();
+    private static int id = 0;
+
+    private final Class<?> ownerClass;
+    private final CacheDescriptor descriptor;
 
     private final Cache staticInstance;
 
     private final Constructor<? extends Cache> constructor;
 
-    private static final Map<Signature, Constructor> EMPTY_CACHE_IMPLEMENTATIONS = new THashMap<Signature, Constructor>();
-    private static int id = 0;
+    public NullCacheManager(Class<?> ownerClass, CacheDescriptor descriptor) {
+        this.ownerClass = ownerClass;
+        this.descriptor = descriptor;
+        constructor = getImplementation(descriptor.getSignature());
+        if (descriptor.isStatic()) {
+            staticInstance = createCacheInstance(null);
+        } else {
+            staticInstance = null;
+        }
+    }
 
     static synchronized Constructor<? extends Cache> getImplementation(Signature signature) {
         Signature erased = signature.erased();
@@ -61,7 +73,7 @@ public class NullCacheManager<T> implements CacheManager<T> {
     private static synchronized Constructor createImplementation(Signature signature) {
         String name = Type.getInternalName(NullCacheManager.class) + "$" + signature.getCacheInterface().getSimpleName() + "Impl$" + id++;
         Type cacheType = Type.getType(signature.getCacheInterface());
-        ClassGenerator cw = new ClassGenerator(ACC_FINAL | ACC_SUPER, name, OBJECT_TYPE, cacheType);
+        ClassGenerator cw = new ClassGenerator(ACC_PUBLIC | ACC_SUPER | ACC_SYNTHETIC | ACC_FINAL, name, OBJECT_TYPE, cacheType);
 
         Type calculableType = Type.getType(signature.getCalculableInterface());
 
@@ -94,7 +106,7 @@ public class NullCacheManager<T> implements CacheManager<T> {
         getOwner.returnValue();
         getOwner.endMethod();
 
-        MxGeneratorAdapter clear = cw.defineMethod(ACC_PUBLIC, "clear", Type.VOID_TYPE);
+        MxGeneratorAdapter clear = cw.defineMethod(ACC_PUBLIC, "invalidate", Type.VOID_TYPE);
         clear.visitCode();
         clear.returnValue();
         clear.endMethod();
@@ -131,17 +143,7 @@ public class NullCacheManager<T> implements CacheManager<T> {
         }
     }
 
-    public NullCacheManager(CacheDescriptor<T> descriptor) {
-        this.descriptor = descriptor;
-        constructor = getImplementation(descriptor.getSignature());
-        if (descriptor.isStatic()) {
-            staticInstance = createCacheInstance(null);
-        } else {
-            staticInstance = null;
-        }
-    }
-
-    private Cache createCacheInstance(@Nullable T t) {
+    private Cache createCacheInstance(@Nullable Object t) {
         try {
             return constructor.newInstance(t, descriptor.getCalculable());
         } catch (InstantiationException e) {
@@ -154,12 +156,12 @@ public class NullCacheManager<T> implements CacheManager<T> {
     }
 
     @Override
-    public CacheDescriptor<T> getDescriptor() {
+    public CacheDescriptor getDescriptor() {
         return descriptor;
     }
 
     @Override
-    public Cache createCache(@Nullable T owner) {
+    public Cache createCache(@Nullable Object owner) {
         return staticInstance == null ? createCacheInstance(owner) : staticInstance;
     }
 
@@ -171,5 +173,10 @@ public class NullCacheManager<T> implements CacheManager<T> {
     @Override
     public CacheContext getContext() {
         return null;
+    }
+
+    @Override
+    public Class<?> getOwnerClass() {
+        return ownerClass;
     }
 }

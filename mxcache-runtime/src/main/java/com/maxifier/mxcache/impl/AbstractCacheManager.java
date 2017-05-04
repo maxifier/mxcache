@@ -12,36 +12,40 @@ import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
 import com.maxifier.mxcache.caches.Cache;
-import com.maxifier.mxcache.resource.MxResource;
+
 import javax.annotation.Nullable;
 
 import javax.annotation.Nonnull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractCacheManager<T> implements CacheManager<T> {
+public abstract class AbstractCacheManager implements CacheManager {
     private static final DependencyTracking DEFAULT_DEPENDENCY_TRACKING_VALUE = DependencyTracking.INSTANCE;
+    private static final AnnotatedDependencyTracking DEFAULT_TRACK_ANNOTATED_DEPENDENCY_VALUE = AnnotatedDependencyTracking.ALL;
     private static final StatisticsModeEnum DEFAULT_STATISTICS_MODE = StatisticsModeEnum.STATIC_OR_STORAGE;
 
-    private final CacheDescriptor<T> descriptor;
+    private final CacheContext context;
+    private final Class<?> ownerClass;
+    private final CacheDescriptor descriptor;
 
     private final DependencyNode staticNode;
 
     private final DependencyTracking trackDependency;
-    private final MxResource[] resourceDependencies;
-
-    private final CacheContext context;
+    private final DependencyNode[] explicitDependencies;
 
     private final StatisticsModeEnum statisticsMode;
 
     private final MutableStatistics staticStatistics;
 
-    public AbstractCacheManager(CacheContext context, CacheDescriptor<T> descriptor) {
-        this.descriptor = descriptor;
+    public AbstractCacheManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor) {
         this.context = context;
+        this.ownerClass = ownerClass;
+        this.descriptor = descriptor;
 
         statisticsMode = descriptor.getStatisticsMode() == null ? DEFAULT_STATISTICS_MODE : descriptor.getStatisticsMode();
 
@@ -59,11 +63,11 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
         }
 
         trackDependency = convertStatic(convertDefault(descriptor.getTrackDependency()));
-        resourceDependencies = getResources(descriptor.getResourceDependencies());
+        explicitDependencies = getExplicitDependencies(descriptor, ownerClass, convertDefault(descriptor.getTrackAnnotatedDependency()));
 
         switch (trackDependency) {
             case NONE:
-                if (resourceDependencies == null) {
+                if (explicitDependencies == null) {
                     staticNode = null;
                 } else {
                     staticNode = createStaticNode();
@@ -80,16 +84,36 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
         }
     }
 
-    private MxResource[] getResources(Set<String> resourceNames) {
-        if (resourceNames == null || resourceNames.isEmpty()) {
-            return null;
+    @Nullable
+    private static DependencyNode[] getExplicitDependencies(CacheDescriptor descriptor, Class<?> ownerClass,
+                                                            AnnotatedDependencyTracking trackAnnotatedDependency) {
+        List<DependencyNode> res = new ArrayList<DependencyNode>();
+        Set<String> resourceNames = descriptor.getResourceDependencies();
+        if (resourceNames != null) {
+            for (String resourceName : resourceNames) {
+                res.add((DependencyNode) MxResourceFactory.getResource(resourceName));
+            }
         }
-        MxResource[] res = new MxResource[resourceNames.size()];
-        int i = 0;
-        for (String resourceName : resourceNames) {
-            res[i++] = MxResourceFactory.getResource(resourceName);
+        String[] tags = descriptor.getTags();
+        if (tags != null) {
+            for (String tag : tags) {
+                if (trackAnnotatedDependency == AnnotatedDependencyTracking.ALL || !tag.startsWith("@")) {
+                    res.add(CacheFactory.getTagDependencyNode(tag));
+                }
+            }
         }
-        return res;
+        String group = descriptor.getGroup();
+        if (group != null) {
+            res.add(CacheFactory.getGroupDependencyNode(group));
+        }
+        if (descriptor.isStatic()) {
+            // static cache is not invalidated when a superclass of declaring class is invalidated,
+            // so we put it to a separate node
+            res.add(CacheFactory.getClassDependencyNode(ownerClass));
+        } else {
+            res.add(CacheFactory.getClassInstanceDependencyNode(ownerClass));
+        }
+        return res.isEmpty() ? null : res.toArray(new DependencyNode[res.size()]);
     }
 
     protected StatisticsModeEnum getStatisticsMode() {
@@ -124,6 +148,9 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     }
 
     private DependencyTracking convertStatic(DependencyTracking tracking) {
+        if (descriptor.isResourceView()) {
+            return DependencyTracking.INSTANCE;
+        }
         if (descriptor.isStatic() && tracking == DependencyTracking.INSTANCE) {
             return DependencyTracking.STATIC;
         }
@@ -134,21 +161,25 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
         return tracking == DependencyTracking.DEFAULT ? DEFAULT_DEPENDENCY_TRACKING_VALUE : tracking;
     }
 
+    private static AnnotatedDependencyTracking convertDefault(AnnotatedDependencyTracking trackAnnotatedDependency) {
+        return trackAnnotatedDependency == AnnotatedDependencyTracking.DEFAULT ? DEFAULT_TRACK_ANNOTATED_DEPENDENCY_VALUE : trackAnnotatedDependency;
+    }
+
     /**
      * Adds explicit resource dependencies to given node.
      *
      * @param node dependency node
      */
     protected void registerExplicitDependencies(DependencyNode node) {
-        if (resourceDependencies != null) {
-            for (MxResource resourceId : resourceDependencies) {
-                DependencyTracker.addExplicitDependency(node, resourceId);
+        if (explicitDependencies != null) {
+            for (DependencyNode explicitDependency : explicitDependencies) {
+                explicitDependency.trackDependency(node);
             }
         }
     }
 
     @Override
-    public Cache createCache(@Nullable T owner) {
+    public Cache createCache(@Nullable Object owner) {
         if (descriptor.isStatic()) {
             if (owner != null) {
                 throw new IllegalArgumentException("Static cache " + this + " requires no instance");
@@ -195,10 +226,15 @@ public abstract class AbstractCacheManager<T> implements CacheManager<T> {
     }
 
     @Nonnull
-    protected abstract Cache createCache(T owner, DependencyNode dependencyNode, MutableStatistics statistics) throws Exception;
+    protected abstract Cache createCache(Object owner, DependencyNode dependencyNode, MutableStatistics statistics) throws Exception;
 
     @Override
-    public CacheDescriptor<T> getDescriptor() {
+    public Class<?> getOwnerClass() {
+        return ownerClass;
+    }
+
+    @Override
+    public CacheDescriptor getDescriptor() {
         return descriptor;
     }
 

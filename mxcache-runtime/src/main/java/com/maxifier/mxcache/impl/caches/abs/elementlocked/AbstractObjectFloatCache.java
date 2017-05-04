@@ -5,6 +5,7 @@ package com.maxifier.mxcache.impl.caches.abs.elementlocked;
 
 import com.maxifier.mxcache.CacheFactory;
 import com.maxifier.mxcache.caches.*;
+import com.maxifier.mxcache.exceptions.*;
 import com.maxifier.mxcache.impl.MutableStatistics;
 import com.maxifier.mxcache.impl.CacheId;
 import com.maxifier.mxcache.impl.CalculatableHelper;
@@ -14,8 +15,6 @@ import com.maxifier.mxcache.storage.elementlocked.*;
 
 
 /**
- * AbstractObjectFloatCache<E>
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PCache.template
@@ -23,7 +22,7 @@ import com.maxifier.mxcache.storage.elementlocked.*;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public abstract class AbstractObjectFloatCache<E> extends AbstractElementLockedCache implements ObjectFloatCache<E>, ObjectFloatElementLockedStorage<E> {
+public abstract class AbstractObjectFloatCache<E> extends AbstractElementLockedCache implements ObjectFloatCache<E>, ObjectObjectElementLockedStorage<E> {
     private final ObjectFloatCalculatable<E> calculatable;
 
     public AbstractObjectFloatCache(Object owner, ObjectFloatCalculatable<E> calculatable, MutableStatistics statistics) {
@@ -32,18 +31,21 @@ public abstract class AbstractObjectFloatCache<E> extends AbstractElementLockedC
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public float getOrCreate(E o) {
         if (DependencyTracker.isBypassCaches()) {
             return calculatable.calculate(owner, o);
         } else {
+            preCheckDirty();
             lock(o);
             try {
-                if (isCalculated(o)) {
+                Object v = load(o);
+                ExceptionHelper.throwIfExceptionRecordNotExpired(v);
+                if (v != UNDEFINED) {
                     DependencyTracker.mark(getDependencyNode());
                     hit();
-                    return load(o);
+                    return (Float)v;
                 }
-
                 DependencyNode callerNode = DependencyTracker.track(getDependencyNode());
                 try {
                     while(true) {
@@ -59,9 +61,11 @@ public abstract class AbstractObjectFloatCache<E> extends AbstractElementLockedC
                                 } finally {
                                     lock(o);
                                 }
-                                if (isCalculated(o)) {
+                                v = load(o);
+                                ExceptionHelper.throwIfExceptionRecordNotExpired(v);
+                                if (v != UNDEFINED) {
                                     hit();
-                                    return load(o);
+                                    return (Float)v;
                                 }
                             }
                         }
@@ -71,17 +75,50 @@ public abstract class AbstractObjectFloatCache<E> extends AbstractElementLockedC
                 }
             } finally {
                 unlock(o);
+                postCheckDirty();
             }
         }
     }
 
-    protected float create(E key) {
+    @SuppressWarnings({ "unchecked" })
+    protected float create(E o) {
         long start = System.nanoTime();
-        float t = calculatable.calculate(owner, key);
-        long end = System.nanoTime();
-        miss(end - start);
-        save(key, t);
-        return t;
+        try {
+            int retry = 0;
+            // retry on exception loop
+            while (true) {
+                try {
+                    float t = calculatable.calculate(owner, o);
+                    // successful invocation => just store the value and return
+                    save(o, t);
+                    return t;
+                } catch (Exception e) {
+                    // We catch Exception here, but not Error and not Throwable.
+                    // this is because in case of Error we are likely have no chance even to save
+                    // an ExceptionRecord to a storage, so don't even try to do so.
+                    // For example in case of OOM (out of memory) it may be impossible to create
+                    // even a single new object.
+                    CacheExceptionHandler exceptionHandler = getDescriptor().getExceptionHandler();
+                    switch (exceptionHandler.getAction(retry, e)) {
+                        case RETRY:
+                            retry++;
+                            continue;
+                        case REMEMBER_AND_RETHROW:
+                            save(o, new ExceptionRecord(e, exceptionHandler.getRememberExceptionExpirationTimestamp(e)));
+                            // fall through
+                        case RETHROW:
+                        default:
+                            // this method always throws an exception
+                            ExceptionHelper.throwCheckedExceptionHack(e);
+                            break;
+                    }
+                }
+            }
+        } finally {
+            // record calculation time even if calculation fails
+            long end = System.nanoTime();
+            miss(end - start);
+        }
     }
 
     @Override

@@ -16,8 +16,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * StorageLongCharacterCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -25,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageLongCharacterCacheImpl extends AbstractLongCharacterCache implements StorageHolder<LongCharacterStorage> {
+public class StorageLongCharacterCacheImpl extends AbstractLongCharacterCache implements StorageHolder<LongObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private LongCharacterStorage storage;
+    private LongObjectStorage storage;
 
     public StorageLongCharacterCacheImpl(Object owner, LongCharacterCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull LongCharacterStorage storage) {
+    public void setStorage(@Nonnull LongObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -43,17 +41,12 @@ public class StorageLongCharacterCacheImpl extends AbstractLongCharacterCache im
     }
 
     @Override
-    public boolean isCalculated(long key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public char load(long key) {
+    public Object load(long key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(long key, char value) {
+    public void save(long key, Object value) {
         storage.save(key, value);
     }
 

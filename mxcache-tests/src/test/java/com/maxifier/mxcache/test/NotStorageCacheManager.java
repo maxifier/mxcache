@@ -19,15 +19,15 @@ import java.lang.reflect.InvocationTargetException;
  *
  * @author Elena Saymanina (elena.saymanina@maxifier.com) (06.06.13)
  */
-public class NotStorageCacheManager<T> extends AbstractCacheManager<T> {
-    public NotStorageCacheManager(CacheContext context, CacheDescriptor<T> descriptor) {
-        super(context, descriptor);
+public class NotStorageCacheManager extends AbstractCacheManager {
+    public NotStorageCacheManager(CacheContext context, Class<?> ownerClass, CacheDescriptor descriptor) {
+        super(context, ownerClass, descriptor);
     }
 
     @Nonnull
     @Override
     protected Cache createCache(Object owner, DependencyNode dependencyNode, MutableStatistics statistics) throws InstantiationException, IllegalAccessException, InvocationTargetException {
-        return new TestCache(owner, dependencyNode, statistics, getDescriptor());
+        return new TestCache(owner, statistics, getDescriptor());
     }
 
     @Override

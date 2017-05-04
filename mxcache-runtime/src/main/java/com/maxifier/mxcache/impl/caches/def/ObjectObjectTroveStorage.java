@@ -4,8 +4,7 @@
 package com.maxifier.mxcache.impl.caches.def;
 
 import com.maxifier.mxcache.storage.ObjectObjectStorage;
-import gnu.trove.THashMap;
-import gnu.trove.TObjectHashingStrategy;
+import gnu.trove.map.hash.THashMap;
 
 /**
  * ObjectObjectTroveStorage
@@ -13,13 +12,7 @@ import gnu.trove.TObjectHashingStrategy;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class ObjectObjectTroveStorage<K, V> extends THashMap<K, Object> implements ObjectObjectStorage<K, V> {
-    public ObjectObjectTroveStorage() {
-    }
-
-    public ObjectObjectTroveStorage(TObjectHashingStrategy<K> strategy) {
-        super(strategy);        
-    }
+public class ObjectObjectTroveStorage<K> extends THashMap<K, Object> implements ObjectObjectStorage<K> {
 
     @Override
     public Object load(K key) {
@@ -34,7 +27,7 @@ public class ObjectObjectTroveStorage<K, V> extends THashMap<K, Object> implemen
     }
 
     @Override
-    public void save(K key, V value) {
+    public void save(K key, Object value) {
         put(key, value == null ? TroveHelper.NULL_REPLACEMENT : value);
     }
 }

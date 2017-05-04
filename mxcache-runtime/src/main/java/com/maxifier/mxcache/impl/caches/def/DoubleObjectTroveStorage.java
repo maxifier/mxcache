@@ -3,29 +3,18 @@
  */
 package com.maxifier.mxcache.impl.caches.def;
 
-import gnu.trove.*;
-
 import com.maxifier.mxcache.storage.*;
 import static com.maxifier.mxcache.impl.caches.def.TroveHelper.*;
 
 /**
- * DoubleObjectTroveStorage
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
- * GENERATED FROM #SOURCE#
+ * GENERATED FROM P2OTroveStorage.template
  *
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class DoubleObjectTroveStorage<T> extends TDoubleObjectHashMap<Object> implements DoubleObjectStorage<T> {
-    public DoubleObjectTroveStorage() {
-    }
-
-    public DoubleObjectTroveStorage(TDoubleHashingStrategy strategy) {
-        super(strategy);        
-    }
-
+public class DoubleObjectTroveStorage extends gnu.trove.map.hash.TDoubleObjectHashMap<Object> implements DoubleObjectStorage {
     @Override
     public Object load(double key) {
         Object v = get(key);
@@ -39,7 +28,7 @@ public class DoubleObjectTroveStorage<T> extends TDoubleObjectHashMap<Object> im
     }
 
     @Override
-    public void save(double key, T value) {
+    public void save(double key, Object value) {
         put(key, value == null ? NULL_REPLACEMENT : value);
     }
 }

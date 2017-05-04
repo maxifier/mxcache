@@ -19,8 +19,6 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * StorageCharacterShortCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -28,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageCharacterShortCacheImpl extends AbstractCharacterShortCache implements StorageHolder<CharacterShortElementLockedStorage> {
-    private CharacterShortElementLockedStorage storage;
+public class StorageCharacterShortCacheImpl extends AbstractCharacterShortCache implements StorageHolder<CharacterObjectElementLockedStorage> {
+    private CharacterObjectElementLockedStorage storage;
 
     public StorageCharacterShortCacheImpl(Object owner, CharacterShortCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull CharacterShortElementLockedStorage storage) {
+    public void setStorage(@Nonnull CharacterObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -44,17 +42,12 @@ public class StorageCharacterShortCacheImpl extends AbstractCharacterShortCache 
     }
 
     @Override
-    public boolean isCalculated(char key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public short load(char key) {
+    public Object load(char key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(char key, short value) {
+    public void save(char key, Object value) {
         storage.save(key, value);
     }
 

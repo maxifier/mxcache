@@ -6,7 +6,7 @@ package com.maxifier.mxcache.ehcache;
 import com.maxifier.mxcache.provider.CacheDescriptor;
 import com.maxifier.mxcache.provider.StrategyProperty;
 import com.maxifier.mxcache.storage.elementlocked.ObjectObjectElementLockedStorage;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class EhcacheStorage<E, F> implements ObjectObjectElementLockedStorage<E, F> {
+public class EhcacheStorage<E> implements ObjectObjectElementLockedStorage<E> {
     private static final Logger logger = LoggerFactory.getLogger(EhcacheStorage.class);
 
     private static final String CLASSPATH_PREFIX = "classpath://";
@@ -42,7 +42,7 @@ public class EhcacheStorage<E, F> implements ObjectObjectElementLockedStorage<E,
     private final Lock readLock;
     private final Lock writeLock;
 
-    public EhcacheStorage(CacheDescriptor<?> descriptor) {
+    public EhcacheStorage(CacheDescriptor descriptor) {
         CacheManager cacheManager = getCacheManager(descriptor);
         this.underlyingCache = new ExplicitLockingCache(cacheManager.getCache(descriptor.getCacheName()));
 
@@ -51,7 +51,7 @@ public class EhcacheStorage<E, F> implements ObjectObjectElementLockedStorage<E,
         writeLock = lock.writeLock();
     }
 
-    private static CacheManager getCacheManager(CacheDescriptor<?> descriptor) {
+    private static CacheManager getCacheManager(CacheDescriptor descriptor) {
         String configURL = descriptor.getProperty(CONFIG_URL_PROPERTY);
         if (configURL.isEmpty()) {
             return DEFAULT_CACHE_MANAGER;
@@ -75,10 +75,10 @@ public class EhcacheStorage<E, F> implements ObjectObjectElementLockedStorage<E,
         }
     }
 
-    private static URL getConfigurationURL(CacheDescriptor<?> descriptor, String configURL) throws MalformedURLException {
+    private static URL getConfigurationURL(CacheDescriptor descriptor, String configURL) throws MalformedURLException {
         if (configURL.startsWith(CLASSPATH_PREFIX)) {
             String path = configURL.substring(CLASSPATH_PREFIX.length());
-            return descriptor.getOwnerClass().getClassLoader().getResource(path);
+            return descriptor.getDeclaringClass().getClassLoader().getResource(path);
         }
         return new URL(configURL);
     }
@@ -110,7 +110,7 @@ public class EhcacheStorage<E, F> implements ObjectObjectElementLockedStorage<E,
     }
 
     @Override
-    public void save(E key, F value) {
+    public void save(E key, Object value) {
         underlyingCache.put(new Element(key, value));
     }
 

@@ -9,6 +9,7 @@ import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.provider.Signature;
 import com.maxifier.mxcache.tuple.TupleGenerator;
 import com.maxifier.mxcache.util.ClassGenerator;
+import gnu.trove.strategy.HashingStrategy;
 
 import java.util.Arrays;
 
@@ -69,10 +70,13 @@ class TupleTransformGenerator implements TransformGenerator {
             method.newInstance(tupleOutType);
             method.dupX1();
             method.swap();
+            method.dup();
+            method.invokeVirtual(tupleInType, TupleGenerator.TUPLE_GET_HASHING_STRATEGIES);
+            method.swap();
         }
         for (int i = 0, j = 0; i < transformGenerators.length; i++) {
             TransformGenerator transformGenerator = transformGenerators[i];
-            if (transformGenerator != TransformGenerator.IGNORE_TRANSFORM) {
+            if (!(transformGenerator instanceof IgnoreTransformGenerator)) {
                 Type from = Type.getType(inTypes[i]);
                 Type to = Type.getType(outTypes[j]);
                 boolean last = j == outTypes.length - 1;
@@ -94,7 +98,10 @@ class TupleTransformGenerator implements TransformGenerator {
             }
         }
         if (tupleOut != null) {
-            method.invokeConstructor(tupleOutType, new Method(CONSTRUCTOR_NAME, Type.VOID_TYPE, toErasedTypes(outTypes)));
+            Type[] ctorArgs = new Type[outTypes.length + 1];
+            System.arraycopy(toErasedTypes(outTypes), 0, ctorArgs, 1, outTypes.length);
+            ctorArgs[0] = Type.getType(HashingStrategy[].class);
+            method.invokeConstructor(tupleOutType, new Method(CONSTRUCTOR_NAME, Type.VOID_TYPE, ctorArgs));
         }
     }
 
@@ -106,6 +113,9 @@ class TupleTransformGenerator implements TransformGenerator {
         method.checkCast(tupleOutType);
         method.newInstance(tupleInType);
         method.dupX1();
+        method.swap();
+        method.dup();
+        method.invokeVirtual(tupleOutType, TupleGenerator.TUPLE_GET_HASHING_STRATEGIES);
         method.swap();
         for (int i = 0; i < transformGenerators.length; i++) {
             TransformGenerator transformGenerator = transformGenerators[i];
@@ -127,7 +137,10 @@ class TupleTransformGenerator implements TransformGenerator {
                 method.swap(OBJECT_TYPE, to);
             }
         }
-        method.invokeConstructor(tupleInType, new Method(CONSTRUCTOR_NAME, Type.VOID_TYPE, toErasedTypes(inTypes)));
+        Type[] ctorArgs = new Type[inTypes.length + 1];
+        System.arraycopy(toErasedTypes(inTypes), 0, ctorArgs, 1, inTypes.length);
+        ctorArgs[0] = Type.getType(HashingStrategy[].class);
+        method.invokeConstructor(tupleInType, new Method(CONSTRUCTOR_NAME, Type.VOID_TYPE, ctorArgs));
     }
 
     @Override
@@ -156,8 +169,12 @@ class TupleTransformGenerator implements TransformGenerator {
     }
 
     @Override
-    public Class getTransformedType(Class in) {
-        assert in == tupleIn: "Tuple type should match " + in + " and " + tupleIn;
+    public Class getInType() {
+        return tupleIn;
+    }
+
+    @Override
+    public Class getOutType() {
         return container;
     }
 

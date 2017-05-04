@@ -19,8 +19,6 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * StorageLongObjectCacheImpl<F>
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2OCache.template
@@ -28,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageLongObjectCacheImpl<F> extends AbstractLongObjectCache<F> implements StorageHolder<LongObjectElementLockedStorage<F>> {
-    private LongObjectElementLockedStorage<F> storage;
+public class StorageLongObjectCacheImpl<F> extends AbstractLongObjectCache<F> implements StorageHolder<LongObjectElementLockedStorage> {
+    private LongObjectElementLockedStorage storage;
 
     public StorageLongObjectCacheImpl(Object owner, LongObjectCalculatable<F> calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull LongObjectElementLockedStorage<F> storage) {
+    public void setStorage(@Nonnull LongObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -49,7 +47,7 @@ public class StorageLongObjectCacheImpl<F> extends AbstractLongObjectCache<F> im
     }
 
     @Override
-    public void save(long key, F value) {
+    public void save(long key, Object value) {
         storage.save(key, value);
     }
 

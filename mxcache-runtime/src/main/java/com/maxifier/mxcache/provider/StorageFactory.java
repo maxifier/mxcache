@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public interface StorageFactory<T> {
+public interface StorageFactory {
     /**
      * @param owner an owner of the cache. <b>Do not store direct references to owners outside of storage!</b>
      * @return an instance of cache storage for given owner. Each invocation should return a new instance of storage.
@@ -19,7 +19,7 @@ public interface StorageFactory<T> {
      *
      */
     @Nonnull
-    Storage createStorage(T owner) throws Exception;
+    Storage createStorage(Object owner) throws Exception;
 
     /**
      * @return any string that represents your cache implementation details.

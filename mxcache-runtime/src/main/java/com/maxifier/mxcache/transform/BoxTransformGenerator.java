@@ -5,7 +5,6 @@ package com.maxifier.mxcache.transform;
 
 import com.maxifier.mxcache.asm.Type;
 import com.maxifier.mxcache.asm.commons.GeneratorAdapter;
-import com.maxifier.mxcache.util.ClassGenerator;
 
 import javax.annotation.Nonnull;
 
@@ -13,9 +12,11 @@ import javax.annotation.Nonnull;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
 */
 public class BoxTransformGenerator extends ScalarTransformGenerator {
+    private final Class cls;
     private final Type type;
 
-    public BoxTransformGenerator(@Nonnull Type type) {
+    public BoxTransformGenerator(Class cls, @Nonnull Type type) {
+        this.cls = cls;
         this.type = type;
     }
 
@@ -30,20 +31,12 @@ public class BoxTransformGenerator extends ScalarTransformGenerator {
     }
 
     @Override
-    public void generateFields(Type thisType, int fieldIndex, ClassGenerator writer) {
+    public Class<?> getInType() {
+        return cls;
     }
 
     @Override
-    public void generateAcquire(Type thisType, int fieldIndex, GeneratorAdapter ctor, int contextLocal) {
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
-    public Class getTransformedType(Class in) {
+    public Class<?> getOutType() {
         return Object.class;
     }
 

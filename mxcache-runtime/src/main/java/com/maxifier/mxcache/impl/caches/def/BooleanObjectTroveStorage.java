@@ -11,7 +11,7 @@ import com.maxifier.mxcache.storage.BooleanObjectStorage;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class BooleanObjectTroveStorage<V> implements BooleanObjectStorage<V> {
+public class BooleanObjectTroveStorage implements BooleanObjectStorage {
     private Object trueValue = UNDEFINED;
     private Object falseValue = UNDEFINED;
 
@@ -21,7 +21,7 @@ public class BooleanObjectTroveStorage<V> implements BooleanObjectStorage<V> {
     }
 
     @Override
-    public void save(boolean o, V t) {
+    public void save(boolean o, Object t) {
         if (o) {
             trueValue = t;
         } else {

@@ -19,8 +19,6 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * StorageByteFloatCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -28,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageByteFloatCacheImpl extends AbstractByteFloatCache implements StorageHolder<ByteFloatElementLockedStorage> {
-    private ByteFloatElementLockedStorage storage;
+public class StorageByteFloatCacheImpl extends AbstractByteFloatCache implements StorageHolder<ByteObjectElementLockedStorage> {
+    private ByteObjectElementLockedStorage storage;
 
     public StorageByteFloatCacheImpl(Object owner, ByteFloatCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull ByteFloatElementLockedStorage storage) {
+    public void setStorage(@Nonnull ByteObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -44,17 +42,12 @@ public class StorageByteFloatCacheImpl extends AbstractByteFloatCache implements
     }
 
     @Override
-    public boolean isCalculated(byte key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public float load(byte key) {
+    public Object load(byte key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(byte key, float value) {
+    public void save(byte key, Object value) {
         storage.save(key, value);
     }
 

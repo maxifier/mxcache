@@ -3,6 +3,7 @@
  */
 package com.maxifier.mxcache.impl;
 
+import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.context.CacheContext;
 import com.maxifier.mxcache.impl.resource.DependencyNode;
 import com.maxifier.mxcache.impl.resource.DependencyTracker;
@@ -45,7 +46,7 @@ public final class ProxyingCacheGenerator {
     private static final Method SIZE_METHOD = new Method("getSize", INT_TYPE, EMPTY_TYPES);
     private static final Method OWNER_METHOD = new Method("getCacheOwner", OBJECT_TYPE, EMPTY_TYPES);
     private static final Method GET_LOCK_METHOD = new Method("getLock", LOCK_TYPE, EMPTY_TYPES);
-    private static final Method CLEAR_METHOD = Method.getMethod("void clear()");
+    private static final Method INVALIDATE_METHOD = Method.getMethod("void invalidate()");
     private static final Method PROXY_METHOD = new Method("proxy", OBJECT_TYPE, new Type[] { CLASS_TYPE, RESOLVABLE_TYPE });
 
     private static final String GET_OR_CREATE = "getOrCreate";
@@ -56,24 +57,24 @@ public final class ProxyingCacheGenerator {
     }
 
     @SuppressWarnings({ "unchecked" })
-    public static <T> T wrapCacheWithProxy(CacheDescriptor descriptor, CacheContext context, T cache) {
+    public static Cache wrapCacheWithProxy(CacheDescriptor descriptor, CacheContext context, Cache cache) {
         ProxyFactory proxyFactory = descriptor.getProxyFactory(context);
         Class key = descriptor.getKeyType();
         Class value = descriptor.getValueType();
-        Class<T> cacheInterface = descriptor.getCacheInterface();
+        Class<?> cacheInterface = descriptor.getCacheInterface();
         TransformGenerator keyTransform = descriptor.getKeyTransform();
-        ClassLoader owner = descriptor.getOwnerClass().getClassLoader();
+        ClassLoader owner = descriptor.getDeclaringClass().getClassLoader();
         return wrapCacheWithProxy(owner, cache, proxyFactory, key, value, cacheInterface, keyTransform);
     }
 
     @SuppressWarnings({ "unchecked" })
-    public static <T> T wrapCacheWithProxy(ClassLoader owner, T cache, ProxyFactory proxyFactory, Class key, Class value, Class<T> cacheInterface, TransformGenerator keyTransform) {
+    public static Cache wrapCacheWithProxy(ClassLoader owner, Cache cache, ProxyFactory proxyFactory, Class key, Class value, Class<?> cacheInterface, TransformGenerator keyTransform) {
         if (proxyFactory == null) {
             return cache;
         }
         Class calculatableClass = generateProxyingCacheClass(owner, key, value, cacheInterface, keyTransform);
         try {
-            return (T) calculatableClass.getConstructors()[0].newInstance(cache, proxyFactory);
+            return (Cache)calculatableClass.getConstructors()[0].newInstance(cache, proxyFactory);
         } catch (InstantiationException e) {
             throw new IllegalStateException("Invalid calculatable generated", e);
         } catch (IllegalAccessException e) {
@@ -98,7 +99,7 @@ public final class ProxyingCacheGenerator {
         Type calculatableType = Type.getObjectType(calculatableName);
         Type cacheType = getType(cacheInterface);
 
-        ClassGenerator writer = new ClassGenerator(ACC_PUBLIC, thisName, OBJECT_TYPE, cacheType);
+        ClassGenerator writer = new ClassGenerator(ACC_PUBLIC | ACC_SUPER | ACC_SYNTHETIC, thisName, OBJECT_TYPE, cacheType);
 
         MxField cacheField = writer.defineField(ACC_PRIVATE | ACC_FINAL, CACHE_FIELD, cacheType);
         MxField proxyFactoryField = writer.defineField(ACC_PRIVATE | ACC_FINAL, PROXY_FACTORY_FIELD, PROXY_FACTORY_TYPE);
@@ -117,7 +118,7 @@ public final class ProxyingCacheGenerator {
 
         generateGetLock(writer, cacheField);
 
-        generateClear(writer, cacheField);
+        generateInvalidate(writer, cacheField);
 
         writer.visitEnd();
 
@@ -169,11 +170,11 @@ public final class ProxyingCacheGenerator {
         return loadClass(owner, bytecode);
     }
 
-    private static void generateClear(ClassGenerator writer, MxField cacheField) {
-        MxGeneratorAdapter clear = writer.defineMethod(ACC_PUBLIC, CLEAR_METHOD);
+    private static void generateInvalidate(ClassGenerator writer, MxField cacheField) {
+        MxGeneratorAdapter clear = writer.defineMethod(ACC_PUBLIC, INVALIDATE_METHOD);
         clear.visitCode();
         clear.get(cacheField);
-        clear.invokeInterface(cacheField.getType(), CLEAR_METHOD);
+        clear.invokeInterface(cacheField.getType(), INVALIDATE_METHOD);
         clear.returnValue();
         clear.endMethod();
     }

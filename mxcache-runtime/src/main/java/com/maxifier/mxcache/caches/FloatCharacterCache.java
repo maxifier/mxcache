@@ -4,7 +4,6 @@
 package com.maxifier.mxcache.caches;
 
 /**
- * FloatCharacterCache
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM P2PCache.template

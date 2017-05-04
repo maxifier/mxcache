@@ -16,8 +16,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * StorageDoubleObjectCacheImpl<F>
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2OCache.template
@@ -25,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageDoubleObjectCacheImpl<F> extends AbstractDoubleObjectCache<F> implements StorageHolder<DoubleObjectStorage<F>> {
+public class StorageDoubleObjectCacheImpl<F> extends AbstractDoubleObjectCache<F> implements StorageHolder<DoubleObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private DoubleObjectStorage<F> storage;
+    private DoubleObjectStorage storage;
 
     public StorageDoubleObjectCacheImpl(Object owner, DoubleObjectCalculatable<F> calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull DoubleObjectStorage<F> storage) {
+    public void setStorage(@Nonnull DoubleObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -48,7 +46,7 @@ public class StorageDoubleObjectCacheImpl<F> extends AbstractDoubleObjectCache<F
     }
 
     @Override
-    public void save(double key, F value) {
+    public void save(double key, Object value) {
         storage.save(key, value);
     }
 

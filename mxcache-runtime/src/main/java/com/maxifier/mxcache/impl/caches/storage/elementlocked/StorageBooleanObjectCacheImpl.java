@@ -19,8 +19,6 @@ import javax.annotation.Nullable;
 import java.util.concurrent.locks.Lock;
 
 /**
- * StorageBooleanObjectCacheImpl<F>
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2OCache.template
@@ -28,15 +26,15 @@ import java.util.concurrent.locks.Lock;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageBooleanObjectCacheImpl<F> extends AbstractBooleanObjectCache<F> implements StorageHolder<BooleanObjectElementLockedStorage<F>> {
-    private BooleanObjectElementLockedStorage<F> storage;
+public class StorageBooleanObjectCacheImpl<F> extends AbstractBooleanObjectCache<F> implements StorageHolder<BooleanObjectElementLockedStorage> {
+    private BooleanObjectElementLockedStorage storage;
 
     public StorageBooleanObjectCacheImpl(Object owner, BooleanObjectCalculatable<F> calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull BooleanObjectElementLockedStorage<F> storage) {
+    public void setStorage(@Nonnull BooleanObjectElementLockedStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -49,7 +47,7 @@ public class StorageBooleanObjectCacheImpl<F> extends AbstractBooleanObjectCache
     }
 
     @Override
-    public void save(boolean key, F value) {
+    public void save(boolean key, Object value) {
         storage.save(key, value);
     }
 

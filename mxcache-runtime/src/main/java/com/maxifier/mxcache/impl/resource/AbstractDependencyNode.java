@@ -3,8 +3,9 @@
  */
 package com.maxifier.mxcache.impl.resource;
 
+import com.maxifier.mxcache.impl.DependencyNodes;
 import com.maxifier.mxcache.util.HashWeakReference;
-import gnu.trove.THashSet;
+
 import javax.annotation.Nullable;
 
 import java.lang.ref.Reference;
@@ -17,21 +18,14 @@ public abstract class AbstractDependencyNode implements DependencyNode {
     /**
      * Set of dependent nodes. It may be null cause there is no need to allocate whole set for each node.
      */
-    private Set<Reference<DependencyNode>> dependentNodes;
+    private DependencyNodes dependentNodes;
 
     private Reference<DependencyNode> selfReference;
 
-    public synchronized void visitDependantNodes(DependencyNodeVisitor visitor) {
+    @Override
+    public synchronized void visitDependantNodes(Visitor visitor) {
         if (dependentNodes != null) {
-            for (Iterator<Reference<DependencyNode>> it = dependentNodes.iterator(); it.hasNext();) {
-                Reference<DependencyNode> ref = it.next();
-                DependencyNode instance = ref.get();
-                if (instance != null) {
-                    visitor.visit(instance);
-                } else {
-                    it.remove();
-                }
-            }
+            dependentNodes.visitDependantNodes(visitor);
         }
     }
 
@@ -53,7 +47,9 @@ public abstract class AbstractDependencyNode implements DependencyNode {
     @Override
     public synchronized void trackDependency(DependencyNode node) {
         if (dependentNodes == null) {
-            dependentNodes = new THashSet<Reference<DependencyNode>>();
+            // this magic set is used to prevent memory leaks
+            // it cleans up references to GC'ed nodes on rehash
+            dependentNodes = new DependencyNodes();
         }
         dependentNodes.add(node.getSelfReference());
     }

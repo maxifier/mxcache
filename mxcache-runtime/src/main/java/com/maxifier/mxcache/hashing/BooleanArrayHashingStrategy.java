@@ -3,20 +3,16 @@
  */
 package com.maxifier.mxcache.hashing;
 
-import gnu.trove.TObjectHashingStrategy;
-
 import java.io.ObjectStreamException;
 import java.util.Arrays;
 
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public final class BooleanArrayHashingStrategy implements TObjectHashingStrategy<boolean[]> {
+public final class BooleanArrayHashingStrategy implements gnu.trove.strategy.HashingStrategy<boolean[]> {
     private static final long serialVersionUID = 100L;
 
     private static final BooleanArrayHashingStrategy INSTANCE = new BooleanArrayHashingStrategy();
-
-    private BooleanArrayHashingStrategy() {}
 
     public static BooleanArrayHashingStrategy getInstance() {
         return INSTANCE;

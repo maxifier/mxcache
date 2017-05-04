@@ -16,8 +16,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * StorageFloatCharacterCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -25,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageFloatCharacterCacheImpl extends AbstractFloatCharacterCache implements StorageHolder<FloatCharacterStorage> {
+public class StorageFloatCharacterCacheImpl extends AbstractFloatCharacterCache implements StorageHolder<FloatObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private FloatCharacterStorage storage;
+    private FloatObjectStorage storage;
 
     public StorageFloatCharacterCacheImpl(Object owner, FloatCharacterCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull FloatCharacterStorage storage) {
+    public void setStorage(@Nonnull FloatObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -43,17 +41,12 @@ public class StorageFloatCharacterCacheImpl extends AbstractFloatCharacterCache 
     }
 
     @Override
-    public boolean isCalculated(float key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public char load(float key) {
+    public Object load(float key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(float key, char value) {
+    public void save(float key, Object value) {
         storage.save(key, value);
     }
 

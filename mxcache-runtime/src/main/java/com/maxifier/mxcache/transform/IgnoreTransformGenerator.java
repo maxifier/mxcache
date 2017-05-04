@@ -11,13 +11,10 @@ import com.maxifier.mxcache.util.ClassGenerator;
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
 public final class IgnoreTransformGenerator extends ScalarTransformGenerator {
-    private static final TransformGenerator INSTANCE = new IgnoreTransformGenerator();
+    private final Class<?> type;
 
-    public static TransformGenerator getInstance() {
-        return INSTANCE;
-    }
-
-    private IgnoreTransformGenerator() {
+    public IgnoreTransformGenerator(Class<?> type) {
+        this.type = type;
     }
 
     @Override
@@ -35,20 +32,12 @@ public final class IgnoreTransformGenerator extends ScalarTransformGenerator {
     }
 
     @Override
-    public void generateFields(Type thisType, int fieldIndex, ClassGenerator writer) {
-    }
-
-    @Override
-    public void generateAcquire(Type thisType, int fieldIndex, GeneratorAdapter ctor, int contextLocal) {
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
-    public Class getTransformedType(Class in) {
+    public Class getOutType() {
         return null;
+    }
+
+    @Override
+    public Class<?> getInType() {
+        return type;
     }
 }

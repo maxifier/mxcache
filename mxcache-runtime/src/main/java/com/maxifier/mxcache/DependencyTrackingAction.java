@@ -4,16 +4,11 @@
 package com.maxifier.mxcache;
 
 import com.maxifier.mxcache.caches.CleaningNode;
-import com.maxifier.mxcache.impl.resource.AbstractDependencyNode;
-import com.maxifier.mxcache.impl.resource.DependencyNode;
-import com.maxifier.mxcache.impl.resource.DependencyTracker;
-import com.maxifier.mxcache.impl.resource.ResourceOccupied;
-import com.maxifier.mxcache.util.TIdentityHashSet;
+import com.maxifier.mxcache.impl.resource.*;
 
 import javax.annotation.Nonnull;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.locks.Lock;
 
 /**
  * DependencyTrackingAction - use this action if you need to maintain you own cache.
@@ -100,37 +95,15 @@ public class DependencyTrackingAction {
         // do nothing
     }
 
-    private class DependencyNodeImpl extends AbstractDependencyNode implements CleaningNode {
-        private final Lock lock = new LightweightLock();
-
-        @Override
-        public void appendNodes(TIdentityHashSet<CleaningNode> elements) {
-            elements.add(this);
-        }
-
+    private class DependencyNodeImpl extends AbstractDependencyNode {
         @Override
         public void addNode(@Nonnull CleaningNode cache) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public Lock getLock() {
-            return lock;
-        }
-
-        @Override
-        public void clear() {
+        public void invalidate() {
             onClear();
-        }
-
-        @Override
-        public DependencyNode getDependencyNode() {
-            return this;
-        }
-
-        @Override
-        public Object getCacheOwner() {
-            return null;
         }
     }
 }

@@ -33,21 +33,13 @@ public class UnboxTransformGenerator extends ScalarTransformGenerator {
     }
 
     @Override
-    public void generateFields(Type thisType, int fieldIndex, ClassGenerator writer) {
-    }
-
-    @Override
-    public void generateAcquire(Type thisType, int fieldIndex, GeneratorAdapter ctor, int contextLocal) {
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
-    public Class getTransformedType(Class in) {
+    public Class getOutType() {
         return cls;
+    }
+
+    @Override
+    public Class<?> getInType() {
+        return Object.class;
     }
 
     @Override

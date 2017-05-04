@@ -7,7 +7,7 @@ import com.maxifier.mxcache.instrumentation.IllegalCachedClass;
 import com.maxifier.mxcache.asm.*;
 import com.maxifier.mxcache.asm.commons.Method;
 import com.maxifier.mxcache.util.MxField;
-import gnu.trove.THashMap;
+import gnu.trove.map.hash.THashMap;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -22,7 +22,7 @@ import static com.maxifier.mxcache.instrumentation.current.RuntimeTypes.RESOURCE
 /**
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class ResourceDetector extends ClassAdapter {
+public class ResourceDetector extends ClassVisitor {
     private static final int STATIC_RESOURCE_FIELD_ACCESS = ACC_PRIVATE | ACC_STATIC | ACC_SYNTHETIC;
     private static final int RESOURCE_FIELD_ACCESS = ACC_PRIVATE | ACC_SYNTHETIC;
 
@@ -43,7 +43,7 @@ public class ResourceDetector extends ClassAdapter {
     private boolean alreadyInstrumented;
 
     public ResourceDetector(ClassVisitor cv, boolean allowNonStatic) {
-        super(cv);
+        super(Opcodes.ASM4, cv);
         this.allowNonStatic = allowNonStatic;
     }
 
@@ -94,14 +94,14 @@ public class ResourceDetector extends ClassAdapter {
         return (access & Opcodes.ACC_BRIDGE) != 0;
     }
 
-    private final class MethodDetector extends MethodAdapter {
+    private final class MethodDetector extends MethodVisitor {
         private final int access;
         private final Method method;
 
         private final ResourceMethodContext context = new ResourceMethodContext();
 
         private MethodDetector(MethodVisitor mv, int access, Method method) {
-            super(mv);
+            super(Opcodes.ASM4, mv);
             this.access = access;
             this.method = method;
         }
@@ -134,12 +134,13 @@ public class ResourceDetector extends ClassAdapter {
             return thisType.getClassName() + "." + method.getName();
         }
 
-        private class ResourceAnnotationVisitor implements AnnotationVisitor {
+        private class ResourceAnnotationVisitor extends AnnotationVisitor {
             private final Set<MxField> fields;
             private final Set<MxField> fieldsToCheck;
             private final List<MxField> orderedFields;
 
             public ResourceAnnotationVisitor(Set<MxField> fields, Set<MxField> fieldsToCheck, List<MxField> orderedFields) {
+                super(Opcodes.ASM4);
                 this.fields = fields;
                 this.fieldsToCheck = fieldsToCheck;
                 this.orderedFields = orderedFields;
@@ -172,7 +173,11 @@ public class ResourceDetector extends ClassAdapter {
             public void visitEnd() {
             }
 
-            private class ResourceValueAnnotationVisitor implements AnnotationVisitor {
+            private class ResourceValueAnnotationVisitor extends AnnotationVisitor {
+                private ResourceValueAnnotationVisitor() {
+                    super(Opcodes.ASM4);
+                }
+
                 @Override
                 public void visit(String name, Object value) {
                     String resourceName = (String) value;

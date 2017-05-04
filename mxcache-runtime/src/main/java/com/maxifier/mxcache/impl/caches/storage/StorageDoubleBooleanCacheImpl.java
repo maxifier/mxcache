@@ -16,8 +16,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * StorageDoubleBooleanCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -25,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageDoubleBooleanCacheImpl extends AbstractDoubleBooleanCache implements StorageHolder<DoubleBooleanStorage> {
+public class StorageDoubleBooleanCacheImpl extends AbstractDoubleBooleanCache implements StorageHolder<DoubleObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private DoubleBooleanStorage storage;
+    private DoubleObjectStorage storage;
 
     public StorageDoubleBooleanCacheImpl(Object owner, DoubleBooleanCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull DoubleBooleanStorage storage) {
+    public void setStorage(@Nonnull DoubleObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -43,17 +41,12 @@ public class StorageDoubleBooleanCacheImpl extends AbstractDoubleBooleanCache im
     }
 
     @Override
-    public boolean isCalculated(double key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public boolean load(double key) {
+    public Object load(double key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(double key, boolean value) {
+    public void save(double key, Object value) {
         storage.save(key, value);
     }
 

@@ -8,6 +8,7 @@ import com.maxifier.mxcache.caches.Cache;
 import com.maxifier.mxcache.caches.Calculable;
 import com.maxifier.mxcache.config.Rule;
 import com.maxifier.mxcache.context.CacheContext;
+import com.maxifier.mxcache.exceptions.CacheExceptionHandler;
 import com.maxifier.mxcache.proxy.UseProxy;
 import com.maxifier.mxcache.proxy.ProxyFactory;
 
@@ -18,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Set;
 
+import com.maxifier.mxcache.transform.EmptyTransformGenerator;
 import com.maxifier.mxcache.transform.TransformGenerator;
 import com.maxifier.mxcache.transform.TransformGeneratorFactoryImpl;
 import com.maxifier.mxcache.util.CodegenHelper;
@@ -34,14 +36,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class CacheDescriptor<T> {
+public class CacheDescriptor {
     private static final Logger logger = LoggerFactory.getLogger(CacheDescriptor.class);
 
     private static final StrategyProperty<Class> USE_PROXY = StrategyProperty.create("use.proxy", Class.class, UseProxy.class, "value");
 
     private static final StrategyProperty<StatisticsModeEnum> STATISTICS_MODE = StrategyProperty.create("statistics.mode", StatisticsModeEnum.class, StatisticsMode.class, "value");
 
-    private final Class<T> ownerClass;
+    private final Class<?> declaringClass;
     private final Signature signature;
     private final Signature transformedSignature;
     private final Calculable calculable;
@@ -53,19 +55,20 @@ public class CacheDescriptor<T> {
     private final ProxyFactory proxyFactory;
     private final TransformGenerator keyTransform;
     private final TransformGenerator valueTransform;
+    private final CacheExceptionHandler exceptionHandler;
 
     private final PropertyOverrides overrides;
 
-    public CacheDescriptor(Class<T> ownerClass, int id, Class keyType, Class valueType, Calculable calculable, String methodName, String methodDesc, String cacheName, String group, String[] tags, ProxyFactory proxyFactory) {
-        this(ownerClass, id, keyType, valueType, calculable, methodName, methodDesc, cacheName, group, tags, CacheFactory.getConfiguration().getRule(ownerClass, group, tags), proxyFactory);
+    public CacheDescriptor(Class<?> declaringClass, int id, Class keyType, Class valueType, Calculable calculable, String methodName, String methodDesc, String cacheName, String group, String[] tags, ProxyFactory proxyFactory) {
+        this(declaringClass, id, keyType, valueType, calculable, methodName, methodDesc, cacheName, group, tags, CacheFactory.getConfiguration().getRule(declaringClass, group, tags), proxyFactory);
     }
 
-    public CacheDescriptor(Class<T> ownerClass, int id, Class keyType, Class valueType, Calculable calculable, String methodName, String methodDesc, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory) {
-        this(ownerClass, id, keyType, valueType, calculable, CodegenHelper.getMethod(ownerClass, methodName, methodDesc), cacheName, group, tags, rule, proxyFactory);
+    public CacheDescriptor(Class<?> declaringClass, int id, Class keyType, Class valueType, Calculable calculable, String methodName, String methodDesc, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory) {
+        this(declaringClass, id, keyType, valueType, calculable, CodegenHelper.getMethod(declaringClass, methodName, methodDesc), cacheName, group, tags, rule, proxyFactory);
     }
 
-    private CacheDescriptor(Class<T> ownerClass, int id, Class keyType, Class valueType, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory) {
-        this(ownerClass, id, signature(keyType, valueType, method), calculable, method, cacheName, group, tags, rule, proxyFactory, null);
+    private CacheDescriptor(Class<?> declaringClass, int id, Class keyType, Class valueType, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory) {
+        this(declaringClass, id, signature(keyType, valueType, method), calculable, method, cacheName, group, tags, rule, proxyFactory, null);
     }
 
     private static Signature signature(Class keyType, Class valueType, Method method) {
@@ -76,22 +79,22 @@ public class CacheDescriptor<T> {
         return new Signature(method.getParameterTypes(), keyType, valueType);
     }
 
-    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, @Nullable PropertyOverrides overrides) {
-        this(ownerClass, id, signature, calculable, method, cacheName, group, tags, rule, proxyFactory, TransformGeneratorFactoryImpl.getInstance().forMethod(method), TransformGenerator.NO_TRANSFORM, overrides);
+    private CacheDescriptor(Class<?> declaringClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, @Nullable PropertyOverrides overrides) {
+        this(declaringClass, id, signature, calculable, method, cacheName, group, tags, rule, proxyFactory, TransformGeneratorFactoryImpl.getInstance().forMethod(method), new EmptyTransformGenerator(signature.erased().getValue()), overrides);
     }
 
-    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, PropertyOverrides overrides) {
-        this(ownerClass, id, signature, calculable, method, cacheName, group, tags, rule, proxyFactory, keyTransform, valueTransform, getTransformedSignature(signature, keyTransform, valueTransform), overrides);
+    private CacheDescriptor(Class<?> declaringClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, PropertyOverrides overrides) {
+        this(declaringClass, id, signature, calculable, method, cacheName, group, tags, rule, proxyFactory, keyTransform, valueTransform, getTransformedSignature(signature, keyTransform, valueTransform), overrides);
     }
 
     private static Signature getTransformedSignature(Signature signature, TransformGenerator keyTransform, TransformGenerator valueTransform) {
         return valueTransform.transformValue(keyTransform.transformKey(signature));
     }
 
-    private CacheDescriptor(Class<T> ownerClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, Signature transformedSignature, PropertyOverrides overrides) {
+    private CacheDescriptor(Class<?> declaringClass, int id, Signature signature, Calculable calculable, Method method, String cacheName, String group, String[] tags, @Nonnull Rule rule, ProxyFactory proxyFactory, TransformGenerator keyTransform, TransformGenerator valueTransform, Signature transformedSignature, PropertyOverrides overrides) {
         this.method = method;
         this.group = group;
-        this.ownerClass = ownerClass;
+        this.declaringClass = declaringClass;
         this.calculable = calculable;
         this.id = id;
         this.tags = tags;
@@ -103,27 +106,39 @@ public class CacheDescriptor<T> {
         this.transformedSignature = transformedSignature;
         this.overrides = overrides;
         rule.override(method, cacheName);
+
+        exceptionHandler = new CacheExceptionHandler(method.getAnnotation(CacheExceptionPolicy.class));
     }
 
     @PublicAPI
-    public CacheDescriptor<T> overrideCalculable(Calculable calculatable) {
+    public CacheDescriptor overrideCalculable(Calculable calculatable) {
         Class<?> calculatableInterface = getCalculatableInterface();
         if (!calculatableInterface.isInstance(calculatable)) {
             throw new IllegalArgumentException("Calculatable for " + this + " should implement " + calculatableInterface.getName());
         }
         // cache name is already set in rule, so we pass null
-        return new CacheDescriptor<T>(ownerClass, id, signature, calculatable, method, null, group, tags, rule, proxyFactory, keyTransform, valueTransform, transformedSignature, overrides);
+        return new CacheDescriptor(declaringClass, id, signature, calculatable, method, null, group, tags, rule, proxyFactory, keyTransform, valueTransform, transformedSignature, overrides);
     }
 
     @PublicAPI
-    public CacheDescriptor<T> overrideProxyFactory(ProxyFactory factory) {
+    public CacheDescriptor overrideProxyFactory(ProxyFactory factory) {
         // cache name is already set in rule, so we pass null
-        return new CacheDescriptor<T>(ownerClass, id, signature, calculable, method, null, group, tags, rule, factory, keyTransform, valueTransform, transformedSignature, overrides);
+        return new CacheDescriptor(declaringClass, id, signature, calculable, method, null, group, tags, rule, factory, keyTransform, valueTransform, transformedSignature, overrides);
     }
 
-    public CacheDescriptor<T> overrideProxyFactory(Class<? extends ProxyFactory> factory) {
+    @PublicAPI
+    public CacheDescriptor overrideProxyFactory(Class<? extends ProxyFactory> factory) {
         // cache name is already set in rule, so we pass null
-        return new CacheDescriptor<T>(ownerClass, id, signature, calculable, method, null, group, tags, rule, proxyFactory, keyTransform, valueTransform, transformedSignature, new PropertyOverrides(overrides).override(USE_PROXY, factory));
+        return new CacheDescriptor(declaringClass, id, signature, calculable, method, null, group, tags, rule, proxyFactory, keyTransform, valueTransform, transformedSignature, new PropertyOverrides(overrides).override(USE_PROXY, factory));
+    }
+
+    /**
+     * @see com.maxifier.mxcache.CacheExceptionPolicy
+     *
+     * @return exception handler for cached method
+     */
+    public CacheExceptionHandler getExceptionHandler() {
+        return exceptionHandler;
     }
 
     public Class getKeyType() {
@@ -160,7 +175,7 @@ public class CacheDescriptor<T> {
      * @return tags from @Cached annotation, null if there were none.
      */
     public String[] getTags() {
-        return tags.clone();
+        return tags == null ? null : tags.clone();
     }
 
     /**
@@ -184,8 +199,8 @@ public class CacheDescriptor<T> {
     /**
      * @return cache that defines cache method.
      */
-    public Class<T> getOwnerClass() {
-        return ownerClass;
+    public Class<?> getDeclaringClass() {
+        return declaringClass;
     }
 
     @Override
@@ -314,6 +329,10 @@ public class CacheDescriptor<T> {
 
     public DependencyTracking getTrackDependency() {
         return rule.getTrackDependency();
+    }
+
+    public AnnotatedDependencyTracking getTrackAnnotatedDependency() {
+        return rule.getTrackAnnotatedDependency();
     }
 
     public Class<? extends CachingStrategy> getStrategyClass() {

@@ -16,8 +16,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * StorageIntIntCacheImpl
- *
  * THIS IS GENERATED CLASS! DON'T EDIT IT MANUALLY!
  *
  * GENERATED FROM StorageP2PCache.template
@@ -25,17 +23,17 @@ import javax.annotation.Nullable;
  * @author Andrey Yakoushin (andrey.yakoushin@maxifier.com)
  * @author Alexander Kochurov (alexander.kochurov@maxifier.com)
  */
-public class StorageIntIntCacheImpl extends AbstractIntIntCache implements StorageHolder<IntIntStorage> {
+public class StorageIntIntCacheImpl extends AbstractIntIntCache implements StorageHolder<IntObjectStorage> {
     private static final long serialVersionUID = 100L;
 
-    private IntIntStorage storage;
+    private IntObjectStorage storage;
 
     public StorageIntIntCacheImpl(Object owner, IntIntCalculatable calculatable, @Nonnull MutableStatistics statistics) {
         super(owner, calculatable, statistics);
     }
 
     @Override
-    public void setStorage(@Nonnull IntIntStorage storage) {
+    public void setStorage(@Nonnull IntObjectStorage storage) {
         if (this.storage != null) {
             throw new UnsupportedOperationException("Storage already set");
         }
@@ -43,17 +41,12 @@ public class StorageIntIntCacheImpl extends AbstractIntIntCache implements Stora
     }
 
     @Override
-    public boolean isCalculated(int key) {
-        return storage.isCalculated(key);
-    }
-
-    @Override
-    public int load(int key) {
+    public Object load(int key) {
         return storage.load(key);
     }
 
     @Override
-    public void save(int key, int value) {
+    public void save(int key, Object value) {
         storage.save(key, value);
     }
 
