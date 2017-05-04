@@ -43,7 +43,7 @@ public class ResourceDetector extends ClassVisitor {
     private boolean alreadyInstrumented;
 
     public ResourceDetector(ClassVisitor cv, boolean allowNonStatic) {
-        super(Opcodes.ASM4, cv);
+        super(Opcodes.ASM5, cv);
         this.allowNonStatic = allowNonStatic;
     }
 
@@ -101,7 +101,7 @@ public class ResourceDetector extends ClassVisitor {
         private final ResourceMethodContext context = new ResourceMethodContext();
 
         private MethodDetector(MethodVisitor mv, int access, Method method) {
-            super(Opcodes.ASM4, mv);
+            super(Opcodes.ASM5, mv);
             this.access = access;
             this.method = method;
         }
@@ -140,7 +140,7 @@ public class ResourceDetector extends ClassVisitor {
             private final List<MxField> orderedFields;
 
             public ResourceAnnotationVisitor(Set<MxField> fields, Set<MxField> fieldsToCheck, List<MxField> orderedFields) {
-                super(Opcodes.ASM4);
+                super(Opcodes.ASM5);
                 this.fields = fields;
                 this.fieldsToCheck = fieldsToCheck;
                 this.orderedFields = orderedFields;
@@ -175,7 +175,7 @@ public class ResourceDetector extends ClassVisitor {
 
             private class ResourceValueAnnotationVisitor extends AnnotationVisitor {
                 private ResourceValueAnnotationVisitor() {
-                    super(Opcodes.ASM4);
+                    super(Opcodes.ASM5);
                 }
 
                 @Override

@@ -26,7 +26,7 @@ public class AddStaticInitializer extends ClassVisitor {
     private Type thisType;
 
     public AddStaticInitializer(ClassVisitor cv, Method method) {
-        super(Opcodes.ASM4, cv);
+        super(Opcodes.ASM5, cv);
         this.method = method;
     }
 

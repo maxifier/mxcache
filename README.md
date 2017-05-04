@@ -9,9 +9,10 @@ Features:
 - Both annotation-driven and [xml-based](https://github.com/maxifier/mxcache/wiki/XML-configuration) configuration.
 - Smart dependency tracking between caches and resources.
 - Compatible with third-party caching libraries like EhCache, Guava.
+- Beginning with 3.0.0 version requires JDK 8 minimum.
 
 ##Further reading
 See [Getting Started](https://github.com/maxifier/mxcache/wiki/Getting-Started) wiki page for brief introduction.
 See [FAQ](https://github.com/maxifier/mxcache/wiki/FAQ) page if you still have questions.
 
-E-mail alexander.kochurov-at-maxifier.com with any feedback.
+E-mail aleksey.tomin-at-cxense.com with any feedback.
