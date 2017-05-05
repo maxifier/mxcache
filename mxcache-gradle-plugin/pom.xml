@@ -33,4 +33,14 @@
         </dependency>
 
     </dependencies>
+
+
+    <repositories>
+        <repository>
+            <id>gradle</id>
+            <layout>default</layout>
+            <url>https://repo.gradle.org/gradle/libs-releases-local</url>
+        </repository>
+    </repositories>
+
 </project>
