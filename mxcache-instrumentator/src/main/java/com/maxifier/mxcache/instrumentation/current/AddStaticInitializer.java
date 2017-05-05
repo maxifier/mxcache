@@ -26,7 +26,7 @@ public class AddStaticInitializer extends ClassVisitor {
     private Type thisType;
 
     public AddStaticInitializer(ClassVisitor cv, Method method) {
-        super(Opcodes.ASM4, cv);
+        super(Opcodes.ASM5, cv);
         this.method = method;
     }
 
@@ -41,7 +41,7 @@ public class AddStaticInitializer extends ClassVisitor {
     private void generateStaticInitializer() {
         MethodVisitor visitor = cv.visitMethod(STATIC_INITIALIZER_ACCESS, STATIC_INITIALIZER_NAME, "()V", null, null);
         visitor.visitCode();
-        visitor.visitMethodInsn(INVOKESTATIC, thisType.getInternalName(), method.getName(), method.getDescriptor());
+        visitor.visitMethodInsn(INVOKESTATIC, thisType.getInternalName(), method.getName(), method.getDescriptor(), false);
         visitor.visitInsn(RETURN);
         visitor.visitMaxs(0, 0);
         visitor.visitEnd();

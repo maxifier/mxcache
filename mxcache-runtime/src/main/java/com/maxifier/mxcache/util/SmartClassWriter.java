@@ -24,7 +24,7 @@ public class SmartClassWriter extends ClassWriter {
 
     @Override
     protected String getCommonSuperClass(String type1, String type2) {
-        Class c, d;
+        Class<?> c, d;
         try {
             c = Class.forName(type1.replace('/', '.'));
             d = Class.forName(type2.replace('/', '.'));

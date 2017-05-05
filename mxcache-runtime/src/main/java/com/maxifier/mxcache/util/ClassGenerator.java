@@ -25,11 +25,11 @@ public class ClassGenerator extends ClassVisitor {
     private boolean endVisited;
 
     public ClassGenerator(int flags) {
-        super(Opcodes.ASM4, new SmartClassWriter(flags));
+        super(Opcodes.ASM5, new SmartClassWriter(flags));
     }
 
     public ClassGenerator(ClassReader classReader, int flags) {
-        super(Opcodes.ASM4, new SmartClassWriter(classReader, flags));
+        super(Opcodes.ASM5, new SmartClassWriter(classReader, flags));
     }
 
     public ClassGenerator(int access, String name, Class superType, Class... interfaces) {

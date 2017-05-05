@@ -10,7 +10,6 @@
     <artifactId>mxcache-gradle-plugin</artifactId>
     <name>MxCache gradle plugin</name>
 
-
     <dependencies>
         <dependency>
             <groupId>org.gradle</groupId>
@@ -33,4 +32,13 @@
         </dependency>
 
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>gradle</id>
+            <layout>default</layout>
+            <url>https://repo.gradle.org/gradle/libs-releases-local</url>
+        </repository>
+    </repositories>
+
 </project>

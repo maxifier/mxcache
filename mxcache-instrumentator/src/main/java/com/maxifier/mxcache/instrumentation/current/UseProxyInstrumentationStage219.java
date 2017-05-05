@@ -28,9 +28,9 @@ class UseProxyInstrumentationStage219 extends UseProxyInstrumentationStage {
         MethodVisitor visitor = super.visitMethod(ACC_PRIVATE | ACC_SYNTHETIC, READ_OBJECT_METHOD.getName(), READ_OBJECT_METHOD.getDescriptor(), null, READ_OBJECT_EXCEPTIONS);
         visitor.visitCode();
         visitor.visitVarInsn(ALOAD, 0);
-        visitor.visitMethodInsn(INVOKEVIRTUAL, getThisType().getInternalName(), RuntimeTypes.INIT_PROXY_FACTORIES_METHOD_OLD.getName(), RuntimeTypes.INIT_PROXY_FACTORIES_METHOD_OLD.getDescriptor());
+        visitor.visitMethodInsn(INVOKEVIRTUAL, getThisType().getInternalName(), RuntimeTypes.INIT_PROXY_FACTORIES_METHOD_OLD.getName(), RuntimeTypes.INIT_PROXY_FACTORIES_METHOD_OLD.getDescriptor(), false);
         visitor.visitVarInsn(ALOAD, 1);
-        visitor.visitMethodInsn(INVOKEVIRTUAL, OBJECT_INPUT_STREAM_TYPE.getInternalName(), DEFAULT_READ_OBJECT_METHOD.getName(), DEFAULT_READ_OBJECT_METHOD.getDescriptor());
+        visitor.visitMethodInsn(INVOKEVIRTUAL, OBJECT_INPUT_STREAM_TYPE.getInternalName(), DEFAULT_READ_OBJECT_METHOD.getName(), DEFAULT_READ_OBJECT_METHOD.getDescriptor(), false);
         visitor.visitInsn(RETURN);
         visitor.visitMaxs(0, 0);
         visitor.visitEnd();
@@ -95,7 +95,7 @@ class UseProxyInstrumentationStage219 extends UseProxyInstrumentationStage {
 
     private class ProxyFactoryInitializer extends AdviceAdapter {
         public ProxyFactoryInitializer(MethodVisitor oldVisitor, int access, String name, String desc) {
-            super(Opcodes.ASM4, oldVisitor, access, name, desc);
+            super(Opcodes.ASM5, oldVisitor, access, name, desc);
         }
 
         @Override

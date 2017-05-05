@@ -50,25 +50,25 @@ public class MxGeneratorAdapter extends GeneratorAdapter {
     }
 
     public MxGeneratorAdapter(int access, Method method, Type thisClass, ClassVisitor cv) {
-        super(Opcodes.ASM4, cv.visitMethod(access, method.getName(), method.getDescriptor(), null, null), access, method.getName(), method.getDescriptor());
+        super(Opcodes.ASM5, cv.visitMethod(access, method.getName(), method.getDescriptor(), null, null), access, method.getName(), method.getDescriptor());
         this.thisClass = thisClass;
         isStatic = Modifier.isStatic(access);
     }
 
     public MxGeneratorAdapter(int access, Method method, MethodVisitor mv, Type thisClass) {
-        super(Opcodes.ASM4, mv, access, method.getName(), method.getDescriptor());
+        super(Opcodes.ASM5, mv, access, method.getName(), method.getDescriptor());
         this.thisClass = thisClass;
         isStatic = Modifier.isStatic(access);
     }
 
     public MxGeneratorAdapter(MethodVisitor mv, int access, Method method, Type thisClass) {
-        super(Opcodes.ASM4, mv, access, method.getName(), method.getDescriptor());
+        super(Opcodes.ASM5, mv, access, method.getName(), method.getDescriptor());
         this.thisClass = thisClass;
         isStatic = Modifier.isStatic(access);
     }
 
     public MxGeneratorAdapter(MethodVisitor mv, int access, String name, String desc, Type thisClass) {
-        super(Opcodes.ASM4, mv, access, name, desc);
+        super(Opcodes.ASM5, mv, access, name, desc);
         this.thisClass = thisClass;
         isStatic = Modifier.isStatic(access);
     }

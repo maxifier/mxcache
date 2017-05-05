@@ -36,9 +36,9 @@ class CachedInstrumentationStage219 extends CachedInstrumentationStage {
         MethodVisitor visitor = visitTransparentMethod(ACC_PRIVATE | ACC_SYNTHETIC, READ_OBJECT_METHOD.getName(), READ_OBJECT_METHOD.getDescriptor(), null, READ_OBJECT_EXCEPTIONS);
         visitor.visitCode();
         visitor.visitVarInsn(ALOAD, 0);
-        visitor.visitMethodInsn(INVOKEVIRTUAL, getThisType().getInternalName(), REGISTER_CACHE_OLD_METHOD.getName(), REGISTER_CACHE_OLD_METHOD.getDescriptor());
+        visitor.visitMethodInsn(INVOKEVIRTUAL, getThisType().getInternalName(), REGISTER_CACHE_OLD_METHOD.getName(), REGISTER_CACHE_OLD_METHOD.getDescriptor(), false);
         visitor.visitVarInsn(ALOAD, 1);
-        visitor.visitMethodInsn(INVOKEVIRTUAL, CommonRuntimeTypes.OBJECT_INPUT_STREAM_TYPE.getInternalName(), DEFAULT_READ_OBJECT_METHOD.getName(), DEFAULT_READ_OBJECT_METHOD.getDescriptor());
+        visitor.visitMethodInsn(INVOKEVIRTUAL, CommonRuntimeTypes.OBJECT_INPUT_STREAM_TYPE.getInternalName(), DEFAULT_READ_OBJECT_METHOD.getName(), DEFAULT_READ_OBJECT_METHOD.getDescriptor(), false);
         visitor.visitInsn(RETURN);
         visitor.visitMaxs(0, 0);
         visitor.visitEnd();
@@ -56,7 +56,7 @@ class CachedInstrumentationStage219 extends CachedInstrumentationStage {
 
     private class CacheRegistrator extends AdviceAdapter {
         public CacheRegistrator(MethodVisitor oldVisitor, int access, String name, String desc) {
-            super(Opcodes.ASM4, oldVisitor, access, name, desc);
+            super(Opcodes.ASM5, oldVisitor, access, name, desc);
         }
 
         @Override
