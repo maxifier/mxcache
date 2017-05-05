@@ -14,4 +14,4 @@ Features:
 See [Getting Started](https://github.com/maxifier/mxcache/wiki/Getting-Started) wiki page for brief introduction.
 See [FAQ](https://github.com/maxifier/mxcache/wiki/FAQ) page if you still have questions.
 
-E-mail alexander.kochurov-at-maxifier.com with any feedback.
+E-mail aleksey.tomin-at-cxense.com with any feedback.
