@@ -40,10 +40,10 @@ class CachedInstrumentationStage229 extends CachedInstrumentationStage {
         visitor.visitCode();
         visitor.visitVarInsn(ALOAD, 0);
         visitor.visitVarInsn(ALOAD, 1);
-        visitor.visitMethodInsn(INVOKESTATIC, CACHE_FACTORY_TYPE.getInternalName(), GET_CONTEXT_FROM_STREAM.getName(), GET_CONTEXT_FROM_STREAM.getDescriptor());
-        visitor.visitMethodInsn(INVOKEVIRTUAL, getThisType().getInternalName(), REGISTER_CACHE_METHOD.getName(), REGISTER_CACHE_METHOD.getDescriptor());
+        visitor.visitMethodInsn(INVOKESTATIC, CACHE_FACTORY_TYPE.getInternalName(), GET_CONTEXT_FROM_STREAM.getName(), GET_CONTEXT_FROM_STREAM.getDescriptor(), false);
+        visitor.visitMethodInsn(INVOKEVIRTUAL, getThisType().getInternalName(), REGISTER_CACHE_METHOD.getName(), REGISTER_CACHE_METHOD.getDescriptor(), false);
         visitor.visitVarInsn(ALOAD, 1);
-        visitor.visitMethodInsn(INVOKEVIRTUAL, CommonRuntimeTypes.OBJECT_INPUT_STREAM_TYPE.getInternalName(), DEFAULT_READ_OBJECT_METHOD.getName(), DEFAULT_READ_OBJECT_METHOD.getDescriptor());
+        visitor.visitMethodInsn(INVOKEVIRTUAL, CommonRuntimeTypes.OBJECT_INPUT_STREAM_TYPE.getInternalName(), DEFAULT_READ_OBJECT_METHOD.getName(), DEFAULT_READ_OBJECT_METHOD.getDescriptor(), false);
         visitor.visitInsn(RETURN);
         visitor.visitMaxs(0, 0);
         visitor.visitEnd();
@@ -63,7 +63,7 @@ class CachedInstrumentationStage229 extends CachedInstrumentationStage {
         private int contextIndex = -1;
 
         public CacheRegistrator(MethodVisitor oldVisitor, int access, String name, String desc) {
-            super(Opcodes.ASM4, oldVisitor, access, name, desc);
+            super(Opcodes.ASM5, oldVisitor, access, name, desc);
         }
 
         @Override

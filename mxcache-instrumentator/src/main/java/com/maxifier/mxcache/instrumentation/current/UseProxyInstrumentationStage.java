@@ -42,7 +42,7 @@ abstract class UseProxyInstrumentationStage extends ClassVisitor implements Inst
     private String sourceFileName;
 
     public UseProxyInstrumentationStage(InstrumentatorImpl instrumentator, ClassVisitor cv, ClassVisitor nextDetector) {
-        super(Opcodes.ASM4, cv);
+        super(Opcodes.ASM5, cv);
         this.instrumentator = instrumentator;
         detector = new UseProxyDetector(nextDetector);
     }
@@ -115,7 +115,7 @@ abstract class UseProxyInstrumentationStage extends ClassVisitor implements Inst
     private void generateStaticInitializer() {
         MethodVisitor visitor = super.visitMethod(STATIC_INITIALIZER_ACCESS, STATIC_INITIALIZER_NAME, "()V", null, null);
         visitor.visitCode();
-        visitor.visitMethodInsn(INVOKESTATIC, thisType.getInternalName(), RuntimeTypes.INIT_PROXY_FACTORIES_STATIC_METHOD.getName(), RuntimeTypes.INIT_PROXY_FACTORIES_STATIC_METHOD.getDescriptor());
+        visitor.visitMethodInsn(INVOKESTATIC, thisType.getInternalName(), RuntimeTypes.INIT_PROXY_FACTORIES_STATIC_METHOD.getName(), RuntimeTypes.INIT_PROXY_FACTORIES_STATIC_METHOD.getDescriptor(), false);
         visitor.visitInsn(RETURN);
         visitor.visitMaxs(0, 0);
         visitor.visitEnd();
@@ -156,7 +156,7 @@ abstract class UseProxyInstrumentationStage extends ClassVisitor implements Inst
 
     private class ProxyFactoryStaticInitializer extends AdviceAdapter {
         public ProxyFactoryStaticInitializer(MethodVisitor oldVisitor, int access, String name, String desc) {
-            super(Opcodes.ASM4, oldVisitor, access, name, desc);
+            super(Opcodes.ASM5, oldVisitor, access, name, desc);
         }
 
         @Override
@@ -232,7 +232,7 @@ abstract class UseProxyInstrumentationStage extends ClassVisitor implements Inst
                 loadArg(i);
             }
             String nonProxiedMethodName = ResolvableGenerator.getNonProxiedMethodName(method);
-            visitMethodInsn(aStatic ? INVOKESTATIC : INVOKEVIRTUAL, thisType.getInternalName(), nonProxiedMethodName, method.getDescriptor());
+            visitMethodInsn(aStatic ? INVOKESTATIC : INVOKEVIRTUAL, thisType.getInternalName(), nonProxiedMethodName, method.getDescriptor(), false);
             returnValue();
         }
     }

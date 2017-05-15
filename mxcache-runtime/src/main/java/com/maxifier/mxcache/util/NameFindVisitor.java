@@ -13,7 +13,7 @@ class NameFindVisitor extends ClassVisitor {
     private String name;
 
     NameFindVisitor() {
-        super(Opcodes.ASM4);
+        super(Opcodes.ASM5);
     }
 
     @Override

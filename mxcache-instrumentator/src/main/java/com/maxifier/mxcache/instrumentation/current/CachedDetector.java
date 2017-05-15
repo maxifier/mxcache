@@ -31,7 +31,7 @@ class CachedDetector extends ClassVisitor {
     private boolean alreadyInstrumented;
 
     public CachedDetector(ClassVisitor nextDetector) {
-        super(Opcodes.ASM4, nextDetector);
+        super(Opcodes.ASM5, nextDetector);
     }
 
     @Override
@@ -98,7 +98,7 @@ class CachedDetector extends ClassVisitor {
         private final int methodAccess;
 
         MethodDetector(MethodVisitor mv, String desc, Method method, int methodAccess) {
-            super(Opcodes.ASM4, mv);
+            super(Opcodes.ASM5, mv);
             this.desc = desc;
             this.method = method;
             this.methodAccess = methodAccess;
@@ -132,7 +132,7 @@ class CachedDetector extends ClassVisitor {
 
         private class CachedAnnotationVisitor extends AnnotationVisitor {
             CachedAnnotationVisitor() {
-                super(Opcodes.ASM4);
+                super(Opcodes.ASM5);
             }
 
             @Override
@@ -164,7 +164,7 @@ class CachedDetector extends ClassVisitor {
                 if (!name.equals("tags")) {
                     return null;
                 }
-                return new AnnotationVisitor(Opcodes.ASM4) {
+                return new AnnotationVisitor(Opcodes.ASM5) {
                     @Override
                     public void visit(String name, Object value) {
                         context.getTags().add((String) value);
