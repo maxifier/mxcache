@@ -81,7 +81,7 @@ public class MxCacheBenchmark {
         return fact(value);
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int manualCache() {
         int val = 0;
         for (int i = 0; i<1000; i++) {
@@ -90,7 +90,7 @@ public class MxCacheBenchmark {
         return val;
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int staticManualCache() {
         int val = 0;
         for (int i = 0; i<1000; i++) {
@@ -99,7 +99,7 @@ public class MxCacheBenchmark {
         return val;
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int mxCache() {
         int val = 0;
         for (int i = 0; i<1000; i++) {
@@ -108,7 +108,7 @@ public class MxCacheBenchmark {
         return val;
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int mxCacheGuava() {
         int val = 0;
         for (int i = 0; i<1000; i++) {
@@ -117,7 +117,7 @@ public class MxCacheBenchmark {
         return val;
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int manualGuava() throws ExecutionException {
         int val = 0;
         for (int i = 0; i<1000; i++) {
@@ -126,7 +126,7 @@ public class MxCacheBenchmark {
         return val;
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int staticMxCache() {
         int val = 0;
         for (int i = 0; i<1000; i++) {
@@ -135,14 +135,14 @@ public class MxCacheBenchmark {
         return val;
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public void cleanManualCache() {
         for (int i = 0; i<100; i++) {
             Arrays.fill(cache, null);
         }
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public void cleanMxCache() {
         for (int i = 0; i<100; i++) {
             MxCache.getCleaner().clearCacheByInstance(this);
