@@ -231,9 +231,8 @@ public class TestStubGen {
         return stubClassLoader.loadClass(cls.getName());
     }
 
-    private URLClassLoader getNonTestCL() {
-        URLClassLoader testCl = (URLClassLoader) getClass().getClassLoader();
-        return new URLClassLoader(testCl.getURLs(), testCl.getParent()) {
+    private URLClassLoader getNonTestCL() throws MalformedURLException {
+        return new URLClassLoader(getUrls(), getClass().getClassLoader().getParent()) {
             @Override
             protected Class<?> findClass(String name) throws ClassNotFoundException {
                 for (Class libClass : LIB_CLASSES) {
@@ -249,6 +248,20 @@ public class TestStubGen {
                 return super.findClass(name);
             }
         };
+    }
+
+    private URL[] getUrls() throws MalformedURLException {
+        String[] paths = System.getProperty("java.class.path").split(System.getProperty("path.separator"));
+        URL[] urls = new URL[paths.length];
+        for (int i = 0; i < paths.length; i++) {
+            // It's works on linux and macos. Didn't tested on Windows.
+            String path = "file:" + paths[i];
+            if (!path.endsWith(".jar")) {
+                path = path + "/";
+            }
+            urls[i] = new URL(path);
+        }
+        return urls;
     }
 
     private File createJar(Class... classes) throws IOException {
