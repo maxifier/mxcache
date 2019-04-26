@@ -38,7 +38,7 @@ class UseProxyDetector extends ClassVisitor {
     }
 
     public UseProxyDetector(ClassVisitor nextDetector) {
-        super(Opcodes.ASM5, nextDetector);
+        super(Opcodes.ASM7, nextDetector);
     }
 
     @Override
@@ -76,7 +76,7 @@ class UseProxyDetector extends ClassVisitor {
         private boolean cached;
 
         public ProxyMethodDetector(MethodVisitor oldVisitor, Method method, int methodAccess) {
-            super(Opcodes.ASM5, oldVisitor);
+            super(Opcodes.ASM7, oldVisitor);
             this.method = method;
             this.methodAccess = methodAccess;
             context = new ProxiedMethodContext(id++, Modifier.isStatic(this.methodAccess), method);

@@ -472,7 +472,7 @@ public final class Wrapping {
 
     private static final class WrapperMethodGenerator extends GeneratorAdapter {
         private WrapperMethodGenerator(int access, Method method, MethodVisitor mv) {
-            super(Opcodes.ASM5, mv, access, method.getName(), method.getDescriptor());
+            super(Opcodes.ASM7, mv, access, method.getName(), method.getDescriptor());
         }
 
         public void loadStorage(Type wrapperType, Type storageType) {

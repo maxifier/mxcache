@@ -109,7 +109,7 @@ public class StubGen {
                 for (JarEntry jarEntry : Collections.list(jar.entries())) {
                     if (jarEntry.getName().endsWith(".class")) {
                         ClassReader r = new ClassReader(IOUtils.toByteArray(jar.getInputStream(jarEntry)));
-                        r.accept(new ClassVisitor(Opcodes.ASM5) {
+                        r.accept(new ClassVisitor(Opcodes.ASM7) {
                             Type thisType;
 
                             @Override
@@ -138,7 +138,7 @@ public class StubGen {
                             @Override
                             public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
                                 methodUsed(thisType, name, desc);
-                                return new MethodVisitor(Opcodes.ASM5) {
+                                return new MethodVisitor(Opcodes.ASM7) {
                                     @Override
                                     public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
                                         methodUsed(Type.getObjectType(owner), name, desc);
