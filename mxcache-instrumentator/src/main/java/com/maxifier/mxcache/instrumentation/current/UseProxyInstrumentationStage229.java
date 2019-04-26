@@ -103,7 +103,7 @@ class UseProxyInstrumentationStage229 extends UseProxyInstrumentationStage {
         private int contextIndex = -1;
 
         public ProxyFactoryInitializer(MethodVisitor oldVisitor, int access, String name, String desc) {
-            super(Opcodes.ASM5, oldVisitor, access, name, desc);
+            super(Opcodes.ASM7, oldVisitor, access, name, desc);
         }
 
         @Override

@@ -197,7 +197,7 @@
             <dependency>
                 <groupId>com.maxifier.mxcache</groupId>
                 <artifactId>mxcache-asm</artifactId>
-                <version>5.0</version>
+                <version>7.1</version>
             </dependency>
 
             <dependency>

@@ -95,7 +95,7 @@ class UseProxyInstrumentationStage219 extends UseProxyInstrumentationStage {
 
     private class ProxyFactoryInitializer extends AdviceAdapter {
         public ProxyFactoryInitializer(MethodVisitor oldVisitor, int access, String name, String desc) {
-            super(Opcodes.ASM5, oldVisitor, access, name, desc);
+            super(Opcodes.ASM7, oldVisitor, access, name, desc);
         }
 
         @Override

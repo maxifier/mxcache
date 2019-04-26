@@ -144,7 +144,7 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
 
         List<InstrumentationStage> stages = new ArrayList<InstrumentationStage>();
         ClassVisitor visitor = classWriter;
-        ClassVisitor detector = new ClassVisitor(Opcodes.ASM5) {};
+        ClassVisitor detector = new ClassVisitor(Opcodes.ASM7) {};
 
         // instrumentation stages are stacked, last added is first passed to class reader
         for (StageFactory factory : activeFactories) {
