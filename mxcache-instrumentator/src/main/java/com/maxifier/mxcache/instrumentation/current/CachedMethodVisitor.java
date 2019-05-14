@@ -82,7 +82,7 @@ class CachedMethodVisitor extends MxGeneratorAdapter {
                 if (paramTypeSort != Type.OBJECT && paramTypeSort != Type.ARRAY) {
                     throw new IllegalCachedClass("Primitive types can't have custom hashing strategy", classVisitor.getSourceFileName());
                 }
-                return new AnnotationVisitor(Opcodes.ASM5, super.visitParameterAnnotation(parameter, annotationClassInnerName, visible)) {
+                return new AnnotationVisitor(Opcodes.ASM7, super.visitParameterAnnotation(parameter, annotationClassInnerName, visible)) {
                     @Override
                     public void visit(String name, Object value) {
                         if ("value".equals(name)) {
