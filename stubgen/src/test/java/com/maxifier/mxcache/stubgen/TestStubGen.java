@@ -19,6 +19,7 @@ import java.lang.reflect.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -257,7 +258,7 @@ public class TestStubGen {
             // It's works on linux and macos. Didn't tested on Windows.
             String path = "file:" + paths[i];
             if (!path.endsWith(".jar")) {
-                path = path + "/";
+                path = path + File.pathSeparator;
             }
             urls[i] = new URL(path);
         }
