@@ -258,7 +258,7 @@ public class TestStubGen {
             // It's works on linux and macos. Didn't tested on Windows.
             String path = "file:" + paths[i];
             if (!path.endsWith(".jar")) {
-                path = path + File.pathSeparator;
+                path = path + '/';
             }
             urls[i] = new URL(path);
         }
