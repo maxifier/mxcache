@@ -18,7 +18,7 @@ import com.maxifier.mxcache.tuple.Tuple;
 import com.maxifier.mxcache.tuple.TupleFactory;
 import com.maxifier.mxcache.tuple.TupleGenerator;
 import gnu.trove.strategy.IdentityHashingStrategy;
-import junit.framework.Assert;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

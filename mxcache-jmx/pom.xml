@@ -13,10 +13,6 @@
     </parent>
 
     <dependencies>
-        <dependency>
-            <groupId>com.maxifier.mxcache</groupId>
-            <artifactId>jconsole-stub</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
