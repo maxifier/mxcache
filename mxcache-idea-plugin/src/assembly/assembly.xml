@@ -10,6 +10,8 @@
             <useProjectArtifact>true</useProjectArtifact>
             <includes>
                 <include>commons-io:commons-io</include>
+                <include>javax.xml.bind:jaxb-api</include>
+                <include>javax.activation:activation</include>
                 <include>com.maxifier.mxcache:mxcache-asm</include>
                 <include>com.maxifier.mxcache:mxcache-runtime</include>
                 <include>com.maxifier.mxcache:mxcache-idea-plugin</include>
