@@ -53,6 +53,11 @@ abstract class UseProxyInstrumentationStage extends ClassVisitor implements Inst
     }
 
     @Override
+    public ClassVisitor asClassVisitor() {
+        return this;
+    }
+
+    @Override
     public UseProxyDetector getDetector() {
         return detector;
     }

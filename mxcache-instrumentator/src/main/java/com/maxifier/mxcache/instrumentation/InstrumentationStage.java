@@ -16,6 +16,8 @@ import java.util.List;
 public interface InstrumentationStage /* extends ClassVisitor */ {
     boolean isClassChanged();
 
+    ClassVisitor asClassVisitor();
+
     ClassVisitor getDetector();
 
     List<ClassDefinition> getAdditionalClasses();
