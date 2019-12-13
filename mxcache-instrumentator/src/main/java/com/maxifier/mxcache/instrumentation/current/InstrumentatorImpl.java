@@ -150,7 +150,7 @@ public abstract class InstrumentatorImpl implements com.maxifier.mxcache.instrum
         for (StageFactory factory : activeFactories) {
             InstrumentationStage stage = factory.createStage(visitor, detector);
             stages.add(stage);
-            visitor = (ClassVisitor)stage;
+            visitor = stage.asClassVisitor();
             detector = stage.getDetector();
         }
         classReader.accept(detector, ClassReader.SKIP_FRAMES);

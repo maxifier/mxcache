@@ -41,6 +41,11 @@ abstract class ResourceInstrumentationStage extends SerialVersionUIDAdder implem
     protected abstract ResourceDetector createDetector(ClassVisitor nextDetector);
 
     @Override
+    public ClassVisitor asClassVisitor() {
+        return this;
+    }
+
+    @Override
     public ClassVisitor getDetector() {
         return detector;
     }

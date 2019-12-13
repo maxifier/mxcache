@@ -74,6 +74,11 @@ abstract class CachedInstrumentationStage extends SerialVersionUIDAdder implemen
     }
 
     @Override
+    public ClassVisitor asClassVisitor() {
+        return this;
+    }
+
+    @Override
     public ClassVisitor getDetector() {
         return detector;
     }
