@@ -3,6 +3,7 @@
  */
 package com.maxifier.mxcache.jconsoleplugin;
 
+import javax.management.openmbean.CompositeData;
 import java.util.Comparator;
 import java.util.regex.Pattern;
 
@@ -81,9 +82,13 @@ public enum Attribute {
         public Object transform(Object o) {
             return new Rate((Double) o);
         }
-    };
+    },
+    MEMORY("Total memory, parrots", "totalMemory", false, false),
+    PROFIT("Total profit, seconds", "totalProfit", false, false);
 
     private static final Pattern SHORTCUT_PATTERN = Pattern.compile("([\\w_$][\\w\\d_$]*\\.)*([\\w_$][\\w\\d_$]*)([^\\.])");
+    private static final int NS_IN_SECOND = 1000000000;
+    private static final int MAX_GET_FROM_CACHE_TIME_NS = 2000;
 
     public static String shortcutClassNames(Object s) {
         return s == null ? "" : SHORTCUT_PATTERN.matcher(s.toString()).replaceAll("$2$3");
@@ -124,19 +129,29 @@ public enum Attribute {
         return name;
     }
 
-    public String getKey() {
-        return key;
-    }
-
     public boolean isSearchable() {
         return searchable;
-    }
-
-    public boolean isShortcutable() {
-        return shortcutable;
     }
 
     public Comparator getComparator() {
         return comparator;
     }
+
+    public Object getValueFromCache(CompositeData cache) {
+        if (this == PROFIT) {
+            Integer totalHits = (Integer) TOTAL_HITS.getValueFromCache(cache);
+            double perHintProfitNs = ((Time) AVERAGE_CALCULATION.getValueFromCache(cache)).getValue() - MAX_GET_FROM_CACHE_TIME_NS;
+            return Math.round(totalHits * perHintProfitNs / NS_IN_SECOND);
+        } else if (this == MEMORY) {
+            Integer instanceCount = (Integer) INSTANCES.getValueFromCache(cache);
+            Integer elementCount = (Integer) ELEMENTS.getValueFromCache(cache);
+            return instanceCount * 2 + elementCount; // in parrots!
+        } else {
+            Object value = cache.get(key);
+            value = value == null ? "" : transform(value);
+            // todo add posibility to switch shortcutting off
+            return shortcutable ? shortcutClassNames(value) : value;
+        }
+    }
+
 }
